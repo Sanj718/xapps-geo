@@ -1,0 +1,18 @@
+{
+  "responses": {
+    "error": "Error, please try again",
+    "error_markets": "Error syncing, please try again",
+    "error_settings_load": "Error loading settings, please try again",
+    "success": "Success",
+    "success_markets": "Markets successfully synced",
+    "limit_error": "Basic plan limit reached",
+    "rd_reorder_success": "Redirect successfully re-ordered",
+    "rd_delete_success": "Redirect successfully removed",
+    "rd_create_success": "New redirect successfully added",
+    "rd_update_success": "Redirect successfully updated",
+    "rd_status_success": "Status successfully updated",
+    "settings_saved": "Settings successfully saved",
+    "saved": "Saved",
+    "error_server": "Server error or access denied please make sure you have enough permissions."
+  }
+}

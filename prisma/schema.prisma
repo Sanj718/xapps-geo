@@ -1,0 +1,131 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Note that some adapters may set a maximum length for the String type by default, please ensure your strings are long
+// enough when changing adapters.
+// See https://www.prisma.io/docs/orm/reference/prisma-schema-reference#string for more information
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id            String    @id
+  shop          String
+  state         String
+  isOnline      Boolean   @default(false)
+  scope         String?
+  expires       DateTime?
+  accessToken   String
+  userId        BigInt?
+  firstName     String?
+  lastName      String?
+  email         String?
+  accountOwner  Boolean   @default(false)
+  locale        String?
+  collaborator  Boolean?  @default(false)
+  emailVerified Boolean?  @default(false)
+}
+
+model ActiveShops {
+  id             Int      @id @default(autoincrement())
+  createdDate    DateTime @default(now()) @map("created_date")
+  shop           String   @unique
+  status         Int?
+  plan           Int      @default(3)
+  dev            Boolean  @default(false)
+  shopifyPlanId  String?  @map("shopify_plan_id")
+  email          String?
+  veteran        Boolean  @default(false)
+  trialCreatedAt String?  @map("trial_created_at")
+
+  configs        Configs[]        @relation("ActiveShopConfigs")
+  markets        Markets[]        @relation("ActiveShopMarkets")
+  marketsConfigs MarketsConfigs[] @relation("ActiveShopMarketsConfigs")
+  redirects      Redirects[]      @relation("ActiveShopRedirects")
+
+  @@map("active_shops")
+}
+
+model Configs {
+  id                 Int      @id @default(autoincrement())
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @default(now()) @map("updated_at")
+  shopId             Int      @map("shop_id")
+  basicConfigs       String?  @map("basic_configs")
+  status             Boolean? @default(true)
+  advancedConfigs    String?  @map("advanced_configs")
+  allowedPages       String?  @map("allowed_pages")
+  hideOnAllowedPages Boolean  @default(false) @map("hide_on_allowed_pages")
+
+  activeShop ActiveShops @relation("ActiveShopConfigs", fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@unique([shopId])
+  @@map("configs")
+}
+
+model Markets {
+  id                Int       @id @default(autoincrement())
+  createdAt         DateTime  @default(now()) @map("created_at")
+  shopId            Int       @map("shop_id")
+  markets           String?
+  syncStatus        String?   @map("sync_status")
+  lastSyncTimestamp DateTime? @map("last_sync_timestamp")
+
+  activeShop ActiveShops @relation("ActiveShopMarkets", fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@unique([shopId])
+  @@map("markets")
+}
+
+model MarketsConfigs {
+  id              Int      @id @default(autoincrement())
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @default(now()) @map("updated_at")
+  shopId          Int      @map("shop_id")
+  widget          Boolean  @default(false)
+  autoRedirect    Boolean  @default(false) @map("auto_redirect")
+  basicConfigs    String?  @map("basic_configs")
+  advancedConfigs String?  @map("advanced_configs")
+
+  activeShop ActiveShops @relation("ActiveShopMarketsConfigs", fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@unique([shopId])
+  @@map("markets_configs")
+}
+
+model Redirects {
+  id                  Int      @id @default(autoincrement())
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @default(now()) @map("updated_at")
+  shopId              Int      @map("shop_id")
+  flag                String
+  label               String   @map("label")
+  url                 String
+  status              Boolean  @default(true)
+  locales             String?
+  order               Int      @default(0) @map("order_r")
+  conditional         Boolean  @default(false)
+  conditionalLocation String?  @map("conditional_location")
+  domainRedirection   Boolean  @default(false) @map("domain_redirection")
+
+  activeShop ActiveShops @relation("ActiveShopRedirects", fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@map("redirects")
+}
+
+model Analytics {
+  id                Int      @id @default(autoincrement())
+  createdAt         DateTime @default(now()) @map("created_at")
+  shop              String   @unique
+  dataButton        String?  @default("0") @map("data_button")
+  dataAuto          String?  @default("0") @map("data_auto")
+  dataMarketsButton String?  @default("0") @map("data_markets_button")
+  dataMarketsAuto   String?  @default("0") @map("data_markets_auto")
+
+  @@map("analytics")
+}

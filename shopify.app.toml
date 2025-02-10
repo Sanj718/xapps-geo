@@ -1,0 +1,37 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "9966dc648683377b495dc8e5b5a704b1"
+name = "xapps-geo-ts"
+handle = "xapps-geo-ts"
+application_url = "https://fan-statements-towers-hits.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "appstorefortests.myshopify.com"
+include_config_on_deploy = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_files,read_locales,read_markets,read_themes,write_files"
+
+[auth]
+redirect_urls = [
+  "https://fan-statements-towers-hits.trycloudflare.com/auth/callback",
+  "https://fan-statements-towers-hits.trycloudflare.com/auth/shopify/callback",
+  "https://fan-statements-towers-hits.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2025-01"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/scopes_update" ]
+  uri = "/webhooks/app/scopes_update"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "/webhooks/app/uninstalled"
+
+[pos]
+embedded = false
