@@ -26,9 +26,9 @@ export interface RedirectItem {
     url: string;
     order: number;
     conditional: boolean;
-    conditionalLocation: [string] | [];
+    conditionalLocation: string | null;
     domainRedirection: boolean;
-    locales: object;
+    locales: { [key: string]: string } | null;
     status?: boolean;
 }
 

@@ -1,3 +1,4 @@
+import { jsonSafeParse } from "./components/_helpers";
 import { EditRedirectItem, RedirectItem } from "./components/_types";
 import prisma from "./db.server";
 
@@ -248,7 +249,15 @@ export const getAllRedirects = async ({ shop, localesAllowed }: AllRedirects): P
       select: selectFields,
     });
 
-    return { status: redirects.length > 0, data: redirects };
+    const parsedRedirects = redirects.map((redirect) => ({
+      ...redirect,
+      locales: redirect.locales ? jsonSafeParse(redirect.locales) : null,
+      conditionalLocation: redirect.conditionalLocation
+        ? jsonSafeParse(redirect.conditionalLocation)
+        : null,
+    }));
+
+    return { status: parsedRedirects.length > 0, data: parsedRedirects };
   } catch (error: any) {
     console.error(error);
     return { status: false, error: (error as Error).toString() };
@@ -267,11 +276,6 @@ export const updateRedirect = async ({
   status = true,
 }: EditRedirectItem): Promise<DBResponse> => {
   try {
-    const stringifyLocales = locales && typeof locales === 'object' ? JSON.stringify(locales) : null;
-    const stringifyConditionalLocation = conditionalLocation
-      ? JSON.stringify(conditionalLocation)
-      : null;
-
     const result = await prisma.redirects.update({
       where: { id },
       data: {
@@ -279,9 +283,9 @@ export const updateRedirect = async ({
         label,
         url,
         status,
-        locales: stringifyLocales,
+        locales: locales ? JSON.stringify(locales) : null,
         conditional,
-        conditionalLocation: stringifyConditionalLocation,
+        conditionalLocation: conditionalLocation ? JSON.stringify(conditionalLocation) : null,
         domainRedirection: domainRedirection,
       },
       select: { id: true },

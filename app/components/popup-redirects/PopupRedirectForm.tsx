@@ -31,6 +31,8 @@ import countriesList from "../../assets/countries.json";
 import {
   continents_auto,
   isJson,
+  jsonSafeParse,
+  loadingStates,
   parseCountries,
   parseCountryCodesWithFullNames,
   planParser,
@@ -40,10 +42,10 @@ import tr from "../locales.json";
 import ListWithTags from "../_common/ListWithTags";
 import ImageManager from "../_common/ImageManager";
 import PromoBadge from "../_common/PromoBadge";
-import { ClientActionFunctionArgs, useActionData, useOutletContext, useSubmit } from "@remix-run/react";
+import { ClientActionFunctionArgs, useActionData, useNavigation, useOutletContext, useSubmit } from "@remix-run/react";
 
 import { Modal, TitleBar } from "@shopify/app-bridge-react";
-import { ActionReturn, OutletContext, RedirectItem } from "../_types";
+import { ActionReturn, LoadingStates, OutletContext, RedirectItem } from "../_types";
 
 interface Asset {
   url: string;
@@ -56,12 +58,8 @@ interface FieldValidation {
 }
 
 interface PopupRedirectFormProps {
-  loadRedirects: () => void;
   editItem?: RedirectItem;
-  setModalStatus: (status: boolean) => void;
   setToastData: (data: { error: boolean; msg: string }) => void;
-  shopLocales: any;
-  shopId?: string | null;
   redirects: any[];
 }
 
@@ -78,15 +76,13 @@ const defaultRedirectItem = {
   url: "",
   order: 0,
   conditional: false,
-  conditionalLocation: [] as [string] | [],
+  conditionalLocation: null,
   domainRedirection: false,
-  locales: {},
+  locales: null,
 }
 
 export default function PopupRedirectForm({
-  loadRedirects,
   editItem = undefined,
-  setModalStatus,
   setToastData,
   redirects = [],
 }: PopupRedirectFormProps) {
@@ -94,6 +90,7 @@ export default function PopupRedirectForm({
   const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
     useOutletContext<OutletContext>();
   const actionData = useActionData<ActionReturn>();
+  const navigation = useNavigation();
   const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
   const countries = parseCountries(countriesList);
   const countries_conditionals = parseCountryCodesWithFullNames(countriesList);
@@ -102,27 +99,42 @@ export default function PopupRedirectForm({
     (item) => !item.primary,
   );
   const submit = useSubmit();
-  const [deleteLoading, setDeleteLoading] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<string>("");
   const [addButtonStatus, setAddButtonStatus] = useState(false);
   const [labelTranslation, setLabelTranslation] = useState(false);
   const [assetsModalStatus, setAssetsModalStatus] = useState(false);
-  const [redirectItem, setRedirectItem] = useState<RedirectItem>(editItem ? editItem : defaultRedirectItem);
+  const [redirectItem, setRedirectItem] = useState<RedirectItem>(defaultRedirectItem);
   const [fieldValidation, setFieldValidation] = useState({
     url: false,
     flag: false,
   });
 
   useMemo(() => {
-    if (editItem?.flag) {
+    if (editItem?.id) {
       setSelectedCountry(editItem.flag);
+      setRedirectItem(editItem)
     }
   }, [editItem]);
 
   useMemo(() => {
-    if (actionData?._action === "addRedirect" && actionData?.data?.status) {
+    if (actionData?._action === "addRedirect" && actionData?.status) {
+      // if (redirects?.length >= 4 && isBasicPlan) {
+      //   msg = tr.responses.limit_error;
+      // }
       setToastData({ error: false, msg: tr.responses.rd_create_success });
+      shopify.modal.hide("add-redirect");
+      setRedirectItem(defaultRedirectItem);
+      setSelectedCountry("--");
+    }
+    if (actionData?._action === "deleteRedirect" && actionData?.status) {
+      setToastData({ error: false, msg: tr.responses.rd_delete_success });
+      shopify.modal.hide("edit-redirect");
+      setRedirectItem(defaultRedirectItem);
+      setSelectedCountry("--");
+    }
+    if (actionData?._action === "updateRedirect" && actionData?.status) {
+      setToastData({ error: false, msg: tr.responses.rd_update_success });
+      shopify.modal.hide("edit-redirect");
       setRedirectItem(defaultRedirectItem);
       setSelectedCountry("--");
     }
@@ -134,19 +146,15 @@ export default function PopupRedirectForm({
       (country: Country) => country.image === value,
     );
     setRedirectItem({
-      url: redirectItem.url,
+      ...redirectItem,
       flag: value,
       label: selectedCountry?.name || "",
-      status: redirectItem.status,
-      id: redirectItem.id,
-      locales: redirectItem.locales,
     });
     setFieldValidation({
       ...fieldValidation,
       flag: false,
     });
   }
-
 
   function handleCustomIconUpload(assets: Asset | null) {
     if (!assets) return;
@@ -183,86 +191,31 @@ export default function PopupRedirectForm({
     });
   }
 
-  async function handleEdit() {
-    setLoading(true);
-    setAddButtonStatus(true);
-    let error = true;
-    let msg = tr.responses.error;
-
-    // try {
-    //   const response = await fetch(UPDATE_REDIRECT, {
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     method: "post",
-    //     body: JSON.stringify(redirectItem),
-    //   });
-    //   const responseJson = await response.json();
-
-    //   if (responseJson?.status) {
-    //     error = false;
-    //     msg = tr.responses.rd_update_success;
-
-    //     setRedirectItem({
-    //       flag: "",
-    //       label: "",
-    //       url: "",
-    //       locales: {},
-    //     });
-    //     setSelectedCountry(null);
-    //     setModalStatus(false);
-    //     loadRedirects();
-    //   }
-    // } catch (err) {
-    //   console.log(err);
-    // }
-
-    setToastData({
-      error,
-      msg,
-    });
-    setAddButtonStatus(false);
-    setLoading(false);
+  async function handleUpdate() {
+    submit(
+      {
+        _action: "updateRedirect",
+        data: redirectItem,
+      },
+      requestHeaders,
+    );
+    setLabelTranslation(false)
   }
 
 
-  async function handleDelete(id) {
-    setDeleteLoading(true);
-    let error = true;
-    let msg = tr.responses.error;
-
-    // try {
-    //   const response = await fetch(DELETE_REDIRECT, {
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     method: "post",
-    //     body: JSON.stringify({ id: id }),
-    //   });
-    //   const responseJson = await response.json();
-
-    //   if (responseJson?.status) {
-    //     error = false;
-    //     msg = tr.responses.rd_delete_success;
-
-    //     setModalStatus(false);
-    //     loadRedirects();
-    //   }
-    // } catch (err) {
-    //   console.log(err);
-    // }
-
-    setToastData({
-      error,
-      msg,
-    });
-    setDeleteLoading(false);
+  async function handleDelete(id: number) {
+    submit(
+      {
+        _action: "deleteRedirect",
+        data: {
+          id
+        },
+      },
+      requestHeaders,
+    );
   }
 
   async function handleAdd() {
-    setLoading(true);
-    let error = true;
-    let msg = tr.responses.error;
     submit(
       {
         _action: "addRedirect",
@@ -276,58 +229,11 @@ export default function PopupRedirectForm({
       },
       requestHeaders,
     );
-    // try {
-    //   const response = await fetch(CREATE_REDIRECT, {
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     method: "post",
-    //     body: JSON.stringify({
-    //       ...redirectItem,
-    //       shop_id: shopId,
-    //       order_r: redirects?.length
-    //         ? Math.max(...redirects.map((o) => o.order_r)) + 1
-    //         : 1,
-    //     }),
-    //   });
-    //   const responseJson = await response.json();
-
-    //   if (responseJson?.status) {
-    //     error = false;
-    //     msg = tr.responses.rd_create_success;
-
-    //     setRedirectItem({
-    //       flag: "",
-    //       label: "",
-    //       url: "",
-    //       locales: null,
-    //     });
-    //     setSelectedCountry(null);
-    //     setModalStatus(false);
-    //     loadRedirects();
-    //   } else {
-    //     msg = response?.data?.limit
-    //       ? tr.responses.limit_error
-    //       : tr.responses.error;
-    //   }
-    // } catch (err) {
-    //   console.log(err);
-    // }
-
-    if (redirects?.length >= 4 && isBasicPlan) {
-      msg = tr.responses.limit_error;
-    }
-    setToastData({
-      error,
-      msg,
-    });
-    setLoading(false);
+    setLabelTranslation(false)
   }
 
-  // const handlePlanPageRedirect = useCallback(async () => {
-  //   redirect?.dispatch(Redirect.Action.APP, "/plansPage");
-  // }, []);
-  console.log("shopdb", shopdb)
+  const { addRedirectLoading, deleteRedirectLoading, updateRedirectLoading } = loadingStates(navigation, ["addRedirect", "deleteRedirect", "updateRedirect"]) as LoadingStates;
+
   return (
     <InlineGrid gap="400">
       <FormLayout>
@@ -446,6 +352,7 @@ export default function PopupRedirectForm({
                       {secondaryLocales && secondaryLocales.length && (
                         <InlineGrid gap="400" columns="2">
                           {secondaryLocales.map((locale) => {
+                            const parsedLocales = redirectItem.locales || {};
                             return (
                               <TextField
                                 disabled={!isProPlan}
@@ -454,16 +361,16 @@ export default function PopupRedirectForm({
                                 autoComplete="off"
                                 label={`Label (${locale.locale || ""})`}
                                 value={
-                                  redirectItem?.locales &&
-                                    redirectItem.locales[locale.locale]
-                                    ? redirectItem?.locales[locale.locale]
+                                  parsedLocales &&
+                                    parsedLocales[locale.locale]
+                                    ? parsedLocales[locale.locale]
                                     : ""
                                 }
                                 onChange={(value) =>
                                   setRedirectItem({
                                     ...redirectItem,
                                     locales: {
-                                      ...redirectItem.locales,
+                                      ...parsedLocales,
                                       [locale.locale]: value,
                                     },
                                   })
@@ -513,13 +420,13 @@ export default function PopupRedirectForm({
             <Checkbox
               disabled={!isProPlan}
               label={`Domain redirection`}
-              checked={redirectItem.domain_redirection}
+              checked={redirectItem.domainRedirection}
               onChange={
                 isProPlan
                   ? (value) =>
                     setRedirectItem({
                       ...redirectItem,
-                      domain_redirection: value,
+                      domainRedirection: value,
                     })
                   : undefined
               }
@@ -575,7 +482,7 @@ export default function PopupRedirectForm({
                 ]}
                 setConfigs={isProPlan ? setRedirectItem : () => { }}
                 configs={isProPlan ? redirectItem : []}
-                id="conditional_location"
+                id="conditionalLocation"
                 helpText=""
                 placeholder="Select countries/continents"
               />)}
@@ -590,8 +497,8 @@ export default function PopupRedirectForm({
           <Button
             size="slim"
             tone="critical"
-            onClick={() => handleDelete(redirectItem.id)}
-            loading={deleteLoading}
+            onClick={() => { if (redirectItem?.id) { handleDelete(redirectItem.id) } }}
+            loading={deleteRedirectLoading}
             icon={DeleteIcon}
           >
             Delete
@@ -602,16 +509,20 @@ export default function PopupRedirectForm({
         <InlineStack gap="200">
           <Button
             size="slim"
-            onClick={() => shopify.modal.hide("add-redirect")}
+            onClick={() => {
+              shopify.modal.hide("add-redirect");
+              shopify.modal.hide("edit-redirect");
+              setLabelTranslation(false)
+            }}
           >
             Cancel
           </Button>
           <Button
             size="slim"
             variant="primary"
-            onClick={editItem ? handleEdit : handleAdd}
+            onClick={editItem ? handleUpdate : handleAdd}
             disabled={addButtonStatus}
-            loading={loading}
+            loading={addRedirectLoading || updateRedirectLoading}
           >
             {editItem ? "Save" : "Add"}
           </Button>

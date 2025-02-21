@@ -21,9 +21,11 @@ import { Modal, TitleBar } from "@shopify/app-bridge-react";
 import {
   DragHandleIcon,
   EditIcon,
+  HideIcon,
   PlusCircleIcon,
   ToggleOffIcon,
   ToggleOnIcon,
+  ViewIcon,
 } from "@shopify/polaris-icons";
 // import PopupRedirectForm from "./PopupRedirectForm";
 import { charLimit, loadingStates, requestHeaders } from "../_helpers";
@@ -36,12 +38,8 @@ import { ActionReturn, LoadingStates, RedirectItem } from "../_types";
 import { id } from "date-fns/locale";
 
 interface RedirectItemsProps {
-  loadRedirects: () => void;
-  shopId: string;
-  setRedirects: any;
   redirects: any;
   setToastData: any;
-  shopLocales: any;
 }
 interface DragEvent {
   currentTarget: {
@@ -55,22 +53,15 @@ const resourceName = {
 };
 
 export default function RedirectItems({
-  loadRedirects,
-  shopId,
-  setRedirects,
   redirects,
   setToastData,
-  shopLocales,
 }: RedirectItemsProps) {
   const submit = useSubmit();
   const navigation = useNavigation();
-  const actionData = useActionData<ActionReturn>();
-  const [loading, setLoading] = useState(false);
-  const [addModalStatus, setAddModalStatus] = useState(false);
-  const [editModalStatus, setEditModalStatus] = useState(false);
-  const [editRedirect, setEditRedirect] = useState(null);
+  // const actionData = useActionData<ActionReturn>();
+  const [editRedirect, setEditRedirect] = useState(undefined);
   const [dragId, setDragId] = useState("");
-  console.log("22", actionData)
+
   // useMemo(() => {
   //   if (actionData?._action === "toggleRedirectStatus" && actionData?.status) {
   //     setToastData({ error: false, msg: tr.responses.rd_status_success });
@@ -79,7 +70,7 @@ export default function RedirectItems({
 
   function openEdit(item: any) {
     setEditRedirect(item);
-    setEditModalStatus(true);
+    shopify.modal.show("edit-redirect")
   }
 
   async function handleDrop(ev: DragEvent) {
@@ -265,13 +256,9 @@ export default function RedirectItems({
       <Modal id="add-redirect" variant="base">
         <TitleBar title="Add redirect" />
         <Box padding="400">
-          <AppProvider i18n={{}}>
+          <AppProvider i18n={{}} apiKey={""}>
             <PopupRedirectForm
-              shopLocales={shopLocales}
               setToastData={setToastData}
-              loadRedirects={loadRedirects}
-              setModalStatus={setAddModalStatus}
-              shopId={shopId}
               redirects={redirects}
             />
           </AppProvider>
@@ -281,24 +268,18 @@ export default function RedirectItems({
 
 
       {/* Edit redirect modal */}
-      {/* <Modal
-        open={editModalStatus}
-        onClose={() => {
-          setEditModalStatus(false);
-          setEditRedirect(null);
-        }}
-        title="Edit redirect"
-      >
-        <Modal.Section>
-          <PopupRedirectForm
-            shopLocales={shopLocales}
-            setToastData={setToastData}
-            loadRedirects={loadRedirects}
-            setModalStatus={setEditModalStatus}
-            editItem={editRedirect}
-          />
-        </Modal.Section>
-      </Modal> */}
+      <Modal id="edit-redirect" variant="base">
+        <TitleBar title="Edit redirect" />
+        <Box padding="400">
+          <AppProvider i18n={{}} apiKey={""}>
+            <PopupRedirectForm
+              setToastData={setToastData}
+              redirects={redirects}
+              editItem={editRedirect}
+            />
+          </AppProvider>
+        </Box>
+      </Modal>
     </>
   );
 }

@@ -47,7 +47,7 @@ const defaultAllowedConfigs = {
 
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
 import { OutletContext, RedirectItem } from "app/components/_types";
-import { createRedirect, getAllRedirects, reorderRedirect, updateRedirectStatus } from "app/db-queries.server";
+import { createRedirect, deleteRedirect, getAllRedirects, reorderRedirect, updateRedirect, updateRedirectStatus } from "app/db-queries.server";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const { admin, session } = await authenticate.admin(request);
@@ -75,6 +75,16 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return { _action, ...response };
   }
 
+  if (_action === "deleteRedirect") {
+    const response = await deleteRedirect({ id: data.id, shop: session.shop });
+    return { _action, ...response };
+  }
+
+  if(_action === "updateRedirect") {
+    const response = await updateRedirect(data);
+    return { _action, ...response };
+  }
+
   if (_action === "toggleRedirectStatus") {
     const response = await updateRedirectStatus(data);
     return { _action, ...response };
@@ -87,17 +97,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
   return {};
 };
-
-// export const clientAction = async ({
-//   request,
-//   params,
-//   serverAction,
-// }: ClientActionFunctionArgs) => {
-//   // invalidateClientSideCache();
-//   const data = await serverAction();
-//   console.log("data", data)
-//   return data;
-// };
 
 
 export default function CustomRedirects() {

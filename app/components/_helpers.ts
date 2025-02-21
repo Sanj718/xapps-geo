@@ -323,3 +323,12 @@ export function loadingStates(nav: Navigation | Fetcher, actions: string[] = [])
 
   return result;
 }
+
+export function jsonSafeParse(data: string) {
+  try {
+    return JSON.parse(data);
+  } catch (e) {
+    console.error("Failed to parse JSON:", e);
+    return null
+  }
+}

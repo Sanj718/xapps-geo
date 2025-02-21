@@ -1,5 +1,6 @@
 import { Tag, Listbox, Combobox, InlineStack } from "@shopify/polaris";
 import React, { useState, useEffect, useMemo } from "react";
+import { jsonSafeParse } from "../_helpers";
 
 interface ListItem {
   value: string;
@@ -27,15 +28,17 @@ export default function ListWithTags({
   helpText,
 }: ListWithTagsProps) {
   const allOptions = useMemo(() => list, []);
-  const [selectedOptions, setSelectedOptions] = useState(configs[id] || []);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [options, setOptions] = useState(allOptions);
 
   useEffect(() => {
+    // console.log("configs", configs)
+    // const ids = jsonSafeParse(configs[id]) || [];
     setSelectedOptions(configs[id]);
   }, [configs]);
 
-  function updateText(value) {
+  function updateText(value: string) {
     setInputValue(value);
 
     if (value === "") {
@@ -50,13 +53,13 @@ export default function ListWithTags({
     setOptions(resultOptions);
   }
 
-  function updateSelection(selected) {
+  function updateSelection(selected: string) {
     if (selectedOptions?.includes(selected)) {
       const filtered = selectedOptions.filter((option) => option !== selected);
       setSelectedOptions(filtered);
       setConfigs({ ...configs, [id]: filtered });
     } else {
-      let data = [];
+      let data: string[] = [];
       if (selectedOptions) {
         data = [...selectedOptions, selected];
       } else {
@@ -73,13 +76,13 @@ export default function ListWithTags({
     setInputValue((matchedOption && matchedOption.label) || "");
   }
 
-  function removeTag(tag) {
+  function removeTag(tag: string) {
     const options = [...selectedOptions];
     options.splice(options.indexOf(tag), 1);
     setSelectedOptions(options);
     setConfigs({ ...configs, [id]: options });
   }
-
+  console.log("selectedOptions", selectedOptions)
   return (
     <div>
       <Combobox
