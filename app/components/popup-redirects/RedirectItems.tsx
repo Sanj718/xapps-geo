@@ -29,13 +29,13 @@ import {
 } from "@shopify/polaris-icons";
 // import PopupRedirectForm from "./PopupRedirectForm";
 import { charLimit, loadingStates, requestHeaders } from "../_helpers";
-import tr from "../locales.json";
+// import tr from "../locales.json";
 import empty from "../../assets/empty.svg";
 import PopupRedirectForm from "./PopupRedirectForm";
 import { AppProvider } from "@shopify/shopify-app-remix/react";
 import { useActionData, useNavigation, useSubmit } from "@remix-run/react";
 import { ActionReturn, LoadingStates, RedirectItem } from "../_types";
-import { id } from "date-fns/locale";
+// import { id } from "date-fns/locale";
 
 interface RedirectItemsProps {
   redirects: any;
@@ -264,8 +264,6 @@ export default function RedirectItems({
           </AppProvider>
         </Box>
       </Modal>
-
-
 
       {/* Edit redirect modal */}
       <Modal id="edit-redirect" variant="base">

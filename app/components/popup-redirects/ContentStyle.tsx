@@ -10,7 +10,6 @@ import {
   Divider,
   InlineGrid,
   InlineStack,
-  Modal,
   RangeSlider,
   Select,
   Text,
@@ -27,26 +26,36 @@ import {
   ThemeEditIcon,
 } from "@shopify/polaris-icons";
 import React, { useContext, useState } from "react";
-import RedirectsPopupPreview from "./RedirectsPopupPreview";
-import { AppContext } from "../AppContext";
-import { planParser } from "../../helpers";
-import { default_basic_configs } from "../../../helpers/process-client-response";
-import { ImageManager } from "../ImageManager";
-import { ColorTextField } from "../ColorTextField";
+import { Modal, TitleBar } from "@shopify/app-bridge-react";
+// import RedirectsPopupPreview from "./RedirectsPopupPreview";
+// import { AppContext } from "../AppContext";
+import { charLimit, default_basic_configs, loadingStates, planParser, requestHeaders } from "../_helpers";
+// import { planParser } from "../../helpers";
+// import { default_basic_configs } from "../../../helpers/process-client-response";
+// import { ImageManager } from "../ImageManager";
+// import { ColorTextField } from "../ColorTextField";
 import { Editor } from "@monaco-editor/react";
 import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import { useAuthenticatedFetch } from "../../hooks";
-import { CREATE_SHOP_CONFIGS } from "../../../helpers/endpoints";
-import tr from "../../helpers/translations.json";
-import { PromoBadge } from "../PromoBadge";
+// import { useAuthenticatedFetch } from "../../hooks";
+// import { CREATE_SHOP_CONFIGS } from "../../../helpers/endpoints";
+
 import PopupContent from "../_common/PopupContent";
+import tr from "../locales.json";
+import "react-quill/dist/quill.snow.css";
+import { useActionData, useLoaderData, useNavigation, useOutletContext } from "@remix-run/react";
+import { ActionReturn, OutletContext } from "../_types";
+import PromoBadge from "../_common/PromoBadge";
+import RedirectsPopupPreview from "./RedirectsPopupPreview";
+import { AppProvider } from "@shopify/shopify-app-remix/react";
+import CustomizePopup from "./CustomizePopup";
 
 const OLD_DEFAULT_ICON =
   "https://ngr-app.herokuapp.com/public/images/earth-americas-solid.svg";
 const OLD_STICKY_ICON =
   "https://ngr-app.herokuapp.com/public/images/sticky-logo.png";
 const NEW_DEFAULT_ICON = "default";
+
+
 
 export default function ContentStyle({
   redirects,
@@ -58,8 +67,14 @@ export default function ContentStyle({
   secondaryLocales,
   setToastData,
 }) {
-  const fetch = useAuthenticatedFetch();
-  const { activePlan } = useContext(AppContext);
+  // const fetch = useAuthenticatedFetch();
+  // const { activePlan } = useContext(AppContext);
+  const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
+    useOutletContext<OutletContext>();
+  // const { allRedirects } = useLoaderData<typeof loader>();
+  // const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
+  const actionData = useActionData<ActionReturn>();
+  const navigation = useNavigation();
   const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
   const [loading, setLoading] = useState(false);
   const [customizeModalStatus, setCustomizeModalStatus] = useState(false);
@@ -67,6 +82,7 @@ export default function ContentStyle({
   const [widgetStylesOpen, setWidgetStylesOpen] = useState(false);
   const [codeEditorOpen, setCodeEditorOpen] = useState(false);
   const [iconModalStatus, setIconModalStatus] = useState(false);
+  const [customizePopupVisibilityChange, setCustomizePopupVisibilityChange] = useState(false);
   const [contentTranslationModal, setContentTranslationsModal] =
     useState(false);
   const [dropdownLabelTranslationModal, setDropdownLabelTranslationModal] =
@@ -140,27 +156,28 @@ export default function ContentStyle({
               isProPlan
                 ? redirects
                 : isBasicPlan
-                ? redirects.slice(0, 4)
-                : redirects.slice(0, 1)
+                  ? redirects.slice(0, 4)
+                  : redirects.slice(0, 1)
             }
             basicConfigs={
               !isFreePlan
                 ? configs
                 : {
-                    ...default_basic_configs,
-                    title: configs?.title,
-                    icon: configs?.icon,
-                    buttonText: configs?.buttonText,
-                    showFlag: configs?.showFlag,
-                  }
+                  ...default_basic_configs,
+                  title: configs?.title,
+                  icon: configs?.icon,
+                  buttonText: configs?.buttonText,
+                  showFlag: configs?.showFlag,
+                }
             }
             advancedConfigs={isProPlan ? advancedConfigs : {}}
+            customCSSClass="in-page"
           />
           <InlineStack align="end">
             <Button
               variant="primary"
               icon={ThemeEditIcon}
-              onClick={() => setCustomizeModalStatus(true)}
+              onClick={() => shopify.modal.show("customize-popup")}
             >
               Customize
             </Button>
@@ -169,7 +186,15 @@ export default function ContentStyle({
       </InlineGrid>
 
       {/* Customize your popup */}
-      <Modal
+      <Modal id="customize-popup" variant="max" onShow={() => setCustomizePopupVisibilityChange(true)} onHide={() => setCustomizePopupVisibilityChange(false)}>
+        <TitleBar title="Customize your popup" />
+        <Box padding="400">
+          <AppProvider i18n={{}} apiKey={""}>
+            <CustomizePopup visibilityChange={customizePopupVisibilityChange} redirects={redirects} configs={configs} setConfigs={setConfigs} advancedConfigs={advancedConfigs} setAdvancedConfigs={setAdvancedConfigs} />
+          </AppProvider>
+        </Box>
+      </Modal>
+      {/* <Modal
         size="large"
         open={customizeModalStatus}
         onClose={() => setCustomizeModalStatus(false)}
@@ -679,10 +704,10 @@ export default function ContentStyle({
             </div>
           </InlineGrid>
         </Modal.Section>
-      </Modal>
+      </Modal> */}
 
       {/* Edit icon settings */}
-      <Modal
+      {/* <Modal
         open={iconModalStatus}
         onClose={() => setIconModalStatus(false)}
         title="Edit icon settings"
@@ -734,10 +759,10 @@ export default function ContentStyle({
             />
           </InlineGrid>
         </Modal.Section>
-      </Modal>
+      </Modal> */}
 
       {/* Popup content translation */}
-      <Modal
+      {/* <Modal
         open={contentTranslationModal}
         onClose={() => setContentTranslationsModal(false)}
         title="Popup content translation"
@@ -810,10 +835,10 @@ export default function ContentStyle({
             </InlineStack>
           </InlineGrid>
         </Modal.Section>
-      </Modal>
+      </Modal> */}
 
       {/* Dropdown label translation */}
-      <Modal
+      {/* <Modal
         open={dropdownLabelTranslationModal}
         onClose={() => setDropdownLabelTranslationModal(false)}
         title="Dropdown label translation"
@@ -863,7 +888,7 @@ export default function ContentStyle({
             </InlineStack>
           </InlineGrid>
         </Modal.Section>
-      </Modal>
+      </Modal> */}
     </>
   );
 }

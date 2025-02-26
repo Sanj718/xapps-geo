@@ -48,6 +48,7 @@ const defaultAllowedConfigs = {
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
 import { OutletContext, RedirectItem } from "app/components/_types";
 import { createRedirect, deleteRedirect, getAllRedirects, reorderRedirect, updateRedirect, updateRedirectStatus } from "app/db-queries.server";
+import ContentStyle from "app/components/popup-redirects/ContentStyle";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const { admin, session } = await authenticate.admin(request);
@@ -80,7 +81,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return { _action, ...response };
   }
 
-  if(_action === "updateRedirect") {
+  if (_action === "updateRedirect") {
     const response = await updateRedirect(data);
     return { _action, ...response };
   }
@@ -199,25 +200,20 @@ export default function CustomRedirects() {
         {selectedTab === 0 ? (
           <BlockStack gap={{ xs: "800", sm: "400" }}>
             <RedirectItems
-              // initialLoading={initialLoading}
-              // loadRedirects={loadRedirects}
               redirects={redirects}
-              // shopId={shopData?.shopData?.id || localShopData?.id}
-              // shopLocales={shopData?.locales || localShopLocales}
-              // setRedirects={setRedirects}
               setToastData={setToastData}
             />
             {smUp ? <Divider /> : null}
-            {/*<ContentStyle
+            <ContentStyle
               redirects={redirects}
-              reFetch={setRefetchSettings}
-              configs={localConfigs}
-              setConfigs={setLocalConfigs}
-              advancedConfigs={localAdvancedConfigs}
-              setAdvancedConfigs={setLocalAdvancedConfigs}
-              secondaryLocales={secondaryLocales}
-              setToastData={setToastData}
-            /> */}
+              // reFetch={setRefetchSettings}
+              // configs={localConfigs}
+              // setConfigs={setLocalConfigs}
+              // advancedConfigs={localAdvancedConfigs}
+              // setAdvancedConfigs={setLocalAdvancedConfigs}
+              // secondaryLocales={secondaryLocales}
+              // setToastData={setToastData}
+            />
             {/* {smUp ? <Divider /> : null}
             <PopupDisplaySettings
               initialLoading={initialLoading}

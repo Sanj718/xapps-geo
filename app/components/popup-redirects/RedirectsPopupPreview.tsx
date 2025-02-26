@@ -1,24 +1,63 @@
 import React, { useRef, useState, useCallback, useEffect } from "react";
-import { earthIcon, stickyEarth, ca_flag } from "../../assets/index.js";
-import { useAppBridge } from "@shopify/app-bridge-react";
-import { Redirect } from "@shopify/app-bridge/actions/index.js";
-import "../../../src-public-scripts/index.scss";
-import { PreviewBannerNote } from "../PreviewBannerNote.jsx";
+import PreviewBannerNote from "../_common/PreviewBannerNote";
 import { Banner, Text } from "@shopify/polaris";
-import { RefreshIcon } from "@shopify/polaris-icons";
+import earthIcon from "../../assets/earth-americas-solid.svg";
+import ca_flag from "../../assets/ca.svg";
+import stickyEarth from "../../assets/sticky-logo.png";
+import "../../assets/index.scss"
+import "../../assets/preview.scss";
 
 const OLD_ICON_SRC =
   "https://ngr-app.herokuapp.com/public/images/earth-americas-solid.svg";
+
+interface BasicConfigs {
+  icon?: string;
+  title?: string;
+  text?: string;
+  showFlag?: boolean;
+  showLngSelector?: boolean;
+  showCountrySelector?: boolean;
+  buttonText?: string;
+  buttonsBgColor?: string;
+  buttonsColor?: string;
+  font?: string;
+  iconWidth?: number;
+  modalBgColor?: string;
+  modalBorderColor?: string;
+  modalTextColor?: string;
+  stickyHorizontalPosition?: string;
+  stickyVerticalPosition?: string;
+  topbarSticky?: boolean;
+  stickyOpener?: string;
+  stickyToggleIcon?: string;
+  type?: string;
+  layout?: string;
+  dropdownDefault?: string;
+  dropdownPlaceholder?: string;
+}
+
+interface AdvancedConfigs {
+  html_id?: string;
+  css?: string;
+  disable_basic_css?: boolean;
+}
+
+interface RedirectsPopupPreviewProps {
+  redirects: any[];
+  basicConfigs: BasicConfigs;
+  advancedConfigs: AdvancedConfigs;
+  customCSSClass ?: string;
+}
 
 export default function RedirectsPopupPreview({
   redirects,
   basicConfigs,
   advancedConfigs,
-}) {
-  const app = useAppBridge();
-  const redirect = Redirect.create(app);
-  const [containerWidth, setContainerWidth] = useState(0);
-  const containerRef = useRef(null);
+  customCSSClass = "",
+  reRender
+}: RedirectsPopupPreviewProps) {
+  const [containerWidth, setContainerWidth] = useState(500);
+  const containerRef = useRef<HTMLDivElement>(null);
   const outerRef = useRef(null);
   const {
     icon,
@@ -44,11 +83,11 @@ export default function RedirectsPopupPreview({
     layout,
     dropdownDefault,
     dropdownPlaceholder,
-  } = basicConfigs;
+  } = basicConfigs || {};
 
   const { html_id, css, disable_basic_css } = advancedConfigs || {};
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const modalElement = useRef();
+  const modalElement = useRef<HTMLDivElement>(null);
 
   const handleStickyClose = useCallback(() => {
     const modalEl = modalElement.current;
@@ -67,7 +106,7 @@ export default function RedirectsPopupPreview({
 
   useEffect(() => {
     const scrollableElement = document.querySelector(".Polaris-Modal__Body");
-    const previewElement = outerRef.current;
+    const previewElement = outerRef.current as HTMLElement | null;
 
     const handleScroll = () => {
       if (scrollableElement && previewElement) {
@@ -94,7 +133,7 @@ export default function RedirectsPopupPreview({
         setContainerWidth(containerRef.current.offsetWidth);
       }
     };
-    updateWidth();
+    setTimeout(() => {updateWidth();}, 500);
     window.addEventListener("resize", updateWidth);
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
@@ -112,63 +151,55 @@ export default function RedirectsPopupPreview({
       <div
         ref={containerRef}
         className="ngr-preview-container"
-        style={{ "--c-width": `${containerWidth}` }}
+        style={{ "--c-width": `${containerWidth}` } as React.CSSProperties}
       >
-        <div id="ngr-modal-preview" ref={outerRef} style={{ top: "4px" }}>
+        <div id="ngr-modal-preview" className={customCSSClass} ref={outerRef} style={{ top: "4px" }}>
           {!disable_basic_css && (
             <style
               dangerouslySetInnerHTML={{
                 __html: `
             .ngr-modal{
-              ${
-                font && font != "" && font !== "inherit"
-                  ? "font-family:'" + font + "', sans-serif;"
-                  : ""
-              }
+              ${font && font != "" && font !== "inherit"
+                    ? "font-family:'" + font + "', sans-serif;"
+                    : ""
+                  }
             }
             .ngr-modal__content{
-              ${
-                modalBgColor != ""
-                  ? "background-color:" + modalBgColor + ";"
-                  : ""
-              }
+              ${modalBgColor != ""
+                    ? "background-color:" + modalBgColor + ";"
+                    : ""
+                  }
               ${modalTextColor != "" ? "color:" + modalTextColor + ";" : ""}
-              ${
-                modalBorderColor != ""
-                  ? "border-color:" + modalBorderColor + ";"
-                  : ""
-              }
+              ${modalBorderColor != ""
+                    ? "border-color:" + modalBorderColor + ";"
+                    : ""
+                  }
             }
             .ngr-modal__close{
-              ${
-                modalBgColor != ""
-                  ? "background-color:" + modalBgColor + " !important;"
-                  : ""
-              }
+              ${modalBgColor != ""
+                    ? "background-color:" + modalBgColor + " !important;"
+                    : ""
+                  }
               ${modalTextColor != "" ? "color:" + modalTextColor + ";" : ""}
             }
             .ngr-redirects__link{
-                ${
-                  buttonsBgColor != ""
+                ${buttonsBgColor != ""
                     ? "background-color:" + buttonsBgColor + ";"
                     : ""
-                }
-                ${
-                  buttonsColor != "" ? "border-color:" + buttonsColor + ";" : ""
-                }
+                  }
+                ${buttonsColor != "" ? "border-color:" + buttonsColor + ";" : ""
+                  }
                 ${buttonsColor != "" ? "color:" + buttonsColor + ";" : ""}
             }
             .ngr-redirects__link:hover{
-                ${
-                  buttonsColor != ""
+                ${buttonsColor != ""
                     ? "background-color:" + buttonsColor + ";"
                     : ""
-                }
-                ${
-                  buttonsBgColor != ""
+                  }
+                ${buttonsBgColor != ""
                     ? "border-color:" + buttonsBgColor + ";"
                     : ""
-                }
+                  }
                 ${buttonsBgColor != "" ? "color:" + buttonsBgColor + ";" : ""}
             }
             `,
@@ -183,9 +214,8 @@ export default function RedirectsPopupPreview({
             />
           )}
           <div
-            className={`ngr-modal ${type === "topbar" ? "top-bar" : ""} ${
-              type === "sticky" ? "sticky-bar transition" : ""
-            }`}
+            className={`ngr-modal ${type === "topbar" ? "top-bar" : ""} ${type === "sticky" ? "sticky-bar transition" : ""
+              }`}
             ref={modalElement}
             data-ngr-modal
             data-open

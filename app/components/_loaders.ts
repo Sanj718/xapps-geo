@@ -43,7 +43,7 @@ export async function getShop(admin: AdminApiContext) {
               #   countryCodes
               #   includeRestOfWorld
               # }
-              # myshopifyDomain
+              myshopifyDomain
               # shipsToCountries
               # url
               name

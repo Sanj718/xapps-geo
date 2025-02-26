@@ -1,3 +1,4 @@
+import React from "react";
 import {
   BlockStack,
   Button,
@@ -7,7 +8,6 @@ import {
   TextField,
   Tooltip,
 } from "@shopify/polaris";
-import React from "react";
 import { LanguageIcon } from "@shopify/polaris-icons";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";

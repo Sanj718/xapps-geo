@@ -23,6 +23,7 @@
     "node": "^18.20 || ^20.10 || >=21.0.0"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.7.0",
     "@prisma/client": "^6.2.1",
     "@remix-run/dev": "^2.15.0",
     "@remix-run/fs-routes": "^2.15.0",
@@ -38,6 +39,8 @@
     "prisma": "^6.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-quill": "^2.0.0",
+    "sass": "^1.85.0",
     "valid-url": "^1.0.9",
     "vite-tsconfig-paths": "^5.0.1"
   },
