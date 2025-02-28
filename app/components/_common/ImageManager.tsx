@@ -20,6 +20,7 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import { LoadingStates } from "../_types";
+import { ACTIONS } from "../_actions";
 
 
 interface PaginationInfo {
@@ -65,20 +66,17 @@ export default function ImageManager({
 }: ImageManagerProps) {
   const fetcher = useFetcher<FetcherData>();
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo | null>(null);
-  const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState<FileItem[] | undefined>(undefined);
 
 
   async function loadAssets(cursor?: string, isPrev: boolean = false): Promise<void> {
-    if (cursor) {
-      fetcher.submit(
-        {
-          _action: "assetsData",
-          data: { cursor, isPrev },
-        },
-        requestHeaders,
-      );
-    }
+    fetcher.submit(
+      {
+        _action: ACTIONS.AssetsData,
+        data: { cursor: cursor || null, isPrev },
+      },
+      requestHeaders,
+    );
   }
 
   useEffect(() => {
@@ -87,26 +85,23 @@ export default function ImageManager({
 
   useMemo(() => {
     const { data: fetcherData } = fetcher;
-    if (fetcherData?._action === "assetsData" && fetcherData?.status) {
+    if (fetcherData?._action === ACTIONS.AssetsData && fetcherData?.status) {
       setFiles(fetcherData?.data?.edges);
       setPaginationInfo(fetcherData?.data?.pageInfo);
     }
   }, [fetcher?.data]);
 
   const handlePaginationNext = async () => {
-    setLoading(true);
     loadAssets(paginationInfo?.endCursor);
   };
 
   const handlePaginationPrev = async () => {
-    setLoading(true);
     loadAssets(paginationInfo?.startCursor, true);
   };
 
   const handleRefresh = () => {
     loadAssets();
   };
-
 
   const handleAdd = (item: HandleAddItem): void => {
     callBack(item);
@@ -117,8 +112,8 @@ export default function ImageManager({
     plural: "assets",
   };
 
-  const { assetsDataLoading } = loadingStates(fetcher, ["assetsData"]) as LoadingStates;
-
+  const { assetsDataLoading } = loadingStates(fetcher, [ACTIONS.AssetsData]) as LoadingStates;
+  console.log("assetsDataLoading", files);
   return (
     <Box padding="400">
       <InlineGrid gap="200" alignItems="center">

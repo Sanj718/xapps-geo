@@ -35,3 +35,7 @@ export interface RedirectItem {
 export interface EditRedirectItem extends RedirectItem {
     id: number;
 }
+
+export interface Asset {
+    url: string;
+}

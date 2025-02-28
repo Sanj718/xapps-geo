@@ -49,6 +49,7 @@ import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
 import { OutletContext, RedirectItem } from "app/components/_types";
 import { createRedirect, deleteRedirect, getAllRedirects, reorderRedirect, updateRedirect, updateRedirectStatus } from "app/db-queries.server";
 import ContentStyle from "app/components/popup-redirects/ContentStyle";
+import { handleActions } from "./_actions";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const { admin, session } = await authenticate.admin(request);
@@ -62,42 +63,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   return { allRedirects };
 };
 
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const { admin, session } = await authenticate.admin(request);
-  const { _action, data } = (await request?.json()) || {};
-
-  if (_action === "assetsData") {
-    const response = await getAssets({ admin, data });
-    return { _action, ...response };
-  }
-
-  if (_action === "addRedirect") {
-    const response = await createRedirect(data);
-    return { _action, ...response };
-  }
-
-  if (_action === "deleteRedirect") {
-    const response = await deleteRedirect({ id: data.id, shop: session.shop });
-    return { _action, ...response };
-  }
-
-  if (_action === "updateRedirect") {
-    const response = await updateRedirect(data);
-    return { _action, ...response };
-  }
-
-  if (_action === "toggleRedirectStatus") {
-    const response = await updateRedirectStatus(data);
-    return { _action, ...response };
-  }
-
-
-  if (_action === "reorderRedirect") {
-    const response = await reorderRedirect(data);
-    return { _action, ...response };
-  }
-  return {};
-};
+export const action = async (params) => handleActions(params);
 
 
 export default function CustomRedirects() {
@@ -206,13 +172,13 @@ export default function CustomRedirects() {
             {smUp ? <Divider /> : null}
             <ContentStyle
               redirects={redirects}
-              // reFetch={setRefetchSettings}
-              // configs={localConfigs}
-              // setConfigs={setLocalConfigs}
-              // advancedConfigs={localAdvancedConfigs}
-              // setAdvancedConfigs={setLocalAdvancedConfigs}
-              // secondaryLocales={secondaryLocales}
-              // setToastData={setToastData}
+            // reFetch={setRefetchSettings}
+            // configs={localConfigs}
+            // setConfigs={setLocalConfigs}
+            // advancedConfigs={localAdvancedConfigs}
+            // setAdvancedConfigs={setLocalAdvancedConfigs}
+            // secondaryLocales={secondaryLocales}
+            // setToastData={setToastData}
             />
             {/* {smUp ? <Divider /> : null}
             <PopupDisplaySettings

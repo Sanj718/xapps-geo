@@ -16,9 +16,7 @@ import {
   Collapsible,
   Card,
 } from "@shopify/polaris";
-import { isWebUri } from "valid-url";
-
-import React, { useState, useCallback, useContext, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import {
   ImageAddIcon,
   ImageIcon,
@@ -30,8 +28,6 @@ import {
 import countriesList from "../../assets/countries.json";
 import {
   continents_auto,
-  isJson,
-  jsonSafeParse,
   loadingStates,
   parseCountries,
   parseCountryCodesWithFullNames,
@@ -39,17 +35,12 @@ import {
   requestHeaders,
 } from "../_helpers";
 import tr from "../locales.json";
+import { isWebUri } from "valid-url";
 import ListWithTags from "../_common/ListWithTags";
 import ImageManager from "../_common/ImageManager";
 import PromoBadge from "../_common/PromoBadge";
-import { ClientActionFunctionArgs, useActionData, useNavigation, useOutletContext, useSubmit } from "@remix-run/react";
-
-import { Modal, TitleBar } from "@shopify/app-bridge-react";
-import { ActionReturn, LoadingStates, OutletContext, RedirectItem } from "../_types";
-
-interface Asset {
-  url: string;
-}
+import { useActionData, useNavigation, useOutletContext, useSubmit } from "@remix-run/react";
+import { ActionReturn, LoadingStates, OutletContext, RedirectItem, Asset } from "../_types";
 
 
 interface FieldValidation {

@@ -9,6 +9,16 @@ interface GetAssetsParams {
   };
 }
 
+
+export const ACTIONS = {
+  AssetsData: "assetsData",
+  AddRedirect: "addRedirect",
+  DeleteRedirect: "deleteRedirect",
+  UpdateRedirect: "updateRedirect",
+  ToggleRedirectStatus: "toggleRedirectStatus",
+  ReorderRedirect: "reorderRedirect",
+}
+
 export const getAssets = async ({ admin, data }: GetAssetsParams) => {
   if (!admin) return resp(false, null, "admin not defined");
   try {

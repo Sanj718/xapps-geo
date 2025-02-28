@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import { Editor } from "@monaco-editor/react";
 import ReactQuill from "react-quill";
 import PopupContent from "../_common/PopupContent";
@@ -16,6 +16,7 @@ import {
 import {
     BlockStack,
     Button,
+    Card,
     Checkbox,
     Collapsible,
     Divider,
@@ -29,11 +30,12 @@ import {
 } from "@shopify/polaris";
 import PromoBadge from "../_common/PromoBadge";
 import { useActionData, useLoaderData, useNavigation, useOutletContext } from "@remix-run/react";
-import { ActionReturn, OutletContext } from "../_types";
+import { ActionReturn, Asset, OutletContext } from "../_types";
 import { default_basic_configs, planParser } from "../_helpers";
 import ImageManager from "../_common/ImageManager";
 import ColorTextField from "../_common/ColorTextField";
 import RedirectsPopupPreview from "./RedirectsPopupPreview";
+import IconSettings from "./IconSettings";
 
 
 
@@ -43,53 +45,63 @@ export default function CustomizePopup({ visibilityChange, redirects, configs, s
     const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
     const [widgetStylesOpen, setWidgetStylesOpen] = useState(false);
     const [codeEditorOpen, setCodeEditorOpen] = useState(false);
+    const [assetsModalStatus, setAssetsModalStatus] = useState(false);
+    const [iconModalStatus, setIconModalStatus] = useState(false);
 
-    function handleCustomIconUpload(assets) {
+    function handleCustomIconUpload(assets: Asset | null) {
         if (!assets) return;
-        // setConfigs({ ...configs, icon: assets?.url });
-        // setAssetsModalStatus(false);
+        setConfigs({ ...configs, icon: assets?.url });
+        setAssetsModalStatus(false);
     }
+
+
+    useMemo(() => {
+        if (!visibilityChange) {
+            setAssetsModalStatus(false)
+        }
+    }, [visibilityChange])
     console.log("visibilityChange", visibilityChange)
     return <InlineGrid columns={{ xs: "1fr", md: "1fr 3fr" }} gap="400">
         <>
             <BlockStack gap="200">
                 <PromoBadge type="basic" />
-                <div className={isFreePlan ? "vvisually-disabled" : ""}>
-                    <Text as="p">Icon</Text>
-                    <InlineStack gap="150">
-                        <div className="icon-upload">
-                            <Button
-                                onClick={
-                                    !isFreePlan
-                                        // ? () => setAssetsModalStatus(true)
-                                        ? () => { }
-                                        : undefined
-                                }
-                                icon={ImageAddIcon}
-                                disabled={isFreePlan}
-                            >
-                                Upload
-                            </Button>
+                <Text as="p">Icon</Text>
+                <InlineStack gap="150">
+                    <Button
+                        onClick={
+                            !isFreePlan
+                                ? () => setAssetsModalStatus((status) => !status)
+                                : undefined
+                        }
+                        icon={ImageAddIcon}
+                        disabled={isFreePlan}
+                    >
+                        Upload
+                    </Button>
+                    <Tooltip
+                        width="wide"
+                        content={
+                            <small>
+                                Edit icon <strong>width</strong> or add a custom{" "}
+                                <strong>icon URL</strong>.
+                            </small>
+                        }
+                    >
+                        <Button
+                            disabled={isFreePlan}
+                            icon={SettingsIcon}
+                            onClick={() => setIconModalStatus((status) => !status)}
+                        />
+                    </Tooltip>
+                </InlineStack>
+                {assetsModalStatus && (
+                    <Collapsible id="popup-assets-manager" open={assetsModalStatus}>
+                        <Card padding="0">
                             <ImageManager callBack={handleCustomIconUpload} />
-                        </div>
-                        <Tooltip
-                            content={
-                                <p>
-                                    Edit icon <strong>width</strong> or add a custom{" "}
-                                    <strong>icon URL</strong>.
-                                </p>
-                            }
-                        >
-                            <Button
-                                disabled={isFreePlan}
-                                icon={SettingsIcon}
-                                onClick={() => { }}
-                            // onClick={() => setIconModalStatus(true)}
-                            />
-                        </Tooltip>
-                    </InlineStack>
-                </div>
-
+                        </Card>
+                    </Collapsible>
+                )}
+                {iconModalStatus && (<Collapsible id="popup-icon-settings" open={iconModalStatus}> <Card ><IconSettings configs={configs} setConfigs={setConfigs} isFreePlan={isFreePlan} /></Card></Collapsible>)}
                 <InlineGrid gap="400">
                     {/* <PopupContent
                         titleValue={configs?.title}
@@ -118,7 +130,7 @@ export default function CustomizePopup({ visibilityChange, redirects, configs, s
                             configs?.type === "topbar" ? "visually-disabled" : ""
                         }
                     >
-                        <Tooltip content="Displays the visitor's current country flag based on geolocation data.">
+                        <Tooltip width="wide" content={<small>Displays the visitor's current country flag based on geolocation data.</small>}>
                             <Checkbox
                                 label="Show country flag"
                                 checked={configs?.showFlag}

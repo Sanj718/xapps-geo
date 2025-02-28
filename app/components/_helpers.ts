@@ -332,3 +332,9 @@ export function jsonSafeParse(data: string) {
     return null
   }
 }
+
+export const OLD_DEFAULT_ICON =
+  "https://ngr-app.herokuapp.com/public/images/earth-americas-solid.svg";
+export const OLD_STICKY_ICON =
+  "https://ngr-app.herokuapp.com/public/images/sticky-logo.png";
+export const NEW_DEFAULT_ICON = "default";
