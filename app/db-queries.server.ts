@@ -362,6 +362,78 @@ export const reorderRedirect = async ({ ids, shop }: ReorderRedirects): Promise<
 };
 
 
+export const getConfigs = async ({ shop }: Shop): Promise<DBResponse> => {
+  try {
+    const configs = await prisma.configs.findMany({
+      where: {
+        activeShop: {
+          shop,
+        },
+      },
+      select: {
+        shopId: true,
+        basicConfigs: true,
+        advancedConfigs: true,
+        allowedPages: true,
+        hideOnAllowedPages: true,
+        status: true,
+        activeShop: {
+          select: {
+            shop: true,
+          },
+        },
+      },
+    });
+
+    const formattedConfigs = configs.map(config => ({
+      ...config,
+      basicConfigs: jsonSafeParse(config?.basicConfigs),
+      advancedConfigs: jsonSafeParse(config?.advancedConfigs),
+      allowedPages: jsonSafeParse(config.allowedPages),
+    }));
+
+    return { status: formattedConfigs.length > 0, data: formattedConfigs };
+  } catch (error: any) {
+    console.error(error);
+    return { status: false, error: (error as Error).toString() };
+  }
+};
+
+export const createUpdateConfigs = async ({
+  shop,
+  basic_configs,
+  advanced_configs = null,
+}: InitialConfigs): Promise<DBResponse> => {
+  try {
+    const activeShop = await prisma.activeShops.findUnique({
+      where: { shop },
+      select: { id: true },
+    });
+
+    if (!activeShop) {
+      throw new Error("Shop not found");
+    }
+
+    const result = await prisma.configs.upsert({
+      where: { shopId: activeShop.id },
+      update: {
+        basicConfigs: basic_configs,
+        advancedConfigs: advanced_configs,
+      },
+      create: {
+        shopId: activeShop.id,
+        basicConfigs: basic_configs,
+        advancedConfigs: advanced_configs,
+      },
+    });
+
+    return { status: result ? true : false, data: result };
+  } catch (error: any) {
+    console.error(error);
+    return { status: false, error: (error as Error).toString() };
+  }
+};
+
 //   shop_id,
 //   flag,
 //   label,

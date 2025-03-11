@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import {
   BlockStack,
   Button,
@@ -11,6 +11,7 @@ import {
 import { LanguageIcon } from "@shopify/polaris-icons";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import "../../assets/custom.scss"
 
 export default function PopupContent({
   titleLabel = "Title",
@@ -78,14 +79,13 @@ export default function PopupContent({
                   </Tooltip>
                 )}
               </InlineStack>
-              <ReactQuill
-                className="text-editor"
+              <ReactQuill className="text-editor"
                 theme="snow"
                 style={{ background: "#fff" }}
                 value={textValue}
                 onChange={textOnChange}
-                modules={{ toolbar: toolbarOptions }}
-              />
+                modules={{ toolbar: toolbarOptions }} />
+
             </BlockStack>
             {textHelpText !== "" ? (
               <Text as="p" variant="bodyXs" tone="subdued">

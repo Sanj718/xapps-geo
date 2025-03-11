@@ -115,43 +115,41 @@ export default function ImageManager({
   const { assetsDataLoading } = loadingStates(fetcher, [ACTIONS.AssetsData]) as LoadingStates;
   console.log("assetsDataLoading", files);
   return (
-    <Box padding="400">
-      <InlineGrid gap="200" alignItems="center">
-        <InlineStack align="space-between" gap="100">
-          <Button icon={RefreshIcon} onClick={handleRefresh}>
-            Refresh list
-          </Button>
-          {(paginationInfo?.hasPreviousPage || paginationInfo?.hasNextPage) && (
-            <InlineStack align="center">
-              <Pagination
-                hasPrevious={paginationInfo?.hasPreviousPage}
-                onPrevious={handlePaginationPrev}
-                hasNext={paginationInfo?.hasNextPage}
-                onNext={handlePaginationNext}
-              />
-            </InlineStack>
-          )}
-          <Button url="shopify://admin/content/files">Upload more</Button>
-        </InlineStack>
-        <div
-          style={{
-            border: "1px solid #e5e5e5",
-            borderRadius: "5px",
-            maxHeight: "200px",
-            overflow: "auto",
-            scrollbarWidth: "none",
-            msOverflowStyle: "none",
-          }}
-        >
-          <ResourceList
-            loading={assetsDataLoading}
-            resourceName={resourceName}
-            items={files || []}
-            renderItem={renderItem}
-          />
-        </div>
-      </InlineGrid>
-    </Box>
+    <InlineGrid gap="200" alignItems="center">
+      <InlineStack align="space-between" gap="100">
+        <Button icon={RefreshIcon} onClick={handleRefresh}>
+          Refresh list
+        </Button>
+        {(paginationInfo?.hasPreviousPage || paginationInfo?.hasNextPage) && (
+          <InlineStack align="center">
+            <Pagination
+              hasPrevious={paginationInfo?.hasPreviousPage}
+              onPrevious={handlePaginationPrev}
+              hasNext={paginationInfo?.hasNextPage}
+              onNext={handlePaginationNext}
+            />
+          </InlineStack>
+        )}
+        <Button url="shopify://admin/content/files">Upload more</Button>
+      </InlineStack>
+      <div
+        style={{
+          border: "1px solid #e5e5e5",
+          borderRadius: "5px",
+          maxHeight: "200px",
+          overflow: "auto",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+        }}
+      >
+        <ResourceList
+          loading={assetsDataLoading}
+          resourceName={resourceName}
+          items={files || []}
+          renderItem={renderItem}
+        />
+      </div>
+    </InlineGrid>
   );
 
   function renderItem(item: FileItem) {

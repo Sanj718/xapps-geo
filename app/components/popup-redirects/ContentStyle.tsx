@@ -39,7 +39,7 @@ import ReactQuill from "react-quill";
 // import { useAuthenticatedFetch } from "../../hooks";
 // import { CREATE_SHOP_CONFIGS } from "../../../helpers/endpoints";
 
-import PopupContent from "../_common/PopupContent";
+import PopupContent from "../_common/PopupContent.client";
 import tr from "../locales.json";
 import "react-quill/dist/quill.snow.css";
 import { useActionData, useLoaderData, useNavigation, useOutletContext } from "@remix-run/react";
@@ -49,28 +49,23 @@ import RedirectsPopupPreview from "./RedirectsPopupPreview";
 import { AppProvider } from "@shopify/shopify-app-remix/react";
 import CustomizePopup from "./CustomizePopup";
 
-const OLD_DEFAULT_ICON =
-  "https://ngr-app.herokuapp.com/public/images/earth-americas-solid.svg";
-const OLD_STICKY_ICON =
-  "https://ngr-app.herokuapp.com/public/images/sticky-logo.png";
-const NEW_DEFAULT_ICON = "default";
-
-
 
 export default function ContentStyle({
   redirects,
-  reFetch,
   configs,
-  setConfigs,
-  advancedConfigs,
-  setAdvancedConfigs,
   secondaryLocales,
-  setToastData,
+  // setConfigs,
+  // advancedConfigs,
+  // setAdvancedConfigs,
+  // reFetch,
+
+  // setToastData,
 }) {
   // const fetch = useAuthenticatedFetch();
   // const { activePlan } = useContext(AppContext);
   const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
     useOutletContext<OutletContext>();
+  const { basicConfigs, advancedConfigs, hideOnAllowedPages, allowedPages } = configs?.data[0] || {}
   // const { allRedirects } = useLoaderData<typeof loader>();
   // const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
   const actionData = useActionData<ActionReturn>();
@@ -88,45 +83,45 @@ export default function ContentStyle({
   const [dropdownLabelTranslationModal, setDropdownLabelTranslationModal] =
     useState(false);
 
-  function handleCustomIconUpload(assets) {
-    if (!assets) return;
-    setConfigs({ ...configs, icon: assets?.url });
-    setAssetsModalStatus(false);
-  }
+  // function handleCustomIconUpload(assets) {
+  //   if (!assets) return;
+  //   setConfigs({ ...configs, icon: assets?.url });
+  //   setAssetsModalStatus(false);
+  // }
 
-  async function saveConfigs() {
-    setLoading(true);
-    let error = true;
-    let msg = tr.responses.error;
+  // async function saveConfigs() {
+  //   setLoading(true);
+  //   let error = true;
+  //   let msg = tr.responses.error;
 
-    try {
-      const response = await fetch(CREATE_SHOP_CONFIGS, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "post",
-        body: JSON.stringify({
-          basic_configs: configs,
-          advanced_configs: advancedConfigs,
-        }),
-      });
-      const responseJson = await response.json();
+  //   try {
+  //     const response = await fetch(CREATE_SHOP_CONFIGS, {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       method: "post",
+  //       body: JSON.stringify({
+  //         basic_configs: configs,
+  //         advanced_configs: advancedConfigs,
+  //       }),
+  //     });
+  //     const responseJson = await response.json();
 
-      if (responseJson?.status) {
-        error = false;
-        msg = tr.responses.settings_saved;
-        reFetch((n) => !n);
-      }
-    } catch (err) {
-      console.error("Fetch error:", err.message);
-    }
+  //     if (responseJson?.status) {
+  //       error = false;
+  //       msg = tr.responses.settings_saved;
+  //       reFetch((n) => !n);
+  //     }
+  //   } catch (err) {
+  //     console.error("Fetch error:", err.message);
+  //   }
 
-    setToastData({
-      error,
-      msg,
-    });
-    setLoading(false);
-  }
+  //   setToastData({
+  //     error,
+  //     msg,
+  //   });
+  //   setLoading(false);
+  // }
 
   return (
     <>
@@ -161,13 +156,13 @@ export default function ContentStyle({
             }
             basicConfigs={
               !isFreePlan
-                ? configs
+                ? basicConfigs
                 : {
                   ...default_basic_configs,
-                  title: configs?.title,
-                  icon: configs?.icon,
-                  buttonText: configs?.buttonText,
-                  showFlag: configs?.showFlag,
+                  title: basicConfigs?.title,
+                  icon: basicConfigs?.icon,
+                  buttonText: basicConfigs?.buttonText,
+                  showFlag: basicConfigs?.showFlag,
                 }
             }
             advancedConfigs={isProPlan ? advancedConfigs : {}}
@@ -190,11 +185,11 @@ export default function ContentStyle({
         <TitleBar title="Customize your popup" />
         <Box padding="400">
           <AppProvider i18n={{}} apiKey={""}>
-            <CustomizePopup visibilityChange={customizePopupVisibilityChange} redirects={redirects} configs={configs} setConfigs={setConfigs} advancedConfigs={advancedConfigs} setAdvancedConfigs={setAdvancedConfigs} />
+            <CustomizePopup visibilityChange={customizePopupVisibilityChange} redirects={redirects} configs={configs} />
           </AppProvider>
         </Box>
       </Modal>
-     
+
 
       {/* Edit icon settings */}
       {/* <Modal

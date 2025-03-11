@@ -47,20 +47,21 @@ const defaultAllowedConfigs = {
 
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
 import { OutletContext, RedirectItem } from "app/components/_types";
-import { createRedirect, deleteRedirect, getAllRedirects, reorderRedirect, updateRedirect, updateRedirectStatus } from "app/db-queries.server";
+import { createRedirect, deleteRedirect, getAllRedirects, getConfigs, reorderRedirect, updateRedirect, updateRedirectStatus } from "app/db-queries.server";
 import ContentStyle from "app/components/popup-redirects/ContentStyle";
 import { handleActions } from "./_actions";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const { admin, session } = await authenticate.admin(request);
   const allRedirects = await getAllRedirects({ shop: session.shop });
+  const configs = await getConfigs({ shop: session.shop });
   // const { id } = params;
   // const { admin, session } = await authenticate.admin(request);
   // if (params.id === "new") {
   //   return json({ discount: "new" });
   // }
   // const discount = await getDiscount(admin, id);
-  return { allRedirects };
+  return { allRedirects, configs };
 };
 
 export const action = async (params) => handleActions(params);
@@ -69,7 +70,7 @@ export const action = async (params) => handleActions(params);
 export default function CustomRedirects() {
   const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
     useOutletContext<OutletContext>();
-  const { allRedirects } = useLoaderData<typeof loader>();
+  const { allRedirects, configs } = useLoaderData<typeof loader>();
   const actionData = useActionData();
   const [errors, setErrors] = useState([]);
   const [toastData, setToastData] = useState({ msg: "", error: false });
@@ -146,7 +147,7 @@ export default function CustomRedirects() {
     // }
   }, [actionData]);
 
-  // console.log("shopInfo", shopInfo, appId, appData);
+  console.log("shopInfo", configs);
   return (
     <Page>
       <PageTitle
@@ -172,8 +173,8 @@ export default function CustomRedirects() {
             {smUp ? <Divider /> : null}
             <ContentStyle
               redirects={redirects}
-            // reFetch={setRefetchSettings}
-            // configs={localConfigs}
+              // reFetch={setRefetchSettings}
+              configs={configs}
             // setConfigs={setLocalConfigs}
             // advancedConfigs={localAdvancedConfigs}
             // setAdvancedConfigs={setLocalAdvancedConfigs}

@@ -6,9 +6,8 @@ import ca_flag from "../../assets/ca.svg";
 import stickyEarth from "../../assets/sticky-logo.png";
 import "../../assets/index.scss"
 import "../../assets/preview.scss";
+import { OLD_DEFAULT_ICON } from "../_helpers";
 
-const OLD_ICON_SRC =
-  "https://ngr-app.herokuapp.com/public/images/earth-americas-solid.svg";
 
 interface BasicConfigs {
   icon?: string;
@@ -150,10 +149,10 @@ export default function RedirectsPopupPreview({
       )}
       <div
         ref={containerRef}
-        className="ngr-preview-container"
+        className={`ngr-preview-container ${customCSSClass}`}
         style={{ "--c-width": `${containerWidth}` } as React.CSSProperties}
       >
-        <div id="ngr-modal-preview" className={customCSSClass} ref={outerRef} style={{ top: "4px" }}>
+        <div id="ngr-modal-preview" ref={outerRef} style={{ top: "4px" }}>
           {!disable_basic_css && (
             <style
               dangerouslySetInnerHTML={{
@@ -255,7 +254,7 @@ export default function RedirectsPopupPreview({
                     width={iconWidth || 50}
                     height="100"
                     src={
-                      icon === "default" || icon === OLD_ICON_SRC
+                      icon === "default" || icon === OLD_DEFAULT_ICON
                         ? earthIcon
                         : icon
                     }

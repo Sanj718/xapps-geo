@@ -2,6 +2,7 @@ import stripJsonComments from "strip-json-comments";
 import { format } from "date-fns";
 import type { SubmitOptions } from "@remix-run/react";
 import { Navigation, Fetcher } from "@remix-run/react";
+import { useCallback, useEffect, useRef } from "react";
 export function resp(status: boolean, data: any, errors: string | null) {
   const errorsToString = errors && JSON.stringify(errors);
   return {
@@ -324,7 +325,8 @@ export function loadingStates(nav: Navigation | Fetcher, actions: string[] = [])
   return result;
 }
 
-export function jsonSafeParse(data: string) {
+export function jsonSafeParse(data: string | null) {
+  if (!data) return null;
   try {
     return JSON.parse(data);
   } catch (e) {
@@ -338,3 +340,16 @@ export const OLD_DEFAULT_ICON =
 export const OLD_STICKY_ICON =
   "https://ngr-app.herokuapp.com/public/images/sticky-logo.png";
 export const NEW_DEFAULT_ICON = "default";
+
+
+export function useIsMounted() {
+  const isMounted = useRef(false)
+  useEffect(() => {
+    isMounted.current = true
+    return () => {
+      isMounted.current = false
+    }
+  }, [])
+
+  return useCallback(() => isMounted.current, [])
+}

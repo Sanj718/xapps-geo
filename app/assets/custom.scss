@@ -1,0 +1,8 @@
+.text-editor {
+    .ql-toolbar {
+        border-radius: var(--p-border-radius-200) var(--p-border-radius-200) 0 0;
+    }
+    .ql-container {
+        border-radius: 0 0 var(--p-border-radius-200) var(--p-border-radius-200);
+    }
+}

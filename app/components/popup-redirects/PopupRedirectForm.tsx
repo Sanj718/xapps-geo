@@ -283,7 +283,7 @@ export default function PopupRedirectForm({
         </InlineStack>
         {assetsModalStatus && (
           <Collapsible id="assets-manager" open={assetsModalStatus}>
-            <Card padding="0">
+            <Card padding="200">
               <ImageManager callBack={handleCustomIconUpload} />
             </Card>
           </Collapsible>
