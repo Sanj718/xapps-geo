@@ -42,18 +42,19 @@ import ReactQuill from "react-quill";
 import PopupContent from "../_common/PopupContent.client";
 import tr from "../locales.json";
 import "react-quill/dist/quill.snow.css";
-import { useActionData, useLoaderData, useNavigation, useOutletContext } from "@remix-run/react";
-import { ActionReturn, OutletContext } from "../_types";
+import { useActionData, useLoaderData, useNavigation, useOutletContext, useSubmit } from "@remix-run/react";
+import { ActionReturn, Asset, OutletContext } from "../_types";
 import PromoBadge from "../_common/PromoBadge";
 import RedirectsPopupPreview from "./RedirectsPopupPreview";
 import { AppProvider } from "@shopify/shopify-app-remix/react";
 import CustomizePopup from "./CustomizePopup";
+import ImageManager from "../_common/ImageManager";
+import IconSettings from "./IconSettings";
 
 
 export default function ContentStyle({
   redirects,
   configs,
-  secondaryLocales,
   // setConfigs,
   // advancedConfigs,
   // setAdvancedConfigs,
@@ -68,6 +69,7 @@ export default function ContentStyle({
   const { basicConfigs, advancedConfigs, hideOnAllowedPages, allowedPages } = configs?.data[0] || {}
   // const { allRedirects } = useLoaderData<typeof loader>();
   // const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
+  const submit = useSubmit()
   const actionData = useActionData<ActionReturn>();
   const navigation = useNavigation();
   const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
@@ -82,6 +84,11 @@ export default function ContentStyle({
     useState(false);
   const [dropdownLabelTranslationModal, setDropdownLabelTranslationModal] =
     useState(false);
+  const [localConfigs, setLocalConfigs] = useState(basicConfigs);
+  const [localAdvancedConfigs, setLocalAdvancedConfigs] = useState(advancedConfigs);
+  const secondaryLocales = shopInfo?.shopLocales?.filter(
+    (item) => !item.primary,
+  );
 
   // function handleCustomIconUpload(assets) {
   //   if (!assets) return;
@@ -122,6 +129,27 @@ export default function ContentStyle({
   //   });
   //   setLoading(false);
   // }
+
+  async function saveConfigs() {
+    submit(
+      {
+        _action: "updateRedirect",
+        data: {
+          basicConfigs: localConfigs,
+          advancedConfigs: localAdvancedConfigs,
+        },
+      },
+      requestHeaders,
+    );
+  }
+
+  function handleCustomIconUpload(assets: Asset | null) {
+    if (!assets) return;
+    setLocalConfigs((current) => ({
+      ...current,
+      icon: assets.url
+    }));
+  }
 
   return (
     <>
@@ -182,69 +210,136 @@ export default function ContentStyle({
 
       {/* Customize your popup */}
       <Modal id="customize-popup" variant="max" onShow={() => setCustomizePopupVisibilityChange(true)} onHide={() => setCustomizePopupVisibilityChange(false)}>
-        <TitleBar title="Customize your popup" />
+        <TitleBar title="Customize your popup">
+          <button variant="primary" onClick={() => saveConfigs()}>Save</button>
+          <button onClick={() => shopify.modal.hide('customize-popup')}>Close</button>
+        </TitleBar>
         <Box padding="400">
           <AppProvider i18n={{}} apiKey={""}>
-            <CustomizePopup visibilityChange={customizePopupVisibilityChange} redirects={redirects} configs={configs} />
+            <CustomizePopup visibilityChange={customizePopupVisibilityChange} redirects={redirects} configs={localConfigs} setConfigs={setLocalConfigs} advancedConfigs={localAdvancedConfigs} setAdvancedConfigs={setLocalAdvancedConfigs} />
+          </AppProvider>
+        </Box>
+      </Modal>
+
+      <Modal id="popup-content-translation-popup">
+        <TitleBar title="Popup content translation" />
+        <Box padding="400">
+          <AppProvider i18n={{}} apiKey={""}>
+            <InlineGrid gap="300">
+              <Box>
+                <PromoBadge type="pro" />
+              </Box>
+              <InlineGrid columns="2" gap="200">
+                {(secondaryLocales?.length > 0 &&
+                  secondaryLocales.map((locale) => {
+                    return (
+                      <PopupContent
+                        titleDisabled={!isProPlan}
+                        key={locale.locale}
+                        titleLabel={`Title (${locale.locale})`}
+                        titleValue={isProPlan
+                          ? localConfigs?.title_locales &&
+                            localConfigs.title_locales[locale.locale]
+                            ? localConfigs.title_locales[locale.locale]
+                            : ""
+                          : ""}
+                        titleOnChange={isProPlan ? (value) =>
+                          setLocalConfigs((current) => ({
+                            ...current,
+                            title_locales: {
+                              ...current?.title_locales,
+                              [locale.locale]: value,
+                            },
+                          })) : undefined}
+                        textLabel={`Short text (${locale.locale})`}
+                        textValue={isProPlan
+                          ? localConfigs?.text_locales &&
+                            localConfigs.text_locales[locale.locale]
+                            ? localConfigs.text_locales[locale.locale]
+                            : ""
+                          : ""}
+                        textOnChange={isProPlan ? (value) => {
+                          setLocalConfigs((current) => ({
+                            ...current,
+                            text_locales: {
+                              ...current.text_locales,
+                              [locale.locale]: value,
+                            },
+                          }));
+                        } : undefined}
+                      />
+                    );
+                  })) ||
+                  ""}
+              </InlineGrid>
+            </InlineGrid>
           </AppProvider>
         </Box>
       </Modal>
 
 
-      {/* Edit icon settings */}
-      {/* <Modal
-        open={iconModalStatus}
-        onClose={() => setIconModalStatus(false)}
-        title="Edit icon settings"
-        size="small"
-      >
-        <Modal.Section>
-          <InlineGrid gap="200">
-            <TextField
-              autoComplete="false"
-              label="Max-width"
-              labelAction={{
-                content: "auto",
-                onAction: () =>
-                  setConfigs((current) => ({
-                    ...current,
-                    iconWidth: "auto",
-                  })),
-              }}
-              value={configs?.iconWidth || ""}
-              suffix={configs?.iconWidth === "auto" ? "" : "px"}
-              monospaced
-              onChange={(value) =>
-                setConfigs((current) => ({
-                  ...current,
-                  iconWidth: value,
-                }))
-              }
-            />
-            <TextField
-              monospaced
-              selectTextOnFocus
-              label="Icon url"
-              value={
-                configs?.icon
-                  ? configs?.icon === OLD_DEFAULT_ICON
-                    ? "default"
-                    : configs?.icon
-                  : ""
-              }
-              onChange={(value) =>
-                !isFreePlan
-                  ? setConfigs((current) => ({
-                      ...current,
-                      icon: value,
-                    }))
-                  : false
-              }
-              autoComplete="off"
-            />
-          </InlineGrid>
-        </Modal.Section>
-      </Modal> */}
+      <Modal id="icon-upload-popup">
+        <TitleBar title="Select custom icon" />
+        <Box padding="400">
+          <AppProvider i18n={{}} apiKey={""}>
+            <ImageManager callBack={handleCustomIconUpload} />
+          </AppProvider></Box>
+      </Modal>
+
+      <Modal id="icon-settings-popup">
+        <TitleBar title="Icon settings" />
+        <Box padding="400">
+          <AppProvider i18n={{}} apiKey={""}>
+            <IconSettings configs={localConfigs} setConfigs={setLocalConfigs} isFreePlan={isFreePlan} />
+          </AppProvider></Box>
+      </Modal>
+
+      <Modal id="dropdown-label-translation-popup">
+        <TitleBar title="Dropdown label translation" />
+        <Box padding="400">
+          <AppProvider i18n={{}} apiKey={""}>
+            <InlineGrid gap="300">
+              <Box>
+                <PromoBadge type="pro" />
+              </Box>
+              <div className={!isProPlan ? "visually-disabled" : ""}>
+                <InlineGrid columns="2" gap="200">
+                  {(secondaryLocales?.length > 0 &&
+                    secondaryLocales.map((locale) => {
+                      const titleValue =
+                        localConfigs?.dropdownPlaceholder_locales &&
+                          localConfigs.dropdownPlaceholder_locales[locale.locale]
+                          ? localConfigs.dropdownPlaceholder_locales[locale.locale]
+                          : "";
+                      const titleOnChange = (value) =>
+                        setLocalConfigs((current) => ({
+                          ...current,
+                          dropdownPlaceholder_locales: {
+                            ...current.dropdownPlaceholder_locales,
+                            [locale.locale]: value,
+                          },
+                        }));
+
+                      return (
+                        <PopupContent
+                          key={locale.locale}
+                          titleLabel={`Dropdown label (${locale.locale})`}
+                          titleValue={titleValue}
+                          // @ts-ignore
+                          titleOnChange={titleOnChange}
+                          titleDisabled={!isProPlan}
+                        />
+                      );
+                    })) ||
+                    ""}
+                </InlineGrid>
+              </div>
+            </InlineGrid>
+          </AppProvider>
+        </Box>
+      </Modal>
+
+
 
       {/* Popup content translation */}
       {/* <Modal

@@ -36,6 +36,7 @@ import ImageManager from "../_common/ImageManager";
 import ColorTextField from "../_common/ColorTextField";
 import RedirectsPopupPreview from "./RedirectsPopupPreview";
 import IconSettings from "./IconSettings";
+import { config } from "process";
 
 
 
@@ -43,23 +44,29 @@ interface CustomizePopupProps {
     visibilityChange: boolean;
     redirects: any[];
     configs: any;
+    setConfigs: any;
+    advancedConfigs: any;
+    setAdvancedConfigs: any;
 }
 
-export default function CustomizePopup({ visibilityChange, redirects, configs }: CustomizePopupProps) {
+export default function CustomizePopup({ visibilityChange, redirects, configs, setConfigs, advancedConfigs, setAdvancedConfigs }: CustomizePopupProps) {
     const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
         useOutletContext<OutletContext>();
-    const { basicConfigs, advancedConfigs, hideOnAllowedPages, allowedPages } = configs?.data[0] || {}
+    // const { basicConfigs, advancedConfigs, hideOnAllowedPages, allowedPages } = configs?.data[0] || {}
     const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
     const [widgetStylesOpen, setWidgetStylesOpen] = useState(false);
-    const [localConfigs, setLocalConfigs] = useState(basicConfigs);
-    const [localAdvancedConfigs, setLocalAdvancedConfigs] = useState(advancedConfigs);
+    // const [configs, setConfigs] = useState(basicConfigs);
+    // const [localAdvancedConfigs, setLocalAdvancedConfigs] = useState(advancedConfigs);
     const [codeEditorOpen, setCodeEditorOpen] = useState(false);
     const [assetsModalStatus, setAssetsModalStatus] = useState(false);
     const [iconModalStatus, setIconModalStatus] = useState(false);
+    const secondaryLocales = shopInfo?.shopLocales?.filter(
+        (item) => !item.primary,
+    );
 
     function handleCustomIconUpload(assets: Asset | null) {
         if (!assets) return;
-        setLocalConfigs((current) => ({
+        setConfigs((current) => ({
             ...current,
             icon: assets.url
         }));
@@ -68,7 +75,7 @@ export default function CustomizePopup({ visibilityChange, redirects, configs }:
 
     // useMemo(() => {
     //     console.log("configsconfigs", configs)
-    //     setLocalConfigs(basicConfigs);
+    //     setConfigs(basicConfigs);
     //     setLocalAdvancedConfigs(advancedConfigs);
     // }, [configs])
 
@@ -80,7 +87,7 @@ export default function CustomizePopup({ visibilityChange, redirects, configs }:
     }, [visibilityChange])
 
 
-    console.log("default_basic_configs", localConfigs)
+
     return <InlineGrid columns={{ xs: "1fr", md: "1fr 3fr" }} gap="400">
         <>
             <BlockStack gap="200">
@@ -90,7 +97,7 @@ export default function CustomizePopup({ visibilityChange, redirects, configs }:
                     <Button
                         onClick={
                             !isFreePlan
-                                ? () => setAssetsModalStatus((status) => !status)
+                                ? () => shopify.modal.show("icon-upload-popup")
                                 : undefined
                         }
                         icon={ImageAddIcon}
@@ -110,37 +117,26 @@ export default function CustomizePopup({ visibilityChange, redirects, configs }:
                         <Button
                             disabled={isFreePlan}
                             icon={SettingsIcon}
-                            onClick={() => setIconModalStatus((status) => !status)}
+                            onClick={() => shopify.modal.show("icon-settings-popup")}
                         />
                     </Tooltip>
                 </InlineStack>
-                {assetsModalStatus && (
-                    <Collapsible id="popup-assets-manager" open={assetsModalStatus}>
-                        <Card padding="200">
-                            <ImageManager callBack={handleCustomIconUpload} />
-                        </Card>
-                    </Collapsible>
-                )}
-                {iconModalStatus && (
-                    <Collapsible id="popup-icon-settings" open={iconModalStatus}>
-                        <Card padding="200">
-                            <IconSettings configs={localConfigs} setConfigs={setLocalConfigs} isFreePlan={isFreePlan} />
-                        </Card>
-                    </Collapsible>
-                )}
                 <InlineGrid gap="400">
                     <PopupContent
-                        titleValue={localConfigs?.title}
-                        titleOnChange={(value) =>
-                            setLocalConfigs((current) => ({
-                                ...current,
-                                title: value,
-                            }))
+                        titleValue={configs?.title}
+                        titleOnChange={
+                            configs?.title !== undefined
+                                ? (value) =>
+                                    setConfigs((current) => ({
+                                        ...current,
+                                        title: value,
+                                    }))
+                                : undefined
                         }
-                        textValue={localConfigs?.text}
+                        textValue={configs?.text}
                         textOnChange={(value) => {
                             !isFreePlan
-                                ? setLocalConfigs((current) => ({
+                                ? setConfigs((current) => ({
                                     ...current,
                                     text: value,
                                 }))
@@ -148,30 +144,21 @@ export default function CustomizePopup({ visibilityChange, redirects, configs }:
                         }}
                         textDisabled={isFreePlan}
                         textHelpText={`Use [[country]] in the Short text field to display the user's GEO location. Example: "Looks like you're in [[country]]! Check out our local site."`}
-                    // translation={
-                    //     secondaryLocales?.length
-                    //         ? () => setContentTranslationsModal((trOpen) => !trOpen)
-                    //         : null
-                    // }
+                        translation={secondaryLocales?.length}
                     />
-                    <div
-                        className={
-                            localConfigs?.type === "topbar" ? "visually-disabled" : ""
-                        }
-                    >
-                        <Tooltip width="wide" content={<small>Displays the visitor's current country flag based on geolocation data.</small>}>
-                            <Checkbox
-                                label="Show country flag"
-                                checked={localConfigs?.showFlag}
-                                onChange={(value) =>
-                                    setLocalConfigs((current) => ({
-                                        ...current,
-                                        showFlag: value,
-                                    }))
-                                }
-                            />
-                        </Tooltip>
-                    </div>
+                    <Tooltip width="wide" content={<small>Displays the visitor's current country flag based on geolocation data.</small>}>
+                        <Checkbox
+                            disabled={configs?.type === "topbar"}
+                            label="Show country flag"
+                            checked={configs?.showFlag}
+                            onChange={(value) =>
+                                setConfigs((current) => ({
+                                    ...current,
+                                    showFlag: value,
+                                }))
+                            }
+                        />
+                    </Tooltip>
                     <Divider />
                     <InlineGrid gap="200">
                         <div className={isFreePlan ? "vvisually-disabled" : ""}>
@@ -187,88 +174,86 @@ export default function CustomizePopup({ visibilityChange, redirects, configs }:
                                 onChange={
                                     !isFreePlan
                                         ? (value) =>
-                                            setLocalConfigs((current) => ({
+                                            setConfigs((current) => ({
                                                 ...current,
                                                 type: value,
                                             }))
                                         : undefined
                                 }
-                                value={localConfigs?.type}
+                                value={configs?.type}
                             />
                         </div>
-                        <div className={isFreePlan ? "vvisually-disabled" : ""}>
-                            {localConfigs?.type === "topbar" && (
-                                <Checkbox
+                        {configs?.type === "topbar" && (
+                            <Checkbox
+                                disabled={isFreePlan}
+                                label="Sticky to top"
+                                checked={configs?.topbarSticky}
+                                onChange={(value) =>
+                                    setConfigs((current) => ({
+                                        ...current,
+                                        topbarSticky: value,
+                                    }))
+                                }
+                            />
+                        )}
+                        {configs?.type === "sticky" && (
+                            <InlineGrid gap="300">
+                                <RangeSlider
                                     disabled={isFreePlan}
-                                    label="Sticky to top"
-                                    checked={localConfigs?.topbarSticky}
+                                    label="Vertical position"
+                                    value={configs?.stickyVerticalPosition}
                                     onChange={(value) =>
-                                        setLocalConfigs((current) => ({
+                                        setConfigs((current) => ({
                                             ...current,
-                                            topbarSticky: value,
+                                            stickyVerticalPosition: value,
                                         }))
                                     }
+                                    output
                                 />
-                            )}
-                            {localConfigs?.type === "sticky" && (
-                                <InlineGrid gap="300">
-                                    <RangeSlider
+                                <InlineGrid columns="2" gap="200">
+                                    <Select
                                         disabled={isFreePlan}
-                                        label="Vertical position"
-                                        value={localConfigs?.stickyVerticalPosition}
-                                        onChange={(value) =>
-                                            setLocalConfigs((current) => ({
-                                                ...current,
-                                                stickyVerticalPosition: value,
-                                            }))
+                                        label="Sticky opener icon"
+                                        options={[
+                                            { label: "Custom", value: "custom" },
+                                            {
+                                                label: "User's country flag (GEO)",
+                                                value: "geo",
+                                            },
+                                        ]}
+                                        onChange={
+                                            !isFreePlan
+                                                ? (value) =>
+                                                    setConfigs((current) => ({
+                                                        ...current,
+                                                        stickyOpener: value,
+                                                    }))
+                                                : undefined
                                         }
-                                        output
+                                        value={configs?.stickyOpener}
                                     />
-                                    <InlineGrid columns="2" gap="200">
-                                        <Select
-                                            disabled={isFreePlan}
-                                            label="Sticky opener icon"
-                                            options={[
-                                                { label: "Custom", value: "custom" },
-                                                {
-                                                    label: "User's country flag (GEO)",
-                                                    value: "geo",
-                                                },
-                                            ]}
-                                            onChange={
-                                                !isFreePlan
-                                                    ? (value) =>
-                                                        setLocalConfigs((current) => ({
-                                                            ...current,
-                                                            stickyOpener: value,
-                                                        }))
-                                                    : undefined
-                                            }
-                                            value={localConfigs?.stickyOpener}
-                                        />
-                                        {(localConfigs?.stickyOpener === undefined ||
-                                            localConfigs?.stickyOpener === "custom") && (
-                                                <TextField
-                                                    disabled={isFreePlan}
-                                                    label="Sticky Toggle Icon (link)"
-                                                    value={
-                                                        localConfigs?.stickyToggleIcon === OLD_STICKY_ICON
-                                                            ? "default"
-                                                            : localConfigs?.stickyToggleIcon
-                                                    }
-                                                    autoComplete="false"
-                                                    onChange={(value) =>
-                                                        setLocalConfigs((current) => ({
-                                                            ...current,
-                                                            stickyToggleIcon: value,
-                                                        }))
-                                                    }
-                                                />
-                                            )}
-                                    </InlineGrid>
+                                    {(configs?.stickyOpener === undefined ||
+                                        configs?.stickyOpener === "custom") && (
+                                            <TextField
+                                                disabled={isFreePlan}
+                                                label="Sticky Toggle Icon (link)"
+                                                value={
+                                                    configs?.stickyToggleIcon === OLD_STICKY_ICON
+                                                        ? "default"
+                                                        : configs?.stickyToggleIcon
+                                                }
+                                                autoComplete="false"
+                                                onChange={(value) =>
+                                                    setConfigs((current) => ({
+                                                        ...current,
+                                                        stickyToggleIcon: value,
+                                                    }))
+                                                }
+                                            />
+                                        )}
                                 </InlineGrid>
-                            )}
-                        </div>
+                            </InlineGrid>
+                        )}
                     </InlineGrid>
                     <Divider />
                     <InlineStack gap="200" align="space-between">
@@ -313,40 +298,38 @@ export default function CustomizePopup({ visibilityChange, redirects, configs }:
                                             { label: "Impact", value: "Impact" },
                                         ]}
                                         onChange={(value) =>
-                                            setLocalConfigs((current) => ({
+                                            setConfigs((current) => ({
                                                 ...current,
                                                 font: value,
                                             }))
                                         }
                                         value={configs?.font}
                                     />
-                                    <InlineGrid gap="200">
-                                        <InlineGrid gap="200" columns="2">
-                                            <ColorTextField
-                                                disabled={isFreePlan}
-                                                label="Background"
-                                                placeholder="#fff"
-                                                id="modalBgColor"
-                                                configs={configs}
-                                                setConfigs={!isFreePlan ? setLocalConfigs : false}
-                                            />
-                                            <ColorTextField
-                                                disabled={isFreePlan}
-                                                label="Text"
-                                                placeholder="#000"
-                                                id="modalTextColor"
-                                                configs={configs}
-                                                setConfigs={!isFreePlan ? setLocalConfigs : false}
-                                            />
-                                            <ColorTextField
-                                                disabled={isFreePlan}
-                                                label="Border"
-                                                placeholder="#fff"
-                                                id="modalBorderColor"
-                                                configs={configs}
-                                                setConfigs={!isFreePlan ? setLocalConfigs : false}
-                                            />
-                                        </InlineGrid>
+                                    <InlineGrid gap="200" columns="2">
+                                        <ColorTextField
+                                            disabled={isFreePlan}
+                                            label="Background"
+                                            placeholder="#fff"
+                                            id="modalBgColor"
+                                            configs={configs}
+                                            setConfigs={!isFreePlan ? setConfigs : false}
+                                        />
+                                        <ColorTextField
+                                            disabled={isFreePlan}
+                                            label="Text"
+                                            placeholder="#000"
+                                            id="modalTextColor"
+                                            configs={configs}
+                                            setConfigs={!isFreePlan ? setConfigs : false}
+                                        />
+                                        <ColorTextField
+                                            disabled={isFreePlan}
+                                            label="Border"
+                                            placeholder="#fff"
+                                            id="modalBorderColor"
+                                            configs={configs}
+                                            setConfigs={!isFreePlan ? setConfigs : false}
+                                        />
                                     </InlineGrid>
                                     <Divider />
                                     <InlineGrid gap="200">
@@ -360,7 +343,7 @@ export default function CustomizePopup({ visibilityChange, redirects, configs }:
                                                 placeholder="#fff"
                                                 id="buttonsBgColor"
                                                 configs={configs}
-                                                setConfigs={!isFreePlan ? setLocalConfigs : false}
+                                                setConfigs={!isFreePlan ? setConfigs : false}
                                             />
                                             <ColorTextField
                                                 disabled={isFreePlan}
@@ -368,7 +351,7 @@ export default function CustomizePopup({ visibilityChange, redirects, configs }:
                                                 placeholder="#000"
                                                 id="buttonsColor"
                                                 configs={configs}
-                                                setConfigs={!isFreePlan ? setLocalConfigs : false}
+                                                setConfigs={!isFreePlan ? setConfigs : false}
                                             />
                                             <Select
                                                 disabled={isFreePlan}
@@ -390,13 +373,13 @@ export default function CustomizePopup({ visibilityChange, redirects, configs }:
                                                 onChange={
                                                     !isFreePlan
                                                         ? (value) =>
-                                                            setLocalConfigs((current) => ({
+                                                            setConfigs((current) => ({
                                                                 ...current,
                                                                 layout: value,
                                                             }))
                                                         : undefined
                                                 }
-                                                value={localConfigs?.layout ? localConfigs.layout : ""}
+                                                value={configs?.layout ? configs.layout : ""}
                                             />
                                             {configs?.layout === "dropdown" ? (
                                                 <InlineGrid>
@@ -410,9 +393,7 @@ export default function CustomizePopup({ visibilityChange, redirects, configs }:
                                                             <Button
                                                                 icon={LanguageIcon}
                                                                 size="micro"
-                                                                onClick={() => { }
-                                                                    // setDropdownLabelTranslationModal(true)
-                                                                }
+                                                                onClick={() => shopify.modal.show("dropdown-label-translation-popup")}
                                                             ></Button>
                                                         </Tooltip>
                                                     </InlineStack>
@@ -423,15 +404,15 @@ export default function CustomizePopup({ visibilityChange, redirects, configs }:
                                                         onChange={
                                                             !isFreePlan
                                                                 ? (value) =>
-                                                                    setLocalConfigs((current) => ({
+                                                                    setConfigs((current) => ({
                                                                         ...current,
                                                                         dropdownPlaceholder: value,
                                                                     }))
                                                                 : undefined
                                                         }
                                                         value={
-                                                            localConfigs?.dropdownPlaceholder
-                                                                ? localConfigs.dropdownPlaceholder
+                                                            configs?.dropdownPlaceholder
+                                                                ? configs.dropdownPlaceholder
                                                                 : "Select"
                                                         }
                                                         autoComplete="off"
@@ -556,16 +537,16 @@ export default function CustomizePopup({ visibilityChange, redirects, configs }:
                 }
                 basicConfigs={
                     !isFreePlan
-                        ? localConfigs
+                        ? configs
                         : {
                             ...default_basic_configs,
-                            title: localConfigs?.title,
-                            icon: localConfigs?.icon,
-                            buttonText: localConfigs?.buttonText,
-                            showFlag: localConfigs?.showFlag,
+                            title: configs?.title,
+                            icon: configs?.icon,
+                            buttonText: configs?.buttonText,
+                            showFlag: configs?.showFlag,
                         }
                 }
-                advancedConfigs={isProPlan ? localAdvancedConfigs : {}}
+                advancedConfigs={isProPlan ? advancedConfigs : {}}
             />
         </div>}
     </InlineGrid>

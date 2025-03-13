@@ -13,18 +13,32 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "../../assets/custom.scss"
 
+interface PopupContentProps {
+  titleLabel?: string;
+  titleValue?: string;
+  titleOnChange?: (value: string) => void;
+  textLabel?: string;
+  textValue?: string;
+  textOnChange?: (value: string) => void | undefined;
+  textHelpText?: string;
+  translation?: number;
+  titleDisabled?: boolean;
+  textDisabled?: boolean;
+}
+
+
 export default function PopupContent({
   titleLabel = "Title",
   titleValue = "",
-  titleOnChange = undefined,
+  titleOnChange = () => { },
   textLabel = "Short text",
   textValue = "",
   textOnChange = undefined,
   textHelpText = "",
-  translation = null,
+  translation = 0,
   titleDisabled = false,
   textDisabled = false,
-}) {
+}: PopupContentProps) {
   const toolbarOptions = [
     // [{ header: [2, 3, 4, 5, 6, false] }],
     ["bold", "italic", "underline", "strike"],
@@ -43,15 +57,15 @@ export default function PopupContent({
       <BlockStack gap="0">
         <InlineStack align="space-between" gap="200" blockAlign="center">
           <Text as="p">{titleLabel}</Text>
-          {translation && (
+          {translation ? (
             <Tooltip width="wide" content={toolTipContent}>
               <Button
                 icon={LanguageIcon}
                 size="micro"
-                onClick={translation}
+                onClick={() => shopify.modal.show("popup-content-translation-popup")}
               ></Button>
             </Tooltip>
-          )}
+          ) : null}
         </InlineStack>
         <TextField
           size="slim"
@@ -69,15 +83,15 @@ export default function PopupContent({
             <BlockStack gap="0">
               <InlineStack align="space-between" gap="200" blockAlign="center">
                 <Text as="p">{textLabel}</Text>
-                {translation && (
+                {translation ? (
                   <Tooltip width="wide" content={toolTipContent}>
                     <Button
                       icon={LanguageIcon}
                       size="micro"
-                      onClick={translation}
+                      onClick={() => shopify.modal.show("popup-content-translation-popup")}
                     ></Button>
                   </Tooltip>
-                )}
+                ) : null}
               </InlineStack>
               <ReactQuill className="text-editor"
                 theme="snow"

@@ -6,3 +6,36 @@
         border-radius: 0 0 var(--p-border-radius-200) var(--p-border-radius-200);
     }
 }
+
+.color_text_field {
+    position: relative;
+}
+.color_picker-cover {
+    background: #00000052;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: fixed;
+    z-index: 999;
+}
+.color_picker {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #fff;
+    z-index: 999;
+    padding: 5px;
+    box-shadow: 0 0 2px #ccc;
+    border-radius: 4px;
+
+    position: fixed;
+    top: calc(50% - 100px);
+    right: calc(50% - 200px);
+    transform: translate(-50%, -50%);
+}
+.color_picker_close {
+    margin-bottom: 5px;
+}

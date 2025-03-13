@@ -12,6 +12,17 @@ import {
 import React, { useState, useCallback, useEffect } from "react";
 import { ColorIcon, ExitIcon, EyeDropperIcon } from "@shopify/polaris-icons";
 import { hexToRGB } from "../_helpers";
+import "../../assets/custom.scss"
+
+
+interface ColorTextFieldProps {
+  label: string;
+  configs: any;
+  setConfigs: any;
+  placeholder: string;
+  id: string;
+  disabled?: boolean;
+}
 
 export default function ColorTextField({
   label,
@@ -20,7 +31,7 @@ export default function ColorTextField({
   placeholder,
   id,
   disabled = false,
-}) {
+}: ColorTextFieldProps) {
 
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [colorText, setColorText] = useState(configs[id]);
