@@ -15,18 +15,20 @@ import {
 } from "@shopify/polaris";
 import { QuestionCircleIcon, StarFilledIcon } from "@shopify/polaris-icons";
 import React, { useContext, useState } from "react";
-import { AppContext } from "../AppContext";
 import countriesList from "../../assets/countries.json";
-import { parseCountryCodesWithFullNames, planParser } from "../../helpers";
-import { ListWithTags } from "../ListWithTags";
-import { CustomComboBox } from "../CustomComboBox";
-import {
-  CREATE_ALLOWED_PAGES,
-  CREATE_SHOP_CONFIGS,
-} from "../../../helpers/endpoints";
-import tr from "../../helpers/translations.json";
-import { useAuthenticatedFetch } from "../../hooks";
-import { PromoBadge } from "../PromoBadge";
+// import { parseCountryCodesWithFullNames, planParser } from "../../helpers";
+// import { ListWithTags } from "../ListWithTags";
+// import { CustomComboBox } from "../CustomComboBox";
+// import {
+//   CREATE_ALLOWED_PAGES,
+//   CREATE_SHOP_CONFIGS,
+// } from "../../../helpers/endpoints";
+import tr from "../locales.json";
+import { useNavigation, useOutletContext, useSubmit } from "@remix-run/react";
+import { OutletContext } from "../_types";
+import { parseCountryCodesWithFullNames, planParser } from "../_helpers";
+import ListWithTags from "../_common/ListWithTags";
+import PromoBadge from "../_common/PromoBadge";
 
 const continents = [
   { value: "AF", label: "Africa" },
@@ -54,23 +56,24 @@ const pageTemplates = [
 ];
 
 export default function PopupDisplaySettings({
-  initialLoading,
-  reFetch,
   configs,
-  setConfigs,
-  advancedConfigs,
-  pageVisibility,
-  setPageVisibility,
-  setToastData,
+  // setToastData,
 }) {
-  const fetch = useAuthenticatedFetch();
-  const { activePlan } = useContext(AppContext);
+  const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
+    useOutletContext<OutletContext>();
   const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
+  const { basicConfigs, advancedConfigs, hideOnAllowedPages, allowedPages } = configs?.data[0] || {}
+  const submit = useSubmit()
+  const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const [visibilityLoading, setVisibilityLoading] = useState(false);
+  const [localConfigs, setLocalConfigs] = useState(basicConfigs);
+  const [localAdvancedConfigs, setLocalAdvancedConfigs] = useState(advancedConfigs);
+  const [localHidePages, setLocalHidePages] = useState(hideOnAllowedPages);
+  const [localAllowedPages, setLocalAllowedPages] = useState(allowedPages);
 
   const countries = parseCountryCodesWithFullNames(countriesList);
-  function handleShowRulesChange(value) {
+  function handleShowRulesChange(value: any) {
     let newGeo = false;
     let newAuto = false;
     if (value === "autoGeo") {
@@ -80,7 +83,7 @@ export default function PopupDisplaySettings({
       newGeo = false;
       newAuto = true;
     }
-    setConfigs((current) => ({
+    setLocalConfigs((current: typeof localConfigs) => ({
       ...current,
       automaticShow: newAuto,
       geo: newGeo,
@@ -88,67 +91,67 @@ export default function PopupDisplaySettings({
   }
 
   async function savePageVisibility() {
-    setVisibilityLoading(true);
-    let error = true;
-    let msg = tr.responses.error;
+    // setVisibilityLoading(true);
+    // let error = true;
+    // let msg = tr.responses.error;
 
-    try {
-      const response = await fetch(CREATE_ALLOWED_PAGES, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "post",
-        body: JSON.stringify(pageVisibility),
-      });
-      const responseJson = await response.json();
+    // try {
+    //   const response = await fetch(CREATE_ALLOWED_PAGES, {
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     method: "post",
+    //     body: JSON.stringify(pageVisibility),
+    //   });
+    //   const responseJson = await response.json();
 
-      if (responseJson?.status) {
-        error = false;
-        msg = tr.responses.saved;
-      }
-    } catch (err) {
-      console.error("Fetch error:", err.message);
-    }
+    //   if (responseJson?.status) {
+    //     error = false;
+    //     msg = tr.responses.saved;
+    //   }
+    // } catch (err) {
+    //   console.error("Fetch error:", err.message);
+    // }
 
-    setToastData({
-      error,
-      msg,
-    });
-    setVisibilityLoading(false);
+    // setToastData({
+    //   error,
+    //   msg,
+    // });
+    // setVisibilityLoading(false);
   }
 
   async function saveConfigs() {
-    setLoading(true);
-    let error = true;
-    let msg = tr.responses.error;
+    // setLoading(true);
+    // let error = true;
+    // let msg = tr.responses.error;
 
-    try {
-      const response = await fetch(CREATE_SHOP_CONFIGS, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "post",
-        body: JSON.stringify({
-          basic_configs: configs,
-          advanced_configs: advancedConfigs,
-        }),
-      });
-      const responseJson = await response.json();
+    // try {
+    //   const response = await fetch(CREATE_SHOP_CONFIGS, {
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     method: "post",
+    //     body: JSON.stringify({
+    //       basic_configs: configs,
+    //       advanced_configs: advancedConfigs,
+    //     }),
+    //   });
+    //   const responseJson = await response.json();
 
-      if (responseJson?.status) {
-        error = false;
-        msg = tr.responses.settings_saved;
-        reFetch((n) => !n);
-      }
-    } catch (err) {
-      console.error("Fetch error:", err.message);
-    }
+    //   if (responseJson?.status) {
+    //     error = false;
+    //     msg = tr.responses.settings_saved;
+    //     reFetch((n) => !n);
+    //   }
+    // } catch (err) {
+    //   console.error("Fetch error:", err.message);
+    // }
 
-    setToastData({
-      error,
-      msg,
-    });
-    setLoading(false);
+    // setToastData({
+    //   error,
+    //   msg,
+    // });
+    // setLoading(false);
   }
 
   return (
@@ -175,253 +178,230 @@ export default function PopupDisplaySettings({
           <Card roundedAbove="sm">
             <InlineGrid gap="200">
               <PromoBadge type="basic" />
-              {initialLoading ? (
-                <InlineGrid gap="200">
+              <InlineGrid gap="200">
+                <div className={isFreePlan ? "vvisually-disabled" : ""}>
                   <InlineGrid gap="200" columns="2">
-                    <InlineGrid gap="150">
-                      Display frequency
-                      <SkeletonDisplayText size="large" maxWidth="100%" />
-                    </InlineGrid>
-                    <InlineGrid gap="150">
-                      Display rules
-                      <SkeletonDisplayText size="large" maxWidth="100%" />
-                    </InlineGrid>
+                    <Select
+                      label={
+                        <InlineStack gap="100" blockAlign="center">
+                          Display frequency
+                          <Tooltip
+                            width="wide"
+                            content={
+                              <small>
+                                <p>
+                                  <strong>Every browser session:</strong>{" "}
+                                  Shown once per session; lasts until
+                                  browser/tab closes.
+                                </p>
+                                <p>
+                                  <strong>Every 7 days (cookies):</strong>{" "}
+                                  Shown once, then hidden for 7 days (after
+                                  close).
+                                </p>
+                                <p>
+                                  <strong>Every page load:</strong> Shown on
+                                  every page load.
+                                </p>
+                              </small>
+                            }
+                          >
+                            <Icon
+                              source={QuestionCircleIcon}
+                              tone="subdued"
+                            />
+                          </Tooltip>
+                        </InlineStack>
+                      }
+                      options={[
+                        {
+                          label: "Every browser session",
+                          value: "session",
+                        },
+                        {
+                          label: "Every page load",
+                          value: "everyload",
+                        },
+                        {
+                          label: "Every 7 days (cookies)",
+                          value: "cookie",
+                        },
+                      ]}
+                      onChange={
+                        !isFreePlan
+                          ? (value) =>
+                            setLocalConfigs((current: typeof localConfigs) => ({
+                              ...current,
+                              show: value,
+                            }))
+                          : undefined
+                      }
+                      value={configs?.show}
+                      disabled={isFreePlan}
+                    />
+                    <Select
+                      label={
+                        <InlineStack gap="100" blockAlign="center">
+                          Display rules
+                          <Tooltip
+                            width="wide"
+                            content={
+                              <small>
+                                <p>
+                                  <strong>Automatic GEO Location:</strong>{" "}
+                                  Automatically based on visitors geolocation.
+                                </p>
+                                <p>
+                                  <strong>
+                                    Automatic (Non-GEO Location):
+                                  </strong>{" "}
+                                  Triggers actions automatically ignoring
+                                  visitor's geolocation.
+                                </p>
+                                <p>
+                                  <strong>
+                                    Manual (on custom element click):
+                                  </strong>{" "}
+                                  Requires a click to trigger.
+                                </p>
+                              </small>
+                            }
+                          >
+                            <Icon
+                              source={QuestionCircleIcon}
+                              tone="subdued"
+                            />
+                          </Tooltip>
+                        </InlineStack>
+                      }
+                      options={[
+                        {
+                          label: "Automatic GEO Location",
+                          value: "autoGeo",
+                        },
+                        {
+                          label: "Automatic (non GEO Location)",
+                          value: "auto",
+                        },
+                        {
+                          label: "Manual (on custom element click)",
+                          value: "manual",
+                        },
+                      ]}
+                      onChange={
+                        !isFreePlan ? handleShowRulesChange : undefined
+                      }
+                      value={
+                        configs?.automaticShow && configs?.geo
+                          ? "autoGeo"
+                          : configs?.automaticShow
+                            ? "auto"
+                            : "manual"
+                      }
+                      disabled={isFreePlan}
+                      helpText={
+                        !configs?.automaticShow && !configs?.geo ? (
+                          <Button
+                            variant="plain"
+                            url="https://geolocationredirects-xapps.tawk.help/article/how-to-add-custom-buttonlink-to-open-popup"
+                            target="_blank"
+                          >
+                            How to add custom link to display popup on
+                            storefront?
+                          </Button>
+                        ) : (
+                          ""
+                        )
+                      }
+                    />
                   </InlineGrid>
+                </div>
+                <div
+                  style={{
+                    opacity: configs?.geo ? 1 : 0.5,
+                    pointerEvents: configs?.geo ? "initial" : "none",
+                  }}
+                >
                   <InlineGrid
                     columns={{ xs: "1fr", md: "20% 20% 1fr" }}
                     gap="200"
                   >
-                    <SkeletonDisplayText size="large" maxWidth="100%" />
-                    <SkeletonDisplayText size="large" maxWidth="100%" />
-                    <SkeletonDisplayText size="large" maxWidth="100%" />
-                  </InlineGrid>
-                </InlineGrid>
-              ) : (
-                <InlineGrid gap="200">
-                  <div className={isFreePlan ? "vvisually-disabled" : ""}>
-                    <InlineGrid gap="200" columns="2">
-                      <Select
-                        label={
-                          <InlineStack gap="100" blockAlign="center">
-                            Display frequency
-                            <Tooltip
-                              width="wide"
-                              content={
-                                <small>
-                                  <p>
-                                    <strong>Every browser session:</strong>{" "}
-                                    Shown once per session; lasts until
-                                    browser/tab closes.
-                                  </p>
-                                  <p>
-                                    <strong>Every 7 days (cookies):</strong>{" "}
-                                    Shown once, then hidden for 7 days (after
-                                    close).
-                                  </p>
-                                  <p>
-                                    <strong>Every page load:</strong> Shown on
-                                    every page load.
-                                  </p>
-                                </small>
-                              }
-                            >
-                              <Icon
-                                source={QuestionCircleIcon}
-                                tone="subdued"
-                              />
-                            </Tooltip>
-                          </InlineStack>
-                        }
-                        options={[
-                          {
-                            label: "Every browser session",
-                            value: "session",
-                          },
-                          {
-                            label: "Every page load",
-                            value: "everyload",
-                          },
-                          {
-                            label: "Every 7 days (cookies)",
-                            value: "cookie",
-                          },
-                        ]}
-                        onChange={
-                          !isFreePlan
-                            ? (value) =>
-                                setConfigs((current) => ({
-                                  ...current,
-                                  show: value,
-                                }))
-                            : undefined
-                        }
-                        value={configs?.show}
-                        disabled={isFreePlan}
-                      />
-                      <Select
-                        label={
-                          <InlineStack gap="100" blockAlign="center">
-                            Display rules
-                            <Tooltip
-                              width="wide"
-                              content={
-                                <small>
-                                  <p>
-                                    <strong>Automatic GEO Location:</strong>{" "}
-                                    Automatically based on visitors geolocation.
-                                  </p>
-                                  <p>
-                                    <strong>
-                                      Automatic (Non-GEO Location):
-                                    </strong>{" "}
-                                    Triggers actions automatically ignoring
-                                    visitor's geolocation.
-                                  </p>
-                                  <p>
-                                    <strong>
-                                      Manual (on custom element click):
-                                    </strong>{" "}
-                                    Requires a click to trigger.
-                                  </p>
-                                </small>
-                              }
-                            >
-                              <Icon
-                                source={QuestionCircleIcon}
-                                tone="subdued"
-                              />
-                            </Tooltip>
-                          </InlineStack>
-                        }
-                        options={[
-                          {
-                            label: "Automatic GEO Location",
-                            value: "autoGeo",
-                          },
-                          {
-                            label: "Automatic (non GEO Location)",
-                            value: "auto",
-                          },
-                          {
-                            label: "Manual (on custom element click)",
-                            value: "manual",
-                          },
-                        ]}
-                        onChange={
-                          !isFreePlan ? handleShowRulesChange : undefined
-                        }
-                        value={
-                          configs?.automaticShow && configs?.geo
-                            ? "autoGeo"
-                            : configs?.automaticShow
-                            ? "auto"
-                            : "manual"
-                        }
-                        disabled={isFreePlan}
-                        helpText={
-                          !configs?.automaticShow && !configs?.geo ? (
-                            <Button
-                              variant="plain"
-                              url="https://geolocationredirects-xapps.tawk.help/article/how-to-add-custom-buttonlink-to-open-popup"
-                              target="_blank"
-                            >
-                              How to add custom link to display popup on
-                              storefront?
-                            </Button>
-                          ) : (
-                            ""
-                          )
-                        }
-                      />
-                    </InlineGrid>
-                  </div>
-                  <div
-                    style={{
-                      opacity: configs?.geo ? 1 : 0.5,
-                      pointerEvents: configs?.geo ? "initial" : "none",
-                    }}
-                  >
-                    <InlineGrid
-                      columns={{ xs: "1fr", md: "20% 20% 1fr" }}
-                      gap="200"
-                    >
-                      <Select
-                        label="Display popup logic"
-                        labelHidden
-                        options={[
-                          {
-                            label: "Outside",
-                            value: "except",
-                          },
-                          {
-                            label: "Inside",
-                            value: "include",
-                          },
-                        ]}
-                        onChange={(value) =>
-                          setConfigs((current) => ({
-                            ...current,
-                            reverseGeo: value === "include" ? true : false,
-                          }))
-                        }
-                        value={configs?.reverseGeo ? "include" : "except"}
-                      />
-                      <Select
-                        label="Location type"
-                        labelHidden
-                        options={[
-                          { label: "Continents", value: "continent" },
-                          { label: "Countries", value: "country" },
-                        ]}
-                        onChange={(value) =>
-                          setConfigs((current) => ({
-                            ...current,
-                            location: value,
-                          }))
-                        }
-                        value={configs?.location}
-                      />
-                      <div>
-                        <div
-                          style={{
-                            display:
-                              configs?.location === "continent"
-                                ? "block"
-                                : "none",
-                          }}
-                        >
-                          <ListWithTags
-                            // @ts-ignore
-                            list={continents}
-                            setConfigs={setConfigs}
-                            configs={configs}
-                            id="continents"
-                            helpText=""
-                            placeholder="Select continents"
-                          />
-                        </div>
-                        <div
-                          style={{
-                            display:
-                              configs?.location === "country"
-                                ? "block"
-                                : "none",
-                          }}
-                        >
-                          <ListWithTags
-                            list={countries}
-                            setConfigs={setConfigs}
-                            configs={configs}
-                            id="countries"
-                            helpText=""
-                            placeholder="Select countries"
-                          />
-                        </div>
+                    <Select
+                      label="Display popup logic"
+                      labelHidden
+                      options={[
+                        {
+                          label: "Outside",
+                          value: "except",
+                        },
+                        {
+                          label: "Inside",
+                          value: "include",
+                        },
+                      ]}
+                      onChange={(value) =>
+                        setLocalConfigs((current: typeof localConfigs) => ({
+                          ...current,
+                          reverseGeo: value === "include" ? true : false,
+                        }))
+                      }
+                      value={configs?.reverseGeo ? "include" : "except"}
+                    />
+                    <Select
+                      label="Location type"
+                      labelHidden
+                      options={[
+                        { label: "Continents", value: "continent" },
+                        { label: "Countries", value: "country" },
+                      ]}
+                      onChange={(value) =>
+                        setLocalConfigs((current: typeof localConfigs) => ({
+                          ...current,
+                          location: value,
+                        }))
+                      }
+                      value={configs?.location}
+                    />
+                    <div>
+                      <div
+                        style={{
+                          display:
+                            configs?.location === "continent"
+                              ? "block"
+                              : "none",
+                        }}
+                      >
+                        <ListWithTags
+                          // @ts-ignore
+                          list={continents}
+                          setConfigs={setLocalConfigs}
+                          configs={configs}
+                          id="continents"
+                          helpText=""
+                          placeholder="Select continents"
+                        />
                       </div>
-                    </InlineGrid>
-                  </div>
-                </InlineGrid>
-              )}
+                      <div
+                        style={{
+                          display:
+                            configs?.location === "country"
+                              ? "block"
+                              : "none",
+                        }}
+                      >
+                        <ListWithTags
+                          list={countries}
+                          setConfigs={setLocalConfigs}
+                          configs={configs}
+                          id="countries"
+                          helpText=""
+                          placeholder="Select countries"
+                        />
+                      </div>
+                    </div>
+                  </InlineGrid>
+                </div>
+              </InlineGrid>
               <InlineStack align="end">
                 <Button tone="success" onClick={saveConfigs} loading={loading}>
                   Save
@@ -472,19 +452,15 @@ export default function PopupDisplaySettings({
                             },
                           ]}
                           onChange={(value) =>
-                            setPageVisibility((current) => ({
-                              ...current,
-                              hide_on_allowed_pages:
-                                value === "hide" ? true : false,
-                            }))
+                            setLocalHidePages(value === "hide" ? true : false)
                           }
                           value={
-                            pageVisibility?.hide_on_allowed_pages
+                            localHidePages
                               ? "hide"
                               : "show"
                           }
                         />
-                        <CustomComboBox
+                        {/* <CustomComboBox
                           disabled={!isProPlan}
                           optionsList={pageTemplates}
                           defaultSelected={["all"]}
@@ -495,7 +471,7 @@ export default function PopupDisplaySettings({
                               allowed_pages: value,
                             }))
                           }
-                        />
+                        /> */}
                       </InlineGrid>
                     </div>
                   </InlineGrid>

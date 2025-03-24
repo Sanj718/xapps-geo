@@ -1,17 +1,10 @@
 import {
-  Box,
-  Card,
-  Layout,
-  Link,
-  List,
   Page,
-  Text,
   BlockStack,
   Tabs,
   Divider,
   useBreakpoints,
 } from "@shopify/polaris";
-import { TitleBar } from "@shopify/app-bridge-react";
 import { PageTitle } from "../../components/_common/PageTitle";
 import { getEmbedConst } from "../../components/_helpers";
 import {
@@ -21,10 +14,14 @@ import {
 } from "../../components/env";
 import { useMemo, useState } from "react";
 import RedirectItems from "../../components/popup-redirects/RedirectItems";
-import { ClientActionFunctionArgs, useActionData, useLoaderData, useOutletContext } from "@remix-run/react";
-import { authenticate } from "../../shopify.server";
-import { getAssets } from "../../components/_actions";
+import { useActionData, useLoaderData, useOutletContext } from "@remix-run/react";
+import { OutletContext, RedirectItem } from "app/components/_types";
+import ContentStyle from "app/components/popup-redirects/ContentStyle";
+import { handleActions } from "./_actions";
+import { handleLoaders } from "./_loaders";
 import tr from "../../components/locales.json";
+import PopupDisplaySettings from "app/components/popup-redirects/PopupDisplaySettings";
+
 
 const { EMBED_APP_ID, EMBED_APP_HANDLE } =
   getEmbedConst(PROD_EMBED_APP_ID, DEV_EMBED_APP_ID, RD_EMBED_APP_HANDLE) || {};
@@ -45,25 +42,8 @@ const defaultAllowedConfigs = {
   hide_on_allowed_pages: false,
 };
 
-import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
-import { OutletContext, RedirectItem } from "app/components/_types";
-import { createRedirect, deleteRedirect, getAllRedirects, getConfigs, reorderRedirect, updateRedirect, updateRedirectStatus } from "app/db-queries.server";
-import ContentStyle from "app/components/popup-redirects/ContentStyle";
-import { handleActions } from "./_actions";
-
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const { admin, session } = await authenticate.admin(request);
-  const allRedirects = await getAllRedirects({ shop: session.shop });
-  const configs = await getConfigs({ shop: session.shop });
-  // const { id } = params;
-  // const { admin, session } = await authenticate.admin(request);
-  // if (params.id === "new") {
-  //   return json({ discount: "new" });
-  // }
-  // const discount = await getDiscount(admin, id);
-  return { allRedirects, configs };
-};
-
+// [TODO] find correct way to add ts check here.
+export const loader = async (params) => handleLoaders(params);
 export const action = async (params) => handleActions(params);
 
 
@@ -72,13 +52,13 @@ export default function CustomRedirects() {
     useOutletContext<OutletContext>();
   const { allRedirects, configs } = useLoaderData<typeof loader>();
   const actionData = useActionData();
-  const [errors, setErrors] = useState([]);
   const [toastData, setToastData] = useState({ msg: "", error: false });
-  const [initialLoading, setInitialLoading] = useState(false);
   const [active, setActive] = useState(null);
   const [redirects, setRedirects] = useState<RedirectItem[]>([]);
   const [selectedTab, setSelectedTab] = useState(0);
   const { smUp } = useBreakpoints();
+  // const [initialLoading, setInitialLoading] = useState(false);
+  // const [errors, setErrors] = useState([]);
 
   useMemo(() => {
     if (allRedirects?.status) {
@@ -153,7 +133,7 @@ export default function CustomRedirects() {
       <PageTitle
         title="Custom redirects"
         status={active}
-        loading={initialLoading}
+        loading={false}
         embedPath={`${EMBED_APP_ID}/${EMBED_APP_HANDLE}`}
       />
       <br />
@@ -173,25 +153,17 @@ export default function CustomRedirects() {
             {smUp ? <Divider /> : null}
             <ContentStyle
               redirects={redirects}
-              // reFetch={setRefetchSettings}
               configs={configs}
-            // setConfigs={setLocalConfigs}
-            // advancedConfigs={localAdvancedConfigs}
-            // setAdvancedConfigs={setLocalAdvancedConfigs}
-            // secondaryLocales={secondaryLocales}
-            // setToastData={setToastData}
             />
-            {/* {smUp ? <Divider /> : null}
+            {smUp ? <Divider /> : null}
             <PopupDisplaySettings
-              initialLoading={initialLoading}
-              reFetch={setRefetchSettings}
-              configs={localConfigs}
-              setConfigs={setLocalConfigs}
-              advancedConfigs={localAdvancedConfigs}
-              pageVisibility={localPageVisibility}
-              setPageVisibility={setLocalPageVisibility}
-              setToastData={setToastData}
-            /> */}
+              configs={configs}
+              // setConfigs={setLocalConfigs}
+              // advancedConfigs={localAdvancedConfigs}
+              // pageVisibility={localPageVisibility}
+              // setPageVisibility={setLocalPageVisibility}
+              // setToastData={setToastData}
+            />
             {/* {smUp ? <Divider /> : null}
             <OtherSettings
               originConfigs={configs}

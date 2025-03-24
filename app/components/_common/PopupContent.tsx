@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect, useState } from "react";
+import React from "react";
 import {
   BlockStack,
   Button,
@@ -9,9 +9,13 @@ import {
   Tooltip,
 } from "@shopify/polaris";
 import { LanguageIcon } from "@shopify/polaris-icons";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+// import ReactQuill from "react-quill";
+// import "react-quill/dist/quill.snow.css";
 import "../../assets/custom.scss"
+import TextEditor from "./TextEditor.client";
+import { useOutletContext } from "@remix-run/react";
+import { OutletContext } from "../_types";
+import { planParser } from "../_helpers";
 
 interface PopupContentProps {
   titleLabel?: string;
@@ -39,14 +43,8 @@ export default function PopupContent({
   titleDisabled = false,
   textDisabled = false,
 }: PopupContentProps) {
-  const toolbarOptions = [
-    // [{ header: [2, 3, 4, 5, 6, false] }],
-    ["bold", "italic", "underline", "strike"],
-    ["link"],
-    [{ color: [] }, { background: [] }],
-    [{ align: [] }],
-    ["clean"],
-  ];
+  const { activePlan } = useOutletContext<OutletContext>();
+  const { isFreePlan } = planParser(activePlan);
   const toolTipContent = (
     <small>
       Translate your content into multiple languages supported by your store.
@@ -93,13 +91,7 @@ export default function PopupContent({
                   </Tooltip>
                 ) : null}
               </InlineStack>
-              <ReactQuill className="text-editor"
-                theme="snow"
-                style={{ background: "#fff" }}
-                value={textValue}
-                onChange={textOnChange}
-                modules={{ toolbar: toolbarOptions }} />
-
+              <TextEditor textValue={textValue} textOnChange={isFreePlan ? undefined : textOnChange} disabled={isFreePlan} />
             </BlockStack>
             {textHelpText !== "" ? (
               <Text as="p" variant="bodyXs" tone="subdued">

@@ -112,8 +112,7 @@ export default function ImageManager({
     plural: "assets",
   };
 
-  const { assetsDataLoading } = loadingStates(fetcher, [ACTIONS.AssetsData]) as LoadingStates;
-  console.log("assetsDataLoading", files);
+  const loading = loadingStates(fetcher, [ACTIONS.AssetsData]) as LoadingStates;
   return (
     <InlineGrid gap="200" alignItems="center">
       <InlineStack align="space-between" gap="100">
@@ -143,7 +142,7 @@ export default function ImageManager({
         }}
       >
         <ResourceList
-          loading={assetsDataLoading}
+          loading={loading[ACTIONS.AssetsData + "Loading"]}
           resourceName={resourceName}
           items={files || []}
           renderItem={renderItem}

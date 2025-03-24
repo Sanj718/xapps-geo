@@ -13,8 +13,8 @@ interface Shop {
 }
 
 interface InitialConfigs extends Shop {
-  basic_configs: any;
-  advanced_configs?: any;
+  basicConfigs: any;
+  advancedConfigs?: any;
 }
 
 interface AllRedirects extends Shop {
@@ -401,9 +401,10 @@ export const getConfigs = async ({ shop }: Shop): Promise<DBResponse> => {
 
 export const createUpdateConfigs = async ({
   shop,
-  basic_configs,
-  advanced_configs = null,
+  basicConfigs,
+  advancedConfigs = null,
 }: InitialConfigs): Promise<DBResponse> => {
+  console.log(typeof basicConfigs, typeof advancedConfigs);
   try {
     const activeShop = await prisma.activeShops.findUnique({
       where: { shop },
@@ -413,17 +414,19 @@ export const createUpdateConfigs = async ({
     if (!activeShop) {
       throw new Error("Shop not found");
     }
+    const basicConfigsString = basicConfigs ? JSON.stringify(basicConfigs) : null
+    const advancedConfigsString = advancedConfigs ? JSON.stringify(advancedConfigs) : null
 
     const result = await prisma.configs.upsert({
       where: { shopId: activeShop.id },
       update: {
-        basicConfigs: basic_configs,
-        advancedConfigs: advanced_configs,
+        basicConfigs: basicConfigsString,
+        advancedConfigs: advancedConfigsString,
       },
       create: {
         shopId: activeShop.id,
-        basicConfigs: basic_configs,
-        advancedConfigs: advanced_configs,
+        basicConfigs: basicConfigsString,
+        advancedConfigs: advancedConfigsString,
       },
     });
 

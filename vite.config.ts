@@ -2,6 +2,8 @@ import { vitePlugin as remix } from "@remix-run/dev";
 import { installGlobals } from "@remix-run/node";
 import { defineConfig, type UserConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
+// import monacoEditorEsmPlugin from 'vite-plugin-monaco-editor-esm'
+
 
 installGlobals({ nativeFetch: true });
 
@@ -46,6 +48,9 @@ export default defineConfig({
       allow: ["app", "node_modules"],
     },
   },
+  optimizeDeps: {
+    include: ['@uiw/react-codemirror']
+  },
   plugins: [
     remix({
       ignoredRouteFiles: ["**/.*"],
@@ -59,6 +64,7 @@ export default defineConfig({
       },
     }),
     tsconfigPaths(),
+    // monacoEditorEsmPlugin(), 
   ],
   build: {
     assetsInlineLimit: 0,

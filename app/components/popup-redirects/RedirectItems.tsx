@@ -13,7 +13,6 @@ import {
   InlineStack,
   ResourceItem,
   ResourceList,
-  SkeletonDisplayText,
   Text,
   Tooltip,
 } from "@shopify/polaris";
