@@ -10,7 +10,7 @@ import {
 import { ThemeEditIcon } from "@shopify/polaris-icons";
 import React, { useState } from "react";
 import { Modal, TitleBar } from "@shopify/app-bridge-react";
-import { default_basic_configs, loadingStates, planParser, requestHeaders } from "../_helpers";
+import { default_advanced_configs, default_basic_configs, loadingStates, planParser, requestHeaders } from "../_helpers";
 import PopupContent from "../_common/PopupContent";
 import { useNavigation, useOutletContext, useSubmit } from "@remix-run/react";
 import { Asset, LoadingStates, OutletContext, RedirectItem } from "../_types";
@@ -38,8 +38,8 @@ export default function ContentStyle({
   const navigation = useNavigation();
   const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
   const [customizePopupVisibilityChange, setCustomizePopupVisibilityChange] = useState(false);
-  const [localConfigs, setLocalConfigs] = useState(basicConfigs);
-  const [localAdvancedConfigs, setLocalAdvancedConfigs] = useState(advancedConfigs);
+  const [localConfigs, setLocalConfigs] = useState({ ...default_basic_configs, ...basicConfigs });
+  const [localAdvancedConfigs, setLocalAdvancedConfigs] = useState({ ...default_advanced_configs, ...advancedConfigs });
   const secondaryLocales = shopInfo?.shopLocales?.filter(
     (item) => !item.primary,
   );
@@ -63,10 +63,11 @@ export default function ContentStyle({
       ...current,
       icon: assets.url
     }));
+    shopify.modal.hide("icon-upload-popup");
   }
 
   const loading = loadingStates(navigation, [ACTIONS.CreateUpdateConfigs]) as LoadingStates;
- 
+
   return (
     <>
       <InlineGrid columns={{ xs: "1fr", md: "auto  70%" }} gap="400">
@@ -100,7 +101,7 @@ export default function ContentStyle({
             }
             basicConfigs={
               !isFreePlan
-                ? basicConfigs
+                ? { ...default_basic_configs, ...basicConfigs }
                 : {
                   ...default_basic_configs,
                   title: basicConfigs?.title,
@@ -109,7 +110,7 @@ export default function ContentStyle({
                   showFlag: basicConfigs?.showFlag,
                 }
             }
-            advancedConfigs={isProPlan ? advancedConfigs : {}}
+            advancedConfigs={isProPlan ? { ...default_advanced_configs, ...advancedConfigs } : {}}
             customCSSClass="in-page"
           />
           <InlineStack align="end">

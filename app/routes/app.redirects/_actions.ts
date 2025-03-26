@@ -1,6 +1,6 @@
 import { ActionFunctionArgs } from "@remix-run/node";
 import { ACTIONS, getAssets } from "app/components/_actions";
-import { createRedirect, deleteRedirect, updateRedirect, updateRedirectStatus, reorderRedirect, createUpdateConfigs } from "app/db-queries.server";
+import { createRedirect, deleteRedirect, updateRedirect, updateRedirectStatus, reorderRedirect, createUpdateConfigs, createUpdateAllowedPages } from "app/db-queries.server";
 import { authenticate } from "app/shopify.server";
 
 export async function handleActions({ request }: ActionFunctionArgs) {
@@ -13,10 +13,15 @@ export async function handleActions({ request }: ActionFunctionArgs) {
     }
 
     if (_action === ACTIONS.CreateUpdateConfigs) {
-        console.log("action", data)
         const response = await createUpdateConfigs({ shop: session.shop, ...data });
         return { _action, ...response };
     }
+
+    if (_action === ACTIONS.CreateAllowedPages) {
+        const response = await createUpdateAllowedPages({ shop: session.shop, ...data });
+        return { _action, ...response };
+    }
+
     return {};
 
 }

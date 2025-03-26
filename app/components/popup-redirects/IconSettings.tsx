@@ -36,6 +36,7 @@ export default function IconSettings({ configs, setConfigs, isFreePlan }: IconSe
         monospaced
         selectTextOnFocus
         label="Icon url"
+        labelAction={{content: "remove", onAction: () => setConfigs((current) => ({...current, icon: ""}))}}
         value={
           configs?.icon
             ? configs?.icon === OLD_DEFAULT_ICON

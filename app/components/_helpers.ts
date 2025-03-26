@@ -82,6 +82,11 @@ export const default_advanced_configs = {
   html_id: "",
 };
 
+export const default_allowed_configs = {
+  allowed_pages: ["all"],
+  hide_on_allowed_pages: false,
+};
+
 export function hexToRGB(h: string) {
   let r = 0,
     g = 0,

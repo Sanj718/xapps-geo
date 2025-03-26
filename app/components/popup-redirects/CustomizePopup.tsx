@@ -30,7 +30,7 @@ import RedirectsPopupPreview from "./RedirectsPopupPreview";
 import "../../assets/custom.scss"
 import CodeEditor from "../_common/CodeEditor.client";
 
-
+//[TODO] add correct types
 interface CustomizePopupProps {
     visibilityChange: boolean;
     redirects: any[];
@@ -65,7 +65,7 @@ export default function CustomizePopup({ visibilityChange, redirects, configs, s
                         icon={ImageAddIcon}
                         disabled={isFreePlan}
                     >
-                        Upload
+                        Select
                     </Button>
                     <Tooltip
                         width="wide"

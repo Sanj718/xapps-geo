@@ -29,6 +29,11 @@ interface ReorderRedirects extends Shop {
   ids: number[]
 }
 
+interface AllowedPagesProps extends Shop {
+  allowedPages: any;
+  hideOnAllowedPages?: boolean;
+}
+
 // App Plans
 // Free  - 3
 // Basic - 1
@@ -427,6 +432,43 @@ export const createUpdateConfigs = async ({
         shopId: activeShop.id,
         basicConfigs: basicConfigsString,
         advancedConfigs: advancedConfigsString,
+      },
+    });
+
+    return { status: result ? true : false, data: result };
+  } catch (error: any) {
+    console.error(error);
+    return { status: false, error: (error as Error).toString() };
+  }
+};
+
+export const createUpdateAllowedPages = async ({
+  shop,
+  allowedPages,
+  hideOnAllowedPages = false,
+}: AllowedPagesProps): Promise<DBResponse> => {
+  try {
+    const activeShop = await prisma.activeShops.findUnique({
+      where: { shop },
+      select: { id: true },
+    });
+
+    if (!activeShop) {
+      throw new Error("Shop not found");
+    }
+
+    const allowedPagesString = allowedPages ? JSON.stringify(allowedPages) : null;
+
+    const result = await prisma.configs.upsert({
+      where: { shopId: activeShop.id },
+      update: {
+        allowedPages: allowedPagesString,
+        hideOnAllowedPages,
+      },
+      create: {
+        shopId: activeShop.id,
+        allowedPages: allowedPagesString,
+        hideOnAllowedPages,
       },
     });
 

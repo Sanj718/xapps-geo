@@ -18,6 +18,7 @@ export const ACTIONS = {
   ToggleRedirectStatus: "toggleRedirectStatus",
   ReorderRedirect: "reorderRedirect",
   CreateUpdateConfigs: "createUpdateConfigs",
+  CreateAllowedPages: "createAllowedPages",
 }
 
 export const getAssets = async ({ admin, data }: GetAssetsParams) => {

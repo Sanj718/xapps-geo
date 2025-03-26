@@ -37,10 +37,7 @@ const mainTabs = [
   },
 ];
 
-const defaultAllowedConfigs = {
-  allowed_pages: ["all"],
-  hide_on_allowed_pages: false,
-};
+
 
 // [TODO] find correct way to add ts check here.
 export const loader = async (params) => handleLoaders(params);
