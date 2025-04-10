@@ -38,7 +38,6 @@ import { ActionReturn, LoadingStates, RedirectItem } from "../_types";
 
 interface RedirectItemsProps {
   redirects: any;
-  setToastData: any;
 }
 interface DragEvent {
   currentTarget: {
@@ -53,7 +52,6 @@ const resourceName = {
 
 export default function RedirectItems({
   redirects,
-  setToastData,
 }: RedirectItemsProps) {
   const submit = useSubmit();
   const navigation = useNavigation();
@@ -257,7 +255,6 @@ export default function RedirectItems({
         <Box padding="400">
           <AppProvider i18n={{}} apiKey={""}>
             <PopupRedirectForm
-              setToastData={setToastData}
               redirects={redirects}
             />
           </AppProvider>
@@ -270,7 +267,6 @@ export default function RedirectItems({
         <Box padding="400">
           <AppProvider i18n={{}} apiKey={""}>
             <PopupRedirectForm
-              setToastData={setToastData}
               redirects={redirects}
               editItem={editRedirect}
             />

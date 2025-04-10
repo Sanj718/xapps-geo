@@ -19,7 +19,7 @@ export default function PreviewBannerNote({ type = "custom" }) {
       type === "markets" ? MK_EMBED_APP_HANDLE : RD_EMBED_APP_HANDLE,
     ) || {};
   return (
-    <Banner>
+    <Banner tone="info">
       <Text as="p" variant="bodySm">
         Please note that certain UI elements (such as the flag and [[country]])
         and styles in the preview may differ from those on the live site, as the

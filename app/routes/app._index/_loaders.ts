@@ -1,33 +1,17 @@
-// import { resp } from "../../components/_helpers";
-import type { AdminApiContext } from "@shopify/shopify-app-remix/server";
-import { resp } from "../../components/_helpers";
+import stripJsonComments from "strip-json-comments";
+import { authenticate } from "app/shopify.server";
+import { LoaderFunctionArgs } from "@remix-run/node";
+import { getThemeEmbed } from "app/admin-queries.server";
 
 
-export async function getThemeEmbed(admin: AdminApiContext) {
-    if (!admin) return resp(false, null, "admin not defined");
-    const response = await admin.graphql(
-        `#graphql
-        query {
-            themes(first: 1, roles: [MAIN]) {
-                nodes {
-                    id
-                    files(
-                    filenames: ["config/settings_data.json"]
-                    first: 1
-                    ) {
-                    nodes {
-                        body {
-                        ... on OnlineStoreThemeFileBodyText {
-                            content
-                        } 
-                        }
-                    }
-                    }
-                }
-            }
-        }`,
-    );
+export async function handleLoaders({ request }: LoaderFunctionArgs) {
+    const { admin, session } = await authenticate.admin(request);
+    const themeCode = await getThemeEmbed({ admin });
+    const themeEmbedData =
+        themeCode && JSON.parse(stripJsonComments(themeCode) || "{}");
 
-    const responseJson = await response.json();
-    return responseJson?.data?.themes?.nodes[0]?.files?.nodes[0]?.body?.content;
+    return {
+        themeCode,
+        themeEmbedData,
+    };
 }

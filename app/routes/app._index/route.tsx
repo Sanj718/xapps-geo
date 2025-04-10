@@ -1,14 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import stripJsonComments from "strip-json-comments";
 import {
   useActionData,
-  useFetcher,
   useLoaderData,
   useNavigate,
   useNavigation,
   useOutletContext,
   useSubmit,
-  Navigation,
 } from "@remix-run/react";
 import {
   Page,
@@ -38,7 +35,6 @@ import {
 import card1 from "../../assets/card1.svg";
 import card2 from "../../assets/card2.svg";
 import rateCard from "../../assets/rateCard.svg";
-import { authenticate } from "../../shopify.server";
 import {
   getEmbedConst,
   planParser,
@@ -48,7 +44,6 @@ import {
   requestHeaders,
   loadingStates,
 } from "../../components/_helpers";
-import { getThemeEmbed } from "./_loaders";
 import {
   PROD_EMBED_APP_ID,
   DEV_EMBED_APP_ID,
@@ -56,8 +51,10 @@ import {
   MK_EMBED_APP_HANDLE,
 } from "../../components/env";
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
-import type { SubmitOptions } from "@remix-run/react";
 import { ActionReturn, LoadingStates, OutletContext } from "app/components/_types";
+import { handleLoaders } from "./_loaders";
+import { handleActions } from "./_actions";
+import { ACTIONS } from "app/components/_actions";
 
 declare global {
   interface Window {
@@ -113,30 +110,9 @@ interface StatsProps {
   autoPeriod?: string;
 }
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const { admin, session } = await authenticate.admin(request);
-  const themeCode = await getThemeEmbed(admin);
-  const themeEmbedData =
-    themeCode && JSON.parse(stripJsonComments(themeCode) || "{}");
+export const loader = async (params: LoaderFunctionArgs) => handleLoaders(params);
 
-  return {
-    themeCode,
-    themeEmbedData,
-  };
-};
-
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const { getAnalyticsData } = await import("../../db-queries.server");
-  const { admin, session } = await authenticate.admin(request);
-  const { _action, data } = (await request?.json()) || {};
-
-  if (_action === "analyticsData") {
-    const response = await getAnalyticsData({ shop: session.shop });
-    return { _action, ...response };
-  }
-
-  return {};
-};
+export const action = async (params: ActionFunctionArgs) => handleActions(params);
 
 export default function Index() {
   const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
@@ -178,7 +154,7 @@ export default function Index() {
   useEffect(() => {
     submit(
       {
-        _action: "analyticsData",
+        _action: ACTIONS.AnalyticsData,
       },
       requestHeaders,
     );
@@ -274,7 +250,7 @@ export default function Index() {
     }
   }
 
-  const { analyticsDataLoading } = loadingStates(navigation, ["analyticsData"]) as LoadingStates;
+  const loading = loadingStates(navigation, [ACTIONS.AnalyticsData]) as LoadingStates;
 
   return (
     <Page>
@@ -375,7 +351,7 @@ export default function Index() {
       <br />
       <InlineGrid columns={{ xs: 1, sm: 1, md: 2, lg: 2, xl: 2 }} gap="400">
         <Stats
-          loading={analyticsDataLoading}
+          loading={loading[ACTIONS.AnalyticsData + "Loading"]}
           title="Custom redirects performance"
           totalPeriod={periodCustomRedirects}
           totamlNum={totalCustomPopup + totalCustomAuto}
@@ -385,7 +361,7 @@ export default function Index() {
           autoPeriod={periodCustomAutoRedirects}
         />
         <Stats
-          loading={analyticsDataLoading}
+          loading={loading[ACTIONS.AnalyticsData + "Loading"]}
           title="Markets redirects performance"
           totalPeriod={periodMarketsRedirects}
           totamlNum={totalMarketsPopup + totalMarketsAuto}

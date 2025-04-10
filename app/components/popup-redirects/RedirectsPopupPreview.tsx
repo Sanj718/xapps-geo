@@ -53,7 +53,6 @@ export default function RedirectsPopupPreview({
   basicConfigs,
   advancedConfigs,
   customCSSClass = "",
-  reRender
 }: RedirectsPopupPreviewProps) {
   const [containerWidth, setContainerWidth] = useState(500);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -103,28 +102,28 @@ export default function RedirectsPopupPreview({
     setDropdownOpen(!dropdownOpen);
   }, [dropdownOpen]);
 
-  useEffect(() => {
-    const scrollableElement = document.querySelector(".Polaris-Modal__Body");
-    const previewElement = outerRef.current as HTMLElement | null;
+  // useEffect(() => {
+  //   const scrollableElement = document.querySelector(".Polaris-Modal__Body");
+  //   const previewElement = outerRef.current as HTMLElement | null;
 
-    const handleScroll = () => {
-      if (scrollableElement && previewElement) {
-        previewElement.style.top =
-          scrollableElement.scrollTop > 4
-            ? scrollableElement.scrollTop + "px"
-            : "4px";
-      }
-    };
+  //   const handleScroll = () => {
+  //     if (scrollableElement && previewElement) {
+  //       previewElement.style.top =
+  //         scrollableElement.scrollTop > 4
+  //           ? scrollableElement.scrollTop + "px"
+  //           : "4px";
+  //     }
+  //   };
 
-    if (scrollableElement) {
-      scrollableElement.addEventListener("scroll", handleScroll);
-    }
-    return () => {
-      if (scrollableElement) {
-        scrollableElement.removeEventListener("scroll", handleScroll);
-      }
-    };
-  }, []);
+  //   if (scrollableElement) {
+  //     scrollableElement.addEventListener("scroll", handleScroll);
+  //   }
+  //   return () => {
+  //     if (scrollableElement) {
+  //       scrollableElement.removeEventListener("scroll", handleScroll);
+  //     }
+  //   };
+  // }, []);
 
   useEffect(() => {
     const updateWidth = () => {
@@ -152,7 +151,7 @@ export default function RedirectsPopupPreview({
         className={`ngr-preview-container ${customCSSClass}`}
         style={{ "--c-width": `${containerWidth}` } as React.CSSProperties}
       >
-        <div id="ngr-modal-preview" ref={outerRef} style={{ top: "4px" }}>
+        <div id="ngr-modal-preview" ref={outerRef} >
           {!disable_basic_css && (
             <style
               dangerouslySetInnerHTML={{

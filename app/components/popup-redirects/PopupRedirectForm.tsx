@@ -50,7 +50,6 @@ interface FieldValidation {
 
 interface PopupRedirectFormProps {
   editItem?: RedirectItem;
-  setToastData: (data: { error: boolean; msg: string }) => void;
   redirects: any[];
 }
 
@@ -74,7 +73,6 @@ const defaultRedirectItem = {
 
 export default function PopupRedirectForm({
   editItem = undefined,
-  setToastData,
   redirects = [],
 }: PopupRedirectFormProps) {
 
@@ -112,19 +110,19 @@ export default function PopupRedirectForm({
       // if (redirects?.length >= 4 && isBasicPlan) {
       //   msg = tr.responses.limit_error;
       // }
-      setToastData({ error: false, msg: tr.responses.rd_create_success });
+      // setToastData({ error: false, msg: tr.responses.rd_create_success });
       shopify.modal.hide("add-redirect");
       setRedirectItem(defaultRedirectItem);
       setSelectedCountry("--");
     }
     if (actionData?._action === "deleteRedirect" && actionData?.status) {
-      setToastData({ error: false, msg: tr.responses.rd_delete_success });
+      // setToastData({ error: false, msg: tr.responses.rd_delete_success });
       shopify.modal.hide("edit-redirect");
       setRedirectItem(defaultRedirectItem);
       setSelectedCountry("--");
     }
     if (actionData?._action === "updateRedirect" && actionData?.status) {
-      setToastData({ error: false, msg: tr.responses.rd_update_success });
+      // setToastData({ error: false, msg: tr.responses.rd_update_success });
       shopify.modal.hide("edit-redirect");
       setRedirectItem(defaultRedirectItem);
       setSelectedCountry("--");

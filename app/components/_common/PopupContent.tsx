@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import {
   BlockStack,
   Button,
@@ -50,6 +50,7 @@ export default function PopupContent({
       Translate your content into multiple languages supported by your store.
     </small>
   );
+
   return (
     <InlineGrid gap="400">
       <BlockStack gap="0">
@@ -91,7 +92,9 @@ export default function PopupContent({
                   </Tooltip>
                 ) : null}
               </InlineStack>
-              <TextEditor textValue={textValue} textOnChange={isFreePlan ? undefined : textOnChange} disabled={isFreePlan} />
+              <Suspense fallback={<div>Loading editor...</div>}>
+                <TextEditor textValue={textValue} textOnChange={isFreePlan ? () => { } : textOnChange} disabled={isFreePlan} />
+              </Suspense>
             </BlockStack>
             {textHelpText !== "" ? (
               <Text as="p" variant="bodyXs" tone="subdued">

@@ -50,15 +50,10 @@ const pageTemplates = [
   "search",
   "account pages",
 ];
+
+//[TODO] find correct way to add ts check here.
 interface PopupDisplaySettingsProps {
-  configs: {
-    data: {
-      basicConfigs?: Record<string, any>;
-      advancedConfigs?: Record<string, any>;
-      hideOnAllowedPages?: boolean;
-      allowedPages?: string[];
-    }[];
-  };
+  configs: any
 }
 
 export default function PopupDisplaySettings({
@@ -71,10 +66,7 @@ export default function PopupDisplaySettings({
   const { basicConfigs, advancedConfigs, hideOnAllowedPages, allowedPages } = configs?.data[0] || {}
   const submit = useSubmit()
   const navigation = useNavigation();
-  // const [loading, setLoading] = useState(false);
-  const [visibilityLoading, setVisibilityLoading] = useState(false);
   const [localConfigs, setLocalConfigs] = useState({ ...default_basic_configs, ...basicConfigs, });
-  const [localAdvancedConfigs, setLocalAdvancedConfigs] = useState({ ...default_advanced_configs, ...advancedConfigs });
   const [localHidePages, setLocalHidePages] = useState<boolean>(hideOnAllowedPages || false);
   const [localAllowedPages, setLocalAllowedPages] = useState<string[]>(allowedPages || ["all"]);
 
@@ -115,7 +107,7 @@ export default function PopupDisplaySettings({
         _action: ACTIONS.CreateUpdateConfigs,
         data: {
           basicConfigs: localConfigs,
-          advancedConfigs: localAdvancedConfigs,
+          advancedConfigs: advancedConfigs,
         },
       },
       requestHeaders,

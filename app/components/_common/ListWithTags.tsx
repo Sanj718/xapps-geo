@@ -82,7 +82,7 @@ export default function ListWithTags({
     setSelectedOptions(options);
     setConfigs({ ...configs, [id]: options });
   }
-  console.log("selectedOptions", selectedOptions)
+
   return (
     <div>
       <Combobox

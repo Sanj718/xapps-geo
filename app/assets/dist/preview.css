@@ -1,0 +1,79 @@
+#ngr-markets-modal-preview {
+  position: relative;
+  min-height: 500px;
+  overflow: auto;
+  margin-top: 1rem;
+}
+#ngr-markets-modal-preview .ngr-markets-modal {
+  position: initial;
+}
+#ngr-markets-modal-preview .ngr-markets-modal.sticky-bar {
+  position: absolute;
+}
+#ngr-markets-modal-preview .ngr-markets-modal__content {
+  padding: 2rem;
+  box-shadow: 0 0 3px 0px #ccc;
+}
+#ngr-markets-modal-preview .ngr-markets-modal__content p {
+  margin: 1rem 0;
+}
+
+.ngr-preview-container {
+  width: 100%;
+  /* or a fixed width if you prefer */
+  max-width: 1000px;
+  /* Set max width to 1440px or any desired size */
+  margin: 0 auto;
+  /* Center the container */
+  position: sticky;
+  top: 0;
+  overflow: hidden;
+  height: 100vh;
+  border-radius: 10px;
+  margin-top: 1rem;
+}
+
+.ngr-preview-container.in-page {
+  min-height: auto;
+  height: auto;
+  position: static;
+}
+.ngr-preview-container.in-page #ngr-modal-preview {
+  margin-top: -4rem;
+  margin-bottom: -4rem;
+  min-height: 450px;
+}
+
+#ngr-modal-preview {
+  transform-origin: center left;
+  /* Scale from the top-left corner */
+  transform: scale(calc(var(--c-width) / 1000));
+  /* Scale relative to a 1440px-wide viewport */
+  width: 1000px;
+  /* Set width to the original 1440px */
+  height: 100%;
+  position: relative;
+  overflow: auto;
+  background: #cccc;
+  border: 1px solid #ccc;
+}
+#ngr-modal-preview .ngr-modal {
+  position: absolute;
+}
+#ngr-modal-preview .ngr-modal.sticky-bar {
+  position: absolute;
+}
+#ngr-modal-preview .ngr-modal__content {
+  padding: 2rem;
+  box-shadow: 0 0 3px 0px #ccc;
+}
+#ngr-modal-preview .ngr-modal__content p {
+  margin: 1rem 0;
+}
+
+.ngr-inner-preview #ngr-modal-preview {
+  position: absolute;
+  top: 0;
+  transform: none;
+  width: 100%;
+}

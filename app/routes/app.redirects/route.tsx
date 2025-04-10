@@ -12,15 +12,20 @@ import {
   PROD_EMBED_APP_ID,
   RD_EMBED_APP_HANDLE,
 } from "../../components/env";
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import RedirectItems from "../../components/popup-redirects/RedirectItems";
-import { useActionData, useLoaderData, useOutletContext } from "@remix-run/react";
+import { Await, useActionData, useLoaderData, useOutletContext } from "@remix-run/react";
 import { OutletContext, RedirectItem } from "app/components/_types";
 import ContentStyle from "app/components/popup-redirects/ContentStyle";
 import { handleActions } from "./_actions";
 import { handleLoaders } from "./_loaders";
 import tr from "../../components/locales.json";
 import PopupDisplaySettings from "app/components/popup-redirects/PopupDisplaySettings";
+import OtherSettings from "app/components/popup-redirects/OtherSettings";
+import WidgetDisplayCustomRule from "app/components/popup-redirects/WidgetDisplayCustomRule";
+import ButtonDisplayCustomRule from "app/components/popup-redirects/ButtonDisplayCustomRule";
+import { ActionFunctionArgs } from "@remix-run/node";
+import { LoaderFunctionArgs } from "@remix-run/node";
 
 
 const { EMBED_APP_ID, EMBED_APP_HANDLE } =
@@ -40,14 +45,15 @@ const mainTabs = [
 
 
 // [TODO] find correct way to add ts check here.
-export const loader = async (params) => handleLoaders(params);
-export const action = async (params) => handleActions(params);
+export const loader = async (params: LoaderFunctionArgs) => handleLoaders(params);
+
+export const action = async (params: ActionFunctionArgs) => handleActions(params);
 
 
 export default function CustomRedirects() {
   const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
     useOutletContext<OutletContext>();
-  const { allRedirects, configs } = useLoaderData<typeof loader>();
+  const { allRedirects, configs, widgetEditorStatus, widgetEditorCode } = useLoaderData<typeof loader>();
   const actionData = useActionData();
   const [toastData, setToastData] = useState({ msg: "", error: false });
   const [active, setActive] = useState(null);
@@ -124,7 +130,7 @@ export default function CustomRedirects() {
     // }
   }, [actionData]);
 
-  console.log("shopInfo", configs);
+
   return (
     <Page>
       <PageTitle
@@ -143,43 +149,17 @@ export default function CustomRedirects() {
         <br />
         {selectedTab === 0 ? (
           <BlockStack gap={{ xs: "800", sm: "400" }}>
-            <RedirectItems
-              redirects={redirects}
-              setToastData={setToastData}
-            />
+            <RedirectItems redirects={redirects} />
             {smUp ? <Divider /> : null}
-            <ContentStyle
-              redirects={redirects}
-              configs={configs}
-            />
+            <ContentStyle redirects={redirects} configs={configs} />
             {smUp ? <Divider /> : null}
-            <PopupDisplaySettings
-              configs={configs}
-              // setConfigs={setLocalConfigs}
-              // advancedConfigs={localAdvancedConfigs}
-              // pageVisibility={localPageVisibility}
-              // setPageVisibility={setLocalPageVisibility}
-              // setToastData={setToastData}
-            />
-            {/* {smUp ? <Divider /> : null}
-            <OtherSettings
-              originConfigs={configs}
-              originAdvancedConfigs={advancedConfigs}
-              reFetch={setRefetchSettings}
-              configs={localConfigs}
-              setConfigs={setLocalConfigs}
-              setToastData={setToastData}
-            /> */}
-            {/* {smUp ? <Divider /> : null}
-            <WidgetDisplayCustomRule
-              appId={appId}
-              setToastData={setToastData}
-            />
+            <PopupDisplaySettings configs={configs} />
             {smUp ? <Divider /> : null}
-            <ButtonDisplayCustomRule
-              appId={appId}
-              setToastData={setToastData}
-            /> */}
+            <OtherSettings configs={configs} />
+            {smUp ? <Divider /> : null}
+            <WidgetDisplayCustomRule status={widgetEditorStatus} code={widgetEditorCode} />
+            {smUp ? <Divider /> : null}
+            <ButtonDisplayCustomRule />
           </BlockStack>
         ) : (
           ""

@@ -8,110 +8,109 @@ import {
   Icon,
   InlineGrid,
   InlineStack,
+  Link,
   Text,
   TextField,
   Tooltip,
 } from "@shopify/polaris";
-import React, { useContext, useState } from "react";
-import { AppContext } from "../AppContext";
-import { getEmbedConst, planParser } from "../../helpers";
+import React, { useState } from "react";
 import { QuestionCircleIcon } from "@shopify/polaris-icons";
-import { CREATE_SHOP_CONFIGS } from "../../../helpers/endpoints";
-import tr from "../../helpers/translations.json";
-import { useAuthenticatedFetch } from "../../hooks";
-import { useAppBridge } from "@shopify/app-bridge-react";
-import { Redirect } from "@shopify/app-bridge/actions";
-import {
-  DEV_EMBED_APP_ID,
-  PROD_EMBED_APP_ID,
-  RD_EMBED_APP_HANDLE,
-} from "../../../env";
 import ExternalSettingsItem from "../_common/ExternalSettingsItem";
-import { PromoBadge } from "../PromoBadge";
+import PromoBadge from "../_common/PromoBadge";
+import { default_basic_configs, getEmbedConst, loadingStates, planParser, requestHeaders } from "../_helpers";
+import { useNavigate, useNavigation, useOutletContext, useSubmit } from "@remix-run/react";
+import { LoadingStates, OutletContext } from "../_types";
+import { DEV_EMBED_APP_ID, PROD_EMBED_APP_ID, RD_EMBED_APP_HANDLE } from "../env";
+import { ACTIONS } from "../_actions";
 
 const { EMBED_APP_ID, EMBED_APP_HANDLE } =
   getEmbedConst(PROD_EMBED_APP_ID, DEV_EMBED_APP_ID, RD_EMBED_APP_HANDLE) || {};
 
-export default function OtherSettings({
-  originConfigs,
-  originAdvancedConfigs,
-  reFetch,
-  configs,
-  setConfigs,
-  setToastData,
-}) {
-  const fetch = useAuthenticatedFetch();
-  const app = useAppBridge();
-  const redirect = Redirect.create(app);
-  const { activePlan } = useContext(AppContext);
-  const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
-  const [loading, setLoading] = useState(false);
+interface OtherSettingsProps {
+  configs: any;
+}
 
-  async function handleActivateEmbedRedirect() {
-    redirect?.dispatch(Redirect.Action.ADMIN_PATH, {
-      path: `/themes/current/editor?context=apps&activateAppId=${EMBED_APP_ID}/${EMBED_APP_HANDLE}`,
-      newContext: true,
-    });
-  }
+
+export default function OtherSettings({
+  configs,
+}: OtherSettingsProps) {
+  const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
+    useOutletContext<OutletContext>();
+  const { isFreePlan } = planParser(activePlan);
+  const { basicConfigs, advancedConfigs, hideOnAllowedPages, allowedPages } = configs?.data[0] || {}
+  const [localConfigs, setLocalConfigs] = useState({ ...default_basic_configs, ...basicConfigs, });
+  const submit = useSubmit()
+  const navigation = useNavigation();
 
   const settingsItems = [
     {
       label: "Preview mode",
       text: "You can activate the Preview mode to view your current popup in the Theme Customizer. This mode bypasses all GEO location rules, allowing you to see the popup as it appears.",
-      buttonAction: handleActivateEmbedRedirect,
+      url: `shopify://admin/themes/current/editor?context=apps&activateAppId=${EMBED_APP_ID}/${EMBED_APP_HANDLE}`
     },
     {
       label: "Emergency disable Popup",
       text: "Instantly deactivate the popup across your site in case of an urgent need, ensuring uninterrupted user experience.",
-      buttonAction: handleActivateEmbedRedirect,
+      url: `shopify://admin/themes/current/editor?context=apps&activateAppId=${EMBED_APP_ID}/${EMBED_APP_HANDLE}`
     },
     {
       label: "Custom Link/Button Icon",
       text: `Prepend custom icons to your links when the display rules are configured to "Manual," adding a personalized touch to your design.`,
-      buttonAction: handleActivateEmbedRedirect,
-      link: "#",
+      url: `shopify://admin/themes/current/editor?context=apps&activateAppId=${EMBED_APP_ID}/${EMBED_APP_HANDLE}`,
+      link: "https://geolocationredirects-xapps.tawk.help/article/how-to-add-custom-buttonlink-to-open-popup",
     },
   ];
 
   async function saveOtherConfigs() {
-    setLoading(true);
-    let error = true;
-    let msg = tr.responses.error;
-
-    try {
-      const response = await fetch(CREATE_SHOP_CONFIGS, {
-        headers: {
-          "Content-Type": "application/json",
+    submit(
+      {
+        _action: ACTIONS.CreateUpdateConfigs,
+        data: {
+          basicConfigs: localConfigs,
+          advancedConfigs: advancedConfigs,
         },
-        method: "post",
-        body: JSON.stringify({
-          basic_configs: {
-            ...originConfigs,
-            forward_url_params: configs?.forward_url_params,
-            custom_rell_attr: configs?.custom_rell_attr,
-            domain_redirection: configs?.domain_redirection,
-          },
-          advanced_configs: originAdvancedConfigs,
-        }),
-      });
-      const responseJson = await response.json();
+      },
+      requestHeaders,
+    );
+    // setLoading(true);
+    // let error = true;
+    // let msg = tr.responses.error;
 
-      if (responseJson?.status) {
-        error = false;
-        msg = tr.responses.settings_saved;
-        reFetch((n) => !n);
-      }
-    } catch (err) {
-      console.error("Fetch error:", err.message);
-    }
+    // try {
+    //   const response = await fetch(CREATE_SHOP_CONFIGS, {
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     method: "post",
+    //     body: JSON.stringify({
+    //       basic_configs: {
+    //         ...originConfigs,
+    //         forward_url_params: configs?.forward_url_params,
+    //         custom_rell_attr: configs?.custom_rell_attr,
+    //         domain_redirection: configs?.domain_redirection,
+    //       },
+    //       advanced_configs: originAdvancedConfigs,
+    //     }),
+    //   });
+    //   const responseJson = await response.json();
 
-    setToastData({
-      error,
-      msg,
-    });
-    setLoading(false);
+    //   if (responseJson?.status) {
+    //     error = false;
+    //     msg = tr.responses.settings_saved;
+    //     reFetch((n) => !n);
+    //   }
+    // } catch (err) {
+    //   console.error("Fetch error:", err.message);
+    // }
+
+    // setToastData({
+    //   error,
+    //   msg,
+    // });
+    // setLoading(false);
   }
-
+  
+  const loading = loadingStates(navigation, [ACTIONS.CreateUpdateConfigs]) as LoadingStates;
   return (
     <>
       <InlineGrid columns={{ xs: "1fr", md: "auto  70%" }} gap="400">
@@ -139,99 +138,101 @@ export default function OtherSettings({
               <TextField
                 label="SEO Link rel attribute"
                 helpText={
-                  <p>
+                  <Text as="p" variant="bodyXs">
                     For certain links on your site, you might want to tell
                     Google your relationship with the linked page.{" "}
-                    <a
+                    <Link
                       target="_blank"
-                      href="https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links"
+                      url="https://developers.google.com/search/docs/crawling-indexing/qualify-outbound-links"
                     >
                       Read more
-                    </a>
-                  </p>
+                    </Link>
+                  </Text>
                 }
                 autoComplete="false"
-                value={configs?.custom_rell_attr}
+                value={localConfigs?.custom_rell_attr}
                 disabled={isFreePlan}
                 onChange={
                   !isFreePlan
                     ? (value) =>
-                        setConfigs((current) => ({
-                          ...current,
-                          custom_rell_attr: value,
-                        }))
-                    : undefined
-                }
-              />
-              <Checkbox
-                disabled={isFreePlan}
-                label={
-                  <InlineStack gap="100" blockAlign="center">
-                    Forward URL Query params
-                    <Tooltip
-                      width="wide"
-                      content={
-                        <small>
-                          Retains current URL parameters when redirecting to
-                          another page.
-                        </small>
-                      }
-                    >
-                      <Icon source={QuestionCircleIcon} tone="subdued" />
-                    </Tooltip>
-                  </InlineStack>
-                }
-                checked={configs?.forward_url_params}
-                onChange={
-                  !isFreePlan
-                    ? (value) =>
-                        setConfigs((current) => ({
-                          ...current,
-                          forward_url_params: value,
-                        }))
+                      setLocalConfigs((current: typeof localConfigs) => ({
+                        ...current,
+                        custom_rell_attr: value,
+                      }))
                     : undefined
                 }
               />
               <Divider />
-              <Checkbox
-                disabled={isFreePlan}
-                label={
-                  <InlineStack gap="100" blockAlign="center">
-                    Global domain redirection
-                    <Tooltip
-                      width="wide"
-                      content={
-                        <small>
-                          Keeps you on the same page when switching to a new
-                          domain. For example, if you're on{" "}
-                          <code>site.com/about</code>, you'll be redirected to{" "}
-                          <code>new-site.com/about</code> without losing your
-                          path.{" "}
-                          <strong>Applied to all redirect buttons.</strong>
-                        </small>
-                      }
-                    >
-                      <Icon source={QuestionCircleIcon} tone="subdued" />
-                    </Tooltip>
-                  </InlineStack>
-                }
-                checked={configs?.domain_redirection}
-                onChange={
-                  !isFreePlan
-                    ? (value) =>
-                        setConfigs((current) => ({
+              <InlineStack gap="1200">
+                <Checkbox
+                  disabled={isFreePlan}
+                  label={
+                    <InlineStack gap="100" blockAlign="center">
+                      Forward URL Query params
+                      <Tooltip
+                        width="wide"
+                        content={
+                          <small>
+                            Retains current URL parameters when redirecting to
+                            another page.
+                          </small>
+                        }
+                      >
+                        <Icon source={QuestionCircleIcon} tone="subdued" />
+                      </Tooltip>
+                    </InlineStack>
+                  }
+                  checked={localConfigs?.forward_url_params}
+                  onChange={
+                    !isFreePlan
+                      ? (value) =>
+                        setLocalConfigs((current: typeof localConfigs) => ({
+                          ...current,
+                          forward_url_params: value,
+                        }))
+                      : undefined
+                  }
+                />
+
+                <Checkbox
+                  disabled={isFreePlan}
+                  label={
+                    <InlineStack gap="100" blockAlign="center">
+                      Global domain redirection
+                      <Tooltip
+                        width="wide"
+                        content={
+                          <small>
+                            Keeps you on the same page when switching to a new
+                            domain. For example, if you're on{" "}
+                            <code>site.com/about</code>, you'll be redirected to{" "}
+                            <code>new-site.com/about</code> without losing your
+                            path.{" "}
+                            <strong>Applied to all redirect buttons.</strong>
+                          </small>
+                        }
+                      >
+                        <Icon source={QuestionCircleIcon} tone="subdued" />
+                      </Tooltip>
+                    </InlineStack>
+                  }
+                  checked={localConfigs?.domain_redirection}
+                  onChange={
+                    !isFreePlan
+                      ? (value) =>
+                        setLocalConfigs((current: typeof localConfigs) => ({
                           ...current,
                           domain_redirection: value,
                         }))
-                    : undefined
-                }
-              />
+                      : undefined
+                  }
+                /></InlineStack>
             </InlineGrid>
             <InlineStack align="end">
               <Button
-                tone="success"
+                variant="primary"
                 onClick={!isFreePlan ? saveOtherConfigs : undefined}
-                loading={loading}
+                loading={loading[ACTIONS.CreateUpdateConfigs + "Loading"]}
                 disabled={isFreePlan}
               >
                 Save
@@ -241,12 +242,12 @@ export default function OtherSettings({
           <Card roundedAbove="sm">
             <BlockStack gap="600">
               {settingsItems.map(
-                ({ label, text, buttonAction, link }, index) => (
+                ({ label, text, link, url }, index) => (
                   <ExternalSettingsItem
                     key={index}
                     label={label}
                     text={text}
-                    action={buttonAction}
+                    url={url}
                     link={link}
                   />
                 )

@@ -1,3 +1,4 @@
+import { useOutletContext } from "@remix-run/react";
 import {
   Banner,
   BlockStack,
@@ -12,18 +13,21 @@ import {
   Text,
 } from "@shopify/polaris";
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { AppContext } from "../AppContext";
-import { planParser } from "../../helpers";
-import {
-  GET_BUTTON_EDITOR,
-  GET_BUTTON_EDITOR_STATUS,
-  UPDATE_BUTTON_EDITOR,
-  UPDATE_BUTTON_EDITOR_STATUS,
-} from "../../../helpers/endpoints";
-import tr from "../../helpers/translations.json";
-import { useAuthenticatedFetch } from "../../hooks";
-import { Editor } from "@monaco-editor/react";
-import { PromoBadge } from "../PromoBadge";
+import { OutletContext } from "../_types";
+import { planParser } from "../_helpers";
+import PromoBadge from "../_common/PromoBadge";
+// import { AppContext } from "../AppContext";
+// import { planParser } from "../../helpers";
+// import {
+//   GET_BUTTON_EDITOR,
+//   GET_BUTTON_EDITOR_STATUS,
+//   UPDATE_BUTTON_EDITOR,
+//   UPDATE_BUTTON_EDITOR_STATUS,
+// } from "../../../helpers/endpoints";
+// import tr from "../../helpers/translations.json";
+// import { useAuthenticatedFetch } from "../../hooks";
+// import { Editor } from "@monaco-editor/react";
+// import { PromoBadge } from "../PromoBadge";
 
 const defaultWidgetCode = `/*
   @property {object} geolocation - Geolocation data of user, example: {"country_name":"Canada","country":"CA","continent":"NA"}.
@@ -38,128 +42,128 @@ function run(geolocation, redirectButton) {
 }
 `;
 
-export default function ButtonDisplayCustomRule({ appId, setToastData }) {
-  const fetch = useAuthenticatedFetch();
-  const { activePlan } = useContext(AppContext);
-  const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
+export default function ButtonDisplayCustomRule() {
+  const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
+      useOutletContext<OutletContext>();
+    const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
   const [loading, setLoading] = useState(false);
   const [modalStatus, setModalStatus] = useState(false);
   const [customCode, setCustomCode] = useState("");
   const [customCodeStatus, setCustomCodeStatus] = useState("false");
 
   async function loadData() {
-    setLoading(true);
-    try {
-      const responseEditor = await fetch(GET_BUTTON_EDITOR);
-      const responseEditorJson = await responseEditor.json();
+    // setLoading(true);
+    // try {
+    //   const responseEditor = await fetch(GET_BUTTON_EDITOR);
+    //   const responseEditorJson = await responseEditor.json();
 
-      if (responseEditorJson?.status) {
-        const widgetEditorData =
-          responseEditorJson?.data?.body?.data?.appInstallation?.metafield
-            ?.value || "";
-        setCustomCode(widgetEditorData);
-      }
+    //   if (responseEditorJson?.status) {
+    //     const widgetEditorData =
+    //       responseEditorJson?.data?.body?.data?.appInstallation?.metafield
+    //         ?.value || "";
+    //     setCustomCode(widgetEditorData);
+    //   }
 
-      const responseEditorStatus = await fetch(GET_BUTTON_EDITOR_STATUS);
-      const responseEditorStatusJson = await responseEditorStatus.json();
+    //   const responseEditorStatus = await fetch(GET_BUTTON_EDITOR_STATUS);
+    //   const responseEditorStatusJson = await responseEditorStatus.json();
 
-      if (responseEditorStatusJson?.status) {
-        const widgetEditorStatus =
-          responseEditorStatusJson?.data?.body?.data?.appInstallation?.metafield
-            ?.value || "false";
-        setCustomCodeStatus(widgetEditorStatus);
-        if (widgetEditorStatus !== "false" && !isProPlan) {
-          const customAppId =
-            responseEditorStatusJson?.data?.body?.data?.appInstallation?.id;
-          handleCustomCodeStatus("false", customAppId);
-        }
-      }
-    } catch (err) {
-      console.log(err);
-    }
-    setLoading(false);
+    //   if (responseEditorStatusJson?.status) {
+    //     const widgetEditorStatus =
+    //       responseEditorStatusJson?.data?.body?.data?.appInstallation?.metafield
+    //         ?.value || "false";
+    //     setCustomCodeStatus(widgetEditorStatus);
+    //     if (widgetEditorStatus !== "false" && !isProPlan) {
+    //       const customAppId =
+    //         responseEditorStatusJson?.data?.body?.data?.appInstallation?.id;
+    //       handleCustomCodeStatus("false", customAppId);
+    //     }
+    //   }
+    // } catch (err) {
+    //   console.log(err);
+    // }
+    // setLoading(false);
   }
 
-  useMemo(() => {
-    loadData();
-  }, []);
+  // useMemo(() => {
+  //   loadData();
+  // }, []);
 
   async function handleCustomCodeStatus(value, appId) {
-    setLoading(true);
-    let error = true;
-    let msg = "Error: appId not found";
+    // setLoading(true);
+    // let error = true;
+    // let msg = "Error: appId not found";
 
-    if (appId) {
-      setCustomCodeStatus(value);
-      try {
-        const response = await fetch(UPDATE_BUTTON_EDITOR_STATUS, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          method: "post",
-          body: JSON.stringify({
-            appId,
-            data: value,
-          }),
-        });
-        const responseJson = await response.json();
+    // if (appId) {
+    //   setCustomCodeStatus(value);
+    //   try {
+    //     const response = await fetch(UPDATE_BUTTON_EDITOR_STATUS, {
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //       method: "post",
+    //       body: JSON.stringify({
+    //         appId,
+    //         data: value,
+    //       }),
+    //     });
+    //     const responseJson = await response.json();
 
-        if (responseJson?.status) {
-          error = false;
-          msg = tr.responses.rd_status_success;
-          loadData();
-        } else {
-          msg = tr.responses.error;
-        }
-      } catch (err) {
-        console.error("Fetch error:", err.message);
-      }
-    }
+    //     if (responseJson?.status) {
+    //       error = false;
+    //       msg = tr.responses.rd_status_success;
+    //       loadData();
+    //     } else {
+    //       msg = tr.responses.error;
+    //     }
+    //   } catch (err) {
+    //     console.error("Fetch error:", err.message);
+    //   }
+    // }
 
-    setToastData({
-      error,
-      msg,
-    });
-    setLoading(false);
+    // setToastData({
+    //   error,
+    //   msg,
+    // });
+    // setLoading(false);
   }
 
   async function handleCustomCodeSave() {
-    setLoading(true);
-    let error = true;
-    let msg = "Error";
-    const data = customCode || defaultWidgetCode;
+    // setLoading(true);
+    // let error = true;
+    // let msg = "Error";
+    // const data = customCode || defaultWidgetCode;
 
-    if (data !== "") {
-      try {
-        const response = await fetch(UPDATE_BUTTON_EDITOR, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          method: "post",
-          body: JSON.stringify({
-            appId,
-            data,
-          }),
-        });
-        const responseJson = await response.json();
+    // if (data !== "") {
+    //   try {
+    //     const response = await fetch(UPDATE_BUTTON_EDITOR, {
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //       method: "post",
+    //       body: JSON.stringify({
+    //         appId,
+    //         data,
+    //       }),
+    //     });
+    //     const responseJson = await response.json();
 
-        if (responseJson?.status) {
-          error = false;
-          msg = tr.responses.rd_status_success;
-          loadData();
-        } else {
-          msg = tr.responses.error;
-        }
-      } catch (err) {
-        console.error("Fetch error:", err.message);
-      }
-    }
+    //     if (responseJson?.status) {
+    //       error = false;
+    //       msg = tr.responses.rd_status_success;
+    //       loadData();
+    //     } else {
+    //       msg = tr.responses.error;
+    //     }
+    //   } catch (err) {
+    //     console.error("Fetch error:", err.message);
+    //   }
+    // }
 
-    setToastData({
-      error,
-      msg,
-    });
-    setLoading(false);
+    // setToastData({
+    //   error,
+    //   msg,
+    // });
+    // setLoading(false);
   }
 
   return (
@@ -222,7 +226,7 @@ export default function ButtonDisplayCustomRule({ appId, setToastData }) {
               }}
               onClick={() => setModalStatus(true)}
             >
-              <Editor
+              {/* <Editor
                 loading={true}
                 width="100%"
                 height="200px"
@@ -236,12 +240,12 @@ export default function ButtonDisplayCustomRule({ appId, setToastData }) {
                   readOnly: false,
                   minimap: { enabled: false },
                 }}
-              />
+              /> */}
             </div>
           </InlineGrid>
         </Card>
       </InlineGrid>
-      <Modal
+      {/* <Modal
         size="large"
         open={modalStatus}
         onClose={() => setModalStatus(false)}
@@ -279,7 +283,7 @@ export default function ButtonDisplayCustomRule({ appId, setToastData }) {
             }}
           />
         </Modal.Section>
-      </Modal>
+      </Modal> */}
     </>
   );
 }

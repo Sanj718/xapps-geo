@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { Suspense, useMemo, useState } from "react";
 import PopupContent from "../_common/PopupContent";
 import {
     AdjustIcon,
@@ -32,26 +32,24 @@ import CodeEditor from "../_common/CodeEditor.client";
 
 //[TODO] add correct types
 interface CustomizePopupProps {
-    visibilityChange: boolean;
     redirects: any[];
     configs: any;
     setConfigs: any;
     advancedConfigs: any;
     setAdvancedConfigs: any;
+    saveConfigs: any;
 }
 
-export default function CustomizePopup({ visibilityChange, redirects, configs, setConfigs, advancedConfigs, setAdvancedConfigs }: CustomizePopupProps) {
+export default function CustomizePopup({ redirects, configs, setConfigs, advancedConfigs, setAdvancedConfigs, saveConfigs }: CustomizePopupProps) {
     const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
         useOutletContext<OutletContext>();
     const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
-    const [widgetStylesOpen, setWidgetStylesOpen] = useState(false);
-    const [codeEditorOpen, setCodeEditorOpen] = useState(false);
     const secondaryLocales = shopInfo?.shopLocales?.filter(
         (item) => !item.primary,
     );
 
-    return <InlineGrid columns={{ xs: "1fr", md: "1fr 3fr" }} gap="400">
-        <>
+    return <InlineGrid columns={{ xs: "1fr", md: "1.5fr 3fr" }} gap="400">
+        <Card>
             <BlockStack gap="200">
                 <PromoBadge type="basic" />
                 <Text as="p">Icon</Text>
@@ -100,7 +98,7 @@ export default function CustomizePopup({ visibilityChange, redirects, configs, s
                                     ...current,
                                     text: value,
                                 }))
-                                : undefined;
+                                : () => { };
                         }}
                         textDisabled={isFreePlan}
                         textHelpText={`Use [[country]] in the Short text field to display the user's GEO location. Example: "Looks like you're in [[country]]! Check out our local site."`}
@@ -216,257 +214,224 @@ export default function CustomizePopup({ visibilityChange, redirects, configs, s
                         )}
                     </InlineGrid>
                     <Divider />
-                    <InlineStack gap="200" align="space-between">
-                        <Button
-                            variant="monochromePlain"
-                            onClick={() => setWidgetStylesOpen((status) => !status)}
-                        >
-                            Styles
-                        </Button>
-                        <Button
-                            icon={AdjustIcon}
-                            size="micro"
-                            onClick={() => setWidgetStylesOpen((status) => !status)}
-                        >
-                            Edit
-                        </Button>
-                    </InlineStack>
-                    <Collapsible id="widget-styles" open={widgetStylesOpen}>
-                        <InlineGrid gap="200">
-                            <PromoBadge type="basic" />
-                            <div className={isFreePlan ? "vvisually-disabled" : ""}>
-                                <InlineGrid gap="300">
-                                    <Select
-                                        disabled={isFreePlan}
-                                        label="Font family"
-                                        options={[
-                                            {
-                                                label: "Inherit site fonts",
-                                                value: "inherit",
-                                            },
-                                            { label: "Arial", value: "Arial" },
-                                            { label: "Arial Black", value: "Arial Black" },
-                                            { label: "Courier New", value: "Courier New" },
-                                            { label: "Georgia", value: "Georgia" },
-                                            {
-                                                label: "Times New Roman",
-                                                value: "Times New Roman",
-                                            },
-                                            { label: "Trebuchet MS", value: "Trebuchet MS" },
-                                            { label: "Tahoma", value: "Tahoma" },
-                                            { label: "Verdana", value: "Verdana" },
-                                            { label: "Impact", value: "Impact" },
-                                        ]}
-                                        onChange={(value) =>
-                                            setConfigs((current: typeof configs) => ({
-                                                ...current,
-                                                font: value,
-                                            }))
-                                        }
-                                        value={configs?.font}
-                                    />
-                                    <InlineGrid gap="200" columns="2">
-                                        <ColorTextField
-                                            disabled={isFreePlan}
-                                            label="Background"
-                                            placeholder="#fff"
-                                            id="modalBgColor"
-                                            configs={configs}
-                                            setConfigs={!isFreePlan ? setConfigs : false}
-                                        />
-                                        <ColorTextField
-                                            disabled={isFreePlan}
-                                            label="Text"
-                                            placeholder="#000"
-                                            id="modalTextColor"
-                                            configs={configs}
-                                            setConfigs={!isFreePlan ? setConfigs : false}
-                                        />
-                                        <ColorTextField
-                                            disabled={isFreePlan}
-                                            label="Border"
-                                            placeholder="#fff"
-                                            id="modalBorderColor"
-                                            configs={configs}
-                                            setConfigs={!isFreePlan ? setConfigs : false}
-                                        />
-                                    </InlineGrid>
-                                    <Divider />
-                                    <InlineGrid gap="200">
-                                        <Text as="p" variant="headingSm">
-                                            Button styles
-                                        </Text>
-                                        <InlineGrid gap="200" columns="2">
-                                            <ColorTextField
-                                                disabled={isFreePlan}
-                                                label="Background"
-                                                placeholder="#fff"
-                                                id="buttonsBgColor"
-                                                configs={configs}
-                                                setConfigs={!isFreePlan ? setConfigs : false}
-                                            />
-                                            <ColorTextField
-                                                disabled={isFreePlan}
-                                                label="Text"
-                                                placeholder="#000"
-                                                id="buttonsColor"
-                                                configs={configs}
-                                                setConfigs={!isFreePlan ? setConfigs : false}
-                                            />
-                                            <Select
-                                                disabled={isFreePlan}
-                                                label="Layout"
-                                                options={[
-                                                    {
-                                                        label: "Grid",
-                                                        value: "grid",
-                                                    },
-                                                    {
-                                                        label: "Stack",
-                                                        value: "stack",
-                                                    },
-                                                    {
-                                                        label: "Dropdown",
-                                                        value: "dropdown",
-                                                    },
-                                                ]}
-                                                onChange={
-                                                    !isFreePlan
-                                                        ? (value) =>
-                                                            setConfigs((current: typeof configs) => ({
-                                                                ...current,
-                                                                layout: value,
-                                                            }))
-                                                        : undefined
-                                                }
-                                                value={configs?.layout ? configs.layout : ""}
-                                            />
-                                            {configs?.layout === "dropdown" ? (
-                                                <InlineGrid>
-                                                    <InlineStack
-                                                        align="space-between"
-                                                        gap="200"
-                                                        blockAlign="center"
-                                                    >
-                                                        <Text as="p">Label</Text>
-                                                        <Tooltip content="Translate your content into multiple languages supported by your store.">
-                                                            <Button
-                                                                icon={LanguageIcon}
-                                                                size="micro"
-                                                                onClick={() => shopify.modal.show("dropdown-label-translation-popup")}
-                                                            ></Button>
-                                                        </Tooltip>
-                                                    </InlineStack>
-                                                    <TextField
-                                                        size="slim"
-                                                        label="Dropdown label"
-                                                        labelHidden
-                                                        onChange={
-                                                            !isFreePlan
-                                                                ? (value) =>
-                                                                    setConfigs((current: typeof configs) => ({
-                                                                        ...current,
-                                                                        dropdownPlaceholder: value,
-                                                                    }))
-                                                                : undefined
-                                                        }
-                                                        value={
-                                                            configs?.dropdownPlaceholder
-                                                                ? configs.dropdownPlaceholder
-                                                                : "Select"
-                                                        }
-                                                        autoComplete="off"
-                                                    />
-                                                </InlineGrid>
-                                            ) : (
-                                                ""
-                                            )}
-                                        </InlineGrid>
-                                    </InlineGrid>
-                                </InlineGrid>
-                            </div>
+                    <PromoBadge type="basic" />
+                    <InlineGrid gap="300">
+                        <Select
+                            disabled={isFreePlan}
+                            label="Font family"
+                            options={[
+                                {
+                                    label: "Inherit site fonts",
+                                    value: "inherit",
+                                },
+                                { label: "Arial", value: "Arial" },
+                                { label: "Arial Black", value: "Arial Black" },
+                                { label: "Courier New", value: "Courier New" },
+                                { label: "Georgia", value: "Georgia" },
+                                {
+                                    label: "Times New Roman",
+                                    value: "Times New Roman",
+                                },
+                                { label: "Trebuchet MS", value: "Trebuchet MS" },
+                                { label: "Tahoma", value: "Tahoma" },
+                                { label: "Verdana", value: "Verdana" },
+                                { label: "Impact", value: "Impact" },
+                            ]}
+                            onChange={(value) =>
+                                setConfigs((current: typeof configs) => ({
+                                    ...current,
+                                    font: value,
+                                }))
+                            }
+                            value={configs?.font}
+                        />
+                        <InlineGrid gap="200" columns="2">
+                            <ColorTextField
+                                disabled={isFreePlan}
+                                label="Background"
+                                placeholder="#fff"
+                                id="modalBgColor"
+                                configs={configs}
+                                setConfigs={!isFreePlan ? setConfigs : false}
+                            />
+                            <ColorTextField
+                                disabled={isFreePlan}
+                                label="Text"
+                                placeholder="#000"
+                                id="modalTextColor"
+                                configs={configs}
+                                setConfigs={!isFreePlan ? setConfigs : false}
+                            />
+                            <ColorTextField
+                                disabled={isFreePlan}
+                                label="Border"
+                                placeholder="#fff"
+                                id="modalBorderColor"
+                                configs={configs}
+                                setConfigs={!isFreePlan ? setConfigs : false}
+                            />
                         </InlineGrid>
-                    </Collapsible>
-                    <Divider />
-                    <InlineStack gap="200" align="space-between">
-                        <Button
-                            variant="monochromePlain"
-                            onClick={() => setCodeEditorOpen((status) => !status)}
-                        >
-                            Code editor
-                        </Button>
-                        <Button
-                            icon={AdjustIcon}
-                            size="micro"
-                            onClick={() => setCodeEditorOpen((status) => !status)}
-                        >
-                            Edit
-                        </Button>
-                    </InlineStack>
-                    <Collapsible id="code-editor" open={codeEditorOpen}>
+                        <Divider />
                         <InlineGrid gap="200">
-                            <PromoBadge type="pro" />
-                            <InlineGrid gap="150">
-                                <TextField
-                                    prefix="#"
-                                    label="Element custom ID"
+                            <Text as="p" variant="headingSm">
+                                Button styles
+                            </Text>
+                            <InlineGrid gap="200" columns="2">
+                                <ColorTextField
+                                    disabled={isFreePlan}
+                                    label="Background"
+                                    placeholder="#fff"
+                                    id="buttonsBgColor"
+                                    configs={configs}
+                                    setConfigs={!isFreePlan ? setConfigs : false}
+                                />
+                                <ColorTextField
+                                    disabled={isFreePlan}
+                                    label="Text"
+                                    placeholder="#000"
+                                    id="buttonsColor"
+                                    configs={configs}
+                                    setConfigs={!isFreePlan ? setConfigs : false}
+                                />
+                                <Select
+                                    disabled={isFreePlan}
+                                    label="Layout"
+                                    options={[
+                                        {
+                                            label: "Grid",
+                                            value: "grid",
+                                        },
+                                        {
+                                            label: "Stack",
+                                            value: "stack",
+                                        },
+                                        {
+                                            label: "Dropdown",
+                                            value: "dropdown",
+                                        },
+                                    ]}
                                     onChange={
-                                        isProPlan
-                                            ? (value) => setAdvancedConfigs((current: typeof advancedConfigs) => ({
-                                                ...current,
-                                                html_id: value,
-                                            }))
+                                        !isFreePlan
+                                            ? (value) =>
+                                                setConfigs((current: typeof configs) => ({
+                                                    ...current,
+                                                    layout: value,
+                                                }))
                                             : undefined
                                     }
-                                    disabled={!isProPlan}
-                                    value={isProPlan ? advancedConfigs?.html_id : ""}
-                                    autoComplete="off"
+                                    value={configs?.layout ? configs.layout : ""}
                                 />
-                                <InlineGrid gap="100">
-                                    <Text as="p" variant="bodyMd">
-                                        CSS Code
-                                    </Text>
-                                    <div className={isProPlan ? "" : "visually-disabled"}>
-                                        <div className="code-editor">
-                                            <CodeEditor code={advancedConfigs?.css} onChange={
+                                {configs?.layout === "dropdown" ? (
+                                    <InlineGrid>
+                                        <InlineStack
+                                            align="space-between"
+                                            gap="200"
+                                            blockAlign="center"
+                                        >
+                                            <Text as="p">Label</Text>
+                                            <Tooltip content="Translate your content into multiple languages supported by your store.">
+                                                <Button
+                                                    icon={LanguageIcon}
+                                                    size="micro"
+                                                    onClick={() => shopify.modal.show("dropdown-label-translation-popup")}
+                                                ></Button>
+                                            </Tooltip>
+                                        </InlineStack>
+                                        <TextField
+                                            size="slim"
+                                            label="Dropdown label"
+                                            labelHidden
+                                            onChange={
+                                                !isFreePlan
+                                                    ? (value) =>
+                                                        setConfigs((current: typeof configs) => ({
+                                                            ...current,
+                                                            dropdownPlaceholder: value,
+                                                        }))
+                                                    : undefined
+                                            }
+                                            value={
+                                                configs?.dropdownPlaceholder
+                                                    ? configs.dropdownPlaceholder
+                                                    : "Select"
+                                            }
+                                            autoComplete="off"
+                                        />
+                                    </InlineGrid>
+                                ) : (
+                                    ""
+                                )}
+                            </InlineGrid>
+                        </InlineGrid>
+                    </InlineGrid>
+                    <Divider />
+                    <PromoBadge type="pro" />
+                    <Text as="p" variant="headingMd">
+                        CSS code editor
+                    </Text>
+                    <InlineGrid gap="150">
+                        <TextField
+                            prefix="#"
+                            label="Element custom ID"
+                            onChange={
+                                isProPlan
+                                    ? (value) => setAdvancedConfigs((current: typeof advancedConfigs) => ({
+                                        ...current,
+                                        html_id: value,
+                                    }))
+                                    : undefined
+                            }
+                            disabled={!isProPlan}
+                            value={isProPlan ? advancedConfigs?.html_id : ""}
+                            autoComplete="off"
+                        />
+                        <InlineGrid gap="100">
+                            <Text as="p" variant="bodyMd">
+                                CSS Code
+                            </Text>
+                            <div className={isProPlan ? "" : "visually-disabled"}>
+                                <div className="code-editor">
+                                    <Suspense fallback={<div>Loading editor...</div>}>
+                                        <CodeEditor
+                                            code={advancedConfigs?.css}
+                                            onChange={
                                                 isProPlan
                                                     ? (value) =>
                                                         setAdvancedConfigs((current: typeof advancedConfigs) => ({
                                                             ...current,
                                                             css: value,
                                                         }))
-                                                    : undefined
+                                                    : () => { }
                                             } />
-                                        </div>
-                                    </div>
-                                </InlineGrid>
-                                <Tooltip content="Disable styles added in Styles section (popup and button styles).">
-                                    <Checkbox
-                                        label="Disable default styles"
-                                        disabled={!isProPlan}
-                                        checked={
-                                            isProPlan
-                                                ? advancedConfigs?.disable_basic_css
-                                                : false
-                                        }
-                                        onChange={(value) =>
-                                            isProPlan
-                                                ? setAdvancedConfigs((current: typeof advancedConfigs) => ({
-                                                    ...current,
-                                                    disable_basic_css: value,
-                                                }))
-                                                : undefined
-                                        }
-                                    />
-                                </Tooltip>
-                            </InlineGrid>
+                                    </Suspense>
+                                </div>
+                            </div>
                         </InlineGrid>
-                    </Collapsible>
+                        <Tooltip content="Disable styles added in Styles section (popup and button styles).">
+                            <Checkbox
+                                label="Disable default styles"
+                                disabled={!isProPlan}
+                                checked={
+                                    isProPlan
+                                        ? advancedConfigs?.disable_basic_css
+                                        : false
+                                }
+                                onChange={(value) =>
+                                    isProPlan
+                                        ? setAdvancedConfigs((current: typeof advancedConfigs) => ({
+                                            ...current,
+                                            disable_basic_css: value,
+                                        }))
+                                        : undefined
+                                }
+                            />
+                        </Tooltip>
+                    </InlineGrid>
                 </InlineGrid>
             </BlockStack>
-        </>
+        </Card>
 
-        {visibilityChange && <div className="ngr-inner-preview">
+        <div className="ngr-inner-preview">
             <RedirectsPopupPreview
                 redirects={
                     isProPlan
@@ -488,6 +453,6 @@ export default function CustomizePopup({ visibilityChange, redirects, configs, s
                 }
                 advancedConfigs={isProPlan ? advancedConfigs : {}}
             />
-        </div>}
+        </div>
     </InlineGrid>
 }

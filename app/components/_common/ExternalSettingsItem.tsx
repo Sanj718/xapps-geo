@@ -2,12 +2,19 @@ import React from "react";
 import { Button, InlineGrid, InlineStack, Link, Text } from "@shopify/polaris";
 import { ExternalIcon } from "@shopify/polaris-icons";
 
+interface ExternalSettingsItemProps {
+  label: string;
+  text: string;
+  url?: string;
+  link?: string;
+}
+
 export default function ExternalSettingsItem({
   label,
   text,
-  action,
+  url = "",
   link = "",
-}) {
+}: ExternalSettingsItemProps) {
   return (
     <div className="settings-item">
       <InlineStack align="space-between" blockAlign="center" wrap={false}>
@@ -23,7 +30,7 @@ export default function ExternalSettingsItem({
         </InlineGrid>
 
         <div>
-          <Button variant="tertiary" icon={ExternalIcon} onClick={action}>
+          <Button variant="tertiary" icon={ExternalIcon} url={url} target="_blank">
             Edit
           </Button>
         </div>

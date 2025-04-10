@@ -12,7 +12,7 @@ import React, { useState } from "react";
 import { Modal, TitleBar } from "@shopify/app-bridge-react";
 import { default_advanced_configs, default_basic_configs, loadingStates, planParser, requestHeaders } from "../_helpers";
 import PopupContent from "../_common/PopupContent";
-import { useNavigation, useOutletContext, useSubmit } from "@remix-run/react";
+import { useNavigate, useNavigation, useOutletContext, useSubmit } from "@remix-run/react";
 import { Asset, LoadingStates, OutletContext, RedirectItem } from "../_types";
 import PromoBadge from "../_common/PromoBadge";
 import RedirectsPopupPreview from "./RedirectsPopupPreview";
@@ -36,6 +36,7 @@ export default function ContentStyle({
   const { basicConfigs, advancedConfigs, hideOnAllowedPages, allowedPages } = configs?.data[0] || {}
   const submit = useSubmit()
   const navigation = useNavigation();
+  const navigate = useNavigate();
   const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
   const [customizePopupVisibilityChange, setCustomizePopupVisibilityChange] = useState(false);
   const [localConfigs, setLocalConfigs] = useState({ ...default_basic_configs, ...basicConfigs });
@@ -117,7 +118,8 @@ export default function ContentStyle({
             <Button
               variant="primary"
               icon={ThemeEditIcon}
-              onClick={() => shopify.modal.show("customize-popup")}
+              onClick={() => navigate("/app/redirects/customize")}
+              // onClick={() => shopify.modal.show("customize-popup")}
             >
               Customize
             </Button>
@@ -134,7 +136,6 @@ export default function ContentStyle({
         <Box padding="400">
           <AppProvider i18n={{}} apiKey={""}>
             <CustomizePopup
-              visibilityChange={customizePopupVisibilityChange}
               redirects={redirects} configs={localConfigs}
               setConfigs={setLocalConfigs}
               advancedConfigs={localAdvancedConfigs}
