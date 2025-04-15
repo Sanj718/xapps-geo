@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.getWidgetEditorCode = exports.getWidgetEditorStatus = exports.saveWidgetEditorCodeToMetafield = exports.saveWidgetEditorStatusToMetafield = exports.getThemeEmbed = void 0;
+exports.getButtonEditorCode = exports.getButtonEditorStatus = exports.saveButtonEditorCodeToMetafield = exports.saveButtonEditorStatusToMetafield = exports.getWidgetEditorCode = exports.getWidgetEditorStatus = exports.saveWidgetEditorCodeToMetafield = exports.saveWidgetEditorStatusToMetafield = exports.getThemeEmbed = void 0;
 function getThemeEmbed(_a) {
     var _b, _c, _d, _e, _f, _g;
     var admin = _a.admin;
@@ -227,3 +227,163 @@ function getWidgetEditorCode(_a) {
     });
 }
 exports.getWidgetEditorCode = getWidgetEditorCode;
+function saveButtonEditorStatusToMetafield(_a) {
+    var _b, _c, _d, _e, _f, _g, _h, _j;
+    var admin = _a.admin, appId = _a.appId, value = _a.value;
+    return __awaiter(this, void 0, void 0, function () {
+        var response, responseJson, error_6;
+        return __generator(this, function (_k) {
+            switch (_k.label) {
+                case 0:
+                    if (!admin)
+                        throw Error("admin not defined");
+                    _k.label = 1;
+                case 1:
+                    _k.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, admin.graphql("#graphql\n            mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {\n                metafieldsSet(metafields: $metafields) {\n                    metafields {\n                        key\n                        namespace\n                        value\n                        createdAt\n                        updatedAt\n                    }\n                    userErrors {\n                        field\n                        message\n                        code\n                    }\n                }\n            }\n            ", {
+                            variables: {
+                                metafields: [
+                                    {
+                                        key: "buttons_code_status",
+                                        namespace: "widget_settings",
+                                        ownerId: appId,
+                                        type: "boolean",
+                                        value: value
+                                    }
+                                ]
+                            }
+                        })];
+                case 2:
+                    response = _k.sent();
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    responseJson = _k.sent();
+                    if (((_d = (_c = (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.metafieldsSet) === null || _c === void 0 ? void 0 : _c.userErrors) === null || _d === void 0 ? void 0 : _d.length) > 0) {
+                        throw Error((_g = (_f = (_e = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _e === void 0 ? void 0 : _e.metafieldsSet) === null || _f === void 0 ? void 0 : _f.userErrors[0]) === null || _g === void 0 ? void 0 : _g.message);
+                    }
+                    return [2 /*return*/, (_j = (_h = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _h === void 0 ? void 0 : _h.metafieldsSet) === null || _j === void 0 ? void 0 : _j.metafields[0]];
+                case 4:
+                    error_6 = _k.sent();
+                    console.error(error_6);
+                    return [2 /*return*/, { status: false, error: error_6.toString() }];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.saveButtonEditorStatusToMetafield = saveButtonEditorStatusToMetafield;
+function saveButtonEditorCodeToMetafield(_a) {
+    var _b, _c, _d, _e, _f, _g, _h, _j;
+    var admin = _a.admin, appId = _a.appId, value = _a.value;
+    return __awaiter(this, void 0, void 0, function () {
+        var response, responseJson, error_7;
+        return __generator(this, function (_k) {
+            switch (_k.label) {
+                case 0:
+                    if (!admin)
+                        throw Error("admin not defined");
+                    _k.label = 1;
+                case 1:
+                    _k.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, admin.graphql("#graphql\n            mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {\n                metafieldsSet(metafields: $metafields) {\n                    metafields {\n                        key\n                        namespace\n                        value\n                        createdAt\n                        updatedAt\n                    }\n                    userErrors {\n                        field\n                        message\n                        code\n                    }\n                }\n            }\n            ", {
+                            variables: {
+                                metafields: [
+                                    {
+                                        key: "buttons_show_code",
+                                        namespace: "widget_settings",
+                                        ownerId: appId,
+                                        type: "multi_line_text_field",
+                                        value: value
+                                    }
+                                ]
+                            }
+                        })];
+                case 2:
+                    response = _k.sent();
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    responseJson = _k.sent();
+                    if (((_d = (_c = (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.metafieldsSet) === null || _c === void 0 ? void 0 : _c.userErrors) === null || _d === void 0 ? void 0 : _d.length) > 0) {
+                        throw Error((_g = (_f = (_e = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _e === void 0 ? void 0 : _e.metafieldsSet) === null || _f === void 0 ? void 0 : _f.userErrors[0]) === null || _g === void 0 ? void 0 : _g.message);
+                    }
+                    return [2 /*return*/, (_j = (_h = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _h === void 0 ? void 0 : _h.metafieldsSet) === null || _j === void 0 ? void 0 : _j.metafields[0]];
+                case 4:
+                    error_7 = _k.sent();
+                    console.error(error_7);
+                    return [2 /*return*/, { status: false, error: error_7.toString() }];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.saveButtonEditorCodeToMetafield = saveButtonEditorCodeToMetafield;
+function getButtonEditorStatus(_a) {
+    var _b, _c;
+    var admin = _a.admin;
+    return __awaiter(this, void 0, void 0, function () {
+        var response, responseJson, error_8;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
+                case 0:
+                    if (!admin)
+                        throw Error("admin not defined");
+                    _d.label = 1;
+                case 1:
+                    _d.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, admin.graphql("#graphql\n            query getMetafields($namespace: String!, $key: String!) {\n                appInstallation {\n                id\n                metafield(namespace: $namespace, key: $key) {\n                    id\n                    namespace\n                    key\n                    value\n                }\n                allSubscriptions(first: 10){\n                    edges{\n                    node{\n                        id\n                        createdAt\n                        name\n                        status\n                    }\n                    }\n                }\n                }\n            }\n            ", {
+                            variables: {
+                                namespace: "widget_settings",
+                                key: "buttons_code_status"
+                            }
+                        })];
+                case 2:
+                    response = _d.sent();
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    responseJson = _d.sent();
+                    return [2 /*return*/, (_c = (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.appInstallation) === null || _c === void 0 ? void 0 : _c.metafield];
+                case 4:
+                    error_8 = _d.sent();
+                    console.error(error_8);
+                    return [2 /*return*/, { status: false, error: error_8.toString() }];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.getButtonEditorStatus = getButtonEditorStatus;
+function getButtonEditorCode(_a) {
+    var _b, _c;
+    var admin = _a.admin;
+    return __awaiter(this, void 0, void 0, function () {
+        var response, responseJson, error_9;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
+                case 0:
+                    if (!admin)
+                        throw Error("admin not defined");
+                    _d.label = 1;
+                case 1:
+                    _d.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, admin.graphql("#graphql\n            query getMetafields($namespace: String!, $key: String!) {\n                appInstallation {\n                id\n                metafield(namespace: $namespace, key: $key) {\n                    id\n                    namespace\n                    key\n                    value\n                }\n                allSubscriptions(first: 10){\n                    edges{\n                    node{\n                        id\n                        createdAt\n                        name\n                        status\n                    }\n                    }\n                }\n                }\n            }\n            ", {
+                            variables: {
+                                namespace: "widget_settings",
+                                key: "buttons_show_code"
+                            }
+                        })];
+                case 2:
+                    response = _d.sent();
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    responseJson = _d.sent();
+                    return [2 /*return*/, (_c = (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.appInstallation) === null || _c === void 0 ? void 0 : _c.metafield];
+                case 4:
+                    error_9 = _d.sent();
+                    console.error(error_9);
+                    return [2 /*return*/, { status: false, error: error_9.toString() }];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.getButtonEditorCode = getButtonEditorCode;

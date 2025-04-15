@@ -346,6 +346,21 @@ export const OLD_STICKY_ICON =
   "https://ngr-app.herokuapp.com/public/images/sticky-logo.png";
 export const NEW_DEFAULT_ICON = "default";
 
+export const defaultWidgetCode = `
+function run(geolocation, openModal, hasBeenClosed) {
+  if(geolocation.country === "CA" && hasBeenClosed !== "1"){
+    //openModal()
+  }
+}
+`;
+
+export const defaultButtonCode = `
+function run(geolocation, redirectButton) {
+  if(geolocation.country === "CA" && redirectButton.label === "Canada"){
+    return false;
+  }
+  return true;
+}`;
 
 export function useIsMounted() {
   const isMounted = useRef(false)
@@ -357,4 +372,23 @@ export function useIsMounted() {
   }, [])
 
   return useCallback(() => isMounted.current, [])
+}
+
+// Add deep comparison function
+export function areObjectsEqual(obj1: any, obj2: any): boolean {
+  if (obj1 === obj2) return true;
+  if (typeof obj1 !== 'object' || typeof obj2 !== 'object' || obj1 === null || obj2 === null) return false;
+
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+
+  if (keys1.length !== keys2.length) return false;
+
+  return keys1.every(key => {
+    if (!(key in obj2)) return false;
+    if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
+      return areObjectsEqual(obj1[key], obj2[key]);
+    }
+    return obj1[key] === obj2[key];
+  });
 }

@@ -1,78 +1,32 @@
-import {
-  Page,
-  BlockStack,
-  Tabs,
-  Divider,
-  useBreakpoints,
-} from "@shopify/polaris";
-// import { PageTitle } from "../../components/_common/PageTitle";
-import { default_advanced_configs, default_basic_configs, getEmbedConst, loadingStates, requestHeaders } from "../../components/_helpers";
+import { Page } from "@shopify/polaris";
+import { areObjectsEqual, default_advanced_configs, default_basic_configs, getEmbedConst, loadingStates, requestHeaders } from "../../components/_helpers";
+import { Suspense, useEffect, useMemo, useState } from "react";
+import { Await, useActionData, useLoaderData, useNavigate, useNavigation, useOutletContext, useSubmit } from "@remix-run/react";
+import { LoadingStates, OutletContext, RedirectItem } from "app/components/_types";
+import { handleActions } from "./_actions";
+import { handleLoaders } from "./_loaders";
+import { ActionFunctionArgs } from "@remix-run/node";
+import { LoaderFunctionArgs } from "@remix-run/node";
+import { SaveBar, TitleBar } from "@shopify/app-bridge-react";
+import CustomizePopup from "app/components/popup-redirects/CustomizePopup";
+import { ACTIONS } from "app/components/_actions";
+import tr from "../../components/locales.json";
 import {
   DEV_EMBED_APP_ID,
   PROD_EMBED_APP_ID,
   RD_EMBED_APP_HANDLE,
 } from "../../components/env";
-import { Suspense, useEffect, useMemo, useState } from "react";
-import RedirectItems from "../../components/popup-redirects/RedirectItems";
-import { Await, useActionData, useLoaderData, useNavigate, useNavigation, useOutletContext, useSubmit } from "@remix-run/react";
-import { LoadingStates, OutletContext, RedirectItem } from "app/components/_types";
-import ContentStyle from "app/components/popup-redirects/ContentStyle";
-import { handleActions } from "./_actions";
-import { handleLoaders } from "./_loaders";
-import tr from "../../components/locales.json";
-import PopupDisplaySettings from "app/components/popup-redirects/PopupDisplaySettings";
-import OtherSettings from "app/components/popup-redirects/OtherSettings";
-import WidgetDisplayCustomRule from "app/components/popup-redirects/WidgetDisplayCustomRule";
-import ButtonDisplayCustomRule from "app/components/popup-redirects/ButtonDisplayCustomRule";
-import { ActionFunctionArgs } from "@remix-run/node";
-import { LoaderFunctionArgs } from "@remix-run/node";
-import { PageTitle } from "app/components/_common/PageTitle";
-import { SaveBar, TitleBar } from "@shopify/app-bridge-react";
-import CustomizePopup from "app/components/popup-redirects/CustomizePopup";
-import { ACTIONS } from "app/components/_actions";
-
 
 const { EMBED_APP_ID, EMBED_APP_HANDLE } =
   getEmbedConst(PROD_EMBED_APP_ID, DEV_EMBED_APP_ID, RD_EMBED_APP_HANDLE) || {};
-
-const mainTabs = [
-  {
-    id: "popup",
-    content: "Popup redirects",
-  },
-  {
-    id: "auto",
-    content: "Auto redirects",
-  },
-];
-
-
 
 // [TODO] find correct way to add ts check here.
 export const loader = async (params: LoaderFunctionArgs) => handleLoaders(params);
 
 export const action = async (params: ActionFunctionArgs) => handleActions(params);
 
-// Add deep comparison function
-function areObjectsEqual(obj1: any, obj2: any): boolean {
-  if (obj1 === obj2) return true;
-  if (typeof obj1 !== 'object' || typeof obj2 !== 'object' || obj1 === null || obj2 === null) return false;
 
-  const keys1 = Object.keys(obj1);
-  const keys2 = Object.keys(obj2);
-
-  if (keys1.length !== keys2.length) return false;
-
-  return keys1.every(key => {
-    if (!(key in obj2)) return false;
-    if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
-      return areObjectsEqual(obj1[key], obj2[key]);
-    }
-    return obj1[key] === obj2[key];
-  });
-}
-
-export default function CustomRedirectsCode() {
+export default function CustomizePopupPage() {
   const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
     useOutletContext<OutletContext>();
   const { allRedirects, configs, widgetEditorStatus, widgetEditorCode } = useLoaderData<typeof loader>();
@@ -154,7 +108,12 @@ export default function CustomRedirectsCode() {
       fullWidth
       compactTitle
       title="Customize your popup"
-      backAction={{ content: "Back", onAction: () => navigate("/app/redirects") }}
+      backAction={{
+        content: "Back", onAction: () => navigate("/app/redirects#ngr-modal-preview", {
+          viewTransition: true,
+          preventScrollReset: true,
+        })
+      }}
       primaryAction={{ content: "Save", disabled: !hasChange, onAction: saveConfigs, loading: loading[ACTIONS.CreateUpdateConfigs + "Loading"] }}
     >
       <CustomizePopup

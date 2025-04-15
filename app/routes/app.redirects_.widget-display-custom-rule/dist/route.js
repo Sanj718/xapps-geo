@@ -54,106 +54,106 @@ var react_1 = require("react");
 var react_2 = require("@remix-run/react");
 var _actions_1 = require("./_actions");
 var _loaders_1 = require("./_loaders");
-var app_bridge_react_1 = require("@shopify/app-bridge-react");
-var CustomizePopup_1 = require("app/components/popup-redirects/CustomizePopup");
 var _actions_2 = require("app/components/_actions");
 var env_1 = require("../../components/env");
+var CodeEditor_client_1 = require("app/components/_common/CodeEditor.client");
+var WidgetDisplayCustomRuleBanner_1 = require("../../components/popup-redirects/WidgetDisplayCustomRuleBanner");
+var WidgetDisplayCustomRuleCodeBanner_1 = require("app/components/popup-redirects/WidgetDisplayCustomRuleCodeBanner");
 var _a = _helpers_1.getEmbedConst(env_1.PROD_EMBED_APP_ID, env_1.DEV_EMBED_APP_ID, env_1.RD_EMBED_APP_HANDLE) || {}, EMBED_APP_ID = _a.EMBED_APP_ID, EMBED_APP_HANDLE = _a.EMBED_APP_HANDLE;
-// [TODO] find correct way to add ts check here.
 exports.loader = function (params) { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
     return [2 /*return*/, _loaders_1.handleLoaders(params)];
 }); }); };
 exports.action = function (params) { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
     return [2 /*return*/, _actions_1.handleActions(params)];
 }); }); };
-function CustomizePopupPage() {
+function WidgetDisplayCustomRulePage() {
     var _a;
     var _b = react_2.useOutletContext(), shopInfo = _b.shopInfo, shopdb = _b.shopdb, activePlan = _b.activePlan, devPlan = _b.devPlan, veteranPlan = _b.veteranPlan, appId = _b.appId, appData = _b.appData;
-    var _c = react_2.useLoaderData(), allRedirects = _c.allRedirects, configs = _c.configs, widgetEditorStatus = _c.widgetEditorStatus, widgetEditorCode = _c.widgetEditorCode;
+    var _c = _helpers_1.planParser(activePlan), isProPlan = _c.isProPlan, isBasicPlan = _c.isBasicPlan, isFreePlan = _c.isFreePlan;
+    var _d = react_2.useLoaderData(), allRedirects = _d.allRedirects, configs = _d.configs, widgetEditorStatus = _d.widgetEditorStatus, widgetEditorCode = _d.widgetEditorCode;
     var actionData = react_2.useActionData();
     var submit = react_2.useSubmit();
     var navigation = react_2.useNavigation();
     var navigate = react_2.useNavigate();
-    var _d = react_1.useState(false), hasChange = _d[0], setHasChange = _d[1];
-    var _e = react_1.useState({ msg: "", error: false }), toastData = _e[0], setToastData = _e[1];
-    var _f = react_1.useState([]), redirects = _f[0], setRedirects = _f[1];
+    var _e = react_1.useState(false), hasChange = _e[0], setHasChange = _e[1];
+    var _f = react_1.useState(_helpers_1.defaultWidgetCode), customCode = _f[0], setCustomCode = _f[1];
     var _g = (configs === null || configs === void 0 ? void 0 : configs.data[0]) || {}, basicConfigs = _g.basicConfigs, advancedConfigs = _g.advancedConfigs, hideOnAllowedPages = _g.hideOnAllowedPages, allowedPages = _g.allowedPages;
     var _h = react_1.useState(__assign(__assign({}, _helpers_1.default_basic_configs), basicConfigs)), localConfigs = _h[0], setLocalConfigs = _h[1];
     var _j = react_1.useState(__assign(__assign({}, _helpers_1.default_advanced_configs), advancedConfigs)), localAdvancedConfigs = _j[0], setLocalAdvancedConfigs = _j[1];
     var secondaryLocales = (_a = shopInfo === null || shopInfo === void 0 ? void 0 : shopInfo.shopLocales) === null || _a === void 0 ? void 0 : _a.filter(function (item) { return !item.primary; });
-    function saveConfigs() {
+    // async function saveConfigs() {
+    //   submit(
+    //     {
+    //       _action: ACTIONS.CreateUpdateConfigs,
+    //       data: {
+    //         basicConfigs: localConfigs,
+    //         advancedConfigs: localAdvancedConfigs,
+    //       },
+    //     },
+    //     requestHeaders,
+    //   );
+    // }
+    function handleCustomCodeSave() {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
+                if (!appId)
+                    return [2 /*return*/];
                 submit({
-                    _action: _actions_2.ACTIONS.CreateUpdateConfigs,
+                    _action: _actions_2.ACTIONS.WidgetDisplayCustomRuleCodeSave,
                     data: {
-                        basicConfigs: localConfigs,
-                        advancedConfigs: localAdvancedConfigs
+                        appId: appId,
+                        data: customCode
                     }
                 }, _helpers_1.requestHeaders);
                 return [2 /*return*/];
             });
         });
     }
-    react_1.useMemo(function () {
-        if (allRedirects === null || allRedirects === void 0 ? void 0 : allRedirects.status) {
-            var orderedRedirects = allRedirects.data.sort(function (a, b) { return a.order - b.order; });
-            setRedirects(orderedRedirects);
-        }
-    }, [allRedirects]);
-    react_1.useMemo(function () {
-        // if (actionData && !actionData?.data?.status) {
-        //   shopify.toast.show("Error, try again.", { isError: true });
-        //   if (actionData?.data?.errors?.length) {
-        //     setErrors(actionData.data.errors);
-        //   }
-        // } else {
-        //   setErrors([]);
-        // }
-        // if (
-        //   (actionData?._action === "new" || actionData?._action === "edit") &&
-        //   actionData?._status
-        // ) {
-        //   const { discountId, discountClass } =
-        //     actionData?.data?.discountCreate?.codeAppDiscount ||
-        //     actionData?.data?.discountCreate?.automaticAppDiscount ||
-        //     {};
-        //   const url = getDiscountUrl(discountId, discountClass, true);
-        //   if (url) navigate(url);
-        // }
-        // if (actionData?._action === "discountDelete" && actionData?._status) {
-        //   navigate("/app");
-        // }
-    }, [actionData]);
-    react_1.useEffect(function () {
-        var definedConfigs = __assign(__assign({}, _helpers_1.default_basic_configs), basicConfigs);
-        var definedAdvancedConfigs = __assign(__assign({}, _helpers_1.default_advanced_configs), advancedConfigs);
-        if (!_helpers_1.areObjectsEqual(localConfigs, definedConfigs) || !_helpers_1.areObjectsEqual(localAdvancedConfigs, definedAdvancedConfigs)) {
-            shopify.saveBar.show('configs-save-bar');
-            setHasChange(true);
-        }
-        else {
-            shopify.saveBar.hide('configs-save-bar');
-            setHasChange(false);
-        }
-    }, [localConfigs, localAdvancedConfigs, configs]);
-    var loading = _helpers_1.loadingStates(navigation, [_actions_2.ACTIONS.CreateUpdateConfigs]);
-    return (React.createElement(polaris_1.Page, { fullWidth: true, compactTitle: true, title: "Customize your popup", backAction: {
+    function handleCustomCodeStatus(value) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                if (!appId)
+                    return [2 /*return*/];
+                submit({
+                    _action: _actions_2.ACTIONS.WidgetDisplayCustomRuleStatus,
+                    data: {
+                        appId: appId,
+                        data: value
+                    }
+                }, _helpers_1.requestHeaders);
+                return [2 /*return*/];
+            });
+        });
+    }
+    console.log('widgetEditorStatus', widgetEditorStatus);
+    var loading = _helpers_1.loadingStates(navigation, [_actions_2.ACTIONS.WidgetDisplayCustomRuleCodeSave, _actions_2.ACTIONS.WidgetDisplayCustomRuleStatus]);
+    return (React.createElement(polaris_1.Page, { fullWidth: true, compactTitle: true, title: "Widget display custom rule", backAction: {
             content: "Back",
-            onAction: function () { return navigate("/app/redirects#ngr-modal-preview", {
+            onAction: function () { return navigate("/app/redirects#code-editor", {
                 viewTransition: true,
                 preventScrollReset: true
             }); }
-        }, primaryAction: { content: "Save", disabled: !hasChange, onAction: saveConfigs, loading: loading[_actions_2.ACTIONS.CreateUpdateConfigs + "Loading"] } },
-        React.createElement(CustomizePopup_1["default"], { redirects: redirects, configs: localConfigs, setConfigs: setLocalConfigs, advancedConfigs: localAdvancedConfigs, setAdvancedConfigs: setLocalAdvancedConfigs, saveConfigs: saveConfigs }),
-        React.createElement(app_bridge_react_1.SaveBar, { id: "configs-save-bar", discardConfirmation: true },
-            React.createElement("button", { variant: "primary", onClick: saveConfigs, loading: loading[_actions_2.ACTIONS.CreateUpdateConfigs + "Loading"] ? "true" : undefined }),
-            React.createElement("button", { onClick: function () {
-                    shopify.saveBar.hide('configs-save-bar');
-                    navigate("/app/redirects");
-                } })),
-        (toastData === null || toastData === void 0 ? void 0 : toastData.msg) !== "" &&
-            shopify.toast.show(toastData.msg, { isError: toastData.error }),
-        React.createElement("br", null)));
+        }, primaryAction: { content: "Save", onAction: handleCustomCodeSave, loading: loading[_actions_2.ACTIONS.WidgetDisplayCustomRuleCodeSave + "Loading"] } },
+        React.createElement(polaris_1.BlockStack, { gap: "400" },
+            React.createElement(WidgetDisplayCustomRuleBanner_1["default"], null),
+            React.createElement("div", { style: { position: "relative" } },
+                React.createElement(react_1.Suspense, { fallback: React.createElement(polaris_1.Spinner, { size: "small" }) },
+                    React.createElement(react_2.Await, { resolve: widgetEditorStatus }, function (status) {
+                        return React.createElement(polaris_1.Select, { label: "Status: ", labelInline: true, options: [
+                                { label: "Active", value: "true" },
+                                { label: "Draft", value: "false" },
+                            ], disabled: loading[_actions_2.ACTIONS.WidgetDisplayCustomRuleStatus + "Loading"] || !isProPlan, onChange: isProPlan
+                                ? function (value) { return handleCustomCodeStatus(value); }
+                                : undefined, value: status === null || status === void 0 ? void 0 : status.value });
+                    }),
+                    loading[_actions_2.ACTIONS.WidgetDisplayCustomRuleStatus + "Loading"] && (React.createElement("div", { style: { position: "absolute", top: "6px", right: "8px", zIndex: 10 } },
+                        React.createElement(polaris_1.Spinner, { size: "small" }))))),
+            React.createElement(polaris_1.Card, null,
+                React.createElement(WidgetDisplayCustomRuleCodeBanner_1["default"], null),
+                React.createElement("br", null),
+                React.createElement(react_1.Suspense, { fallback: React.createElement(polaris_1.Spinner, { size: "small" }) },
+                    React.createElement(react_2.Await, { resolve: widgetEditorCode }, function (code) {
+                        return React.createElement(CodeEditor_client_1["default"], { code: (code === null || code === void 0 ? void 0 : code.value) || _helpers_1.defaultWidgetCode, onChange: isProPlan ? setCustomCode : function () { }, language: "javascript" });
+                    }))))));
 }
-exports["default"] = CustomizePopupPage;
+exports["default"] = WidgetDisplayCustomRulePage;

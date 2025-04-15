@@ -325,6 +325,7 @@ export const updateRedirectStatus = async ({
 
 export const deleteRedirect = async ({ id, shop }: DeleteRedirect): Promise<DBResponse> => {
   try {
+    if (!id) throw new Error("id undefined");
     const activeShop = await prisma.activeShops.findUnique({
       where: { shop },
       select: { id: true },

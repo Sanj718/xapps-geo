@@ -53,7 +53,7 @@ export const action = async (params: ActionFunctionArgs) => handleActions(params
 export default function CustomRedirects() {
   const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
     useOutletContext<OutletContext>();
-  const { allRedirects, configs, widgetEditorStatus, widgetEditorCode } = useLoaderData<typeof loader>();
+  const { allRedirects, configs, widgetEditorStatus, widgetEditorCode, buttonEditorStatus, buttonEditorCode } = useLoaderData<typeof loader>();
   const actionData = useActionData();
   const [toastData, setToastData] = useState({ msg: "", error: false });
   const [active, setActive] = useState(null);
@@ -159,7 +159,7 @@ export default function CustomRedirects() {
             {smUp ? <Divider /> : null}
             <WidgetDisplayCustomRule status={widgetEditorStatus} code={widgetEditorCode} />
             {smUp ? <Divider /> : null}
-            <ButtonDisplayCustomRule />
+            <ButtonDisplayCustomRule status={buttonEditorStatus} code={buttonEditorCode} />
           </BlockStack>
         ) : (
           ""

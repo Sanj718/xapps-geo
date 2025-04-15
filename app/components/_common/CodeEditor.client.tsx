@@ -1,7 +1,6 @@
-// import CodeMirror, { EditorView } from '@uiw/react-codemirror';
 import Editor from '@monaco-editor/react';
-// import { langs } from '@ui, useStatew/codemirror-extensions-langs';
-import { useEffect, useState } from 'react';
+import React from 'react';
+
 interface CodeEditorProps {
     code: string;
     onChange: ((value: string) => void);
@@ -10,14 +9,6 @@ interface CodeEditorProps {
 }
 
 export default function CodeEditor({ code, onChange = () => { }, language = "css", simple = false }: CodeEditorProps) {
-    // const [render, setRender] = useState(false);
-
-    // useEffect(() => {
-    //     setTimeout(() => {
-    //         setRender(true);
-    //     }, 5000);
-    // }, []);
-
     const options = simple ? {
         readOnly: false,
         minimap: { enabled: false },
@@ -39,7 +30,7 @@ export default function CodeEditor({ code, onChange = () => { }, language = "css
         language={language}
         defaultValue={code}
         value={code}
-        onChange={onChange}
-        options={options}
+        onChange={(value) => value && onChange(value)}
+        options={options as any} 
     />
 }

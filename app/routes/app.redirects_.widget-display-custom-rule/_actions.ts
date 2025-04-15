@@ -13,31 +13,6 @@ export async function handleActions({ request }: ActionFunctionArgs) {
         return { _action, ...response };
     }
 
-    if (_action === ACTIONS.ToggleRedirectStatus) {
-        const response = await updateRedirectStatus({ admin, ...data });
-        return { _action, ...response };
-    }
-
-    if (_action === ACTIONS.ReorderRedirect) {
-        const response = await reorderRedirect({ admin, ...data, shop: session.shop });
-        return { _action, ...response };
-    }
-
-    if (_action === ACTIONS.AddRedirect) {
-        const response = await createRedirect({ admin, ...data });
-        return { _action, ...response };
-    }
-
-    if (_action === ACTIONS.DeleteRedirect) {
-        const response = await deleteRedirect({ admin, ...data, shop: session.shop });
-        return { _action, ...response };
-    }
-
-    if (_action === ACTIONS.UpdateRedirect) {
-        const response = await updateRedirect({ admin, ...data });
-        return { _action, ...response };
-    }
-
     if (_action === ACTIONS.CreateUpdateConfigs) {
         const response = await createUpdateConfigs({ shop: session.shop, ...data });
         return { _action, ...response };

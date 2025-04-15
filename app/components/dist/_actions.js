@@ -49,7 +49,9 @@ exports.ACTIONS = {
     CreateUpdateConfigs: "createUpdateConfigs",
     CreateAllowedPages: "createAllowedPages",
     WidgetDisplayCustomRuleStatus: "widgetDisplayCustomRuleStatus",
-    WidgetDisplayCustomRuleCodeSave: "widgetDisplayCustomRuleCodeSave"
+    WidgetDisplayCustomRuleCodeSave: "widgetDisplayCustomRuleCodeSave",
+    ButtonDisplayCustomRuleStatus: "buttonDisplayCustomRuleStatus",
+    ButtonDisplayCustomRuleCodeSave: "buttonDisplayCustomRuleCodeSave"
 };
 exports.getAssets = function (_a) {
     var admin = _a.admin, data = _a.data;

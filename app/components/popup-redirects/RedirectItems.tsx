@@ -20,20 +20,17 @@ import { Modal, TitleBar } from "@shopify/app-bridge-react";
 import {
   DragHandleIcon,
   EditIcon,
-  HideIcon,
   PlusCircleIcon,
   ToggleOffIcon,
   ToggleOnIcon,
-  ViewIcon,
 } from "@shopify/polaris-icons";
-// import PopupRedirectForm from "./PopupRedirectForm";
 import { charLimit, loadingStates, requestHeaders } from "../_helpers";
-// import tr from "../locales.json";
 import empty from "../../assets/empty.svg";
 import PopupRedirectForm from "./PopupRedirectForm";
 import { AppProvider } from "@shopify/shopify-app-remix/react";
-import { useActionData, useNavigation, useSubmit } from "@remix-run/react";
-import { ActionReturn, LoadingStates, RedirectItem } from "../_types";
+import { useNavigation, useSubmit } from "@remix-run/react";
+import { LoadingStates, RedirectItem } from "../_types";
+import { ACTIONS } from "../_actions";
 // import { id } from "date-fns/locale";
 
 interface RedirectItemsProps {
@@ -106,10 +103,11 @@ export default function RedirectItems({
   }
 
   async function handleRedirectStatus(item: RedirectItem) {
+    if (!item.id) return;
     const newStatus = !item.status;
     submit(
       {
-        _action: "toggleRedirectStatus",
+        _action: ACTIONS.ToggleRedirectStatus,
         data: {
           id: item.id,
           status: newStatus,
@@ -119,7 +117,7 @@ export default function RedirectItems({
     );
   }
 
-  const { toggleRedirectStatusLoading, reorderRedirectLoading } = loadingStates(navigation, ["toggleRedirectStatus", "reorderRedirect"]) as LoadingStates;
+  const loading = loadingStates(navigation, [ACTIONS.ToggleRedirectStatus, ACTIONS.ReorderRedirect]) as LoadingStates;
 
   return (
     <>
@@ -170,7 +168,7 @@ export default function RedirectItems({
               }
               resourceName={resourceName}
               items={redirects}
-              loading={toggleRedirectStatusLoading || reorderRedirectLoading}
+              loading={loading[ACTIONS.ToggleRedirectStatus + "Loading"] || loading[ACTIONS.ReorderRedirect + "Loading"]}
               renderItem={(item: RedirectItem, rId, index) => {
                 const { id, url, label, flag, status } = item;
 

@@ -41,7 +41,7 @@ import ImageManager from "../_common/ImageManager";
 import PromoBadge from "../_common/PromoBadge";
 import { useActionData, useNavigation, useOutletContext, useSubmit } from "@remix-run/react";
 import { ActionReturn, LoadingStates, OutletContext, RedirectItem, Asset } from "../_types";
-
+import { ACTIONS } from "../_actions";
 
 interface FieldValidation {
   url: boolean;
@@ -57,7 +57,6 @@ interface Country {
   image: string;
   name: string;
 }
-
 
 const defaultRedirectItem = {
   shopId: 0,
@@ -75,7 +74,6 @@ export default function PopupRedirectForm({
   editItem = undefined,
   redirects = [],
 }: PopupRedirectFormProps) {
-
   const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
     useOutletContext<OutletContext>();
   const actionData = useActionData<ActionReturn>();
@@ -106,7 +104,7 @@ export default function PopupRedirectForm({
   }, [editItem]);
 
   useMemo(() => {
-    if (actionData?._action === "addRedirect" && actionData?.status) {
+    if (actionData?._action === ACTIONS.AddRedirect && actionData?.status) {
       // if (redirects?.length >= 4 && isBasicPlan) {
       //   msg = tr.responses.limit_error;
       // }
@@ -115,13 +113,13 @@ export default function PopupRedirectForm({
       setRedirectItem(defaultRedirectItem);
       setSelectedCountry("--");
     }
-    if (actionData?._action === "deleteRedirect" && actionData?.status) {
+    if (actionData?._action === ACTIONS.DeleteRedirect && actionData?.status) {
       // setToastData({ error: false, msg: tr.responses.rd_delete_success });
       shopify.modal.hide("edit-redirect");
       setRedirectItem(defaultRedirectItem);
       setSelectedCountry("--");
     }
-    if (actionData?._action === "updateRedirect" && actionData?.status) {
+    if (actionData?._action === ACTIONS.UpdateRedirect && actionData?.status) {
       // setToastData({ error: false, msg: tr.responses.rd_update_success });
       shopify.modal.hide("edit-redirect");
       setRedirectItem(defaultRedirectItem);
@@ -181,9 +179,10 @@ export default function PopupRedirectForm({
   }
 
   async function handleUpdate() {
+    if (!redirectItem.id) return;
     submit(
       {
-        _action: "updateRedirect",
+        _action: ACTIONS.UpdateRedirect,
         data: redirectItem,
       },
       requestHeaders,
@@ -193,9 +192,10 @@ export default function PopupRedirectForm({
 
 
   async function handleDelete(id: number) {
+    if (!id) return;
     submit(
       {
-        _action: "deleteRedirect",
+        _action: ACTIONS.DeleteRedirect,
         data: {
           id
         },
@@ -207,7 +207,7 @@ export default function PopupRedirectForm({
   async function handleAdd() {
     submit(
       {
-        _action: "addRedirect",
+        _action: ACTIONS.AddRedirect,
         data: {
           ...redirectItem,
           shopId: shopdb?.id,
@@ -221,7 +221,7 @@ export default function PopupRedirectForm({
     setLabelTranslation(false)
   }
 
-  const { addRedirectLoading, deleteRedirectLoading, updateRedirectLoading } = loadingStates(navigation, ["addRedirect", "deleteRedirect", "updateRedirect"]) as LoadingStates;
+  const loading = loadingStates(navigation, [ACTIONS.AddRedirect, ACTIONS.DeleteRedirect, ACTIONS.UpdateRedirect]) as LoadingStates;
 
   return (
     <InlineGrid gap="400">
@@ -487,7 +487,7 @@ export default function PopupRedirectForm({
             size="slim"
             tone="critical"
             onClick={() => { if (redirectItem?.id) { handleDelete(redirectItem.id) } }}
-            loading={deleteRedirectLoading}
+            loading={loading[ACTIONS.DeleteRedirect + "Loading"]}
             icon={DeleteIcon}
           >
             Delete
@@ -511,7 +511,7 @@ export default function PopupRedirectForm({
             variant="primary"
             onClick={editItem ? handleUpdate : handleAdd}
             disabled={addButtonStatus}
-            loading={addRedirectLoading || updateRedirectLoading}
+            loading={loading[ACTIONS.AddRedirect + "Loading"] || loading[ACTIONS.UpdateRedirect + "Loading"]}
           >
             {editItem ? "Save" : "Add"}
           </Button>

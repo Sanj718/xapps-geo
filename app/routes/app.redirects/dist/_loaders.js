@@ -43,7 +43,7 @@ var shopify_server_1 = require("app/shopify.server");
 function handleLoaders(_a) {
     var request = _a.request;
     return __awaiter(this, void 0, void 0, function () {
-        var _b, admin, session, widgetEditorStatus, widgetEditorCode, allRedirects, configs;
+        var _b, admin, session, widgetEditorStatus, widgetEditorCode, buttonEditorStatus, buttonEditorCode, allRedirects, configs;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0: return [4 /*yield*/, shopify_server_1.authenticate.admin(request)];
@@ -51,13 +51,15 @@ function handleLoaders(_a) {
                     _b = _c.sent(), admin = _b.admin, session = _b.session;
                     widgetEditorStatus = admin_queries_server_1.getWidgetEditorStatus({ admin: admin });
                     widgetEditorCode = admin_queries_server_1.getWidgetEditorCode({ admin: admin });
+                    buttonEditorStatus = admin_queries_server_1.getButtonEditorStatus({ admin: admin });
+                    buttonEditorCode = admin_queries_server_1.getButtonEditorCode({ admin: admin });
                     return [4 /*yield*/, db_queries_server_1.getAllRedirects({ shop: session.shop })];
                 case 2:
                     allRedirects = _c.sent();
                     return [4 /*yield*/, db_queries_server_1.getConfigs({ shop: session.shop })];
                 case 3:
                     configs = _c.sent();
-                    return [2 /*return*/, { allRedirects: allRedirects, configs: configs, widgetEditorStatus: widgetEditorStatus, widgetEditorCode: widgetEditorCode }];
+                    return [2 /*return*/, { allRedirects: allRedirects, configs: configs, widgetEditorStatus: widgetEditorStatus, widgetEditorCode: widgetEditorCode, buttonEditorStatus: buttonEditorStatus, buttonEditorCode: buttonEditorCode }];
             }
         });
     });

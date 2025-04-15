@@ -44,9 +44,9 @@ var _helpers_1 = require("../_helpers");
 var PromoBadge_1 = require("../_common/PromoBadge");
 var CodeEditor_client_1 = require("../_common/CodeEditor.client");
 var _actions_1 = require("../_actions");
-var WidgetDisplayCustomRuleBanner_1 = require("./WidgetDisplayCustomRuleBanner");
-var WidgetDisplayCustomRuleCodeBanner_1 = require("./WidgetDisplayCustomRuleCodeBanner");
-function WidgetDisplayCustomRule(_a) {
+var ButtonDisplayCustomRuleBanner_1 = require("./ButtonDisplayCustomRuleBanner");
+var ButtonDisplayCustomRuleCodeBanner_1 = require("./ButtonDisplayCustomRuleCodeBanner");
+function ButtonDisplayCustomRule(_a) {
     var status = _a.status, code = _a.code;
     var _b = react_2.useOutletContext(), shopInfo = _b.shopInfo, shopdb = _b.shopdb, activePlan = _b.activePlan, devPlan = _b.devPlan, veteranPlan = _b.veteranPlan, appId = _b.appId, appData = _b.appData;
     var _c = _helpers_1.planParser(activePlan), isProPlan = _c.isProPlan, isBasicPlan = _c.isBasicPlan, isFreePlan = _c.isFreePlan;
@@ -54,14 +54,14 @@ function WidgetDisplayCustomRule(_a) {
     var actionData = react_2.useActionData();
     var navigation = react_2.useNavigation();
     var navigate = react_2.useNavigate();
-    var _d = react_1.useState(_helpers_1.defaultWidgetCode), customCode = _d[0], setCustomCode = _d[1];
+    var _d = react_1.useState(_helpers_1.defaultButtonCode), customCode = _d[0], setCustomCode = _d[1];
     function handleCustomCodeStatus(value) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 if (!appId)
                     return [2 /*return*/];
                 submit({
-                    _action: _actions_1.ACTIONS.WidgetDisplayCustomRuleStatus,
+                    _action: _actions_1.ACTIONS.ButtonDisplayCustomRuleStatus,
                     data: {
                         appId: appId,
                         data: value
@@ -77,7 +77,7 @@ function WidgetDisplayCustomRule(_a) {
                 if (!appId)
                     return [2 /*return*/];
                 submit({
-                    _action: _actions_1.ACTIONS.WidgetDisplayCustomRuleCodeSave,
+                    _action: _actions_1.ACTIONS.ButtonDisplayCustomRuleCodeSave,
                     data: {
                         appId: appId,
                         data: customCode
@@ -87,21 +87,22 @@ function WidgetDisplayCustomRule(_a) {
             });
         });
     }
-    var loading = _helpers_1.loadingStates(navigation, [_actions_1.ACTIONS.WidgetDisplayCustomRuleStatus, _actions_1.ACTIONS.WidgetDisplayCustomRuleCodeSave]);
+    var loading = _helpers_1.loadingStates(navigation, [_actions_1.ACTIONS.ButtonDisplayCustomRuleStatus, _actions_1.ACTIONS.ButtonDisplayCustomRuleCodeSave]);
     return react_1["default"].createElement(react_1["default"].Fragment, null,
         react_1["default"].createElement(polaris_1.InlineGrid, { columns: { xs: "1fr", md: "auto  70%" }, gap: "400" },
             react_1["default"].createElement(polaris_1.Box, { as: "section", paddingInlineStart: { xs: "400", sm: "0" }, paddingInlineEnd: { xs: "400", sm: "0" } },
                 react_1["default"].createElement("div", { style: { paddingLeft: "1rem" } },
                     react_1["default"].createElement(polaris_1.BlockStack, { gap: "400" },
                         react_1["default"].createElement(PromoBadge_1["default"], { type: "pro" }),
-                        react_1["default"].createElement(polaris_1.Text, { as: "h3", variant: "headingMd" }, "Widget display custom rule"),
+                        react_1["default"].createElement(polaris_1.Text, { as: "h3", variant: "headingMd" }, "Button display custom rule"),
                         react_1["default"].createElement(polaris_1.Text, { as: "p", variant: "bodyMd" },
-                            "Easily implement your custom logic for widget display. Make sure to ",
+                            "Easily implement your custom logic for buttons display. Make sure to ",
                             react_1["default"].createElement("strong", null, "activate it only if you're a developer"),
-                            " and at your own risk. Reach out to us for personalized customization options.")))),
+                            " ",
+                            "and at your own risk. Reach out to us for personalized customization options.")))),
             react_1["default"].createElement(polaris_1.Card, { roundedAbove: "sm" },
                 react_1["default"].createElement(polaris_1.InlineGrid, { gap: "200" },
-                    react_1["default"].createElement(WidgetDisplayCustomRuleBanner_1["default"], null),
+                    react_1["default"].createElement(ButtonDisplayCustomRuleBanner_1["default"], null),
                     react_1["default"].createElement("div", { style: { position: "relative" } },
                         react_1["default"].createElement(react_1.Suspense, { fallback: react_1["default"].createElement(polaris_1.Spinner, { size: "small" }) },
                             react_1["default"].createElement(react_2.Await, { resolve: status }, function (status) {
@@ -114,7 +115,7 @@ function WidgetDisplayCustomRule(_a) {
                             }),
                             loading[_actions_1.ACTIONS.WidgetDisplayCustomRuleStatus + "Loading"] && (react_1["default"].createElement("div", { style: { position: "absolute", top: "6px", right: "8px", zIndex: 10 } },
                                 react_1["default"].createElement(polaris_1.Spinner, { size: "small" }))))),
-                    react_1["default"].createElement(WidgetDisplayCustomRuleCodeBanner_1["default"], null),
+                    react_1["default"].createElement(ButtonDisplayCustomRuleCodeBanner_1["default"], null),
                     react_1["default"].createElement("div", { id: "code-editor", className: "code-editor", style: {
                             opacity: isProPlan ? 1 : 0.3,
                             pointerEvents: isProPlan ? "initial" : "none"
@@ -127,4 +128,4 @@ function WidgetDisplayCustomRule(_a) {
                         react_1["default"].createElement(polaris_1.Button, { variant: "tertiary", icon: polaris_icons_1.MaximizeIcon, onClick: function () { return navigate("/app/redirects/widget-display-custom-rule"); } }, "Open Full-Screen Editor"),
                         react_1["default"].createElement(polaris_1.Button, { variant: "primary", onClick: function () { return handleCustomCodeSave(); }, loading: loading[_actions_1.ACTIONS.WidgetDisplayCustomRuleCodeSave + "Loading"] }, "Save"))))));
 }
-exports["default"] = WidgetDisplayCustomRule;
+exports["default"] = ButtonDisplayCustomRule;

@@ -22,6 +22,8 @@ export const ACTIONS = {
   CreateAllowedPages: "createAllowedPages",
   WidgetDisplayCustomRuleStatus: "widgetDisplayCustomRuleStatus",
   WidgetDisplayCustomRuleCodeSave: "widgetDisplayCustomRuleCodeSave",
+  ButtonDisplayCustomRuleStatus: "buttonDisplayCustomRuleStatus",
+  ButtonDisplayCustomRuleCodeSave: "buttonDisplayCustomRuleCodeSave",
 }
 
 export const getAssets = async ({ admin, data }: GetAssetsParams) => {

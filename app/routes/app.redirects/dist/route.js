@@ -71,7 +71,7 @@ exports.action = function (params) { return __awaiter(void 0, void 0, void 0, fu
 }); }); };
 function CustomRedirects() {
     var _a = react_2.useOutletContext(), shopInfo = _a.shopInfo, shopdb = _a.shopdb, activePlan = _a.activePlan, devPlan = _a.devPlan, veteranPlan = _a.veteranPlan, appId = _a.appId, appData = _a.appData;
-    var _b = react_2.useLoaderData(), allRedirects = _b.allRedirects, configs = _b.configs, widgetEditorStatus = _b.widgetEditorStatus, widgetEditorCode = _b.widgetEditorCode;
+    var _b = react_2.useLoaderData(), allRedirects = _b.allRedirects, configs = _b.configs, widgetEditorStatus = _b.widgetEditorStatus, widgetEditorCode = _b.widgetEditorCode, buttonEditorStatus = _b.buttonEditorStatus, buttonEditorCode = _b.buttonEditorCode;
     var actionData = react_2.useActionData();
     var _c = react_1.useState({ msg: "", error: false }), toastData = _c[0], setToastData = _c[1];
     var _d = react_1.useState(null), active = _d[0], setActive = _d[1];
@@ -157,7 +157,7 @@ function CustomRedirects() {
                 smUp ? React.createElement(polaris_1.Divider, null) : null,
                 React.createElement(WidgetDisplayCustomRule_1["default"], { status: widgetEditorStatus, code: widgetEditorCode }),
                 smUp ? React.createElement(polaris_1.Divider, null) : null,
-                React.createElement(ButtonDisplayCustomRule_1["default"], null))) : ("")),
+                React.createElement(ButtonDisplayCustomRule_1["default"], { status: buttonEditorStatus, code: buttonEditorCode }))) : ("")),
         (toastData === null || toastData === void 0 ? void 0 : toastData.msg) !== "" &&
             shopify.toast.show(toastData.msg, { isError: toastData.error }),
         React.createElement("br", null)));

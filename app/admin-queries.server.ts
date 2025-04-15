@@ -212,3 +212,181 @@ export async function getWidgetEditorCode({ admin }: { admin: AdminApiContext })
         return { status: false, error: (error as Error).toString() };
     }
 }
+
+export async function saveButtonEditorStatusToMetafield({ admin, appId, value }: { admin: AdminApiContext, appId: string, value: boolean }) {
+    if (!admin) throw Error("admin not defined");
+    try {
+        const response = await admin.graphql(
+            `#graphql
+            mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {
+                metafieldsSet(metafields: $metafields) {
+                    metafields {
+                        key
+                        namespace
+                        value
+                        createdAt
+                        updatedAt
+                    }
+                    userErrors {
+                        field
+                        message
+                        code
+                    }
+                }
+            }
+            `,
+            {
+                variables: {
+                    metafields: [
+                        {
+                            key: "buttons_code_status",
+                            namespace: "widget_settings",
+                            ownerId: appId,
+                            type: "boolean",
+                            value,
+                        }
+                    ]
+                }
+            }
+        );
+        const responseJson = await response.json();
+        if (responseJson?.data?.metafieldsSet?.userErrors?.length > 0) {
+            throw Error(responseJson?.data?.metafieldsSet?.userErrors[0]?.message);
+        }
+        return responseJson?.data?.metafieldsSet?.metafields[0];
+    } catch (error) {
+        console.error(error);
+        return { status: false, error: (error as Error).toString() };
+    }
+}
+
+export async function saveButtonEditorCodeToMetafield({ admin, appId, value }: { admin: AdminApiContext, appId: string, value: string }) {
+    if (!admin) throw Error("admin not defined");
+    try {
+        const response = await admin.graphql(
+            `#graphql
+            mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {
+                metafieldsSet(metafields: $metafields) {
+                    metafields {
+                        key
+                        namespace
+                        value
+                        createdAt
+                        updatedAt
+                    }
+                    userErrors {
+                        field
+                        message
+                        code
+                    }
+                }
+            }
+            `,
+            {
+                variables: {
+                    metafields: [
+                        {
+                            key: "buttons_show_code",
+                            namespace: "widget_settings",
+                            ownerId: appId,
+                            type: "multi_line_text_field",
+                            value,
+                        }
+                    ]
+                }
+            }
+        );
+        const responseJson = await response.json();
+        if (responseJson?.data?.metafieldsSet?.userErrors?.length > 0) {
+            throw Error(responseJson?.data?.metafieldsSet?.userErrors[0]?.message);
+        }
+        return responseJson?.data?.metafieldsSet?.metafields[0];
+    } catch (error) {
+        console.error(error);
+        return { status: false, error: (error as Error).toString() };
+    }
+}
+
+export async function getButtonEditorStatus({ admin }: { admin: AdminApiContext }) {
+    if (!admin) throw Error("admin not defined");
+    try {
+        const response = await admin.graphql(
+            `#graphql
+            query getMetafields($namespace: String!, $key: String!) {
+                appInstallation {
+                id
+                metafield(namespace: $namespace, key: $key) {
+                    id
+                    namespace
+                    key
+                    value
+                }
+                allSubscriptions(first: 10){
+                    edges{
+                    node{
+                        id
+                        createdAt
+                        name
+                        status
+                    }
+                    }
+                }
+                }
+            }
+            `,
+            {
+                variables: {
+                    namespace: "widget_settings",
+                    key: "buttons_code_status",
+                }
+            }
+        );
+        const responseJson = await response.json();
+        return responseJson?.data?.appInstallation?.metafield;
+    } catch (error) {
+        console.error(error);
+        return { status: false, error: (error as Error).toString() };
+    }
+}
+
+export async function getButtonEditorCode({ admin }: { admin: AdminApiContext }) {
+    if (!admin) throw Error("admin not defined");
+    try {
+        const response = await admin.graphql(
+            `#graphql
+            query getMetafields($namespace: String!, $key: String!) {
+                appInstallation {
+                id
+                metafield(namespace: $namespace, key: $key) {
+                    id
+                    namespace
+                    key
+                    value
+                }
+                allSubscriptions(first: 10){
+                    edges{
+                    node{
+                        id
+                        createdAt
+                        name
+                        status
+                    }
+                    }
+                }
+                }
+            }
+            `,
+            {
+                variables: {
+                    namespace: "widget_settings",
+                    key: "buttons_show_code",
+                }
+            }
+        );
+        const responseJson = await response.json();
+        return responseJson?.data?.appInstallation?.metafield;
+    } catch (error) {
+        console.error(error);
+        return { status: false, error: (error as Error).toString() };
+    }
+}
