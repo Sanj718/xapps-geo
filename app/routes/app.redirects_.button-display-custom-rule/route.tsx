@@ -1,5 +1,5 @@
 import { BlockStack, Card, Page, Select, Spinner } from "@shopify/polaris";
-import { loadingStates, requestHeaders, defaultWidgetCode, planParser } from "../../components/_helpers";
+import { loadingStates, requestHeaders, defaultButtonCode, planParser } from "../../components/_helpers";
 import { Suspense, useState } from "react";
 import { Await, useLoaderData, useNavigate, useNavigation, useOutletContext, useSubmit } from "@remix-run/react";
 import { LoadingStates, OutletContext } from "app/components/_types";
@@ -9,27 +9,30 @@ import { ActionFunctionArgs } from "@remix-run/node";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { ACTIONS } from "app/components/_actions";
 import CodeEditor from "app/components/_common/CodeEditor.client";
-import WidgetDisplayCustomRuleBanner from "../../components/popup-redirects/WidgetDisplayCustomRuleBanner";
-import WidgetDisplayCustomRuleCodeBanner from "app/components/popup-redirects/WidgetDisplayCustomRuleCodeBanner";
+import ButtonDisplayCustomRuleBanner from "app/components/popup-redirects/ButtonDisplayCustomRuleBanner";
+import ButtonDisplayCustomRuleCodeBanner from "app/components/popup-redirects/ButtonDisplayCustomRuleCodeBanner";
+
+
 export const loader = async (params: LoaderFunctionArgs) => handleLoaders(params);
 
 export const action = async (params: ActionFunctionArgs) => handleActions(params);
 
 
 export default function WidgetDisplayCustomRulePage() {
-  const { activePlan, appId } = useOutletContext<OutletContext>();
+  const { activePlan, appId } =
+    useOutletContext<OutletContext>();
   const { isProPlan } = planParser(activePlan);
-  const { widgetEditorStatus, widgetEditorCode } = useLoaderData<typeof loader>();
+  const { buttonEditorStatus, buttonEditorCode } = useLoaderData<typeof loader>();
   const submit = useSubmit()
   const navigation = useNavigation()
   const navigate = useNavigate();
-  const [customCode, setCustomCode] = useState(defaultWidgetCode);
+  const [customCode, setCustomCode] = useState(defaultButtonCode);
 
   async function handleCustomCodeSave() {
     if (!appId) return;
     submit(
       {
-        _action: ACTIONS.WidgetDisplayCustomRuleCodeSave,
+        _action: ACTIONS.ButtonDisplayCustomRuleCodeSave,
         data: {
           appId,
           data: customCode,
@@ -43,7 +46,7 @@ export default function WidgetDisplayCustomRulePage() {
     if (!appId) return;
     submit(
       {
-        _action: ACTIONS.WidgetDisplayCustomRuleStatus,
+        _action: ACTIONS.ButtonDisplayCustomRuleStatus,
         data: {
           appId,
           data: value,
@@ -53,25 +56,25 @@ export default function WidgetDisplayCustomRulePage() {
     );
   }
 
-  const loading = loadingStates(navigation, [ACTIONS.WidgetDisplayCustomRuleCodeSave, ACTIONS.WidgetDisplayCustomRuleStatus]) as LoadingStates;
+  const loading = loadingStates(navigation, [ACTIONS.ButtonDisplayCustomRuleCodeSave, ACTIONS.ButtonDisplayCustomRuleStatus]) as LoadingStates;
   return (
     <Page
       fullWidth
       compactTitle
-      title="Widget display custom rule"
+      title="Button display custom rule"
       backAction={{
         content: "Back", onAction: () => navigate("/app/redirects#code-editor", {
           viewTransition: true,
           preventScrollReset: true,
         })
       }}
-      primaryAction={{ content: "Save", onAction: handleCustomCodeSave, loading: loading[ACTIONS.WidgetDisplayCustomRuleCodeSave + "Loading"] }}
+      primaryAction={{ content: "Save", onAction: handleCustomCodeSave, loading: loading[ACTIONS.ButtonDisplayCustomRuleCodeSave + "Loading"] }}
     >
       <BlockStack gap="200">
-        <WidgetDisplayCustomRuleBanner />
+        <ButtonDisplayCustomRuleBanner />
         <div style={{ position: "relative" }}>
           <Suspense fallback={<Spinner size="small" />}>
-            <Await resolve={widgetEditorStatus}>
+            <Await resolve={buttonEditorStatus}>
               {(status) => {
                 return <Select
                   label="Status: "
@@ -80,7 +83,7 @@ export default function WidgetDisplayCustomRulePage() {
                     { label: "Active", value: "true" },
                     { label: "Draft", value: "false" },
                   ]}
-                  disabled={loading[ACTIONS.WidgetDisplayCustomRuleStatus + "Loading"] || !isProPlan}
+                  disabled={loading[ACTIONS.ButtonDisplayCustomRuleStatus + "Loading"] || !isProPlan}
                   onChange={
                     isProPlan
                       ? (value) => handleCustomCodeStatus(value)
@@ -90,7 +93,7 @@ export default function WidgetDisplayCustomRulePage() {
                 />
               }}
             </Await>
-            {loading[ACTIONS.WidgetDisplayCustomRuleStatus + "Loading"] && (
+            {loading[ACTIONS.ButtonDisplayCustomRuleStatus + "Loading"] && (
               <div style={{ position: "absolute", top: "6px", right: "8px", zIndex: 10 }}>
                 <Spinner size="small" />
               </div>
@@ -99,11 +102,11 @@ export default function WidgetDisplayCustomRulePage() {
         </div>
 
         <Card>
-          <WidgetDisplayCustomRuleCodeBanner /><br />
+          <ButtonDisplayCustomRuleCodeBanner /><br />
           <Suspense fallback={<Spinner size="small" />}>
-            <Await resolve={widgetEditorCode}>
+            <Await resolve={buttonEditorCode}>
               {(code) => {
-                return <CodeEditor code={code?.value || defaultWidgetCode} onChange={isProPlan ? setCustomCode : () => { }} language="javascript" />
+                return <CodeEditor code={code?.value || defaultButtonCode} onChange={isProPlan ? setCustomCode : () => { }} language="javascript" />
               }}
             </Await>
           </Suspense>

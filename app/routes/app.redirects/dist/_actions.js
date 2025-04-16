@@ -55,7 +55,7 @@ var shopify_server_1 = require("app/shopify.server");
 function handleActions(_a) {
     var request = _a.request;
     return __awaiter(this, void 0, void 0, function () {
-        var _b, admin, session, _c, _action, data, response, response, response, response, response, response, response, response, response, response;
+        var _b, admin, session, _c, _action, data, response, response, response, response, response, response, response, response, response, response, response, response;
         return __generator(this, function (_d) {
             switch (_d.label) {
                 case 0: return [4 /*yield*/, shopify_server_1.authenticate.admin(request)];
@@ -124,7 +124,20 @@ function handleActions(_a) {
                 case 21:
                     response = _d.sent();
                     return [2 /*return*/, __assign({ _action: _action }, response)];
-                case 22: return [2 /*return*/, {}];
+                case 22:
+                    if (!(_action === _actions_1.ACTIONS.ButtonDisplayCustomRuleStatus)) return [3 /*break*/, 24];
+                    return [4 /*yield*/, admin_queries_server_1.saveButtonEditorStatusToMetafield({ admin: admin, appId: data.appId, value: data.data })];
+                case 23:
+                    response = _d.sent();
+                    console.log("response", response);
+                    return [2 /*return*/, __assign({ _action: _action }, response)];
+                case 24:
+                    if (!(_action === _actions_1.ACTIONS.ButtonDisplayCustomRuleCodeSave)) return [3 /*break*/, 26];
+                    return [4 /*yield*/, admin_queries_server_1.saveButtonEditorCodeToMetafield({ admin: admin, appId: data.appId, value: data.data })];
+                case 25:
+                    response = _d.sent();
+                    return [2 /*return*/, __assign({ _action: _action }, response)];
+                case 26: return [2 /*return*/, {}];
             }
         });
     });

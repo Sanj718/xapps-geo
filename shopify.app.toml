@@ -3,7 +3,7 @@
 client_id = "9966dc648683377b495dc8e5b5a704b1"
 name = "xapps-geo-ts"
 handle = "xapps-geo-ts"
-application_url = "https://me-decorating-manufacturers-stockholm.trycloudflare.com"
+application_url = "https://dirt-swimming-enhancing-stephen.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_files,read_locales,read_markets,read_themes,write_files"
 
 [auth]
 redirect_urls = [
-  "https://me-decorating-manufacturers-stockholm.trycloudflare.com/auth/callback",
-  "https://me-decorating-manufacturers-stockholm.trycloudflare.com/auth/shopify/callback",
-  "https://me-decorating-manufacturers-stockholm.trycloudflare.com/api/auth/callback"
+  "https://dirt-swimming-enhancing-stephen.trycloudflare.com/auth/callback",
+  "https://dirt-swimming-enhancing-stephen.trycloudflare.com/auth/shopify/callback",
+  "https://dirt-swimming-enhancing-stephen.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

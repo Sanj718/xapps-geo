@@ -45,30 +45,6 @@ export default function ContentStyle({
     (item) => !item.primary,
   );
 
-  async function saveConfigs() {
-    submit(
-      {
-        _action: ACTIONS.CreateUpdateConfigs,
-        data: {
-          basicConfigs: localConfigs,
-          advancedConfigs: localAdvancedConfigs,
-        },
-      },
-      requestHeaders,
-    );
-  }
-
-  function handleCustomIconUpload(assets: Asset | null) {
-    if (!assets) return;
-    setLocalConfigs((current: typeof localConfigs) => ({
-      ...current,
-      icon: assets.url
-    }));
-    shopify.modal.hide("icon-upload-popup");
-  }
-
-  const loading = loadingStates(navigation, [ACTIONS.CreateUpdateConfigs]) as LoadingStates;
-
   return (
     <>
       <InlineGrid columns={{ xs: "1fr", md: "auto  70%" }} gap="400">
@@ -127,7 +103,7 @@ export default function ContentStyle({
         </Card>
       </InlineGrid>
 
-      {/* Customize your popup */}
+      {/* Customize your popup
       <Modal id="customize-popup" variant="max" onShow={() => setCustomizePopupVisibilityChange(true)} onHide={() => setCustomizePopupVisibilityChange(false)}>
         <TitleBar title="Customize your popup">
           <button variant="primary" onClick={() => saveConfigs()} loading={loading[ACTIONS.CreateUpdateConfigs + "Loading"] ? "loading" : false}>Save</button>
@@ -143,122 +119,8 @@ export default function ContentStyle({
             />
           </AppProvider>
         </Box>
-      </Modal>
+      </Modal> */}
 
-      <Modal id="popup-content-translation-popup">
-        <TitleBar title="Popup content translation" />
-        <Box padding="400">
-          <AppProvider i18n={{}} apiKey={""}>
-            <InlineGrid gap="300">
-              <Box>
-                <PromoBadge type="pro" />
-              </Box>
-              <InlineGrid columns="2" gap="200">
-                {(secondaryLocales?.length > 0 &&
-                  secondaryLocales.map((locale) => {
-                    return (
-                      <PopupContent
-                        titleDisabled={!isProPlan}
-                        key={locale.locale}
-                        titleLabel={`Title (${locale.locale})`}
-                        titleValue={isProPlan
-                          ? localConfigs?.title_locales &&
-                            localConfigs.title_locales[locale.locale]
-                            ? localConfigs.title_locales[locale.locale]
-                            : ""
-                          : ""}
-                        titleOnChange={isProPlan ? (value) =>
-                          setLocalConfigs((current) => ({
-                            ...current,
-                            title_locales: {
-                              ...current?.title_locales,
-                              [locale.locale]: value,
-                            },
-                          })) : undefined}
-                        textLabel={`Short text (${locale.locale})`}
-                        textValue={isProPlan
-                          ? localConfigs?.text_locales &&
-                            localConfigs.text_locales[locale.locale]
-                            ? localConfigs.text_locales[locale.locale]
-                            : ""
-                          : ""}
-                        textOnChange={isProPlan ? (value) => {
-                          setLocalConfigs((current) => ({
-                            ...current,
-                            text_locales: {
-                              ...current.text_locales,
-                              [locale.locale]: value,
-                            },
-                          }));
-                        } : undefined}
-                      />
-                    );
-                  })) ||
-                  ""}
-              </InlineGrid>
-            </InlineGrid>
-          </AppProvider>
-        </Box>
-      </Modal>
-
-
-      <Modal id="icon-upload-popup">
-        <TitleBar title="Select custom icon" />
-        <Box padding="400">
-          <AppProvider i18n={{}} apiKey={""}>
-            <ImageManager callBack={handleCustomIconUpload} />
-          </AppProvider></Box>
-      </Modal>
-
-      <Modal id="icon-settings-popup">
-        <TitleBar title="Icon settings" />
-        <Box padding="400">
-          <AppProvider i18n={{}} apiKey={""}>
-            <IconSettings configs={localConfigs} setConfigs={setLocalConfigs} isFreePlan={isFreePlan} />
-          </AppProvider></Box>
-      </Modal>
-
-      <Modal id="dropdown-label-translation-popup">
-        <TitleBar title="Dropdown label translation" />
-        <Box padding="400">
-          <AppProvider i18n={{}} apiKey={""}>
-            <InlineGrid gap="300">
-              <Box>
-                <PromoBadge type="pro" />
-              </Box>
-              <div className={!isProPlan ? "visually-disabled" : ""}>
-                <InlineGrid columns="2" gap="200">
-                  {secondaryLocales?.map((locale) => {
-                    const titleValue =
-                      localConfigs?.dropdownPlaceholder_locales &&
-                        localConfigs.dropdownPlaceholder_locales[locale.locale]
-                        ? localConfigs.dropdownPlaceholder_locales[locale.locale]
-                        : "";
-                    const titleOnChange = (value: string) =>
-                      setLocalConfigs((current: typeof localConfigs) => ({
-                        ...current,
-                        dropdownPlaceholder_locales: {
-                          ...current.dropdownPlaceholder_locales,
-                          [locale.locale]: value,
-                        },
-                      }));
-                    return (
-                      <PopupContent
-                        key={locale.locale}
-                        titleLabel={`Dropdown label (${locale.locale})`}
-                        titleValue={titleValue}
-                        // @ts-ignore
-                        titleOnChange={titleOnChange}
-                        titleDisabled={!isProPlan}
-                      />
-                    );
-                  })}
-                </InlineGrid>
-              </div>
-            </InlineGrid>
-          </AppProvider>
-        </Box>
-      </Modal>
 
 
     </>

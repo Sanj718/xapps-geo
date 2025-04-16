@@ -45,8 +45,8 @@ var _actions_1 = require("./_actions");
 var _loaders_1 = require("./_loaders");
 var _actions_2 = require("app/components/_actions");
 var CodeEditor_client_1 = require("app/components/_common/CodeEditor.client");
-var WidgetDisplayCustomRuleBanner_1 = require("../../components/popup-redirects/WidgetDisplayCustomRuleBanner");
-var WidgetDisplayCustomRuleCodeBanner_1 = require("app/components/popup-redirects/WidgetDisplayCustomRuleCodeBanner");
+var ButtonDisplayCustomRuleBanner_1 = require("app/components/popup-redirects/ButtonDisplayCustomRuleBanner");
+var ButtonDisplayCustomRuleCodeBanner_1 = require("app/components/popup-redirects/ButtonDisplayCustomRuleCodeBanner");
 exports.loader = function (params) { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
     return [2 /*return*/, _loaders_1.handleLoaders(params)];
 }); }); };
@@ -56,18 +56,18 @@ exports.action = function (params) { return __awaiter(void 0, void 0, void 0, fu
 function WidgetDisplayCustomRulePage() {
     var _a = react_2.useOutletContext(), activePlan = _a.activePlan, appId = _a.appId;
     var isProPlan = _helpers_1.planParser(activePlan).isProPlan;
-    var _b = react_2.useLoaderData(), widgetEditorStatus = _b.widgetEditorStatus, widgetEditorCode = _b.widgetEditorCode;
+    var _b = react_2.useLoaderData(), buttonEditorStatus = _b.buttonEditorStatus, buttonEditorCode = _b.buttonEditorCode;
     var submit = react_2.useSubmit();
     var navigation = react_2.useNavigation();
     var navigate = react_2.useNavigate();
-    var _c = react_1.useState(_helpers_1.defaultWidgetCode), customCode = _c[0], setCustomCode = _c[1];
+    var _c = react_1.useState(_helpers_1.defaultButtonCode), customCode = _c[0], setCustomCode = _c[1];
     function handleCustomCodeSave() {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 if (!appId)
                     return [2 /*return*/];
                 submit({
-                    _action: _actions_2.ACTIONS.WidgetDisplayCustomRuleCodeSave,
+                    _action: _actions_2.ACTIONS.ButtonDisplayCustomRuleCodeSave,
                     data: {
                         appId: appId,
                         data: customCode
@@ -83,7 +83,7 @@ function WidgetDisplayCustomRulePage() {
                 if (!appId)
                     return [2 /*return*/];
                 submit({
-                    _action: _actions_2.ACTIONS.WidgetDisplayCustomRuleStatus,
+                    _action: _actions_2.ACTIONS.ButtonDisplayCustomRuleStatus,
                     data: {
                         appId: appId,
                         data: value
@@ -93,34 +93,34 @@ function WidgetDisplayCustomRulePage() {
             });
         });
     }
-    var loading = _helpers_1.loadingStates(navigation, [_actions_2.ACTIONS.WidgetDisplayCustomRuleCodeSave, _actions_2.ACTIONS.WidgetDisplayCustomRuleStatus]);
-    return (React.createElement(polaris_1.Page, { fullWidth: true, compactTitle: true, title: "Widget display custom rule", backAction: {
+    var loading = _helpers_1.loadingStates(navigation, [_actions_2.ACTIONS.ButtonDisplayCustomRuleCodeSave, _actions_2.ACTIONS.ButtonDisplayCustomRuleStatus]);
+    return (React.createElement(polaris_1.Page, { fullWidth: true, compactTitle: true, title: "Button display custom rule", backAction: {
             content: "Back",
             onAction: function () { return navigate("/app/redirects#code-editor", {
                 viewTransition: true,
                 preventScrollReset: true
             }); }
-        }, primaryAction: { content: "Save", onAction: handleCustomCodeSave, loading: loading[_actions_2.ACTIONS.WidgetDisplayCustomRuleCodeSave + "Loading"] } },
+        }, primaryAction: { content: "Save", onAction: handleCustomCodeSave, loading: loading[_actions_2.ACTIONS.ButtonDisplayCustomRuleCodeSave + "Loading"] } },
         React.createElement(polaris_1.BlockStack, { gap: "200" },
-            React.createElement(WidgetDisplayCustomRuleBanner_1["default"], null),
+            React.createElement(ButtonDisplayCustomRuleBanner_1["default"], null),
             React.createElement("div", { style: { position: "relative" } },
                 React.createElement(react_1.Suspense, { fallback: React.createElement(polaris_1.Spinner, { size: "small" }) },
-                    React.createElement(react_2.Await, { resolve: widgetEditorStatus }, function (status) {
+                    React.createElement(react_2.Await, { resolve: buttonEditorStatus }, function (status) {
                         return React.createElement(polaris_1.Select, { label: "Status: ", labelInline: true, options: [
                                 { label: "Active", value: "true" },
                                 { label: "Draft", value: "false" },
-                            ], disabled: loading[_actions_2.ACTIONS.WidgetDisplayCustomRuleStatus + "Loading"] || !isProPlan, onChange: isProPlan
+                            ], disabled: loading[_actions_2.ACTIONS.ButtonDisplayCustomRuleStatus + "Loading"] || !isProPlan, onChange: isProPlan
                                 ? function (value) { return handleCustomCodeStatus(value); }
                                 : undefined, value: (status === null || status === void 0 ? void 0 : status.value) || "false" });
                     }),
-                    loading[_actions_2.ACTIONS.WidgetDisplayCustomRuleStatus + "Loading"] && (React.createElement("div", { style: { position: "absolute", top: "6px", right: "8px", zIndex: 10 } },
+                    loading[_actions_2.ACTIONS.ButtonDisplayCustomRuleStatus + "Loading"] && (React.createElement("div", { style: { position: "absolute", top: "6px", right: "8px", zIndex: 10 } },
                         React.createElement(polaris_1.Spinner, { size: "small" }))))),
             React.createElement(polaris_1.Card, null,
-                React.createElement(WidgetDisplayCustomRuleCodeBanner_1["default"], null),
+                React.createElement(ButtonDisplayCustomRuleCodeBanner_1["default"], null),
                 React.createElement("br", null),
                 React.createElement(react_1.Suspense, { fallback: React.createElement(polaris_1.Spinner, { size: "small" }) },
-                    React.createElement(react_2.Await, { resolve: widgetEditorCode }, function (code) {
-                        return React.createElement(CodeEditor_client_1["default"], { code: (code === null || code === void 0 ? void 0 : code.value) || _helpers_1.defaultWidgetCode, onChange: isProPlan ? setCustomCode : function () { }, language: "javascript" });
+                    React.createElement(react_2.Await, { resolve: buttonEditorCode }, function (code) {
+                        return React.createElement(CodeEditor_client_1["default"], { code: (code === null || code === void 0 ? void 0 : code.value) || _helpers_1.defaultButtonCode, onChange: isProPlan ? setCustomCode : function () { }, language: "javascript" });
                     }))))));
 }
 exports["default"] = WidgetDisplayCustomRulePage;

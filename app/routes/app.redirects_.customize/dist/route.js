@@ -58,6 +58,10 @@ var app_bridge_react_1 = require("@shopify/app-bridge-react");
 var CustomizePopup_1 = require("app/components/popup-redirects/CustomizePopup");
 var _actions_2 = require("app/components/_actions");
 var env_1 = require("../../components/env");
+var PromoBadge_1 = require("app/components/_common/PromoBadge");
+var PopupContent_1 = require("app/components/_common/PopupContent");
+var ImageManager_1 = require("app/components/_common/ImageManager");
+var IconSettings_1 = require("app/components/popup-redirects/IconSettings");
 var _a = _helpers_1.getEmbedConst(env_1.PROD_EMBED_APP_ID, env_1.DEV_EMBED_APP_ID, env_1.RD_EMBED_APP_HANDLE) || {}, EMBED_APP_ID = _a.EMBED_APP_ID, EMBED_APP_HANDLE = _a.EMBED_APP_HANDLE;
 // [TODO] find correct way to add ts check here.
 exports.loader = function (params) { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
@@ -69,17 +73,18 @@ exports.action = function (params) { return __awaiter(void 0, void 0, void 0, fu
 function CustomizePopupPage() {
     var _a;
     var _b = react_2.useOutletContext(), shopInfo = _b.shopInfo, shopdb = _b.shopdb, activePlan = _b.activePlan, devPlan = _b.devPlan, veteranPlan = _b.veteranPlan, appId = _b.appId, appData = _b.appData;
-    var _c = react_2.useLoaderData(), allRedirects = _c.allRedirects, configs = _c.configs, widgetEditorStatus = _c.widgetEditorStatus, widgetEditorCode = _c.widgetEditorCode;
+    var _c = _helpers_1.planParser(activePlan), isProPlan = _c.isProPlan, isBasicPlan = _c.isBasicPlan, isFreePlan = _c.isFreePlan;
+    var _d = react_2.useLoaderData(), allRedirects = _d.allRedirects, configs = _d.configs, widgetEditorStatus = _d.widgetEditorStatus, widgetEditorCode = _d.widgetEditorCode;
     var actionData = react_2.useActionData();
     var submit = react_2.useSubmit();
     var navigation = react_2.useNavigation();
     var navigate = react_2.useNavigate();
-    var _d = react_1.useState(false), hasChange = _d[0], setHasChange = _d[1];
-    var _e = react_1.useState({ msg: "", error: false }), toastData = _e[0], setToastData = _e[1];
-    var _f = react_1.useState([]), redirects = _f[0], setRedirects = _f[1];
-    var _g = (configs === null || configs === void 0 ? void 0 : configs.data[0]) || {}, basicConfigs = _g.basicConfigs, advancedConfigs = _g.advancedConfigs, hideOnAllowedPages = _g.hideOnAllowedPages, allowedPages = _g.allowedPages;
-    var _h = react_1.useState(__assign(__assign({}, _helpers_1.default_basic_configs), basicConfigs)), localConfigs = _h[0], setLocalConfigs = _h[1];
-    var _j = react_1.useState(__assign(__assign({}, _helpers_1.default_advanced_configs), advancedConfigs)), localAdvancedConfigs = _j[0], setLocalAdvancedConfigs = _j[1];
+    var _e = react_1.useState(false), hasChange = _e[0], setHasChange = _e[1];
+    var _f = react_1.useState({ msg: "", error: false }), toastData = _f[0], setToastData = _f[1];
+    var _g = react_1.useState([]), redirects = _g[0], setRedirects = _g[1];
+    var _h = (configs === null || configs === void 0 ? void 0 : configs.data[0]) || {}, basicConfigs = _h.basicConfigs, advancedConfigs = _h.advancedConfigs, hideOnAllowedPages = _h.hideOnAllowedPages, allowedPages = _h.allowedPages;
+    var _j = react_1.useState(__assign(__assign({}, _helpers_1.default_basic_configs), basicConfigs)), localConfigs = _j[0], setLocalConfigs = _j[1];
+    var _k = react_1.useState(__assign(__assign({}, _helpers_1.default_advanced_configs), advancedConfigs)), localAdvancedConfigs = _k[0], setLocalAdvancedConfigs = _k[1];
     var secondaryLocales = (_a = shopInfo === null || shopInfo === void 0 ? void 0 : shopInfo.shopLocales) === null || _a === void 0 ? void 0 : _a.filter(function (item) { return !item.primary; });
     function saveConfigs() {
         return __awaiter(this, void 0, void 0, function () {
@@ -137,6 +142,12 @@ function CustomizePopupPage() {
             setHasChange(false);
         }
     }, [localConfigs, localAdvancedConfigs, configs]);
+    function handleCustomIconUpload(assets) {
+        if (!assets)
+            return;
+        setLocalConfigs(function (current) { return (__assign(__assign({}, current), { icon: assets.url })); });
+        shopify.modal.hide("icon-upload-popup");
+    }
     var loading = _helpers_1.loadingStates(navigation, [_actions_2.ACTIONS.CreateUpdateConfigs]);
     return (React.createElement(polaris_1.Page, { fullWidth: true, compactTitle: true, title: "Customize your popup", backAction: {
             content: "Back",
@@ -152,6 +163,71 @@ function CustomizePopupPage() {
                     shopify.saveBar.hide('configs-save-bar');
                     navigate("/app/redirects");
                 } })),
+        React.createElement(app_bridge_react_1.Modal, { id: "popup-content-translation-popup" },
+            React.createElement(app_bridge_react_1.TitleBar, { title: "Popup content translation" }),
+            React.createElement(polaris_1.Box, { padding: "400" },
+                React.createElement(polaris_1.AppProvider, { i18n: {}, apiKey: "" },
+                    React.createElement(polaris_1.InlineGrid, { gap: "300" },
+                        React.createElement(polaris_1.Box, null,
+                            React.createElement(PromoBadge_1["default"], { type: "pro" })),
+                        React.createElement(polaris_1.InlineGrid, { columns: "2", gap: "200" }, ((secondaryLocales === null || secondaryLocales === void 0 ? void 0 : secondaryLocales.length) > 0 &&
+                            secondaryLocales.map(function (locale) {
+                                return (React.createElement(PopupContent_1["default"], { titleDisabled: !isProPlan, key: locale.locale, titleLabel: "Title (" + locale.locale + ")", titleValue: isProPlan
+                                        ? (localConfigs === null || localConfigs === void 0 ? void 0 : localConfigs.title_locales) &&
+                                            localConfigs.title_locales[locale.locale]
+                                            ? localConfigs.title_locales[locale.locale]
+                                            : ""
+                                        : "", titleOnChange: isProPlan ? function (value) {
+                                        return setLocalConfigs(function (current) {
+                                            var _a;
+                                            return (__assign(__assign({}, current), { title_locales: __assign(__assign({}, current === null || current === void 0 ? void 0 : current.title_locales), (_a = {}, _a[locale.locale] = value, _a)) }));
+                                        });
+                                    } : undefined, textLabel: "Short text (" + locale.locale + ")", textValue: isProPlan
+                                        ? (localConfigs === null || localConfigs === void 0 ? void 0 : localConfigs.text_locales) &&
+                                            localConfigs.text_locales[locale.locale]
+                                            ? localConfigs.text_locales[locale.locale]
+                                            : ""
+                                        : "", textOnChange: isProPlan ? function (value) {
+                                        setLocalConfigs(function (current) {
+                                            var _a;
+                                            return (__assign(__assign({}, current), { text_locales: __assign(__assign({}, current.text_locales), (_a = {}, _a[locale.locale] = value, _a)) }));
+                                        });
+                                    } : undefined }));
+                            })) ||
+                            ""))))),
+        React.createElement(app_bridge_react_1.Modal, { id: "icon-upload-popup" },
+            React.createElement(app_bridge_react_1.TitleBar, { title: "Select custom icon" }),
+            React.createElement(polaris_1.Box, { padding: "400" },
+                React.createElement(polaris_1.AppProvider, { i18n: {}, apiKey: "" },
+                    React.createElement(ImageManager_1["default"], { callBack: handleCustomIconUpload })))),
+        React.createElement(app_bridge_react_1.Modal, { id: "icon-settings-popup" },
+            React.createElement(app_bridge_react_1.TitleBar, { title: "Icon settings" }),
+            React.createElement(polaris_1.Box, { padding: "400" },
+                React.createElement(polaris_1.AppProvider, { i18n: {}, apiKey: "" },
+                    React.createElement(IconSettings_1["default"], { configs: localConfigs, setConfigs: setLocalConfigs, isFreePlan: isFreePlan })))),
+        React.createElement(app_bridge_react_1.Modal, { id: "dropdown-label-translation-popup" },
+            React.createElement(app_bridge_react_1.TitleBar, { title: "Dropdown label translation" }),
+            React.createElement(polaris_1.Box, { padding: "400" },
+                React.createElement(polaris_1.AppProvider, { i18n: {}, apiKey: "" },
+                    React.createElement(polaris_1.InlineGrid, { gap: "300" },
+                        React.createElement(polaris_1.Box, null,
+                            React.createElement(PromoBadge_1["default"], { type: "pro" })),
+                        React.createElement("div", { className: !isProPlan ? "visually-disabled" : "" },
+                            React.createElement(polaris_1.InlineGrid, { columns: "2", gap: "200" }, secondaryLocales === null || secondaryLocales === void 0 ? void 0 : secondaryLocales.map(function (locale) {
+                                var titleValue = (localConfigs === null || localConfigs === void 0 ? void 0 : localConfigs.dropdownPlaceholder_locales) &&
+                                    localConfigs.dropdownPlaceholder_locales[locale.locale]
+                                    ? localConfigs.dropdownPlaceholder_locales[locale.locale]
+                                    : "";
+                                var titleOnChange = function (value) {
+                                    return setLocalConfigs(function (current) {
+                                        var _a;
+                                        return (__assign(__assign({}, current), { dropdownPlaceholder_locales: __assign(__assign({}, current.dropdownPlaceholder_locales), (_a = {}, _a[locale.locale] = value, _a)) }));
+                                    });
+                                };
+                                return (React.createElement(PopupContent_1["default"], { key: locale.locale, titleLabel: "Dropdown label (" + locale.locale + ")", titleValue: titleValue, 
+                                    // @ts-ignore
+                                    titleOnChange: titleOnChange, titleDisabled: !isProPlan }));
+                            }))))))),
         (toastData === null || toastData === void 0 ? void 0 : toastData.msg) !== "" &&
             shopify.toast.show(toastData.msg, { isError: toastData.error }),
         React.createElement("br", null)));

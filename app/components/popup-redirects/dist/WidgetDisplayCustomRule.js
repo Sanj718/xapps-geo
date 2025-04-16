@@ -110,7 +110,7 @@ function WidgetDisplayCustomRule(_a) {
                                         { label: "Draft", value: "false" },
                                     ], disabled: loading[_actions_1.ACTIONS.WidgetDisplayCustomRuleStatus + "Loading"] || !isProPlan, onChange: isProPlan
                                         ? function (value) { return handleCustomCodeStatus(value); }
-                                        : undefined, value: status === null || status === void 0 ? void 0 : status.value });
+                                        : undefined, value: (status === null || status === void 0 ? void 0 : status.value) || "false" });
                             }),
                             loading[_actions_1.ACTIONS.WidgetDisplayCustomRuleStatus + "Loading"] && (react_1["default"].createElement("div", { style: { position: "absolute", top: "6px", right: "8px", zIndex: 10 } },
                                 react_1["default"].createElement(polaris_1.Spinner, { size: "small" }))))),

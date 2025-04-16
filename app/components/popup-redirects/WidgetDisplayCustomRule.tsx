@@ -113,7 +113,7 @@ export default function WidgetDisplayCustomRule({ status, code }: WidgetDisplayC
                         ? (value) => handleCustomCodeStatus(value)
                         : undefined
                     }
-                    value={status?.value}
+                    value={status?.value || "false"}
                   />
                 }}
               </Await>

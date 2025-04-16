@@ -109,11 +109,11 @@ function ButtonDisplayCustomRule(_a) {
                                 return react_1["default"].createElement(polaris_1.Select, { label: "Status: ", labelInline: true, options: [
                                         { label: "Active", value: "true" },
                                         { label: "Draft", value: "false" },
-                                    ], disabled: loading[_actions_1.ACTIONS.WidgetDisplayCustomRuleStatus + "Loading"] || !isProPlan, onChange: isProPlan
+                                    ], disabled: loading[_actions_1.ACTIONS.ButtonDisplayCustomRuleStatus + "Loading"] || !isProPlan, onChange: isProPlan
                                         ? function (value) { return handleCustomCodeStatus(value); }
-                                        : undefined, value: status === null || status === void 0 ? void 0 : status.value });
+                                        : undefined, value: (status === null || status === void 0 ? void 0 : status.value) || "false" });
                             }),
-                            loading[_actions_1.ACTIONS.WidgetDisplayCustomRuleStatus + "Loading"] && (react_1["default"].createElement("div", { style: { position: "absolute", top: "6px", right: "8px", zIndex: 10 } },
+                            loading[_actions_1.ACTIONS.ButtonDisplayCustomRuleStatus + "Loading"] && (react_1["default"].createElement("div", { style: { position: "absolute", top: "6px", right: "8px", zIndex: 10 } },
                                 react_1["default"].createElement(polaris_1.Spinner, { size: "small" }))))),
                     react_1["default"].createElement(ButtonDisplayCustomRuleCodeBanner_1["default"], null),
                     react_1["default"].createElement("div", { id: "code-editor", className: "code-editor", style: {
@@ -122,10 +122,10 @@ function ButtonDisplayCustomRule(_a) {
                         } },
                         react_1["default"].createElement(react_1.Suspense, { fallback: react_1["default"].createElement(polaris_1.Spinner, { size: "small" }) },
                             react_1["default"].createElement(react_2.Await, { resolve: code }, function (code) {
-                                return react_1["default"].createElement(CodeEditor_client_1["default"], { code: (code === null || code === void 0 ? void 0 : code.value) || _helpers_1.defaultWidgetCode, onChange: isProPlan ? setCustomCode : function () { }, language: "javascript" });
+                                return react_1["default"].createElement(CodeEditor_client_1["default"], { code: (code === null || code === void 0 ? void 0 : code.value) || _helpers_1.defaultButtonCode, onChange: isProPlan ? setCustomCode : function () { }, language: "javascript" });
                             }))),
                     react_1["default"].createElement(polaris_1.InlineStack, { align: "space-between", gap: "200" },
-                        react_1["default"].createElement(polaris_1.Button, { variant: "tertiary", icon: polaris_icons_1.MaximizeIcon, onClick: function () { return navigate("/app/redirects/widget-display-custom-rule"); } }, "Open Full-Screen Editor"),
-                        react_1["default"].createElement(polaris_1.Button, { variant: "primary", onClick: function () { return handleCustomCodeSave(); }, loading: loading[_actions_1.ACTIONS.WidgetDisplayCustomRuleCodeSave + "Loading"] }, "Save"))))));
+                        react_1["default"].createElement(polaris_1.Button, { variant: "tertiary", icon: polaris_icons_1.MaximizeIcon, onClick: function () { return navigate("/app/redirects/button-display-custom-rule"); } }, "Open Full-Screen Editor"),
+                        react_1["default"].createElement(polaris_1.Button, { variant: "primary", onClick: function () { return handleCustomCodeSave(); }, loading: loading[_actions_1.ACTIONS.ButtonDisplayCustomRuleCodeSave + "Loading"] }, "Save"))))));
 }
 exports["default"] = ButtonDisplayCustomRule;

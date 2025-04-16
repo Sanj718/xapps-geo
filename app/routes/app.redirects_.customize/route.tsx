@@ -1,13 +1,13 @@
-import { Page } from "@shopify/polaris";
-import { areObjectsEqual, default_advanced_configs, default_basic_configs, getEmbedConst, loadingStates, requestHeaders } from "../../components/_helpers";
+import { AppProvider, Box, InlineGrid, Page } from "@shopify/polaris";
+import { areObjectsEqual, default_advanced_configs, default_basic_configs, getEmbedConst, loadingStates, planParser, requestHeaders } from "../../components/_helpers";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { Await, useActionData, useLoaderData, useNavigate, useNavigation, useOutletContext, useSubmit } from "@remix-run/react";
-import { LoadingStates, OutletContext, RedirectItem } from "app/components/_types";
+import { Asset, LoadingStates, OutletContext, RedirectItem } from "app/components/_types";
 import { handleActions } from "./_actions";
 import { handleLoaders } from "./_loaders";
 import { ActionFunctionArgs } from "@remix-run/node";
 import { LoaderFunctionArgs } from "@remix-run/node";
-import { SaveBar, TitleBar } from "@shopify/app-bridge-react";
+import { Modal, SaveBar, TitleBar } from "@shopify/app-bridge-react";
 import CustomizePopup from "app/components/popup-redirects/CustomizePopup";
 import { ACTIONS } from "app/components/_actions";
 import tr from "../../components/locales.json";
@@ -16,6 +16,10 @@ import {
   PROD_EMBED_APP_ID,
   RD_EMBED_APP_HANDLE,
 } from "../../components/env";
+import PromoBadge from "app/components/_common/PromoBadge";
+import PopupContent from "app/components/_common/PopupContent";
+import ImageManager from "app/components/_common/ImageManager";
+import IconSettings from "app/components/popup-redirects/IconSettings";
 
 const { EMBED_APP_ID, EMBED_APP_HANDLE } =
   getEmbedConst(PROD_EMBED_APP_ID, DEV_EMBED_APP_ID, RD_EMBED_APP_HANDLE) || {};
@@ -29,6 +33,7 @@ export const action = async (params: ActionFunctionArgs) => handleActions(params
 export default function CustomizePopupPage() {
   const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
     useOutletContext<OutletContext>();
+  const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
   const { allRedirects, configs, widgetEditorStatus, widgetEditorCode } = useLoaderData<typeof loader>();
   const actionData = useActionData();
   const submit = useSubmit()
@@ -102,6 +107,15 @@ export default function CustomizePopupPage() {
   }, [localConfigs, localAdvancedConfigs, configs]);
 
 
+  function handleCustomIconUpload(assets: Asset | null) {
+    if (!assets) return;
+    setLocalConfigs((current: typeof localConfigs) => ({
+      ...current,
+      icon: assets.url
+    }));
+    shopify.modal.hide("icon-upload-popup");
+  }
+
   const loading = loadingStates(navigation, [ACTIONS.CreateUpdateConfigs]) as LoadingStates;
   return (
     <Page
@@ -131,6 +145,122 @@ export default function CustomizePopupPage() {
           navigate("/app/redirects");
         }}></button>
       </SaveBar>
+
+
+      <Modal id="popup-content-translation-popup">
+        <TitleBar title="Popup content translation" />
+        <Box padding="400">
+          <AppProvider i18n={{}} apiKey={""}>
+            <InlineGrid gap="300">
+              <Box>
+                <PromoBadge type="pro" />
+              </Box>
+              <InlineGrid columns="2" gap="200">
+                {(secondaryLocales?.length > 0 &&
+                  secondaryLocales.map((locale) => {
+                    return (
+                      <PopupContent
+                        titleDisabled={!isProPlan}
+                        key={locale.locale}
+                        titleLabel={`Title (${locale.locale})`}
+                        titleValue={isProPlan
+                          ? localConfigs?.title_locales &&
+                            localConfigs.title_locales[locale.locale]
+                            ? localConfigs.title_locales[locale.locale]
+                            : ""
+                          : ""}
+                        titleOnChange={isProPlan ? (value) =>
+                          setLocalConfigs((current) => ({
+                            ...current,
+                            title_locales: {
+                              ...current?.title_locales,
+                              [locale.locale]: value,
+                            },
+                          })) : undefined}
+                        textLabel={`Short text (${locale.locale})`}
+                        textValue={isProPlan
+                          ? localConfigs?.text_locales &&
+                            localConfigs.text_locales[locale.locale]
+                            ? localConfigs.text_locales[locale.locale]
+                            : ""
+                          : ""}
+                        textOnChange={isProPlan ? (value) => {
+                          setLocalConfigs((current) => ({
+                            ...current,
+                            text_locales: {
+                              ...current.text_locales,
+                              [locale.locale]: value,
+                            },
+                          }));
+                        } : undefined}
+                      />
+                    );
+                  })) ||
+                  ""}
+              </InlineGrid>
+            </InlineGrid>
+          </AppProvider>
+        </Box>
+      </Modal>
+
+
+      <Modal id="icon-upload-popup">
+        <TitleBar title="Select custom icon" />
+        <Box padding="400">
+          <AppProvider i18n={{}} apiKey={""}>
+            <ImageManager callBack={handleCustomIconUpload} />
+          </AppProvider></Box>
+      </Modal>
+
+      <Modal id="icon-settings-popup">
+        <TitleBar title="Icon settings" />
+        <Box padding="400">
+          <AppProvider i18n={{}} apiKey={""}>
+            <IconSettings configs={localConfigs} setConfigs={setLocalConfigs} isFreePlan={isFreePlan} />
+          </AppProvider></Box>
+      </Modal>
+
+      <Modal id="dropdown-label-translation-popup">
+        <TitleBar title="Dropdown label translation" />
+        <Box padding="400">
+          <AppProvider i18n={{}} apiKey={""}>
+            <InlineGrid gap="300">
+              <Box>
+                <PromoBadge type="pro" />
+              </Box>
+              <div className={!isProPlan ? "visually-disabled" : ""}>
+                <InlineGrid columns="2" gap="200">
+                  {secondaryLocales?.map((locale) => {
+                    const titleValue =
+                      localConfigs?.dropdownPlaceholder_locales &&
+                        localConfigs.dropdownPlaceholder_locales[locale.locale]
+                        ? localConfigs.dropdownPlaceholder_locales[locale.locale]
+                        : "";
+                    const titleOnChange = (value: string) =>
+                      setLocalConfigs((current: typeof localConfigs) => ({
+                        ...current,
+                        dropdownPlaceholder_locales: {
+                          ...current.dropdownPlaceholder_locales,
+                          [locale.locale]: value,
+                        },
+                      }));
+                    return (
+                      <PopupContent
+                        key={locale.locale}
+                        titleLabel={`Dropdown label (${locale.locale})`}
+                        titleValue={titleValue}
+                        // @ts-ignore
+                        titleOnChange={titleOnChange}
+                        titleDisabled={!isProPlan}
+                      />
+                    );
+                  })}
+                </InlineGrid>
+              </div>
+            </InlineGrid>
+          </AppProvider>
+        </Box>
+      </Modal>
       {toastData?.msg !== "" &&
         shopify.toast.show(toastData.msg, { isError: toastData.error })}
       <br />

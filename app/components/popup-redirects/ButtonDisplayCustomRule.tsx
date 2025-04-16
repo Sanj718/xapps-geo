@@ -1,18 +1,13 @@
 import {
-  Badge,
-  Banner,
   BlockStack,
   Box,
   Button,
   Card,
-  DescriptionList,
   InlineGrid,
   InlineStack,
   Select,
   Spinner,
   Text,
-  List,
-  ButtonGroup
 } from "@shopify/polaris";
 import {
   MaximizeIcon
@@ -20,12 +15,10 @@ import {
 import React, { Suspense, useContext, useEffect, useMemo, useState } from "react";
 import { Await, useActionData, useNavigate, useNavigation, useOutletContext, useSubmit } from "@remix-run/react";
 import { LoadingStates, OutletContext } from "../_types";
-import { defaultButtonCode, defaultWidgetCode, loadingStates, planParser, requestHeaders } from "../_helpers";
+import { defaultButtonCode, loadingStates, planParser, requestHeaders } from "../_helpers";
 import PromoBadge from "../_common/PromoBadge";
 import CodeEditor from "../_common/CodeEditor.client";
 import { ACTIONS } from "../_actions";
-import WidgetDisplayCustomRuleBanner from "./WidgetDisplayCustomRuleBanner";
-import WidgetDisplayCustomRuleCodeBanner from "./WidgetDisplayCustomRuleCodeBanner";
 import ButtonDisplayCustomRuleBanner from "./ButtonDisplayCustomRuleBanner";
 import ButtonDisplayCustomRuleCodeBanner from "./ButtonDisplayCustomRuleCodeBanner";
 interface ButtonDisplayCustomRuleProps {
@@ -109,17 +102,17 @@ export default function ButtonDisplayCustomRule({ status, code }: ButtonDisplayC
                       { label: "Active", value: "true" },
                       { label: "Draft", value: "false" },
                     ]}
-                    disabled={loading[ACTIONS.WidgetDisplayCustomRuleStatus + "Loading"] || !isProPlan}
+                    disabled={loading[ACTIONS.ButtonDisplayCustomRuleStatus + "Loading"] || !isProPlan}
                     onChange={
                       isProPlan
                         ? (value) => handleCustomCodeStatus(value)
                         : undefined
                     }
-                    value={status?.value}
+                    value={status?.value || "false"}
                   />
                 }}
               </Await>
-              {loading[ACTIONS.WidgetDisplayCustomRuleStatus + "Loading"] && (
+              {loading[ACTIONS.ButtonDisplayCustomRuleStatus + "Loading"] && (
                 <div style={{ position: "absolute", top: "6px", right: "8px", zIndex: 10 }}>
                   <Spinner size="small" />
                 </div>
@@ -138,7 +131,7 @@ export default function ButtonDisplayCustomRule({ status, code }: ButtonDisplayC
             <Suspense fallback={<Spinner size="small" />}>
               <Await resolve={code}>
                 {(code) => {
-                  return <CodeEditor code={code?.value || defaultWidgetCode} onChange={isProPlan ? setCustomCode : () => { }} language="javascript" />
+                  return <CodeEditor code={code?.value || defaultButtonCode} onChange={isProPlan ? setCustomCode : () => { }} language="javascript" />
                 }}
               </Await>
             </Suspense>
@@ -147,14 +140,14 @@ export default function ButtonDisplayCustomRule({ status, code }: ButtonDisplayC
             <Button
               variant="tertiary"
               icon={MaximizeIcon}
-              onClick={() => navigate("/app/redirects/widget-display-custom-rule")}
+              onClick={() => navigate("/app/redirects/button-display-custom-rule")}
             >
               Open Full-Screen Editor
             </Button>
             <Button
               variant="primary"
               onClick={() => handleCustomCodeSave()}
-              loading={loading[ACTIONS.WidgetDisplayCustomRuleCodeSave + "Loading"]}
+              loading={loading[ACTIONS.ButtonDisplayCustomRuleCodeSave + "Loading"]}
             >
               Save
             </Button>
