@@ -24,6 +24,10 @@ export const ACTIONS = {
   WidgetDisplayCustomRuleCodeSave: "widgetDisplayCustomRuleCodeSave",
   ButtonDisplayCustomRuleStatus: "buttonDisplayCustomRuleStatus",
   ButtonDisplayCustomRuleCodeSave: "buttonDisplayCustomRuleCodeSave",
+  AutoRedirects: "autoRedirects",
+  CreateAutoRedirect: "createAutoRedirect",
+  UpdateAutoRedirect: "updateAutoRedirect",
+  DeleteAutoRedirect: "deleteAutoRedirect",
 }
 
 export const getAssets = async ({ admin, data }: GetAssetsParams) => {

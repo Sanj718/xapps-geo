@@ -15,7 +15,7 @@ import {
 import { Suspense, useMemo, useState } from "react";
 import RedirectItems from "../../components/popup-redirects/RedirectItems";
 import { Await, useActionData, useLoaderData, useOutletContext } from "@remix-run/react";
-import { OutletContext, RedirectItem } from "app/components/_types";
+import { AutoRedirectItem, OutletContext, RedirectItem } from "app/components/_types";
 import ContentStyle from "app/components/popup-redirects/ContentStyle";
 import { handleActions } from "./_actions";
 import { handleLoaders } from "./_loaders";
@@ -26,6 +26,7 @@ import WidgetDisplayCustomRule from "app/components/popup-redirects/WidgetDispla
 import ButtonDisplayCustomRule from "app/components/popup-redirects/ButtonDisplayCustomRule";
 import { ActionFunctionArgs } from "@remix-run/node";
 import { LoaderFunctionArgs } from "@remix-run/node";
+import AutoRedirects from "app/components/auto-redirects/AutoRedirectsList";
 
 
 const { EMBED_APP_ID, EMBED_APP_HANDLE } =
@@ -53,16 +54,14 @@ export const action = async (params: ActionFunctionArgs) => handleActions(params
 export default function CustomRedirects() {
   const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
     useOutletContext<OutletContext>();
-  const { allRedirects, configs, widgetEditorStatus, widgetEditorCode, buttonEditorStatus, buttonEditorCode } = useLoaderData<typeof loader>();
+  const { allRedirects, configs, widgetEditorStatus, widgetEditorCode, buttonEditorStatus, buttonEditorCode, allAutoRedirects } = useLoaderData<typeof loader>();
   const actionData = useActionData();
   const [toastData, setToastData] = useState({ msg: "", error: false });
   const [active, setActive] = useState(null);
   const [redirects, setRedirects] = useState<RedirectItem[]>([]);
+  const [autoRedirects, setAutoRedirects] = useState<AutoRedirectItem[]>([]);
   const [selectedTab, setSelectedTab] = useState(0);
   const { smUp } = useBreakpoints();
-  // const [initialLoading, setInitialLoading] = useState(false);
-  // const [errors, setErrors] = useState([]);
-
   useMemo(() => {
     if (allRedirects?.status) {
       const orderedRedirects: RedirectItem[] = allRedirects.data.sort((a: RedirectItem, b: RedirectItem) => a.order - b.order);
@@ -70,40 +69,53 @@ export default function CustomRedirects() {
     }
   }, [allRedirects]);
 
+  useMemo(() => {
+    if (allAutoRedirects?.length) {
+      const orderedAutoRedirects: AutoRedirectItem[] = allAutoRedirects.sort((a: AutoRedirectItem, b: AutoRedirectItem) => JSON.parse(a.node.value).order_r - JSON.parse(b.node.value).order_r);
+      setAutoRedirects(orderedAutoRedirects);
+    }
+  }, [allAutoRedirects]);
+
   // useMemo(() => {
   //   if (actionData?.status) {
   //     setToastData({ error: false, msg: tr.responses.success });
   //   }
   // }, [actionData]);
 
-  async function loadRedirects() {
-    let error = true;
-    // let msg = tr.responses.error;
+  // async function loadAutoRedirects() {
+  //   let error = true;
+  //   let msg = tr.responses.error;
+  //   // await getLocalShopData();
 
-    // await getLocalShopData();
-    // const locales = shopData?.locales || localShopLocales;
+  //   try {
+  //     const response = await fetch(GET_AUTO_REDIRECTS);
+  //     const responseJson = await response.json();
 
-    try {
-      // const response = await fetch(
-      //   GET_REDIRECTS + `?localesAllowed=${locales && locales.length ? 1 : 0}`
-      // );
-      // const responseJson = await response.json();
-      // if (responseJson?.status) {
-      //   const ordered = responseJson.data.sort((a, b) => a.order_r - b.order_r);
-      //   setRedirects(ordered);
-      //   error = false;
-      // }
-    } catch (err) {
-      console.log(err);
-    }
+  //     if (responseJson?.status) {
+  //       const responseAppId =
+  //         responseJson?.data?.body?.data?.appInstallation?.id;
+  //       const responseRedirects =
+  //         responseJson?.data?.body?.data?.appInstallation?.metafields?.edges;
 
-    // if (error) {
-    //   setToastData({
-    //     error,
-    //     msg,
-    //   });
-    // }
-  }
+  //       setAppId(responseAppId);
+  //       const updated_order = responseRedirects.sort(
+  //         (a, b) =>
+  //           JSON.parse(a.node.value).order_r - JSON.parse(b.node.value).order_r
+  //       );
+  //       setAutoRedirects(updated_order);
+  //       error = false;
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+
+  //   if (error) {
+  //     setToastData({
+  //       error,
+  //       msg,
+  //     });
+  //   }
+  // }
 
   useMemo(() => {
     // if (actionData && !actionData?.data?.status) {
@@ -130,9 +142,9 @@ export default function CustomRedirects() {
     // }
   }, [actionData]);
 
-
+  console.log(autoRedirects);
   return (
-    <Page>
+    <Page >
       <PageTitle
         title="Custom redirects"
         status={active}
@@ -164,27 +176,22 @@ export default function CustomRedirects() {
         ) : (
           ""
         )}
-        {/* {selectedTab === 1 ? (
+        {selectedTab === 1 ? (
           <BlockStack gap={{ xs: "800", sm: "400" }}>
             <AutoRedirects
-              initialLoading={initialLoading}
-              loadRedirects={loadAutoRedirects}
-              setRedirects={setAutoRedirects}
               redirects={autoRedirects}
-              setToastData={setToastData}
-              appId={appId}
             />
             {smUp ? <Divider /> : null}
-            <AutoRedirectsSettings />
+            {/* <AutoRedirectsSettings />
             {smUp ? <Divider /> : null}
             <AutoRedirectsCustomRules
               appId={appId}
               setToastData={setToastData}
-            />
+            /> */}
           </BlockStack>
         ) : (
           ""
-        )} */}
+        )}
       </Tabs>
       {toastData?.msg !== "" &&
         shopify.toast.show(toastData.msg, { isError: toastData.error })}

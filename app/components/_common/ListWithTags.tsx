@@ -95,7 +95,8 @@ export default function ListWithTags({
             placeholder={placeholder}
             helpText={helpText}
             label={label}
-            size="slim"
+            // size="slim"
+            
           />
         }
       >

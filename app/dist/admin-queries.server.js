@@ -36,7 +36,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.getButtonEditorCode = exports.getButtonEditorStatus = exports.saveButtonEditorCodeToMetafield = exports.saveButtonEditorStatusToMetafield = exports.getWidgetEditorCode = exports.getWidgetEditorStatus = exports.saveWidgetEditorCodeToMetafield = exports.saveWidgetEditorStatusToMetafield = exports.getThemeEmbed = void 0;
+exports.getAllAutoRedirects = exports.createAutoRedirect = exports.getButtonEditorCode = exports.getButtonEditorStatus = exports.saveButtonEditorCodeToMetafield = exports.saveButtonEditorStatusToMetafield = exports.getWidgetEditorCode = exports.getWidgetEditorStatus = exports.saveWidgetEditorCodeToMetafield = exports.saveWidgetEditorStatusToMetafield = exports.getThemeEmbed = void 0;
+var uniqid_1 = require("uniqid");
 function getThemeEmbed(_a) {
     var _b, _c, _d, _e, _f, _g;
     var admin = _a.admin;
@@ -387,3 +388,80 @@ function getButtonEditorCode(_a) {
     });
 }
 exports.getButtonEditorCode = getButtonEditorCode;
+function createAutoRedirect(_a) {
+    var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+    var admin = _a.admin, appId = _a.appId, value = _a.value;
+    return __awaiter(this, void 0, void 0, function () {
+        var response, responseJson, error_10;
+        return __generator(this, function (_m) {
+            switch (_m.label) {
+                case 0:
+                    if (!admin)
+                        throw Error("admin not defined");
+                    _m.label = 1;
+                case 1:
+                    _m.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, admin.graphql("#graphql\n            mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {\n                metafieldsSet(metafields: $metafields) {\n                    metafields {\n                        key\n                        namespace\n                        value\n                        createdAt\n                        updatedAt\n                    }\n                    userErrors {\n                        field\n                        message\n                        code\n                    }\n                }\n            }\n            ", {
+                            variables: {
+                                metafields: [{
+                                        key: uniqid_1["default"].time(),
+                                        namespace: "redirects",
+                                        ownerId: appId,
+                                        type: "json",
+                                        value: JSON.stringify(value)
+                                    }]
+                            }
+                        })];
+                case 2:
+                    response = _m.sent();
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    responseJson = _m.sent();
+                    if (((_d = (_c = (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.metafieldsSet) === null || _c === void 0 ? void 0 : _c.userErrors) === null || _d === void 0 ? void 0 : _d.length) > 0) {
+                        throw Error((_g = (_f = (_e = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _e === void 0 ? void 0 : _e.metafieldsSet) === null || _f === void 0 ? void 0 : _f.userErrors[0]) === null || _g === void 0 ? void 0 : _g.message);
+                    }
+                    return [2 /*return*/, (_j = (_h = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _h === void 0 ? void 0 : _h.metafieldsSet) === null || _j === void 0 ? void 0 : _j.metafields[0]];
+                case 4:
+                    error_10 = _m.sent();
+                    console.error((_l = (_k = error_10 === null || error_10 === void 0 ? void 0 : error_10.body) === null || _k === void 0 ? void 0 : _k.errors) === null || _l === void 0 ? void 0 : _l.graphQLErrors);
+                    return [2 /*return*/, { status: false, error: error_10.toString() }];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.createAutoRedirect = createAutoRedirect;
+function getAllAutoRedirects(_a) {
+    var _b, _c, _d;
+    var admin = _a.admin;
+    return __awaiter(this, void 0, void 0, function () {
+        var response, responseJson, error_11;
+        return __generator(this, function (_e) {
+            switch (_e.label) {
+                case 0:
+                    if (!admin)
+                        throw Error("admin not defined");
+                    _e.label = 1;
+                case 1:
+                    _e.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, admin.graphql("#graphql\n            query getMetafields($namespace: String!) {\n                appInstallation {\n                    id\n                    metafields(namespace: $namespace, first: 100) {\n                        edges {\n                            node {\n                                id\n                                namespace\n                                key\n                                value\n                            }\n                        }\n                    }\n                }\n            }\n            ", {
+                            variables: {
+                                namespace: "redirects"
+                            }
+                        })];
+                case 2:
+                    response = _e.sent();
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    responseJson = _e.sent();
+                    return [2 /*return*/, (_d = (_c = (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.appInstallation) === null || _c === void 0 ? void 0 : _c.metafields) === null || _d === void 0 ? void 0 : _d.edges];
+                case 4:
+                    error_11 = _e.sent();
+                    console.error(error_11);
+                    return [2 /*return*/, { status: false, error: error_11.toString() }];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.getAllAutoRedirects = getAllAutoRedirects;

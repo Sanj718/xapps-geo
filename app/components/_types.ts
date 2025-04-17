@@ -32,6 +32,17 @@ export interface RedirectItem {
     status?: boolean;
 }
 
+export interface AutoRedirectItem {
+    id: number;
+    location: [];
+    except_r: boolean;
+    block: boolean;
+    url: string;
+    domain_redirection: boolean;
+    status: boolean;
+    order_r: number;
+}
+
 export interface EditRedirectItem extends RedirectItem {
     id: number;
 }

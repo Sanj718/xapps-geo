@@ -51,7 +51,11 @@ exports.ACTIONS = {
     WidgetDisplayCustomRuleStatus: "widgetDisplayCustomRuleStatus",
     WidgetDisplayCustomRuleCodeSave: "widgetDisplayCustomRuleCodeSave",
     ButtonDisplayCustomRuleStatus: "buttonDisplayCustomRuleStatus",
-    ButtonDisplayCustomRuleCodeSave: "buttonDisplayCustomRuleCodeSave"
+    ButtonDisplayCustomRuleCodeSave: "buttonDisplayCustomRuleCodeSave",
+    AutoRedirects: "autoRedirects",
+    CreateAutoRedirect: "createAutoRedirect",
+    UpdateAutoRedirect: "updateAutoRedirect",
+    DeleteAutoRedirect: "deleteAutoRedirect"
 };
 exports.getAssets = function (_a) {
     var admin = _a.admin, data = _a.data;

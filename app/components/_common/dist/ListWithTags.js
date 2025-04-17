@@ -74,7 +74,7 @@ function ListWithTags(_a) {
         setConfigs(__assign(__assign({}, configs), (_a = {}, _a[id] = options, _a)));
     }
     return (react_1["default"].createElement("div", null,
-        react_1["default"].createElement(polaris_1.Combobox, { allowMultiple: true, activator: react_1["default"].createElement(polaris_1.Combobox.TextField, { autoComplete: "off", onChange: updateText, value: inputValue, placeholder: placeholder, helpText: helpText, label: label, size: "slim" }) }, (options === null || options === void 0 ? void 0 : options.length) ? (react_1["default"].createElement(polaris_1.Listbox, { onSelect: updateSelection }, options === null || options === void 0 ? void 0 : options.map(function (option) {
+        react_1["default"].createElement(polaris_1.Combobox, { allowMultiple: true, activator: react_1["default"].createElement(polaris_1.Combobox.TextField, { autoComplete: "off", onChange: updateText, value: inputValue, placeholder: placeholder, helpText: helpText, label: label }) }, (options === null || options === void 0 ? void 0 : options.length) ? (react_1["default"].createElement(polaris_1.Listbox, { onSelect: updateSelection }, options === null || options === void 0 ? void 0 : options.map(function (option) {
             var label = option.label, value = option.value, title = option.title;
             if (label === "-")
                 return;

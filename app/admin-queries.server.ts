@@ -1,5 +1,5 @@
 import { AdminApiContext } from "@shopify/shopify-app-remix/server";
-
+import uniqid from "uniqid";
 
 export async function getThemeEmbed({ admin }: { admin: AdminApiContext }) {
     if (!admin) return new Error("admin not defined");
@@ -385,6 +385,87 @@ export async function getButtonEditorCode({ admin }: { admin: AdminApiContext })
         );
         const responseJson = await response.json();
         return responseJson?.data?.appInstallation?.metafield;
+    } catch (error) {
+        console.error(error);
+        return { status: false, error: (error as Error).toString() };
+    }
+}
+
+export async function createAutoRedirect({ admin, appId, value }: { admin: AdminApiContext, appId: string, value: any }) {
+    if (!admin) throw Error("admin not defined");
+    try {
+        const response = await admin.graphql(
+            `#graphql
+            mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {
+                metafieldsSet(metafields: $metafields) {
+                    metafields {
+                        key
+                        namespace
+                        value
+                        createdAt
+                        updatedAt
+                    }
+                    userErrors {
+                        field
+                        message
+                        code
+                    }
+                }
+            }
+            `,
+            {
+                variables: {
+                    metafields: [{
+                        key: uniqid.time(),
+                        namespace: "redirects",
+                        ownerId: appId,
+                        type: "json",
+                        value: JSON.stringify(value),
+                    }]
+                }
+            }
+        );
+        const responseJson = await response.json();
+        if (responseJson?.data?.metafieldsSet?.userErrors?.length > 0) {
+            throw Error(responseJson?.data?.metafieldsSet?.userErrors[0]?.message);
+        }
+        return responseJson?.data?.metafieldsSet?.metafields[0];
+    } catch (error) {
+        console.error(error?.body?.errors?.graphQLErrors);
+        return { status: false, error: (error as Error).toString() };
+    }
+}
+
+export async function getAllAutoRedirects({ admin }: { admin: AdminApiContext }) {
+    if (!admin) throw Error("admin not defined");
+    try {
+        const response = await admin.graphql(
+            `#graphql
+            query getMetafields($namespace: String!) {
+                appInstallation {
+                    id
+                    metafields(namespace: $namespace, first: 100) {
+                        edges {
+                            node {
+                                id
+                                namespace
+                                key
+                                value
+                            }
+                        }
+                    }
+                }
+            }
+            `,
+            {
+                variables: {
+                    namespace: "redirects"
+                }
+            }
+        );
+        const responseJson = await response.json();
+       
+        return responseJson?.data?.appInstallation?.metafields?.edges;
     } catch (error) {
         console.error(error);
         return { status: false, error: (error as Error).toString() };

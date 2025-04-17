@@ -45,6 +45,7 @@
     "react-dom": "^18.2.0",
     "react-quill": "^2.0.0",
     "sass": "^1.85.0",
+    "uniqid": "^5.4.0",
     "valid-url": "^1.0.9",
     "vite-tsconfig-paths": "^5.0.1"
   },
