@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.getAllAutoRedirects = exports.createAutoRedirect = exports.getButtonEditorCode = exports.getButtonEditorStatus = exports.saveButtonEditorCodeToMetafield = exports.saveButtonEditorStatusToMetafield = exports.getWidgetEditorCode = exports.getWidgetEditorStatus = exports.saveWidgetEditorCodeToMetafield = exports.saveWidgetEditorStatusToMetafield = exports.getThemeEmbed = void 0;
+exports.deleteAutoRedirect = exports.reOrderAutoRedirects = exports.updateAutoRedirect = exports.getAllAutoRedirects = exports.createAutoRedirect = exports.getButtonEditorCode = exports.getButtonEditorStatus = exports.saveButtonEditorCodeToMetafield = exports.saveButtonEditorStatusToMetafield = exports.getWidgetEditorCode = exports.getWidgetEditorStatus = exports.saveWidgetEditorCodeToMetafield = exports.saveWidgetEditorStatusToMetafield = exports.getThemeEmbed = void 0;
 var uniqid_1 = require("uniqid");
 function getThemeEmbed(_a) {
     var _b, _c, _d, _e, _f, _g;
@@ -389,18 +389,18 @@ function getButtonEditorCode(_a) {
 }
 exports.getButtonEditorCode = getButtonEditorCode;
 function createAutoRedirect(_a) {
-    var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+    var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
     var admin = _a.admin, appId = _a.appId, value = _a.value;
     return __awaiter(this, void 0, void 0, function () {
         var response, responseJson, error_10;
-        return __generator(this, function (_m) {
-            switch (_m.label) {
+        return __generator(this, function (_q) {
+            switch (_q.label) {
                 case 0:
                     if (!admin)
                         throw Error("admin not defined");
-                    _m.label = 1;
+                    _q.label = 1;
                 case 1:
-                    _m.trys.push([1, 4, , 5]);
+                    _q.trys.push([1, 4, , 5]);
                     return [4 /*yield*/, admin.graphql("#graphql\n            mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {\n                metafieldsSet(metafields: $metafields) {\n                    metafields {\n                        key\n                        namespace\n                        value\n                        createdAt\n                        updatedAt\n                    }\n                    userErrors {\n                        field\n                        message\n                        code\n                    }\n                }\n            }\n            ", {
                             variables: {
                                 metafields: [{
@@ -413,17 +413,17 @@ function createAutoRedirect(_a) {
                             }
                         })];
                 case 2:
-                    response = _m.sent();
+                    response = _q.sent();
                     return [4 /*yield*/, response.json()];
                 case 3:
-                    responseJson = _m.sent();
+                    responseJson = _q.sent();
                     if (((_d = (_c = (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.metafieldsSet) === null || _c === void 0 ? void 0 : _c.userErrors) === null || _d === void 0 ? void 0 : _d.length) > 0) {
                         throw Error((_g = (_f = (_e = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _e === void 0 ? void 0 : _e.metafieldsSet) === null || _f === void 0 ? void 0 : _f.userErrors[0]) === null || _g === void 0 ? void 0 : _g.message);
                     }
-                    return [2 /*return*/, (_j = (_h = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _h === void 0 ? void 0 : _h.metafieldsSet) === null || _j === void 0 ? void 0 : _j.metafields[0]];
+                    return [2 /*return*/, { status: ((_k = (_j = (_h = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _h === void 0 ? void 0 : _h.metafieldsSet) === null || _j === void 0 ? void 0 : _j.metafields[0]) === null || _k === void 0 ? void 0 : _k.key) !== "", data: (_m = (_l = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _l === void 0 ? void 0 : _l.metafieldsSet) === null || _m === void 0 ? void 0 : _m.metafields[0] }];
                 case 4:
-                    error_10 = _m.sent();
-                    console.error((_l = (_k = error_10 === null || error_10 === void 0 ? void 0 : error_10.body) === null || _k === void 0 ? void 0 : _k.errors) === null || _l === void 0 ? void 0 : _l.graphQLErrors);
+                    error_10 = _q.sent();
+                    console.error((_p = (_o = error_10 === null || error_10 === void 0 ? void 0 : error_10.body) === null || _o === void 0 ? void 0 : _o.errors) === null || _p === void 0 ? void 0 : _p.graphQLErrors);
                     return [2 /*return*/, { status: false, error: error_10.toString() }];
                 case 5: return [2 /*return*/];
             }
@@ -432,31 +432,31 @@ function createAutoRedirect(_a) {
 }
 exports.createAutoRedirect = createAutoRedirect;
 function getAllAutoRedirects(_a) {
-    var _b, _c, _d;
+    var _b, _c, _d, _e, _f, _g, _h;
     var admin = _a.admin;
     return __awaiter(this, void 0, void 0, function () {
         var response, responseJson, error_11;
-        return __generator(this, function (_e) {
-            switch (_e.label) {
+        return __generator(this, function (_j) {
+            switch (_j.label) {
                 case 0:
                     if (!admin)
                         throw Error("admin not defined");
-                    _e.label = 1;
+                    _j.label = 1;
                 case 1:
-                    _e.trys.push([1, 4, , 5]);
+                    _j.trys.push([1, 4, , 5]);
                     return [4 /*yield*/, admin.graphql("#graphql\n            query getMetafields($namespace: String!) {\n                appInstallation {\n                    id\n                    metafields(namespace: $namespace, first: 100) {\n                        edges {\n                            node {\n                                id\n                                namespace\n                                key\n                                value\n                            }\n                        }\n                    }\n                }\n            }\n            ", {
                             variables: {
                                 namespace: "redirects"
                             }
                         })];
                 case 2:
-                    response = _e.sent();
+                    response = _j.sent();
                     return [4 /*yield*/, response.json()];
                 case 3:
-                    responseJson = _e.sent();
-                    return [2 /*return*/, (_d = (_c = (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.appInstallation) === null || _c === void 0 ? void 0 : _c.metafields) === null || _d === void 0 ? void 0 : _d.edges];
+                    responseJson = _j.sent();
+                    return [2 /*return*/, { status: ((_e = (_d = (_c = (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.appInstallation) === null || _c === void 0 ? void 0 : _c.metafields) === null || _d === void 0 ? void 0 : _d.edges) === null || _e === void 0 ? void 0 : _e.length) > 0, data: (_h = (_g = (_f = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _f === void 0 ? void 0 : _f.appInstallation) === null || _g === void 0 ? void 0 : _g.metafields) === null || _h === void 0 ? void 0 : _h.edges }];
                 case 4:
-                    error_11 = _e.sent();
+                    error_11 = _j.sent();
                     console.error(error_11);
                     return [2 /*return*/, { status: false, error: error_11.toString() }];
                 case 5: return [2 /*return*/];
@@ -465,3 +465,131 @@ function getAllAutoRedirects(_a) {
     });
 }
 exports.getAllAutoRedirects = getAllAutoRedirects;
+function updateAutoRedirect(_a) {
+    var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+    var admin = _a.admin, appId = _a.appId, key = _a.key, value = _a.value;
+    return __awaiter(this, void 0, void 0, function () {
+        var response, responseJson, error_12;
+        return __generator(this, function (_o) {
+            switch (_o.label) {
+                case 0:
+                    if (!admin)
+                        throw Error("admin not defined");
+                    _o.label = 1;
+                case 1:
+                    _o.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, admin.graphql("#graphql\n            mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {\n                metafieldsSet(metafields: $metafields) {\n                    metafields {\n                        id\n                        key\n                        namespace\n                        value       \n                    }\n                    userErrors {\n                        field\n                        message\n                        code\n                    }\n                }\n            }\n            ", {
+                            variables: {
+                                metafields: [{ key: key, ownerId: appId, value: JSON.stringify(value), type: "json", namespace: "redirects" }]
+                            }
+                        })];
+                case 2:
+                    response = _o.sent();
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    responseJson = _o.sent();
+                    if (((_d = (_c = (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.metafieldsSet) === null || _c === void 0 ? void 0 : _c.userErrors) === null || _d === void 0 ? void 0 : _d.length) > 0) {
+                        throw Error((_g = (_f = (_e = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _e === void 0 ? void 0 : _e.metafieldsSet) === null || _f === void 0 ? void 0 : _f.userErrors[0]) === null || _g === void 0 ? void 0 : _g.message);
+                    }
+                    return [2 /*return*/, { status: ((_k = (_j = (_h = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _h === void 0 ? void 0 : _h.metafieldsSet) === null || _j === void 0 ? void 0 : _j.metafields[0]) === null || _k === void 0 ? void 0 : _k.key) !== "", data: (_m = (_l = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _l === void 0 ? void 0 : _l.metafieldsSet) === null || _m === void 0 ? void 0 : _m.metafields[0] }];
+                case 4:
+                    error_12 = _o.sent();
+                    console.error(error_12);
+                    return [2 /*return*/, { status: false, error: error_12.toString() }];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.updateAutoRedirect = updateAutoRedirect;
+function reOrderAutoRedirects(_a) {
+    var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+    var admin = _a.admin, appId = _a.appId, data = _a.data;
+    return __awaiter(this, void 0, void 0, function () {
+        var metafields, response, responseJson, error_13;
+        return __generator(this, function (_o) {
+            switch (_o.label) {
+                case 0:
+                    if (!admin)
+                        throw Error("admin not defined");
+                    _o.label = 1;
+                case 1:
+                    _o.trys.push([1, 4, , 5]);
+                    metafields = data.map(function (_a) {
+                        var node = _a.node;
+                        var key = node.key, value = node.value;
+                        return {
+                            namespace: "redirects",
+                            key: key,
+                            value: value,
+                            ownerId: appId,
+                            type: "json"
+                        };
+                    });
+                    return [4 /*yield*/, admin.graphql("#graphql\n            mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {\n                metafieldsSet(metafields: $metafields) {\n                    metafields {\n                        key\n                        namespace\n                        value       \n                    }\n                    userErrors {\n                        field\n                        message\n                        code\n                    }\n                }\n            }\n            ", {
+                            variables: {
+                                metafields: metafields
+                            }
+                        })];
+                case 2:
+                    response = _o.sent();
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    responseJson = _o.sent();
+                    if (((_d = (_c = (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.metafieldsSet) === null || _c === void 0 ? void 0 : _c.userErrors) === null || _d === void 0 ? void 0 : _d.length) > 0) {
+                        throw Error((_g = (_f = (_e = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _e === void 0 ? void 0 : _e.metafieldsSet) === null || _f === void 0 ? void 0 : _f.userErrors[0]) === null || _g === void 0 ? void 0 : _g.message);
+                    }
+                    return [2 /*return*/, { status: ((_k = (_j = (_h = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _h === void 0 ? void 0 : _h.metafieldsSet) === null || _j === void 0 ? void 0 : _j.metafields) === null || _k === void 0 ? void 0 : _k.length) > 0, data: (_m = (_l = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _l === void 0 ? void 0 : _l.metafieldsSet) === null || _m === void 0 ? void 0 : _m.metafields }];
+                case 4:
+                    error_13 = _o.sent();
+                    console.error(error_13);
+                    return [2 /*return*/, { status: false, error: error_13.toString() }];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.reOrderAutoRedirects = reOrderAutoRedirects;
+function deleteAutoRedirect(_a) {
+    var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+    var admin = _a.admin, appId = _a.appId, key = _a.key;
+    return __awaiter(this, void 0, void 0, function () {
+        var response, responseJson, error_14;
+        return __generator(this, function (_o) {
+            switch (_o.label) {
+                case 0:
+                    if (!admin)
+                        throw Error("admin not defined");
+                    _o.label = 1;
+                case 1:
+                    _o.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, admin.graphql("#graphql\n                mutation MetafieldsDelete($metafields: [MetafieldIdentifierInput!]!) {\n                    metafieldsDelete(metafields: $metafields) {\n                        deletedMetafields {\n                            key\n                            namespace\n                            ownerId\n                        }\n                        userErrors {\n                            field\n                            message\n                        }\n                    }\n                }", {
+                            variables: {
+                                metafields: [
+                                    {
+                                        ownerId: appId,
+                                        namespace: "redirects",
+                                        key: key
+                                    }
+                                ]
+                            }
+                        })];
+                case 2:
+                    response = _o.sent();
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    responseJson = _o.sent();
+                    if (((_d = (_c = (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.metafieldsDelete) === null || _c === void 0 ? void 0 : _c.userErrors) === null || _d === void 0 ? void 0 : _d.length) > 0) {
+                        throw Error((_g = (_f = (_e = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _e === void 0 ? void 0 : _e.metafieldsDelete) === null || _f === void 0 ? void 0 : _f.userErrors[0]) === null || _g === void 0 ? void 0 : _g.message);
+                    }
+                    return [2 /*return*/, { status: ((_k = (_j = (_h = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _h === void 0 ? void 0 : _h.metafieldsDelete) === null || _j === void 0 ? void 0 : _j.deletedMetafields[0]) === null || _k === void 0 ? void 0 : _k.key) !== "", data: (_m = (_l = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _l === void 0 ? void 0 : _l.metafieldsDelete) === null || _m === void 0 ? void 0 : _m.deletedMetafields[0] }];
+                case 4:
+                    error_14 = _o.sent();
+                    console.error(error_14);
+                    return [2 /*return*/, { status: false, error: error_14.toString() }];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.deleteAutoRedirect = deleteAutoRedirect;

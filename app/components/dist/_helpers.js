@@ -18,7 +18,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 exports.__esModule = true;
-exports.areObjectsEqual = exports.useIsMounted = exports.defaultButtonCode = exports.defaultWidgetCode = exports.NEW_DEFAULT_ICON = exports.OLD_STICKY_ICON = exports.OLD_DEFAULT_ICON = exports.jsonSafeParse = exports.loadingStates = exports.getDate = exports.formatDate = exports.isDateToday = exports.defaultState = exports.getPostgresTimestamp = exports.checkDifference = exports.ff = exports.getEmbedConst = exports.getTotals = exports.planParser = exports.getPureId = exports.isJson = exports.getKeyByValue = exports.charLimit = exports.continents_auto = exports.regeUrl = exports.parseCountryCodesWithFullNames = exports.parseCountries = exports.hexToRGB = exports.default_allowed_configs = exports.default_advanced_configs = exports.default_basic_configs = exports.default_markets_basic_configs = exports.requestHeaders = exports.resp = void 0;
+exports.areObjectsEqual = exports.useIsMounted = exports.defaultButtonCode = exports.defaultWidgetCode = exports.NEW_DEFAULT_ICON = exports.OLD_STICKY_ICON = exports.OLD_DEFAULT_ICON = exports.jsonSafeParse = exports.loadingStates = exports.getDate = exports.formatDate = exports.isDateToday = exports.defaultState = exports.getPostgresTimestamp = exports.checkDifference = exports.ff = exports.getEmbedConst = exports.getTotals = exports.planParser = exports.getPureId = exports.isJson = exports.getKeyByValue = exports.charLimit = exports.continents_auto = exports.regeUrl = exports.parseCountryCodesWithFullNames = exports.parseLocations = exports.parseCountries = exports.hexToRGB = exports.default_allowed_configs = exports.default_advanced_configs = exports.default_basic_configs = exports.default_markets_basic_configs = exports.requestHeaders = exports.resp = void 0;
 var strip_json_comments_1 = require("strip-json-comments");
 var date_fns_1 = require("date-fns");
 var react_1 = require("react");
@@ -130,6 +130,32 @@ function parseCountries(data) {
     }); });
 }
 exports.parseCountries = parseCountries;
+function parseLocations(data, countriesList) {
+    if (!data)
+        return;
+    var parsedJson = data;
+    var locations = "";
+    var _loop_1 = function (index) {
+        var item = parsedJson[index];
+        if (item.includes("C:")) {
+            var getContinentLabel = exports.continents_auto.find(function (cnt) { return cnt.value === item; });
+            if (getContinentLabel) {
+                locations += getContinentLabel.label + ", ";
+            }
+        }
+        else {
+            var getCountryLabel = countriesList === null || countriesList === void 0 ? void 0 : countriesList.find(function (cnt) { return cnt.code === item; });
+            if (getCountryLabel) {
+                locations += getCountryLabel.name + ", ";
+            }
+        }
+    };
+    for (var index = 0; index < parsedJson.length; index++) {
+        _loop_1(index);
+    }
+    return locations.replace(/,\s*$/, "");
+}
+exports.parseLocations = parseLocations;
 function parseCountryCodesWithFullNames(data) {
     return data.map(function (country) { return ({
         label: country.name,
@@ -224,7 +250,7 @@ exports.checkDifference = function (a, b) {
     if (a.length !== b.length)
         return false;
     var uniqueValues = new Set(__spreadArrays(a, b));
-    var _loop_1 = function (v) {
+    var _loop_2 = function (v) {
         var aCount = a.filter(function (e) { return e === v; }).length;
         var bCount = b.filter(function (e) { return e === v; }).length;
         if (aCount !== bCount)
@@ -232,7 +258,7 @@ exports.checkDifference = function (a, b) {
     };
     for (var _i = 0, uniqueValues_1 = uniqueValues; _i < uniqueValues_1.length; _i++) {
         var v = uniqueValues_1[_i];
-        var state_1 = _loop_1(v);
+        var state_1 = _loop_2(v);
         if (typeof state_1 === "object")
             return state_1.value;
     }

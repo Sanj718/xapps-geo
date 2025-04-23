@@ -59,6 +59,7 @@ function handleLoaders(_a) {
                     return [4 /*yield*/, db_queries_server_1.getAllRedirects({ shop: session.shop })];
                 case 3:
                     allRedirects = _c.sent();
+                    console.log(allRedirects, allAutoRedirects);
                     return [4 /*yield*/, db_queries_server_1.getConfigs({ shop: session.shop })];
                 case 4:
                     configs = _c.sent();

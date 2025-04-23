@@ -1,5 +1,6 @@
 import { AdminApiContext } from "@shopify/shopify-app-remix/server";
 import uniqid from "uniqid";
+import { jsonSafeParse } from "./components/_helpers";
 
 export async function getThemeEmbed({ admin }: { admin: AdminApiContext }) {
     if (!admin) return new Error("admin not defined");
@@ -429,7 +430,7 @@ export async function createAutoRedirect({ admin, appId, value }: { admin: Admin
         if (responseJson?.data?.metafieldsSet?.userErrors?.length > 0) {
             throw Error(responseJson?.data?.metafieldsSet?.userErrors[0]?.message);
         }
-        return responseJson?.data?.metafieldsSet?.metafields[0];
+        return { status: responseJson?.data?.metafieldsSet?.metafields[0]?.key !== "", data: responseJson?.data?.metafieldsSet?.metafields[0] };
     } catch (error) {
         console.error(error?.body?.errors?.graphQLErrors);
         return { status: false, error: (error as Error).toString() };
@@ -464,8 +465,134 @@ export async function getAllAutoRedirects({ admin }: { admin: AdminApiContext })
             }
         );
         const responseJson = await response.json();
-       
-        return responseJson?.data?.appInstallation?.metafields?.edges;
+        return { status: responseJson?.data?.appInstallation?.metafields?.edges?.length > 0, data: responseJson?.data?.appInstallation?.metafields?.edges };
+    } catch (error) {
+        console.error(error);
+        return { status: false, error: (error as Error).toString() };
+    }
+}
+
+export async function updateAutoRedirect({ admin, appId, key, value }: { admin: AdminApiContext, appId: string, key: string, value: any }) {
+    if (!admin) throw Error("admin not defined");
+    try {
+        const response = await admin.graphql(
+            `#graphql
+            mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {
+                metafieldsSet(metafields: $metafields) {
+                    metafields {
+                        id
+                        key
+                        namespace
+                        value       
+                    }
+                    userErrors {
+                        field
+                        message
+                        code
+                    }
+                }
+            }
+            `,
+            {
+                variables: {
+                    metafields: [{ key, ownerId: appId, value: JSON.stringify(value), type: "json", namespace: "redirects" }]
+                }
+            }
+        );
+        const responseJson = await response.json();
+        if (responseJson?.data?.metafieldsSet?.userErrors?.length > 0) {
+            throw Error(responseJson?.data?.metafieldsSet?.userErrors[0]?.message);
+        }
+        return { status: responseJson?.data?.metafieldsSet?.metafields[0]?.key !== "", data: responseJson?.data?.metafieldsSet?.metafields[0] };
+    } catch (error) {
+        console.error(error);
+        return { status: false, error: (error as Error).toString() };
+    }
+}
+
+export async function reOrderAutoRedirects({ admin, appId, data }: { admin: AdminApiContext, appId: string, data: any }) {
+    if (!admin) throw Error("admin not defined");
+    try {
+        const metafields = data.map(({ node }: { node: any }) => {
+            const { key, value } = node;
+            return {
+                namespace: "redirects",
+                key,
+                value,
+                ownerId: appId,
+                type: "json",
+            };
+        });
+        const response = await admin.graphql(
+            `#graphql
+            mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {
+                metafieldsSet(metafields: $metafields) {
+                    metafields {
+                        key
+                        namespace
+                        value       
+                    }
+                    userErrors {
+                        field
+                        message
+                        code
+                    }
+                }
+            }
+            `,
+            {
+                variables: {
+                    metafields
+                }
+            }
+        );
+        const responseJson = await response.json();
+        if (responseJson?.data?.metafieldsSet?.userErrors?.length > 0) {
+            throw Error(responseJson?.data?.metafieldsSet?.userErrors[0]?.message);
+        }   
+        return { status: responseJson?.data?.metafieldsSet?.metafields?.length > 0, data: responseJson?.data?.metafieldsSet?.metafields };
+    } catch (error) {
+        console.error(error);
+        return { status: false, error: (error as Error).toString() };
+    }
+}
+
+
+export async function deleteAutoRedirect({ admin, appId, key }: { admin: AdminApiContext, appId: string, key: string }) {
+    if (!admin) throw Error("admin not defined");
+    try {
+        const response = await admin.graphql(
+            `#graphql
+                mutation MetafieldsDelete($metafields: [MetafieldIdentifierInput!]!) {
+                    metafieldsDelete(metafields: $metafields) {
+                        deletedMetafields {
+                            key
+                            namespace
+                            ownerId
+                        }
+                        userErrors {
+                            field
+                            message
+                        }
+                    }
+                }`,
+            {
+                variables: {
+                    metafields: [
+                        {
+                            ownerId: appId,
+                            namespace: "redirects",
+                            key
+                        }
+                    ]
+                }
+            }
+        );
+        const responseJson = await response.json();
+        if (responseJson?.data?.metafieldsDelete?.userErrors?.length > 0) {
+            throw Error(responseJson?.data?.metafieldsDelete?.userErrors[0]?.message);
+        }
+        return { status: responseJson?.data?.metafieldsDelete?.deletedMetafields[0]?.key !== "", data: responseJson?.data?.metafieldsDelete?.deletedMetafields[0] };
     } catch (error) {
         console.error(error);
         return { status: false, error: (error as Error).toString() };

@@ -33,8 +33,6 @@ export default function ListWithTags({
   const [options, setOptions] = useState(allOptions);
 
   useEffect(() => {
-    // console.log("configs", configs)
-    // const ids = jsonSafeParse(configs[id]) || [];
     setSelectedOptions(configs[id]);
   }, [configs]);
 
@@ -87,6 +85,9 @@ export default function ListWithTags({
     <div>
       <Combobox
         allowMultiple
+        onClose={() => {
+          setInputValue("");
+        }}
         activator={
           <Combobox.TextField
             autoComplete="off"
@@ -95,8 +96,6 @@ export default function ListWithTags({
             placeholder={placeholder}
             helpText={helpText}
             label={label}
-            // size="slim"
-            
           />
         }
       >

@@ -13,7 +13,7 @@ import {
   RD_EMBED_APP_HANDLE,
 } from "../../components/env";
 import { Suspense, useMemo, useState } from "react";
-import RedirectItems from "../../components/popup-redirects/RedirectItems";
+import RedirectsList from "../../components/popup-redirects/RedirectsList";
 import { Await, useActionData, useLoaderData, useOutletContext } from "@remix-run/react";
 import { AutoRedirectItem, OutletContext, RedirectItem } from "app/components/_types";
 import ContentStyle from "app/components/popup-redirects/ContentStyle";
@@ -27,6 +27,7 @@ import ButtonDisplayCustomRule from "app/components/popup-redirects/ButtonDispla
 import { ActionFunctionArgs } from "@remix-run/node";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import AutoRedirects from "app/components/auto-redirects/AutoRedirectsList";
+import { DomainRedirectIcon } from "@shopify/polaris-icons";
 
 
 const { EMBED_APP_ID, EMBED_APP_HANDLE } =
@@ -63,17 +64,13 @@ export default function CustomRedirects() {
   const [selectedTab, setSelectedTab] = useState(0);
   const { smUp } = useBreakpoints();
   useMemo(() => {
-    if (allRedirects?.status) {
-      const orderedRedirects: RedirectItem[] = allRedirects.data.sort((a: RedirectItem, b: RedirectItem) => a.order - b.order);
-      setRedirects(orderedRedirects);
-    }
+    const orderedRedirects: RedirectItem[] = allRedirects?.data?.sort((a: RedirectItem, b: RedirectItem) => a.order - b.order);
+    setRedirects(orderedRedirects || []);
   }, [allRedirects]);
 
   useMemo(() => {
-    if (allAutoRedirects?.length) {
-      const orderedAutoRedirects: AutoRedirectItem[] = allAutoRedirects.sort((a: AutoRedirectItem, b: AutoRedirectItem) => JSON.parse(a.node.value).order_r - JSON.parse(b.node.value).order_r);
-      setAutoRedirects(orderedAutoRedirects);
-    }
+    const orderedAutoRedirects: AutoRedirectItem[] = allAutoRedirects?.data?.sort((a: AutoRedirectItem, b: AutoRedirectItem) => JSON.parse(a.node.value).order_r - JSON.parse(b.node.value).order_r);
+    setAutoRedirects(orderedAutoRedirects || []);
   }, [allAutoRedirects]);
 
   // useMemo(() => {
@@ -142,10 +139,11 @@ export default function CustomRedirects() {
     // }
   }, [actionData]);
 
-  console.log(autoRedirects);
+
   return (
     <Page >
       <PageTitle
+        icon={DomainRedirectIcon}
         title="Custom redirects"
         status={active}
         loading={false}
@@ -161,7 +159,7 @@ export default function CustomRedirects() {
         <br />
         {selectedTab === 0 ? (
           <BlockStack gap={{ xs: "800", sm: "400" }}>
-            <RedirectItems redirects={redirects} />
+            <RedirectsList redirects={redirects} />
             {smUp ? <Divider /> : null}
             <ContentStyle redirects={redirects} configs={configs} />
             {smUp ? <Divider /> : null}

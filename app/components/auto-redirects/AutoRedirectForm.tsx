@@ -14,6 +14,7 @@ import React, { useState, useContext, useMemo } from "react";
 import { DeleteIcon, QuestionCircleIcon } from "@shopify/polaris-icons";
 import {
   continents_auto,
+  jsonSafeParse,
   loadingStates,
   parseCountryCodesWithFullNames,
   planParser,
@@ -33,6 +34,7 @@ const defaultRedirectItem = {
   block: false,
   url: "",
   domain_redirection: false,
+  status: true
 }
 export default function AutoRedirectForm({
   editItem = null,
@@ -51,10 +53,15 @@ export default function AutoRedirectForm({
   });
   const [redirectItem, setRedirectItem] = useState(
     editItem
-      ? { id: editItem?.node?.id, ...JSON.parse(editItem.node.value) }
+      ? { id: editItem?.node?.id, ...jsonSafeParse(editItem.node.value) }
       : defaultRedirectItem
   );
 
+  useMemo(() => {
+    if (editItem) {
+      setRedirectItem({ id: editItem?.node?.id, key: editItem?.node?.key, ...jsonSafeParse(editItem.node.value) });
+    }
+  }, [editItem]);
 
   useMemo(() => {
     let validator = 1;
@@ -92,7 +99,7 @@ export default function AutoRedirectForm({
   }, [redirectItem]);
 
   useMemo(() => {
-    if (actionData?._action === ACTIONS.CreateAutoRedirect && actionData?.key) {
+    if (actionData?._action === ACTIONS.CreateAutoRedirect && actionData?.status) {
       shopify.modal.hide("add-auto-redirect");
       setRedirectItem(defaultRedirectItem);
     }
@@ -106,8 +113,6 @@ export default function AutoRedirectForm({
     }
   }, [actionData]);
 
-  console.log(actionData);
-
   function validateUrlField(value, field) {
     setFieldValidation({
       ...fieldValidation,
@@ -116,79 +121,32 @@ export default function AutoRedirectForm({
   }
 
   async function handleEdit() {
-    // setLoading(true);
-    // setAddButtonStatus(true);
-    // let error = true;
-    // let msg = tr.responses.error;
-
-    // try {
-    //   const response = await fetch(UPDATE_AUTO_REDIRECT, {
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     method: "post",
-    //     body: JSON.stringify({
-    //       data: {
-    //         key: editItem.node.key,
-    //         namespace: editItem.node.namespace,
-    //         type: "json",
-    //         value: redirectItem,
-    //       },
-    //       appId: appId,
-    //     }),
-    //   });
-    //   const responseJson = await response.json();
-
-    //   if (responseJson?.status) {
-    //     error = false;
-    //     msg = tr.responses.rd_update_success;
-
-    //     setRedirectItem({
-    //       location: [],
-    //       except: false,
-    //       block: false,
-    //       url: "",
-    //       domain_redirection: false,
-    //       status: 1,
-    //     });
-    //     setModalStatus(false);
-    //     loadRedirects();
-    //   }
-    // } catch (err) {
-    //   console.log(err);
-    // }
-
-    // setAddButtonStatus(false);
-    // setLoading(false);
+    if (!appId) return;
+    submit(
+      {
+        _action: ACTIONS.UpdateAutoRedirect,
+        data: {
+          appId,
+          key: editItem?.node?.key,
+          value: redirectItem,
+        },
+      },
+      requestHeaders,
+    );
   }
 
-  async function handleDelete(id) {
-    // setDeleteLoading(true);
-    // let error = true;
-    // let msg = tr.responses.error;
-
-    // try {
-    //   const response = await fetch(DELETE_AUTO_REDIRECT, {
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     method: "post",
-    //     body: JSON.stringify({ id }),
-    //   });
-    //   const responseJson = await response.json();
-    //   console.log("responseJson", responseJson, id);
-    //   if (responseJson?.status) {
-    //     error = false;
-    //     msg = tr.responses.rd_delete_success;
-
-    //     setModalStatus(false);
-    //     loadRedirects();
-    //   }
-    // } catch (err) {
-    //   console.log(err);
-    // }
-
-    // setDeleteLoading(false);
+  async function handleDelete(key: string) {
+    if (!appId || !key) return;
+    submit(
+      {
+        _action: ACTIONS.DeleteAutoRedirect,
+        data: {
+          appId,
+          key,
+        },
+      },
+      requestHeaders,
+    );
   }
 
   async function handleAdd() {
@@ -217,12 +175,8 @@ export default function AutoRedirectForm({
       requestHeaders,
     );
   }
-
-  // const countries = parseCountryCodesWithFullNames(countriesList);
   const countries_conditionals = parseCountryCodesWithFullNames(countriesList);
-
-  const loading = loadingStates(navigation, [ACTIONS.CreateAutoRedirect]) as LoadingStates;
-
+  const loading = loadingStates(navigation, [ACTIONS.CreateAutoRedirect, ACTIONS.UpdateAutoRedirect, ACTIONS.DeleteAutoRedirect]) as LoadingStates;
   return (
     <InlineGrid gap="400">
       {editItem && (
@@ -276,6 +230,7 @@ export default function AutoRedirectForm({
             id="location"
             placeholder="Click to select"
             label="Select country or continent"
+
           />
         </InlineGrid>
         <InlineGrid columns="70% auto 20%" alignItems="center" gap="200">
@@ -355,8 +310,8 @@ export default function AutoRedirectForm({
             <Button
               size="slim"
               tone="critical"
-              onClick={() => handleDelete(redirectItem?.id)}
-              // loading={deleteLoading}
+              onClick={() => handleDelete(redirectItem?.key)}
+              loading={loading[ACTIONS.DeleteAutoRedirect + "Loading"]}
               icon={DeleteIcon}
             >
               Delete
@@ -377,7 +332,7 @@ export default function AutoRedirectForm({
               variant="primary"
               onClick={editItem ? handleEdit : handleAdd}
               disabled={addButtonStatus}
-              loading={loading[ACTIONS.CreateAutoRedirect + "Loading"]}
+              loading={loading[ACTIONS.CreateAutoRedirect + "Loading"] || loading[ACTIONS.UpdateAutoRedirect + "Loading"]}
             >
               {editItem ? "Save" : "Add"}
             </Button>
@@ -386,114 +341,4 @@ export default function AutoRedirectForm({
       </InlineGrid>
     </InlineGrid>
   );
-}
-
-// async function handleSubmit(params) {
-//   setRedirectCreateLoading(true);
-//   let response = false;
-//   if (editItem) {
-//     response = await fetch(UPDATE_AUTO_REDIRECT, {
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       method: "post",
-//       body: JSON.stringify({
-//         data: {
-//           key: editItem.node.key,
-//           namespace: editItem.node.namespace,
-//           type: "json",
-//           value: redirectItem,
-//         },
-//         appId: appId,
-//       }),
-//     }).then((data) => data.json());
-//   } else {
-//     if (isFreePlan && redirects?.length >= 1) {
-//       setRedirectCreateLoading(false);
-//       setToastData({
-//         error: true,
-//         msg: tr.responses.limit_error,
-//       });
-//       return;
-//     }
-//     const next_order_number = redirects?.length
-//       ? Math.max(...redirects.map((o) => JSON.parse(o.node.value).order_r)) +
-//         1
-//       : 1;
-//     response = await fetch(CREATE_AUTO_REDIRECT, {
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       method: "post",
-//       body: JSON.stringify({
-//         data: {
-//           ...redirectItem,
-//           order_r: next_order_number,
-//         },
-//         appId: appId,
-//       }),
-//     }).then((data) => data.json());
-//   }
-
-//   if (response?.status) {
-//     setToastData({
-//       error: false,
-//       msg: editItem
-//         ? tr.responses.rd_update_success
-//         : tr.responses.rd_create_success,
-//     });
-//     setRedirectItem({
-//       location: [],
-//       except: false,
-//       block: false,
-//       url: "",
-//       domain_redirection: false,
-//       status: 1,
-//     });
-//     setModalStatus(false);
-//     loadRedirects();
-//   } else {
-//     setToastData({
-//       error: true,
-//       msg: tr.responses.error,
-//     });
-//   }
-//   setRedirectCreateLoading(false);
-// }
-
-{
-  /* <div className={redirectItem?.block ? "blocked" : ""}>
-          <Checkbox
-            label="Block"
-            checked={redirectItem?.block}
-            helpText="restrict access to your site"
-            onChange={handleBlock}
-          />
-
-          <br />
-          <div className="redirect-url">
-            <div className="info-box ">
-              Redirect to the domain entered above by keeping the page path.
-              <br />
-              Example:
-              <p>
-                <i>
-                  https://...ca<strong>/inner-page</strong>
-                </i>{" "}
-                →{" "}
-                <i>
-                  https://...com<strong>/inner-page</strong>
-                </i>
-              </p>
-            </div>
-
-            <div className="info-box info-box--adds">
-              Custom Redirect logic?
-              <br />
-              You can add your own custom redirect logic in code editor. Go to{" "}
-              <strong>Settings</strong> tab and{" "}
-              <strong>Advanced Settings</strong> section.
-            </div>
-          </div>
-        </div> */
 }

@@ -12,6 +12,7 @@ export async function handleLoaders({ request }: LoaderFunctionArgs) {
     const buttonEditorCode = getButtonEditorCode({ admin: admin as AdminApiContextWithRest });
     const allAutoRedirects = await getAllAutoRedirects({ admin: admin as AdminApiContextWithRest });
     const allRedirects = await getAllRedirects({ shop: session.shop });
+    console.log(allRedirects, allAutoRedirects)
     const configs = await getConfigs({ shop: session.shop });
     return { allRedirects, configs, widgetEditorStatus, widgetEditorCode, buttonEditorStatus, buttonEditorCode, allAutoRedirects };
 }

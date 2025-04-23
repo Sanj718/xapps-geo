@@ -3,6 +3,7 @@ import { QuestionCircleIcon, AdjustIcon } from "@shopify/polaris-icons";
 import {
   Box,
   Button,
+  Icon,
   Image,
   InlineGrid,
   InlineStack,
@@ -15,7 +16,15 @@ import statusRed from "../../assets/status-green.svg";
 import statusGray from "../../assets/status-green.svg";
 // import { statusGreen, statusRed, statusGray } from "../../assets/index.js";
 
-export function PageTitle({ title, status, loading, embedPath = "" }) {
+interface PageTitleProps {
+  icon: React.ReactNode;
+  title: string;
+  status: boolean;
+  loading: boolean;
+  embedPath?: string;
+}
+
+export function PageTitle({ icon, title, status, loading, embedPath = "" }: PageTitleProps) {
   // const redirect = Redirect.create(useAppBridge());
 
   // async function handleActivateEmbedRedirect() {
@@ -28,7 +37,8 @@ export function PageTitle({ title, status, loading, embedPath = "" }) {
   return (
     <Box padding="400">
       <InlineStack gap="200" align="space-between">
-        <InlineStack gap="400" blockAlign="center">
+        <InlineStack gap="200" blockAlign="center">
+          {icon && <Icon source={icon} />}
           <Text as="h1" variant="headingLg">
             {title}
           </Text>

@@ -42,7 +42,7 @@ var PageTitle_1 = require("../../components/_common/PageTitle");
 var _helpers_1 = require("../../components/_helpers");
 var env_1 = require("../../components/env");
 var react_1 = require("react");
-var RedirectItems_1 = require("../../components/popup-redirects/RedirectItems");
+var RedirectsList_1 = require("../../components/popup-redirects/RedirectsList");
 var react_2 = require("@remix-run/react");
 var ContentStyle_1 = require("app/components/popup-redirects/ContentStyle");
 var _actions_1 = require("./_actions");
@@ -52,6 +52,7 @@ var OtherSettings_1 = require("app/components/popup-redirects/OtherSettings");
 var WidgetDisplayCustomRule_1 = require("app/components/popup-redirects/WidgetDisplayCustomRule");
 var ButtonDisplayCustomRule_1 = require("app/components/popup-redirects/ButtonDisplayCustomRule");
 var AutoRedirectsList_1 = require("app/components/auto-redirects/AutoRedirectsList");
+var polaris_icons_1 = require("@shopify/polaris-icons");
 var _a = _helpers_1.getEmbedConst(env_1.PROD_EMBED_APP_ID, env_1.DEV_EMBED_APP_ID, env_1.RD_EMBED_APP_HANDLE) || {}, EMBED_APP_ID = _a.EMBED_APP_ID, EMBED_APP_HANDLE = _a.EMBED_APP_HANDLE;
 var mainTabs = [
     {
@@ -81,16 +82,14 @@ function CustomRedirects() {
     var _g = react_1.useState(0), selectedTab = _g[0], setSelectedTab = _g[1];
     var smUp = polaris_1.useBreakpoints().smUp;
     react_1.useMemo(function () {
-        if (allRedirects === null || allRedirects === void 0 ? void 0 : allRedirects.status) {
-            var orderedRedirects = allRedirects.data.sort(function (a, b) { return a.order - b.order; });
-            setRedirects(orderedRedirects);
-        }
+        var _a;
+        var orderedRedirects = (_a = allRedirects === null || allRedirects === void 0 ? void 0 : allRedirects.data) === null || _a === void 0 ? void 0 : _a.sort(function (a, b) { return a.order - b.order; });
+        setRedirects(orderedRedirects || []);
     }, [allRedirects]);
     react_1.useMemo(function () {
-        if (allAutoRedirects === null || allAutoRedirects === void 0 ? void 0 : allAutoRedirects.length) {
-            var orderedAutoRedirects = allAutoRedirects.sort(function (a, b) { return JSON.parse(a.node.value).order_r - JSON.parse(b.node.value).order_r; });
-            setAutoRedirects(orderedAutoRedirects);
-        }
+        var _a;
+        var orderedAutoRedirects = (_a = allAutoRedirects === null || allAutoRedirects === void 0 ? void 0 : allAutoRedirects.data) === null || _a === void 0 ? void 0 : _a.sort(function (a, b) { return JSON.parse(a.node.value).order_r - JSON.parse(b.node.value).order_r; });
+        setAutoRedirects(orderedAutoRedirects || []);
     }, [allAutoRedirects]);
     // useMemo(() => {
     //   if (actionData?.status) {
@@ -151,14 +150,13 @@ function CustomRedirects() {
         //   navigate("/app");
         // }
     }, [actionData]);
-    console.log(autoRedirects);
     return (React.createElement(polaris_1.Page, null,
-        React.createElement(PageTitle_1.PageTitle, { title: "Custom redirects", status: active, loading: false, embedPath: EMBED_APP_ID + "/" + EMBED_APP_HANDLE }),
+        React.createElement(PageTitle_1.PageTitle, { icon: polaris_icons_1.DomainRedirectIcon, title: "Custom redirects", status: active, loading: false, embedPath: EMBED_APP_ID + "/" + EMBED_APP_HANDLE }),
         React.createElement("br", null),
         React.createElement(polaris_1.Tabs, { tabs: mainTabs, selected: selectedTab, onSelect: setSelectedTab, fitted: true },
             React.createElement("br", null),
             selectedTab === 0 ? (React.createElement(polaris_1.BlockStack, { gap: { xs: "800", sm: "400" } },
-                React.createElement(RedirectItems_1["default"], { redirects: redirects }),
+                React.createElement(RedirectsList_1["default"], { redirects: redirects }),
                 smUp ? React.createElement(polaris_1.Divider, null) : null,
                 React.createElement(ContentStyle_1["default"], { redirects: redirects, configs: configs }),
                 smUp ? React.createElement(polaris_1.Divider, null) : null,

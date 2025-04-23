@@ -104,7 +104,7 @@ export default function PopupRedirectForm({
   }, [editItem]);
 
   useMemo(() => {
-    if (actionData?._action === ACTIONS.AddRedirect && actionData?.status) {
+    if (actionData?._action === ACTIONS.CreateRedirect && actionData?.status) {
       // if (redirects?.length >= 4 && isBasicPlan) {
       //   msg = tr.responses.limit_error;
       // }
@@ -114,13 +114,11 @@ export default function PopupRedirectForm({
       setSelectedCountry("--");
     }
     if (actionData?._action === ACTIONS.DeleteRedirect && actionData?.status) {
-      // setToastData({ error: false, msg: tr.responses.rd_delete_success });
       shopify.modal.hide("edit-redirect");
       setRedirectItem(defaultRedirectItem);
       setSelectedCountry("--");
     }
     if (actionData?._action === ACTIONS.UpdateRedirect && actionData?.status) {
-      // setToastData({ error: false, msg: tr.responses.rd_update_success });
       shopify.modal.hide("edit-redirect");
       setRedirectItem(defaultRedirectItem);
       setSelectedCountry("--");
@@ -183,7 +181,10 @@ export default function PopupRedirectForm({
     submit(
       {
         _action: ACTIONS.UpdateRedirect,
-        data: redirectItem,
+        data: {
+          ...redirectItem,
+          id: redirectItem.id,
+        },
       },
       requestHeaders,
     );
@@ -207,7 +208,7 @@ export default function PopupRedirectForm({
   async function handleAdd() {
     submit(
       {
-        _action: ACTIONS.AddRedirect,
+        _action: ACTIONS.CreateRedirect,
         data: {
           ...redirectItem,
           shopId: shopdb?.id,
@@ -221,7 +222,7 @@ export default function PopupRedirectForm({
     setLabelTranslation(false)
   }
 
-  const loading = loadingStates(navigation, [ACTIONS.AddRedirect, ACTIONS.DeleteRedirect, ACTIONS.UpdateRedirect]) as LoadingStates;
+  const loading = loadingStates(navigation, [ACTIONS.CreateRedirect, ACTIONS.DeleteRedirect, ACTIONS.UpdateRedirect]) as LoadingStates;
 
   return (
     <InlineGrid gap="400">
@@ -511,7 +512,7 @@ export default function PopupRedirectForm({
             variant="primary"
             onClick={editItem ? handleUpdate : handleAdd}
             disabled={addButtonStatus}
-            loading={loading[ACTIONS.AddRedirect + "Loading"] || loading[ACTIONS.UpdateRedirect + "Loading"]}
+            loading={loading[ACTIONS.CreateRedirect + "Loading"] || loading[ACTIONS.UpdateRedirect + "Loading"]}
           >
             {editItem ? "Save" : "Add"}
           </Button>

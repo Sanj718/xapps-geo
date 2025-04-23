@@ -55,7 +55,7 @@ var shopify_server_1 = require("app/shopify.server");
 function handleActions(_a) {
     var request = _a.request;
     return __awaiter(this, void 0, void 0, function () {
-        var _b, admin, session, _c, _action, data, response, response, response, response, response, response, response, response, response, response, response, response, response;
+        var _b, admin, session, _c, _action, data, response, response, response, response, response, response, response, response, response, response, response, response, response, response, response, response;
         return __generator(this, function (_d) {
             switch (_d.label) {
                 case 0: return [4 /*yield*/, shopify_server_1.authenticate.admin(request)];
@@ -82,7 +82,7 @@ function handleActions(_a) {
                     response = _d.sent();
                     return [2 /*return*/, __assign({ _action: _action }, response)];
                 case 8:
-                    if (!(_action === _actions_1.ACTIONS.AddRedirect)) return [3 /*break*/, 10];
+                    if (!(_action === _actions_1.ACTIONS.CreateRedirect)) return [3 /*break*/, 10];
                     return [4 /*yield*/, db_queries_server_1.createRedirect(__assign({ admin: admin }, data))];
                 case 9:
                     response = _d.sent();
@@ -144,7 +144,26 @@ function handleActions(_a) {
                     response = _d.sent();
                     console.log("response", response);
                     return [2 /*return*/, __assign({ _action: _action }, response)];
-                case 28: return [2 /*return*/, {}];
+                case 28:
+                    if (!(_action === _actions_1.ACTIONS.UpdateAutoRedirect)) return [3 /*break*/, 30];
+                    console.log("data", data);
+                    return [4 /*yield*/, admin_queries_server_1.updateAutoRedirect({ admin: admin, appId: data.appId, key: data.key, value: data.value })];
+                case 29:
+                    response = _d.sent();
+                    return [2 /*return*/, __assign({ _action: _action }, response)];
+                case 30:
+                    if (!(_action === _actions_1.ACTIONS.ReOrderAutoRedirects)) return [3 /*break*/, 32];
+                    return [4 /*yield*/, admin_queries_server_1.reOrderAutoRedirects({ admin: admin, appId: data.appId, data: data.data })];
+                case 31:
+                    response = _d.sent();
+                    return [2 /*return*/, __assign({ _action: _action }, response)];
+                case 32:
+                    if (!(_action === _actions_1.ACTIONS.DeleteAutoRedirect)) return [3 /*break*/, 34];
+                    return [4 /*yield*/, admin_queries_server_1.deleteAutoRedirect({ admin: admin, appId: data.appId, key: data.key })];
+                case 33:
+                    response = _d.sent();
+                    return [2 /*return*/, __assign({ _action: _action }, response)];
+                case 34: return [2 /*return*/, {}];
             }
         });
     });

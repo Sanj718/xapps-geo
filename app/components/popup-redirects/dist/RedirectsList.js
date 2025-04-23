@@ -50,12 +50,12 @@ var resourceName = {
     singular: "redirect",
     plural: "redirects"
 };
-function RedirectItems(_a) {
+function RedirectsList(_a) {
     var redirects = _a.redirects;
     var submit = react_3.useSubmit();
     var navigation = react_3.useNavigation();
     var _b = react_1.useState(undefined), editRedirect = _b[0], setEditRedirect = _b[1];
-    var _c = react_1.useState(), dragId = _c[0], setDragId = _c[1];
+    var _c = react_1.useState(""), dragId = _c[0], setDragId = _c[1];
     function openEdit(item) {
         setEditRedirect(item);
         shopify.modal.show("edit-redirect");
@@ -84,7 +84,7 @@ function RedirectItems(_a) {
                 updated_order = newBoxState.sort(function (a, b) { return a.order - b.order; });
                 updated_order_ids = updated_order.map(function (item) { return item.id; });
                 submit({
-                    _action: "reorderRedirect",
+                    _action: _actions_1.ACTIONS.ReorderRedirect,
                     data: {
                         ids: updated_order_ids
                     }
@@ -111,7 +111,7 @@ function RedirectItems(_a) {
             });
         });
     }
-    var loading = _helpers_1.loadingStates(navigation, [_actions_1.ACTIONS.ToggleRedirectStatus, _actions_1.ACTIONS.ReorderRedirect]);
+    var loading = _helpers_1.loadingStates(navigation, [_actions_1.ACTIONS.ToggleRedirectStatus, _actions_1.ACTIONS.ReorderRedirect, _actions_1.ACTIONS.CreateRedirect, _actions_1.ACTIONS.UpdateRedirect, _actions_1.ACTIONS.DeleteRedirect]);
     return (react_1["default"].createElement(react_1["default"].Fragment, null,
         react_1["default"].createElement(polaris_1.InlineGrid, { columns: { xs: "1fr", md: "auto  70%" }, gap: "400" },
             react_1["default"].createElement(polaris_1.Box, { as: "section", paddingInlineStart: { xs: "400", sm: "0" }, paddingInlineEnd: { xs: "400", sm: "0" } },
@@ -130,13 +130,12 @@ function RedirectItems(_a) {
                                 gap: "20px"
                             } },
                             react_1["default"].createElement(polaris_1.Image, { source: empty_svg_1["default"], width: "200", height: "150", alt: "empty" }),
-                            react_1["default"].createElement(polaris_1.Text, { as: "p", variant: "headingSm" }, "Guide customers effortlessly \u2014 add your first redirect!")), resourceName: resourceName, items: redirects, loading: loading[_actions_1.ACTIONS.ToggleRedirectStatus + "Loading"] || loading[_actions_1.ACTIONS.ReorderRedirect + "Loading"], renderItem: function (item, rId, index) {
+                            react_1["default"].createElement(polaris_1.Text, { as: "p", variant: "headingSm" }, "Guide customers effortlessly \u2014 add your first redirect!")), resourceName: resourceName, items: redirects, loading: loading[_actions_1.ACTIONS.ToggleRedirectStatus + "Loading"] || loading[_actions_1.ACTIONS.ReorderRedirect + "Loading"] || loading[_actions_1.ACTIONS.CreateRedirect + "Loading"] || loading[_actions_1.ACTIONS.UpdateRedirect + "Loading"] || loading[_actions_1.ACTIONS.DeleteRedirect + "Loading"], renderItem: function (item, rId, index) {
                             var id = item.id, url = item.url, label = item.label, flag = item.flag, status = item.status;
                             if (!id)
                                 return null;
                             return (react_1["default"].createElement("div", { className: "redirect-item", id: String(id) || "", draggable: true, onDragStart: function (ev) {
-                                    var _a;
-                                    setDragId((_a = ev === null || ev === void 0 ? void 0 : ev.currentTarget) === null || _a === void 0 ? void 0 : _a.id);
+                                    setDragId(id);
                                 }, onDrop: handleDrop, onDragOver: function (ev) { return ev.preventDefault(); } },
                                 react_1["default"].createElement(polaris_1.ResourceItem, { id: String(id), onClick: function () { }, verticalAlignment: "center", accessibilityLabel: "View details for " + label },
                                     react_1["default"].createElement(polaris_1.InlineStack, { blockAlign: "center", align: "space-between" },
@@ -175,4 +174,4 @@ function RedirectItems(_a) {
                 react_1["default"].createElement(react_2.AppProvider, { i18n: {}, apiKey: "" },
                     react_1["default"].createElement(PopupRedirectForm_1["default"], { redirects: redirects, editItem: editRedirect }))))));
 }
-exports["default"] = RedirectItems;
+exports["default"] = RedirectsList;

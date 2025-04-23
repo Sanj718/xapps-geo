@@ -41,9 +41,9 @@ var _helpers_1 = require("./_helpers");
 exports.ACTIONS = {
     AnalyticsData: "analyticsData",
     AssetsData: "assetsData",
-    AddRedirect: "addRedirect",
-    DeleteRedirect: "deleteRedirect",
+    CreateRedirect: "createRedirect",
     UpdateRedirect: "updateRedirect",
+    DeleteRedirect: "deleteRedirect",
     ToggleRedirectStatus: "toggleRedirectStatus",
     ReorderRedirect: "reorderRedirect",
     CreateUpdateConfigs: "createUpdateConfigs",
@@ -55,7 +55,8 @@ exports.ACTIONS = {
     AutoRedirects: "autoRedirects",
     CreateAutoRedirect: "createAutoRedirect",
     UpdateAutoRedirect: "updateAutoRedirect",
-    DeleteAutoRedirect: "deleteAutoRedirect"
+    DeleteAutoRedirect: "deleteAutoRedirect",
+    ReOrderAutoRedirects: "reOrderAutoRedirects"
 };
 exports.getAssets = function (_a) {
     var admin = _a.admin, data = _a.data;

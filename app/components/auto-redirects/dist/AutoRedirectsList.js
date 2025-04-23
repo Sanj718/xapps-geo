@@ -51,59 +51,28 @@ var polaris_1 = require("@shopify/polaris");
 var polaris_icons_1 = require("@shopify/polaris-icons");
 var react_1 = require("react");
 var countries_json_1 = require("../../assets/countries.json");
-// import { charLimit, continents_auto } from "../../helpers";
 var empty2_svg_1 = require("../../assets/empty2.svg");
-// import { useAuthenticatedFetch } from "../../hooks";
-// import {
-//   REORDER_AUTO_REDIRECT,
-//   UPDATE_AUTO_REDIRECT,
-// } from "../../../helpers/endpoints";
 var AutoRedirectForm_1 = require("./AutoRedirectForm");
 var _helpers_1 = require("../_helpers");
 var app_bridge_react_1 = require("@shopify/app-bridge-react");
 var react_2 = require("@shopify/shopify-app-remix/react");
+var _actions_1 = require("../_actions");
+var react_3 = require("@remix-run/react");
 var resourceName = {
     singular: "auto redirect",
     plural: "auto redirects"
 };
-function parseLocations(data) {
-    if (!data)
-        return;
-    var parsedJson = data;
-    var locations = "";
-    var _loop_1 = function (index) {
-        var item = parsedJson[index];
-        if (item.includes("C:")) {
-            var getContinentLabel = _helpers_1.continents_auto.find(function (cnt) { return cnt.value === item; });
-            if (getContinentLabel) {
-                locations += getContinentLabel.label + ", ";
-            }
-        }
-        else {
-            var getCountryLabel = countries_json_1["default"] === null || countries_json_1["default"] === void 0 ? void 0 : countries_json_1["default"].find(function (cnt) { return cnt.code === item; });
-            if (getCountryLabel) {
-                locations += getCountryLabel.name + ", ";
-            }
-        }
-    };
-    for (var index = 0; index < parsedJson.length; index++) {
-        _loop_1(index);
-    }
-    return locations.replace(/,\s*$/, "");
-}
 function AutoRedirects(_a) {
     var redirects = _a.redirects;
-    // const fetch = useAuthenticatedFetch();
-    var _b = react_1.useState(false), loading = _b[0], setLoading = _b[1];
-    var _c = react_1.useState(false), addModalStatus = _c[0], setAddModalStatus = _c[1];
-    var _d = react_1.useState(false), editModalStatus = _d[0], setEditModalStatus = _d[1];
-    var _e = react_1.useState(null), editRedirect = _e[0], setEditRedirect = _e[1];
-    var _f = react_1.useState(), dragId = _f[0], setDragId = _f[1];
+    var _b = react_3.useOutletContext(), shopInfo = _b.shopInfo, shopdb = _b.shopdb, activePlan = _b.activePlan, devPlan = _b.devPlan, veteranPlan = _b.veteranPlan, appId = _b.appId, appData = _b.appData;
+    var submit = react_3.useSubmit();
+    var navigation = react_3.useNavigation();
+    var _c = react_1.useState(null), editRedirect = _c[0], setEditRedirect = _c[1];
+    var _d = react_1.useState(""), dragId = _d[0], setDragId = _d[1];
     function handleDrop(ev) {
         return __awaiter(this, void 0, void 0, function () {
-            var dragBox, dropBox, dragBoxOrder, dropBoxOrder, newBoxState, updated_order;
+            var dragBox, dropBox, dragBoxOrder, dropBoxOrder, newBoxState, updatedOrder;
             return __generator(this, function (_a) {
-                setLoading(true);
                 dragBox = redirects.find(function (box) { return box.node.id == dragId; });
                 dropBox = redirects.find(function (box) { return box.node.id == ev.currentTarget.id; });
                 dragBoxOrder = JSON.parse(dragBox.node.value).order_r;
@@ -121,77 +90,55 @@ function AutoRedirects(_a) {
                     }
                     return box;
                 });
-                updated_order = newBoxState.sort(function (a, b) {
+                updatedOrder = newBoxState.sort(function (a, b) {
                     return JSON.parse(a.node.value).order_r - JSON.parse(b.node.value).order_r;
                 });
-                // const response = await fetch(REORDER_AUTO_REDIRECT, {
-                //   headers: {
-                //     "Content-Type": "application/json",
-                //   },
-                //   method: "post",
-                //   body: JSON.stringify({ data: updated_order, appId }),
-                // }).then((data) => data.json());
-                // if (response?.status) {
-                //   setRedirects(updated_order);
-                //   setToastData({
-                //     error: false,
-                //     msg: tr.responses.rd_reorder_success,
-                //   });
-                // } else {
-                //   setToastData({
-                //     error: true,
-                //     msg: tr.responses.error,
-                //   });
-                // }
-                setLoading(false);
+                if (!appId)
+                    return [2 /*return*/];
+                submit({
+                    _action: _actions_1.ACTIONS.ReOrderAutoRedirects,
+                    data: {
+                        appId: appId,
+                        data: updatedOrder
+                    }
+                }, _helpers_1.requestHeaders);
                 return [2 /*return*/];
             });
         });
     }
-    // function openEdit(item) {
-    //   setEditRedirect(item);
-    //   setEditModalStatus(true);
-    // }
+    function openEdit(item) {
+        setEditRedirect(item);
+        console.log(item);
+        shopify.modal.show("edit-auto-redirect");
+    }
     function toggleStatus(data) {
         var _a;
         var parsed = JSON.parse((_a = data === null || data === void 0 ? void 0 : data.node) === null || _a === void 0 ? void 0 : _a.value);
         parsed.status = parsed.status === 1 ? 0 : 1;
         delete data.node.id;
-        return __assign(__assign({}, data.node), { type: "json", value: parsed });
+        return parsed;
     }
     function handleRedirectStatus(item) {
+        var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var data;
-            return __generator(this, function (_a) {
-                setLoading(true);
-                data = toggleStatus(item);
-                // const response = await fetch(UPDATE_AUTO_REDIRECT, {
-                //   headers: {
-                //     "Content-Type": "application/json",
-                //   },
-                //   method: "post",
-                //   body: JSON.stringify({
-                //     appId,
-                //     data,
-                //   }),
-                // }).then((data) => data.json());
-                // if (response?.status) {
-                //   setToastData({
-                //     error: false,
-                //     msg: tr.responses.rd_status_success,
-                //   });
-                //   await loadRedirects();
-                // } else {
-                //   setToastData({
-                //     error: true,
-                //     msg: tr.responses.error,
-                //   });
-                // }
-                setLoading(false);
+            var updatedItem;
+            return __generator(this, function (_b) {
+                if (!appId)
+                    return [2 /*return*/];
+                updatedItem = toggleStatus(item);
+                submit({
+                    _action: _actions_1.ACTIONS.UpdateAutoRedirect,
+                    data: {
+                        appId: appId,
+                        key: (_a = item === null || item === void 0 ? void 0 : item.node) === null || _a === void 0 ? void 0 : _a.key,
+                        value: updatedItem
+                    }
+                }, _helpers_1.requestHeaders);
                 return [2 /*return*/];
             });
         });
     }
+    var loading = _helpers_1.loadingStates(navigation, [_actions_1.ACTIONS.CreateAutoRedirect, _actions_1.ACTIONS.UpdateAutoRedirect, _actions_1.ACTIONS.DeleteAutoRedirect, _actions_1.ACTIONS.ReOrderAutoRedirects]);
     return (react_1["default"].createElement(react_1["default"].Fragment, null,
         react_1["default"].createElement(polaris_1.InlineGrid, { columns: { xs: "1fr", md: "auto  70%" }, gap: "400" },
             react_1["default"].createElement(polaris_1.Box, { as: "section", paddingInlineStart: { xs: "400", sm: "0" }, paddingInlineEnd: { xs: "400", sm: "0" } },
@@ -210,32 +157,39 @@ function AutoRedirects(_a) {
                                 gap: "20px"
                             } },
                             react_1["default"].createElement(polaris_1.Image, { source: empty2_svg_1["default"], width: "200", height: "150", alt: "empty" }),
-                            react_1["default"].createElement(polaris_1.Text, { as: "p", variant: "headingSm" }, "Simplify the customer experience \u2014 set up your first auto redirect now!")), resourceName: resourceName, items: redirects, loading: loading, renderItem: function (item, index) {
+                            react_1["default"].createElement(polaris_1.Text, { as: "p", variant: "headingSm" }, "Simplify the customer experience \u2014 set up your first auto redirect now!")), resourceName: resourceName, items: redirects, loading: loading[_actions_1.ACTIONS.CreateAutoRedirect + "Loading"] || loading[_actions_1.ACTIONS.UpdateAutoRedirect + "Loading"] || loading[_actions_1.ACTIONS.DeleteAutoRedirect + "Loading"] || loading[_actions_1.ACTIONS.ReOrderAutoRedirects + "Loading"], renderItem: function (item, index) {
                             var _a = item === null || item === void 0 ? void 0 : item.node, id = _a.id, value = _a.value;
-                            var _b = JSON.parse(value), url = _b.url, location = _b.location, except_r = _b.except_r, status = _b.status, block = _b.block;
-                            var locations = parseLocations(location);
+                            var _b = _helpers_1.jsonSafeParse(value), url = _b.url, location = _b.location, except_r = _b.except_r, status = _b.status, block = _b.block;
+                            var locations = _helpers_1.parseLocations(location, countries_json_1["default"]);
                             return (react_1["default"].createElement("div", { className: "auto-redirect-item", id: id, draggable: true, onDragStart: function (ev) {
-                                    var _a;
-                                    setDragId((_a = ev === null || ev === void 0 ? void 0 : ev.currentTarget) === null || _a === void 0 ? void 0 : _a.id);
+                                    setDragId(id);
                                 }, onDrop: handleDrop, onDragOver: function (ev) { return ev.preventDefault(); } },
                                 react_1["default"].createElement(polaris_1.ResourceItem, { id: id, onClick: function () { }, verticalAlignment: "center", accessibilityLabel: "View details" },
                                     react_1["default"].createElement(polaris_1.InlineStack, { blockAlign: "center", align: "space-between" },
                                         react_1["default"].createElement(polaris_1.InlineStack, { gap: "200" },
                                             react_1["default"].createElement("div", { style: { cursor: "move" } },
                                                 react_1["default"].createElement(polaris_1.Icon, { source: polaris_icons_1.DragHandleIcon, tone: "subdued" })),
-                                            react_1["default"].createElement("div", { className: "switch", onClick: function () { return handleRedirectStatus(item); } },
-                                                react_1["default"].createElement("input", { type: "checkbox", checked: status }),
-                                                react_1["default"].createElement("span", { className: "slider round" })),
+                                            react_1["default"].createElement("div", { onClick: function () { return handleRedirectStatus(item); } },
+                                                react_1["default"].createElement(polaris_1.Tooltip, { content: react_1["default"].createElement("small", null,
+                                                        "Status: ",
+                                                        status ? "active" : "inactive") },
+                                                    react_1["default"].createElement(polaris_1.Icon, { source: status ? polaris_icons_1.ToggleOnIcon : polaris_icons_1.ToggleOffIcon, tone: status ? "success" : "subdued" }))),
                                             except_r ? (react_1["default"].createElement(polaris_1.Tooltip, { width: "wide", content: react_1["default"].createElement("small", null, "Excluding selected countries/continents.") },
-                                                react_1["default"].createElement(polaris_1.Icon, { source: polaris_icons_1.LocationNoneIcon, tone: "warning" }))) : (""),
+                                                react_1["default"].createElement("div", { style: {
+                                                        opacity: (!status && 0.5) || 1
+                                                    } },
+                                                    react_1["default"].createElement(polaris_1.Icon, { source: polaris_icons_1.LocationNoneIcon, tone: "warning" })))) : (""),
                                             react_1["default"].createElement(polaris_1.Tooltip, { width: "wide", content: react_1["default"].createElement("small", null, locations) },
-                                                react_1["default"].createElement(polaris_1.Text, { as: "p", variant: "bodyXs" }, _helpers_1.charLimit(locations, 25))),
-                                            react_1["default"].createElement("div", null, block ? (react_1["default"].createElement(polaris_1.Badge, { size: "small", tone: "critical" }, "Blocked")) : (react_1["default"].createElement(polaris_1.Tooltip, { width: "wide", content: react_1["default"].createElement("small", null, url) },
+                                                react_1["default"].createElement("div", { style: {
+                                                        opacity: (!status && 0.5) || 1
+                                                    } },
+                                                    react_1["default"].createElement(polaris_1.Text, { as: "p", variant: "bodyXs" }, _helpers_1.charLimit(locations, 25)))),
+                                            react_1["default"].createElement("div", { style: {
+                                                    opacity: (!status && 0.5) || 1
+                                                } }, block ? (react_1["default"].createElement(polaris_1.Badge, { size: "small", tone: "critical" }, "Blocked")) : (react_1["default"].createElement(polaris_1.Tooltip, { width: "wide", content: react_1["default"].createElement("small", null, url) },
                                                 react_1["default"].createElement(polaris_1.Badge, { size: "small" }, _helpers_1.charLimit(url, 20)))))),
                                         react_1["default"].createElement(polaris_1.InlineStack, { gap: "100", align: "end" },
-                                            react_1["default"].createElement(polaris_1.Button, { icon: polaris_icons_1.EditIcon, 
-                                                // onClick={() => openEdit(item)}
-                                                size: "slim" }, "Edit"))))));
+                                            react_1["default"].createElement(polaris_1.Button, { icon: polaris_icons_1.EditIcon, onClick: function () { return openEdit(item); }, size: "slim" }, "Edit"))))));
                         } }),
                     react_1["default"].createElement(polaris_1.InlineStack, { align: "end" },
                         react_1["default"].createElement(polaris_1.Button, { variant: "primary", onClick: function () { return shopify.modal.show("add-auto-redirect"); }, icon: polaris_icons_1.PlusCircleIcon }, "Add"))))),

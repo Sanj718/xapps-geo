@@ -13,9 +13,9 @@ interface GetAssetsParams {
 export const ACTIONS = {
   AnalyticsData: "analyticsData",
   AssetsData: "assetsData",
-  AddRedirect: "addRedirect",
-  DeleteRedirect: "deleteRedirect",
+  CreateRedirect: "createRedirect",
   UpdateRedirect: "updateRedirect",
+  DeleteRedirect: "deleteRedirect",
   ToggleRedirectStatus: "toggleRedirectStatus",
   ReorderRedirect: "reorderRedirect",
   CreateUpdateConfigs: "createUpdateConfigs",
@@ -28,6 +28,7 @@ export const ACTIONS = {
   CreateAutoRedirect: "createAutoRedirect",
   UpdateAutoRedirect: "updateAutoRedirect",
   DeleteAutoRedirect: "deleteAutoRedirect",
+  ReOrderAutoRedirects: "reOrderAutoRedirects",
 }
 
 export const getAssets = async ({ admin, data }: GetAssetsParams) => {

@@ -104,7 +104,7 @@ function PopupRedirectForm(_a) {
         }
     }, [editItem]);
     react_1.useMemo(function () {
-        if ((actionData === null || actionData === void 0 ? void 0 : actionData._action) === _actions_1.ACTIONS.AddRedirect && (actionData === null || actionData === void 0 ? void 0 : actionData.status)) {
+        if ((actionData === null || actionData === void 0 ? void 0 : actionData._action) === _actions_1.ACTIONS.CreateRedirect && (actionData === null || actionData === void 0 ? void 0 : actionData.status)) {
             // if (redirects?.length >= 4 && isBasicPlan) {
             //   msg = tr.responses.limit_error;
             // }
@@ -114,13 +114,11 @@ function PopupRedirectForm(_a) {
             setSelectedCountry("--");
         }
         if ((actionData === null || actionData === void 0 ? void 0 : actionData._action) === _actions_1.ACTIONS.DeleteRedirect && (actionData === null || actionData === void 0 ? void 0 : actionData.status)) {
-            // setToastData({ error: false, msg: tr.responses.rd_delete_success });
             shopify.modal.hide("edit-redirect");
             setRedirectItem(defaultRedirectItem);
             setSelectedCountry("--");
         }
         if ((actionData === null || actionData === void 0 ? void 0 : actionData._action) === _actions_1.ACTIONS.UpdateRedirect && (actionData === null || actionData === void 0 ? void 0 : actionData.status)) {
-            // setToastData({ error: false, msg: tr.responses.rd_update_success });
             shopify.modal.hide("edit-redirect");
             setRedirectItem(defaultRedirectItem);
             setSelectedCountry("--");
@@ -167,7 +165,7 @@ function PopupRedirectForm(_a) {
                     return [2 /*return*/];
                 submit({
                     _action: _actions_1.ACTIONS.UpdateRedirect,
-                    data: redirectItem
+                    data: __assign(__assign({}, redirectItem), { id: redirectItem.id })
                 }, _helpers_1.requestHeaders);
                 setLabelTranslation(false);
                 return [2 /*return*/];
@@ -193,7 +191,7 @@ function PopupRedirectForm(_a) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 submit({
-                    _action: _actions_1.ACTIONS.AddRedirect,
+                    _action: _actions_1.ACTIONS.CreateRedirect,
                     data: __assign(__assign({}, redirectItem), { shopId: shopdb === null || shopdb === void 0 ? void 0 : shopdb.id, order_r: (redirects === null || redirects === void 0 ? void 0 : redirects.length) ? Math.max.apply(Math, redirects.map(function (o) { return o.order_r; })) + 1
                             : 1 })
                 }, _helpers_1.requestHeaders);
@@ -202,7 +200,7 @@ function PopupRedirectForm(_a) {
             });
         });
     }
-    var loading = _helpers_1.loadingStates(navigation, [_actions_1.ACTIONS.AddRedirect, _actions_1.ACTIONS.DeleteRedirect, _actions_1.ACTIONS.UpdateRedirect]);
+    var loading = _helpers_1.loadingStates(navigation, [_actions_1.ACTIONS.CreateRedirect, _actions_1.ACTIONS.DeleteRedirect, _actions_1.ACTIONS.UpdateRedirect]);
     return (react_1["default"].createElement(polaris_1.InlineGrid, { gap: "400" },
         react_1["default"].createElement(polaris_1.FormLayout, null,
             editItem && (react_1["default"].createElement(polaris_1.Select, { label: "Status:", labelInline: true, options: [
@@ -305,6 +303,6 @@ function PopupRedirectForm(_a) {
                         shopify.modal.hide("edit-redirect");
                         setLabelTranslation(false);
                     } }, "Cancel"),
-                react_1["default"].createElement(polaris_1.Button, { size: "slim", variant: "primary", onClick: editItem ? handleUpdate : handleAdd, disabled: addButtonStatus, loading: loading[_actions_1.ACTIONS.AddRedirect + "Loading"] || loading[_actions_1.ACTIONS.UpdateRedirect + "Loading"] }, editItem ? "Save" : "Add")))));
+                react_1["default"].createElement(polaris_1.Button, { size: "slim", variant: "primary", onClick: editItem ? handleUpdate : handleAdd, disabled: addButtonStatus, loading: loading[_actions_1.ACTIONS.CreateRedirect + "Loading"] || loading[_actions_1.ACTIONS.UpdateRedirect + "Loading"] }, editItem ? "Save" : "Add")))));
 }
 exports["default"] = PopupRedirectForm;

@@ -47,20 +47,13 @@ const resourceName = {
   plural: "redirects",
 };
 
-export default function RedirectItems({
+export default function RedirectsList({
   redirects,
 }: RedirectItemsProps) {
   const submit = useSubmit();
   const navigation = useNavigation();
-  // const actionData = useActionData<ActionReturn>();
   const [editRedirect, setEditRedirect] = useState(undefined);
   const [dragId, setDragId] = useState("");
-
-  // useMemo(() => {
-  //   if (actionData?._action === "toggleRedirectStatus" && actionData?.status) {
-  //     setToastData({ error: false, msg: tr.responses.rd_status_success });
-  //   }
-  // }, [actionData]);
 
   function openEdit(item: any) {
     setEditRedirect(item);
@@ -93,7 +86,7 @@ export default function RedirectItems({
 
     submit(
       {
-        _action: "reorderRedirect",
+        _action: ACTIONS.ReorderRedirect,
         data: {
           ids: updated_order_ids
         },
@@ -117,7 +110,7 @@ export default function RedirectItems({
     );
   }
 
-  const loading = loadingStates(navigation, [ACTIONS.ToggleRedirectStatus, ACTIONS.ReorderRedirect]) as LoadingStates;
+  const loading = loadingStates(navigation, [ACTIONS.ToggleRedirectStatus, ACTIONS.ReorderRedirect, ACTIONS.CreateRedirect, ACTIONS.UpdateRedirect, ACTIONS.DeleteRedirect]) as LoadingStates;
 
   return (
     <>
@@ -168,7 +161,7 @@ export default function RedirectItems({
               }
               resourceName={resourceName}
               items={redirects}
-              loading={loading[ACTIONS.ToggleRedirectStatus + "Loading"] || loading[ACTIONS.ReorderRedirect + "Loading"]}
+              loading={loading[ACTIONS.ToggleRedirectStatus + "Loading"] || loading[ACTIONS.ReorderRedirect + "Loading"] || loading[ACTIONS.CreateRedirect + "Loading"] || loading[ACTIONS.UpdateRedirect + "Loading"] || loading[ACTIONS.DeleteRedirect + "Loading"]}
               renderItem={(item: RedirectItem, rId, index) => {
                 const { id, url, label, flag, status } = item;
 
@@ -179,7 +172,7 @@ export default function RedirectItems({
                     id={String(id) || ""}
                     draggable
                     onDragStart={(ev) => {
-                      setDragId(ev?.currentTarget?.id);
+                      setDragId(id);
                     }}
                     onDrop={handleDrop}
                     onDragOver={(ev) => ev.preventDefault()}

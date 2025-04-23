@@ -68,7 +68,8 @@ var defaultRedirectItem = {
     except_r: false,
     block: false,
     url: "",
-    domain_redirection: false
+    domain_redirection: false,
+    status: true
 };
 function AutoRedirectForm(_a) {
     var _b;
@@ -84,7 +85,13 @@ function AutoRedirectForm(_a) {
         location: false
     }), fieldValidation = _h[0], setFieldValidation = _h[1];
     var _j = react_1.useState(editItem
-        ? __assign({ id: (_b = editItem === null || editItem === void 0 ? void 0 : editItem.node) === null || _b === void 0 ? void 0 : _b.id }, JSON.parse(editItem.node.value)) : defaultRedirectItem), redirectItem = _j[0], setRedirectItem = _j[1];
+        ? __assign({ id: (_b = editItem === null || editItem === void 0 ? void 0 : editItem.node) === null || _b === void 0 ? void 0 : _b.id }, _helpers_1.jsonSafeParse(editItem.node.value)) : defaultRedirectItem), redirectItem = _j[0], setRedirectItem = _j[1];
+    react_1.useMemo(function () {
+        var _a, _b;
+        if (editItem) {
+            setRedirectItem(__assign({ id: (_a = editItem === null || editItem === void 0 ? void 0 : editItem.node) === null || _a === void 0 ? void 0 : _a.id, key: (_b = editItem === null || editItem === void 0 ? void 0 : editItem.node) === null || _b === void 0 ? void 0 : _b.key }, _helpers_1.jsonSafeParse(editItem.node.value)));
+        }
+    }, [editItem]);
     react_1.useMemo(function () {
         var validator = 1;
         if (redirectItem.block) {
@@ -116,7 +123,7 @@ function AutoRedirectForm(_a) {
         setAddButtonStatus(validator > 0 ? false : true);
     }, [redirectItem]);
     react_1.useMemo(function () {
-        if ((actionData === null || actionData === void 0 ? void 0 : actionData._action) === _actions_1.ACTIONS.CreateAutoRedirect && (actionData === null || actionData === void 0 ? void 0 : actionData.key)) {
+        if ((actionData === null || actionData === void 0 ? void 0 : actionData._action) === _actions_1.ACTIONS.CreateAutoRedirect && (actionData === null || actionData === void 0 ? void 0 : actionData.status)) {
             shopify.modal.hide("add-auto-redirect");
             setRedirectItem(defaultRedirectItem);
         }
@@ -129,21 +136,40 @@ function AutoRedirectForm(_a) {
             setRedirectItem(defaultRedirectItem);
         }
     }, [actionData]);
-    console.log(actionData);
     function validateUrlField(value, field) {
         var _a;
         setFieldValidation(__assign(__assign({}, fieldValidation), (_a = {}, _a[field] = !valid_url_1.isWebUri(value), _a)));
     }
     function handleEdit() {
+        var _a;
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
+            return __generator(this, function (_b) {
+                if (!appId)
+                    return [2 /*return*/];
+                submit({
+                    _action: _actions_1.ACTIONS.UpdateAutoRedirect,
+                    data: {
+                        appId: appId,
+                        key: (_a = editItem === null || editItem === void 0 ? void 0 : editItem.node) === null || _a === void 0 ? void 0 : _a.key,
+                        value: redirectItem
+                    }
+                }, _helpers_1.requestHeaders);
                 return [2 /*return*/];
             });
         });
     }
-    function handleDelete(id) {
+    function handleDelete(key) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
+                if (!appId || !key)
+                    return [2 /*return*/];
+                submit({
+                    _action: _actions_1.ACTIONS.DeleteAutoRedirect,
+                    data: {
+                        appId: appId,
+                        key: key
+                    }
+                }, _helpers_1.requestHeaders);
                 return [2 /*return*/];
             });
         });
@@ -173,9 +199,8 @@ function AutoRedirectForm(_a) {
             });
         });
     }
-    // const countries = parseCountryCodesWithFullNames(countriesList);
     var countries_conditionals = _helpers_1.parseCountryCodesWithFullNames(countries_json_1["default"]);
-    var loading = _helpers_1.loadingStates(navigation, [_actions_1.ACTIONS.CreateAutoRedirect]);
+    var loading = _helpers_1.loadingStates(navigation, [_actions_1.ACTIONS.CreateAutoRedirect, _actions_1.ACTIONS.UpdateAutoRedirect, _actions_1.ACTIONS.DeleteAutoRedirect]);
     return (react_1["default"].createElement(polaris_1.InlineGrid, { gap: "400" },
         editItem && (react_1["default"].createElement(polaris_1.Select, { label: "Status:", labelInline: true, options: [
                 { value: "active", label: "Active" },
@@ -236,121 +261,12 @@ function AutoRedirectForm(_a) {
                         } }))),
             react_1["default"].createElement(polaris_1.Divider, null),
             react_1["default"].createElement(polaris_1.InlineStack, { gap: "200", align: "space-between" },
-                editItem ? (react_1["default"].createElement(polaris_1.Button, { size: "slim", tone: "critical", onClick: function () { return handleDelete(redirectItem === null || redirectItem === void 0 ? void 0 : redirectItem.id); }, 
-                    // loading={deleteLoading}
-                    icon: polaris_icons_1.DeleteIcon }, "Delete")) : (react_1["default"].createElement("div", null)),
+                editItem ? (react_1["default"].createElement(polaris_1.Button, { size: "slim", tone: "critical", onClick: function () { return handleDelete(redirectItem === null || redirectItem === void 0 ? void 0 : redirectItem.key); }, loading: loading[_actions_1.ACTIONS.DeleteAutoRedirect + "Loading"], icon: polaris_icons_1.DeleteIcon }, "Delete")) : (react_1["default"].createElement("div", null)),
                 react_1["default"].createElement(polaris_1.InlineStack, { gap: "200" },
                     react_1["default"].createElement(polaris_1.Button, { onClick: function () {
                             shopify.modal.hide("add-auto-redirect");
                             shopify.modal.hide("edit-auto-redirect");
                         } }, "Cancel"),
-                    react_1["default"].createElement(polaris_1.Button, { variant: "primary", onClick: editItem ? handleEdit : handleAdd, disabled: addButtonStatus, loading: loading[_actions_1.ACTIONS.CreateAutoRedirect + "Loading"] }, editItem ? "Save" : "Add"))))));
+                    react_1["default"].createElement(polaris_1.Button, { variant: "primary", onClick: editItem ? handleEdit : handleAdd, disabled: addButtonStatus, loading: loading[_actions_1.ACTIONS.CreateAutoRedirect + "Loading"] || loading[_actions_1.ACTIONS.UpdateAutoRedirect + "Loading"] }, editItem ? "Save" : "Add"))))));
 }
 exports["default"] = AutoRedirectForm;
-// async function handleSubmit(params) {
-//   setRedirectCreateLoading(true);
-//   let response = false;
-//   if (editItem) {
-//     response = await fetch(UPDATE_AUTO_REDIRECT, {
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       method: "post",
-//       body: JSON.stringify({
-//         data: {
-//           key: editItem.node.key,
-//           namespace: editItem.node.namespace,
-//           type: "json",
-//           value: redirectItem,
-//         },
-//         appId: appId,
-//       }),
-//     }).then((data) => data.json());
-//   } else {
-//     if (isFreePlan && redirects?.length >= 1) {
-//       setRedirectCreateLoading(false);
-//       setToastData({
-//         error: true,
-//         msg: tr.responses.limit_error,
-//       });
-//       return;
-//     }
-//     const next_order_number = redirects?.length
-//       ? Math.max(...redirects.map((o) => JSON.parse(o.node.value).order_r)) +
-//         1
-//       : 1;
-//     response = await fetch(CREATE_AUTO_REDIRECT, {
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       method: "post",
-//       body: JSON.stringify({
-//         data: {
-//           ...redirectItem,
-//           order_r: next_order_number,
-//         },
-//         appId: appId,
-//       }),
-//     }).then((data) => data.json());
-//   }
-//   if (response?.status) {
-//     setToastData({
-//       error: false,
-//       msg: editItem
-//         ? tr.responses.rd_update_success
-//         : tr.responses.rd_create_success,
-//     });
-//     setRedirectItem({
-//       location: [],
-//       except: false,
-//       block: false,
-//       url: "",
-//       domain_redirection: false,
-//       status: 1,
-//     });
-//     setModalStatus(false);
-//     loadRedirects();
-//   } else {
-//     setToastData({
-//       error: true,
-//       msg: tr.responses.error,
-//     });
-//   }
-//   setRedirectCreateLoading(false);
-// }
-{
-    /* <div className={redirectItem?.block ? "blocked" : ""}>
-            <Checkbox
-              label="Block"
-              checked={redirectItem?.block}
-              helpText="restrict access to your site"
-              onChange={handleBlock}
-            />
-  
-            <br />
-            <div className="redirect-url">
-              <div className="info-box ">
-                Redirect to the domain entered above by keeping the page path.
-                <br />
-                Example:
-                <p>
-                  <i>
-                    https://...ca<strong>/inner-page</strong>
-                  </i>{" "}
-                  →{" "}
-                  <i>
-                    https://...com<strong>/inner-page</strong>
-                  </i>
-                </p>
-              </div>
-  
-              <div className="info-box info-box--adds">
-                Custom Redirect logic?
-                <br />
-                You can add your own custom redirect logic in code editor. Go to{" "}
-                <strong>Settings</strong> tab and{" "}
-                <strong>Advanced Settings</strong> section.
-              </div>
-            </div>
-          </div> */
-}

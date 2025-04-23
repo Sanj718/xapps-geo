@@ -127,6 +127,30 @@ export function parseCountries(data: Country[]) {
   }));
 }
 
+export function parseLocations(data: string[], countriesList: Country[]) {
+  if (!data) return;
+  const parsedJson = data;
+  let locations = "";
+  for (let index = 0; index < parsedJson.length; index++) {
+    const item = parsedJson[index];
+
+    if (item.includes("C:")) {
+      const getContinentLabel = continents_auto.find(
+        (cnt) => cnt.value === item
+      );
+      if (getContinentLabel) {
+        locations += getContinentLabel.label + ", ";
+      }
+    } else {
+      const getCountryLabel = countriesList?.find((cnt) => cnt.code === item);
+      if (getCountryLabel) {
+        locations += getCountryLabel.name + ", ";
+      }
+    }
+  }
+  return locations.replace(/,\s*$/, "");
+}
+
 interface CountryCode {
   name: string;
   code: string;
