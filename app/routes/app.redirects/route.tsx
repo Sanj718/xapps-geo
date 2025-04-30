@@ -14,7 +14,7 @@ import {
 } from "../../components/env";
 import { Suspense, useMemo, useState } from "react";
 import RedirectsList from "../../components/popup-redirects/RedirectsList";
-import { Await, useActionData, useLoaderData, useOutletContext } from "@remix-run/react";
+import { useActionData, useLoaderData, useOutletContext, useSearchParams } from "@remix-run/react";
 import { AutoRedirectItem, OutletContext, RedirectItem } from "app/components/_types";
 import ContentStyle from "app/components/popup-redirects/ContentStyle";
 import { handleActions } from "./_actions";
@@ -28,6 +28,8 @@ import { ActionFunctionArgs } from "@remix-run/node";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import AutoRedirects from "app/components/auto-redirects/AutoRedirectsList";
 import { DomainRedirectIcon } from "@shopify/polaris-icons";
+import AutoRedirectsSettings from "app/components/auto-redirects/AutoRedirectsSettings";
+import AutoRedirectsCustomRule from "app/components/auto-redirects/AutoRedirectsCustomRule";
 
 
 const { EMBED_APP_ID, EMBED_APP_HANDLE } =
@@ -55,8 +57,9 @@ export const action = async (params: ActionFunctionArgs) => handleActions(params
 export default function CustomRedirects() {
   const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
     useOutletContext<OutletContext>();
-  const { allRedirects, configs, widgetEditorStatus, widgetEditorCode, buttonEditorStatus, buttonEditorCode, allAutoRedirects } = useLoaderData<typeof loader>();
+  const { allRedirects, configs, widgetEditorStatus, widgetEditorCode, buttonEditorStatus, buttonEditorCode, allAutoRedirects, autoRedirectsCustomCodeStatus, autoRedirectsCustomCode } = useLoaderData<typeof loader>();
   const actionData = useActionData();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [toastData, setToastData] = useState({ msg: "", error: false });
   const [active, setActive] = useState(null);
   const [redirects, setRedirects] = useState<RedirectItem[]>([]);
@@ -72,47 +75,6 @@ export default function CustomRedirects() {
     const orderedAutoRedirects: AutoRedirectItem[] = allAutoRedirects?.data?.sort((a: AutoRedirectItem, b: AutoRedirectItem) => JSON.parse(a.node.value).order_r - JSON.parse(b.node.value).order_r);
     setAutoRedirects(orderedAutoRedirects || []);
   }, [allAutoRedirects]);
-
-  // useMemo(() => {
-  //   if (actionData?.status) {
-  //     setToastData({ error: false, msg: tr.responses.success });
-  //   }
-  // }, [actionData]);
-
-  // async function loadAutoRedirects() {
-  //   let error = true;
-  //   let msg = tr.responses.error;
-  //   // await getLocalShopData();
-
-  //   try {
-  //     const response = await fetch(GET_AUTO_REDIRECTS);
-  //     const responseJson = await response.json();
-
-  //     if (responseJson?.status) {
-  //       const responseAppId =
-  //         responseJson?.data?.body?.data?.appInstallation?.id;
-  //       const responseRedirects =
-  //         responseJson?.data?.body?.data?.appInstallation?.metafields?.edges;
-
-  //       setAppId(responseAppId);
-  //       const updated_order = responseRedirects.sort(
-  //         (a, b) =>
-  //           JSON.parse(a.node.value).order_r - JSON.parse(b.node.value).order_r
-  //       );
-  //       setAutoRedirects(updated_order);
-  //       error = false;
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-
-  //   if (error) {
-  //     setToastData({
-  //       error,
-  //       msg,
-  //     });
-  //   }
-  // }
 
   useMemo(() => {
     // if (actionData && !actionData?.data?.status) {
@@ -139,6 +101,12 @@ export default function CustomRedirects() {
     // }
   }, [actionData]);
 
+  useMemo(() => {
+    const tab = searchParams.get("tab");
+    if (tab) {
+      setSelectedTab(parseInt(tab));
+    }
+  }, [searchParams]);
 
   return (
     <Page >
@@ -153,7 +121,15 @@ export default function CustomRedirects() {
       <Tabs
         tabs={mainTabs}
         selected={selectedTab}
-        onSelect={setSelectedTab}
+        onSelect={(value) => {
+          setSelectedTab(value);
+          console.log(value);
+          const params = new URLSearchParams();
+          params.set("tab", value.toString());
+          setSearchParams(params, {
+            preventScrollReset: true,
+          });
+        }}
         fitted
       >
         <br />
@@ -180,12 +156,9 @@ export default function CustomRedirects() {
               redirects={autoRedirects}
             />
             {smUp ? <Divider /> : null}
-            {/* <AutoRedirectsSettings />
+            <AutoRedirectsSettings />
             {smUp ? <Divider /> : null}
-            <AutoRedirectsCustomRules
-              appId={appId}
-              setToastData={setToastData}
-            /> */}
+            <AutoRedirectsCustomRule status={autoRedirectsCustomCodeStatus} code={autoRedirectsCustomCode} />
           </BlockStack>
         ) : (
           ""

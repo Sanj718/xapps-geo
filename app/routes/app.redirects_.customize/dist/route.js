@@ -90,7 +90,7 @@ function CustomizePopupPage() {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 submit({
-                    _action: _actions_2.ACTIONS.CreateUpdateConfigs,
+                    _action: _actions_2.ACTIONS.create_UpdateConfigs,
                     data: {
                         basicConfigs: localConfigs,
                         advancedConfigs: localAdvancedConfigs
@@ -148,17 +148,17 @@ function CustomizePopupPage() {
         setLocalConfigs(function (current) { return (__assign(__assign({}, current), { icon: assets.url })); });
         shopify.modal.hide("icon-upload-popup");
     }
-    var loading = _helpers_1.loadingStates(navigation, [_actions_2.ACTIONS.CreateUpdateConfigs]);
+    var loading = _helpers_1.loadingStates(navigation, [_actions_2.ACTIONS.create_UpdateConfigs]);
     return (React.createElement(polaris_1.Page, { fullWidth: true, compactTitle: true, title: "Customize your popup", backAction: {
             content: "Back",
             onAction: function () { return navigate("/app/redirects#ngr-modal-preview", {
                 viewTransition: true,
                 preventScrollReset: true
             }); }
-        }, primaryAction: { content: "Save", disabled: !hasChange, onAction: saveConfigs, loading: loading[_actions_2.ACTIONS.CreateUpdateConfigs + "Loading"] } },
+        }, primaryAction: { content: "Save", disabled: !hasChange, onAction: saveConfigs, loading: loading[_actions_2.ACTIONS.create_UpdateConfigs + "Loading"] } },
         React.createElement(CustomizePopup_1["default"], { redirects: redirects, configs: localConfigs, setConfigs: setLocalConfigs, advancedConfigs: localAdvancedConfigs, setAdvancedConfigs: setLocalAdvancedConfigs, saveConfigs: saveConfigs }),
         React.createElement(app_bridge_react_1.SaveBar, { id: "configs-save-bar", discardConfirmation: true },
-            React.createElement("button", { variant: "primary", onClick: saveConfigs, loading: loading[_actions_2.ACTIONS.CreateUpdateConfigs + "Loading"] ? "true" : undefined }),
+            React.createElement("button", { variant: "primary", onClick: saveConfigs, loading: loading[_actions_2.ACTIONS.create_UpdateConfigs + "Loading"] ? "true" : undefined }),
             React.createElement("button", { onClick: function () {
                     shopify.saveBar.hide('configs-save-bar');
                     navigate("/app/redirects");

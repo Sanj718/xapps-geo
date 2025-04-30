@@ -61,7 +61,7 @@ function ButtonDisplayCustomRule(_a) {
                 if (!appId)
                     return [2 /*return*/];
                 submit({
-                    _action: _actions_1.ACTIONS.ButtonDisplayCustomRuleStatus,
+                    _action: _actions_1.ACTIONS.update_ButtonDisplayCustomRuleStatus,
                     data: {
                         appId: appId,
                         data: value
@@ -77,7 +77,7 @@ function ButtonDisplayCustomRule(_a) {
                 if (!appId)
                     return [2 /*return*/];
                 submit({
-                    _action: _actions_1.ACTIONS.ButtonDisplayCustomRuleCodeSave,
+                    _action: _actions_1.ACTIONS.update_ButtonDisplayCustomRuleCode,
                     data: {
                         appId: appId,
                         data: customCode
@@ -87,7 +87,7 @@ function ButtonDisplayCustomRule(_a) {
             });
         });
     }
-    var loading = _helpers_1.loadingStates(navigation, [_actions_1.ACTIONS.ButtonDisplayCustomRuleStatus, _actions_1.ACTIONS.ButtonDisplayCustomRuleCodeSave]);
+    var loading = _helpers_1.loadingStates(navigation, [_actions_1.ACTIONS.update_ButtonDisplayCustomRuleStatus, _actions_1.ACTIONS.update_ButtonDisplayCustomRuleCode]);
     return react_1["default"].createElement(react_1["default"].Fragment, null,
         react_1["default"].createElement(polaris_1.InlineGrid, { columns: { xs: "1fr", md: "auto  70%" }, gap: "400" },
             react_1["default"].createElement(polaris_1.Box, { as: "section", paddingInlineStart: { xs: "400", sm: "0" }, paddingInlineEnd: { xs: "400", sm: "0" } },
@@ -109,11 +109,11 @@ function ButtonDisplayCustomRule(_a) {
                                 return react_1["default"].createElement(polaris_1.Select, { label: "Status: ", labelInline: true, options: [
                                         { label: "Active", value: "true" },
                                         { label: "Draft", value: "false" },
-                                    ], disabled: loading[_actions_1.ACTIONS.ButtonDisplayCustomRuleStatus + "Loading"] || !isProPlan, onChange: isProPlan
+                                    ], disabled: loading[_actions_1.ACTIONS.update_ButtonDisplayCustomRuleStatus + "Loading"] || !isProPlan, onChange: isProPlan
                                         ? function (value) { return handleCustomCodeStatus(value); }
                                         : undefined, value: (status === null || status === void 0 ? void 0 : status.value) || "false" });
                             }),
-                            loading[_actions_1.ACTIONS.ButtonDisplayCustomRuleStatus + "Loading"] && (react_1["default"].createElement("div", { style: { position: "absolute", top: "6px", right: "8px", zIndex: 10 } },
+                            loading[_actions_1.ACTIONS.update_ButtonDisplayCustomRuleStatus + "Loading"] && (react_1["default"].createElement("div", { style: { position: "absolute", top: "6px", right: "8px", zIndex: 10 } },
                                 react_1["default"].createElement(polaris_1.Spinner, { size: "small" }))))),
                     react_1["default"].createElement(ButtonDisplayCustomRuleCodeBanner_1["default"], null),
                     react_1["default"].createElement("div", { id: "code-editor", className: "code-editor", style: {
@@ -126,6 +126,6 @@ function ButtonDisplayCustomRule(_a) {
                             }))),
                     react_1["default"].createElement(polaris_1.InlineStack, { align: "space-between", gap: "200" },
                         react_1["default"].createElement(polaris_1.Button, { variant: "tertiary", icon: polaris_icons_1.MaximizeIcon, onClick: function () { return navigate("/app/redirects/button-display-custom-rule"); } }, "Open Full-Screen Editor"),
-                        react_1["default"].createElement(polaris_1.Button, { variant: "primary", onClick: function () { return handleCustomCodeSave(); }, loading: loading[_actions_1.ACTIONS.ButtonDisplayCustomRuleCodeSave + "Loading"] }, "Save"))))));
+                        react_1["default"].createElement(polaris_1.Button, { variant: "primary", onClick: function () { return handleCustomCodeSave(); }, loading: loading[_actions_1.ACTIONS.update_ButtonDisplayCustomRuleCode + "Loading"] }, "Save"))))));
 }
 exports["default"] = ButtonDisplayCustomRule;

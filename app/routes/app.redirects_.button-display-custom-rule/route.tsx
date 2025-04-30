@@ -32,7 +32,7 @@ export default function WidgetDisplayCustomRulePage() {
     if (!appId) return;
     submit(
       {
-        _action: ACTIONS.ButtonDisplayCustomRuleCodeSave,
+        _action: ACTIONS.update_ButtonDisplayCustomRuleCode,
         data: {
           appId,
           data: customCode,
@@ -46,7 +46,7 @@ export default function WidgetDisplayCustomRulePage() {
     if (!appId) return;
     submit(
       {
-        _action: ACTIONS.ButtonDisplayCustomRuleStatus,
+        _action: ACTIONS.update_ButtonDisplayCustomRuleStatus,
         data: {
           appId,
           data: value,
@@ -56,7 +56,7 @@ export default function WidgetDisplayCustomRulePage() {
     );
   }
 
-  const loading = loadingStates(navigation, [ACTIONS.ButtonDisplayCustomRuleCodeSave, ACTIONS.ButtonDisplayCustomRuleStatus]) as LoadingStates;
+  const loading = loadingStates(navigation, [ACTIONS.update_ButtonDisplayCustomRuleCode, ACTIONS.update_ButtonDisplayCustomRuleStatus]) as LoadingStates;
   return (
     <Page
       fullWidth
@@ -68,7 +68,7 @@ export default function WidgetDisplayCustomRulePage() {
           preventScrollReset: true,
         })
       }}
-      primaryAction={{ content: "Save", onAction: handleCustomCodeSave, loading: loading[ACTIONS.ButtonDisplayCustomRuleCodeSave + "Loading"] }}
+      primaryAction={{ content: "Save", onAction: handleCustomCodeSave, loading: loading[ACTIONS.update_ButtonDisplayCustomRuleCode + "Loading"] }}
     >
       <BlockStack gap="200">
         <ButtonDisplayCustomRuleBanner />
@@ -83,7 +83,7 @@ export default function WidgetDisplayCustomRulePage() {
                     { label: "Active", value: "true" },
                     { label: "Draft", value: "false" },
                   ]}
-                  disabled={loading[ACTIONS.ButtonDisplayCustomRuleStatus + "Loading"] || !isProPlan}
+                  disabled={loading[ACTIONS.update_ButtonDisplayCustomRuleStatus + "Loading"] || !isProPlan}
                   onChange={
                     isProPlan
                       ? (value) => handleCustomCodeStatus(value)
@@ -93,7 +93,7 @@ export default function WidgetDisplayCustomRulePage() {
                 />
               }}
             </Await>
-            {loading[ACTIONS.ButtonDisplayCustomRuleStatus + "Loading"] && (
+            {loading[ACTIONS.update_ButtonDisplayCustomRuleStatus + "Loading"] && (
               <div style={{ position: "absolute", top: "6px", right: "8px", zIndex: 10 }}>
                 <Spinner size="small" />
               </div>

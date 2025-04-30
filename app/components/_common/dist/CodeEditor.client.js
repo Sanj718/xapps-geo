@@ -19,7 +19,7 @@ function CodeEditor(_a) {
         readOnly: false,
         minimap: { enabled: false }
     };
-    return;
-    return react_2["default"].createElement(react_1["default"], { height: "300px", width: "100%", language: language, defaultValue: code, value: code, onChange: function (value) { return value && onChange(value); }, options: options });
+    return react_2["default"].createElement("div", { className: "code-editor-container", style: { border: "1px solid #ccc" } },
+        react_2["default"].createElement(react_1["default"], { height: "300px", width: "100%", language: language, defaultValue: code, value: code, onChange: function (value) { return value && onChange(value); }, options: options }));
 }
 exports["default"] = CodeEditor;

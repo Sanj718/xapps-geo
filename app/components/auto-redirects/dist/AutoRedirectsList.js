@@ -96,7 +96,7 @@ function AutoRedirects(_a) {
                 if (!appId)
                     return [2 /*return*/];
                 submit({
-                    _action: _actions_1.ACTIONS.ReOrderAutoRedirects,
+                    _action: _actions_1.ACTIONS.reorder_AutoRedirects,
                     data: {
                         appId: appId,
                         data: updatedOrder
@@ -127,7 +127,7 @@ function AutoRedirects(_a) {
                     return [2 /*return*/];
                 updatedItem = toggleStatus(item);
                 submit({
-                    _action: _actions_1.ACTIONS.UpdateAutoRedirect,
+                    _action: _actions_1.ACTIONS.update_AutoRedirect,
                     data: {
                         appId: appId,
                         key: (_a = item === null || item === void 0 ? void 0 : item.node) === null || _a === void 0 ? void 0 : _a.key,
@@ -138,7 +138,7 @@ function AutoRedirects(_a) {
             });
         });
     }
-    var loading = _helpers_1.loadingStates(navigation, [_actions_1.ACTIONS.CreateAutoRedirect, _actions_1.ACTIONS.UpdateAutoRedirect, _actions_1.ACTIONS.DeleteAutoRedirect, _actions_1.ACTIONS.ReOrderAutoRedirects]);
+    var loading = _helpers_1.loadingStates(navigation, [_actions_1.ACTIONS.create_AutoRedirect, _actions_1.ACTIONS.update_AutoRedirect, _actions_1.ACTIONS.delete_AutoRedirect, _actions_1.ACTIONS.reorder_AutoRedirects]);
     return (react_1["default"].createElement(react_1["default"].Fragment, null,
         react_1["default"].createElement(polaris_1.InlineGrid, { columns: { xs: "1fr", md: "auto  70%" }, gap: "400" },
             react_1["default"].createElement(polaris_1.Box, { as: "section", paddingInlineStart: { xs: "400", sm: "0" }, paddingInlineEnd: { xs: "400", sm: "0" } },
@@ -157,7 +157,7 @@ function AutoRedirects(_a) {
                                 gap: "20px"
                             } },
                             react_1["default"].createElement(polaris_1.Image, { source: empty2_svg_1["default"], width: "200", height: "150", alt: "empty" }),
-                            react_1["default"].createElement(polaris_1.Text, { as: "p", variant: "headingSm" }, "Simplify the customer experience \u2014 set up your first auto redirect now!")), resourceName: resourceName, items: redirects, loading: loading[_actions_1.ACTIONS.CreateAutoRedirect + "Loading"] || loading[_actions_1.ACTIONS.UpdateAutoRedirect + "Loading"] || loading[_actions_1.ACTIONS.DeleteAutoRedirect + "Loading"] || loading[_actions_1.ACTIONS.ReOrderAutoRedirects + "Loading"], renderItem: function (item, index) {
+                            react_1["default"].createElement(polaris_1.Text, { as: "p", variant: "headingSm" }, "Simplify the customer experience \u2014 set up your first auto redirect now!")), resourceName: resourceName, items: redirects, loading: loading[_actions_1.ACTIONS.create_AutoRedirect + "Loading"] || loading[_actions_1.ACTIONS.update_AutoRedirect + "Loading"] || loading[_actions_1.ACTIONS.delete_AutoRedirect + "Loading"] || loading[_actions_1.ACTIONS.reorder_AutoRedirects + "Loading"], renderItem: function (item, index) {
                             var _a = item === null || item === void 0 ? void 0 : item.node, id = _a.id, value = _a.value;
                             var _b = _helpers_1.jsonSafeParse(value), url = _b.url, location = _b.location, except_r = _b.except_r, status = _b.status, block = _b.block;
                             var locations = _helpers_1.parseLocations(location, countries_json_1["default"]);

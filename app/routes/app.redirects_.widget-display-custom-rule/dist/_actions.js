@@ -63,15 +63,15 @@ function handleActions(_a) {
                     return [4 /*yield*/, (request === null || request === void 0 ? void 0 : request.json())];
                 case 2:
                     _b = (_c.sent()) || {}, _action = _b._action, data = _b.data;
-                    if (!(_action === _actions_1.ACTIONS.WidgetDisplayCustomRuleStatus)) return [3 /*break*/, 4];
-                    return [4 /*yield*/, admin_queries_server_1.saveWidgetEditorStatusToMetafield({ admin: admin, appId: data.appId, value: data.data })];
+                    if (!(_action === _actions_1.ACTIONS.update_WidgetDisplayCustomRuleStatus)) return [3 /*break*/, 4];
+                    return [4 /*yield*/, admin_queries_server_1.updateWidgetEditorStatus({ admin: admin, appId: data.appId, value: data.data })];
                 case 3:
                     response = _c.sent();
                     console.log("response", response);
                     return [2 /*return*/, __assign({ _action: _action }, response)];
                 case 4:
-                    if (!(_action === _actions_1.ACTIONS.WidgetDisplayCustomRuleCodeSave)) return [3 /*break*/, 6];
-                    return [4 /*yield*/, admin_queries_server_1.saveWidgetEditorCodeToMetafield({ admin: admin, appId: data.appId, value: data.data })];
+                    if (!(_action === _actions_1.ACTIONS.update_WidgetDisplayCustomRuleCode)) return [3 /*break*/, 6];
+                    return [4 /*yield*/, admin_queries_server_1.updateWidgetEditorCode({ admin: admin, appId: data.appId, value: data.data })];
                 case 5:
                     response = _c.sent();
                     return [2 /*return*/, __assign({ _action: _action }, response)];

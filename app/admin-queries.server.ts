@@ -36,7 +36,7 @@ export async function getThemeEmbed({ admin }: { admin: AdminApiContext }) {
     }
 }
 
-export async function saveWidgetEditorStatusToMetafield({ admin, appId, value }: { admin: AdminApiContext, appId: string, value: boolean }) {
+export async function updateWidgetEditorStatus({ admin, appId, value }: { admin: AdminApiContext, appId: string, value: boolean }) {
     if (!admin) throw Error("admin not defined");
     try {
         const response = await admin.graphql(
@@ -83,7 +83,7 @@ export async function saveWidgetEditorStatusToMetafield({ admin, appId, value }:
     }
 }
 
-export async function saveWidgetEditorCodeToMetafield({ admin, appId, value }: { admin: AdminApiContext, appId: string, value: string }) {
+export async function updateWidgetEditorCode({ admin, appId, value }: { admin: AdminApiContext, appId: string, value: string }) {
     if (!admin) throw Error("admin not defined");
     try {
         const response = await admin.graphql(
@@ -214,7 +214,7 @@ export async function getWidgetEditorCode({ admin }: { admin: AdminApiContext })
     }
 }
 
-export async function saveButtonEditorStatusToMetafield({ admin, appId, value }: { admin: AdminApiContext, appId: string, value: boolean }) {
+export async function updateButtonEditorStatus({ admin, appId, value }: { admin: AdminApiContext, appId: string, value: boolean }) {
     if (!admin) throw Error("admin not defined");
     try {
         const response = await admin.graphql(
@@ -261,7 +261,7 @@ export async function saveButtonEditorStatusToMetafield({ admin, appId, value }:
     }
 }
 
-export async function saveButtonEditorCodeToMetafield({ admin, appId, value }: { admin: AdminApiContext, appId: string, value: string }) {
+export async function updateButtonEditorCode({ admin, appId, value }: { admin: AdminApiContext, appId: string, value: string }) {
     if (!admin) throw Error("admin not defined");
     try {
         const response = await admin.graphql(
@@ -549,14 +549,13 @@ export async function reOrderAutoRedirects({ admin, appId, data }: { admin: Admi
         const responseJson = await response.json();
         if (responseJson?.data?.metafieldsSet?.userErrors?.length > 0) {
             throw Error(responseJson?.data?.metafieldsSet?.userErrors[0]?.message);
-        }   
+        }
         return { status: responseJson?.data?.metafieldsSet?.metafields?.length > 0, data: responseJson?.data?.metafieldsSet?.metafields };
     } catch (error) {
         console.error(error);
         return { status: false, error: (error as Error).toString() };
     }
 }
-
 
 export async function deleteAutoRedirect({ admin, appId, key }: { admin: AdminApiContext, appId: string, key: string }) {
     if (!admin) throw Error("admin not defined");
@@ -593,6 +592,183 @@ export async function deleteAutoRedirect({ admin, appId, key }: { admin: AdminAp
             throw Error(responseJson?.data?.metafieldsDelete?.userErrors[0]?.message);
         }
         return { status: responseJson?.data?.metafieldsDelete?.deletedMetafields[0]?.key !== "", data: responseJson?.data?.metafieldsDelete?.deletedMetafields[0] };
+    } catch (error) {
+        console.error(error);
+        return { status: false, error: (error as Error).toString() };
+    }
+}
+
+export async function getAutoRedirectsCustomCodeStatus({ admin }: { admin: AdminApiContext }) {
+    if (!admin) throw Error("admin not defined");
+    try {
+        const response = await admin.graphql(
+            `#graphql
+            query getMetafields($namespace: String!, $key: String!) {
+                appInstallation {
+                id
+                metafield(namespace: $namespace, key: $key) {
+                    id
+                    namespace
+                    key
+                    value
+                }
+                allSubscriptions(first: 10){
+                    edges{
+                    node{
+                        id
+                        createdAt
+                        name
+                        status
+                    }
+                    }
+                }
+                }
+            }
+            `,
+            {
+                variables: {
+                    namespace: "settings",
+                    key: "custom_code_status",
+                }
+            }
+        );
+        const responseJson = await response.json();
+        return responseJson?.data?.appInstallation?.metafield;
+    } catch (error) {
+        console.error(error);
+        return { status: false, error: (error as Error).toString() };
+    }
+}
+
+export async function getAutoRedirectsCustomCode({ admin }: { admin: AdminApiContext }) {
+    if (!admin) throw Error("admin not defined");
+    try {
+        const response = await admin.graphql(
+            `#graphql
+            query getMetafields($namespace: String!, $key: String!) {
+                appInstallation {
+                id
+                metafield(namespace: $namespace, key: $key) {
+                    id
+                    namespace
+                    key
+                    value
+                }
+                allSubscriptions(first: 10){
+                    edges{
+                    node{
+                        id
+                        createdAt
+                        name
+                        status
+                    }
+                    }
+                }
+                }
+            }
+            `,
+            {
+                variables: {
+                    namespace: "settings",
+                    key: "custom_code",
+                }
+            }
+        );
+        const responseJson = await response.json();
+        return responseJson?.data?.appInstallation?.metafield;
+    } catch (error) {
+        console.error(error);
+        return { status: false, error: (error as Error).toString() };
+    }
+}
+export async function updateAutoRedirectsCustomCodeStatus({ admin, appId, value }: { admin: AdminApiContext, appId: string, value: boolean }) {
+    if (!admin) throw Error("admin not defined");
+    try {
+        const response = await admin.graphql(
+            `#graphql
+            mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {
+                metafieldsSet(metafields: $metafields) {
+                    metafields {
+                        key
+                        namespace
+                        value
+                        createdAt
+                        updatedAt
+                    }
+                    userErrors {
+                        field
+                        message
+                        code
+                    }
+                }
+            }
+            `,
+            {
+                variables: {
+                    metafields: [
+                        {
+                            key: "custom_code_status",
+                            namespace: "settings",
+                            ownerId: appId,
+                            type: "boolean",
+                            value,
+                        }
+                    ]
+                }
+            }
+        );
+        const responseJson = await response.json();
+        if (responseJson?.data?.metafieldsSet?.userErrors?.length > 0) {
+            throw Error(responseJson?.data?.metafieldsSet?.userErrors[0]?.message);
+        }
+        return responseJson?.data?.metafieldsSet?.metafields[0];
+    } catch (error) {
+        console.error(error);
+        return { status: false, error: (error as Error).toString() };
+    }
+}
+
+export async function updateAutoRedirectsCustomCode({ admin, appId, value }: { admin: AdminApiContext, appId: string, value: string }) {
+    if (!admin) throw Error("admin not defined");
+    try {
+        const response = await admin.graphql(
+            `#graphql
+            mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {
+                metafieldsSet(metafields: $metafields) {
+                    metafields {
+                        key
+                        namespace
+                        value
+                        createdAt
+                        updatedAt
+                    }
+                    userErrors {
+                        field
+                        message
+                        code
+                    }
+                }
+            }
+            `,
+            {
+                variables: {
+                    metafields: [
+                        {
+                            key: "custom_code",
+                            namespace: "settings",
+                            ownerId: appId,
+                            type: "multi_line_text_field",
+                            value,
+                        }
+                    ]
+                }
+            }
+        );
+        const responseJson = await response.json();
+        if (responseJson?.data?.metafieldsSet?.userErrors?.length > 0) {
+            throw Error(responseJson?.data?.metafieldsSet?.userErrors[0]?.message);
+        }
+        return responseJson?.data?.metafieldsSet?.metafields[0];
     } catch (error) {
         console.error(error);
         return { status: false, error: (error as Error).toString() };

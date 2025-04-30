@@ -52,7 +52,7 @@ export default function CustomizePopupPage() {
   async function saveConfigs() {
     submit(
       {
-        _action: ACTIONS.CreateUpdateConfigs,
+        _action: ACTIONS.create_UpdateConfigs,
         data: {
           basicConfigs: localConfigs,
           advancedConfigs: localAdvancedConfigs,
@@ -116,7 +116,7 @@ export default function CustomizePopupPage() {
     shopify.modal.hide("icon-upload-popup");
   }
 
-  const loading = loadingStates(navigation, [ACTIONS.CreateUpdateConfigs]) as LoadingStates;
+  const loading = loadingStates(navigation, [ACTIONS.create_UpdateConfigs]) as LoadingStates;
   return (
     <Page
       fullWidth
@@ -128,7 +128,7 @@ export default function CustomizePopupPage() {
           preventScrollReset: true,
         })
       }}
-      primaryAction={{ content: "Save", disabled: !hasChange, onAction: saveConfigs, loading: loading[ACTIONS.CreateUpdateConfigs + "Loading"] }}
+      primaryAction={{ content: "Save", disabled: !hasChange, onAction: saveConfigs, loading: loading[ACTIONS.create_UpdateConfigs + "Loading"] }}
     >
       <CustomizePopup
         redirects={redirects}
@@ -139,7 +139,7 @@ export default function CustomizePopupPage() {
         saveConfigs={saveConfigs}
       />
       <SaveBar id="configs-save-bar" discardConfirmation>
-        <button variant="primary" onClick={saveConfigs} loading={loading[ACTIONS.CreateUpdateConfigs + "Loading"] ? "true" : undefined}></button>
+        <button variant="primary" onClick={saveConfigs} loading={loading[ACTIONS.create_UpdateConfigs + "Loading"] ? "true" : undefined}></button>
         <button onClick={() => {
           shopify.saveBar.hide('configs-save-bar');
           navigate("/app/redirects");

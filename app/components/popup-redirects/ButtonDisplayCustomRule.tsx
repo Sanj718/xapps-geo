@@ -41,7 +41,7 @@ export default function ButtonDisplayCustomRule({ status, code }: ButtonDisplayC
     if (!appId) return;
     submit(
       {
-        _action: ACTIONS.ButtonDisplayCustomRuleStatus,
+        _action: ACTIONS.update_ButtonDisplayCustomRuleStatus,
         data: {
           appId,
           data: value,
@@ -54,7 +54,7 @@ export default function ButtonDisplayCustomRule({ status, code }: ButtonDisplayC
     if (!appId) return;
     submit(
       {
-        _action: ACTIONS.ButtonDisplayCustomRuleCodeSave,
+        _action: ACTIONS.update_ButtonDisplayCustomRuleCode,
         data: {
           appId,
           data: customCode,
@@ -64,7 +64,7 @@ export default function ButtonDisplayCustomRule({ status, code }: ButtonDisplayC
     );
   }
 
-  const loading = loadingStates(navigation, [ACTIONS.ButtonDisplayCustomRuleStatus, ACTIONS.ButtonDisplayCustomRuleCodeSave]) as LoadingStates;
+  const loading = loadingStates(navigation, [ACTIONS.update_ButtonDisplayCustomRuleStatus, ACTIONS.update_ButtonDisplayCustomRuleCode]) as LoadingStates;
 
   return <>
     <InlineGrid columns={{ xs: "1fr", md: "auto  70%" }} gap="400">
@@ -102,7 +102,7 @@ export default function ButtonDisplayCustomRule({ status, code }: ButtonDisplayC
                       { label: "Active", value: "true" },
                       { label: "Draft", value: "false" },
                     ]}
-                    disabled={loading[ACTIONS.ButtonDisplayCustomRuleStatus + "Loading"] || !isProPlan}
+                    disabled={loading[ACTIONS.update_ButtonDisplayCustomRuleStatus + "Loading"] || !isProPlan}
                     onChange={
                       isProPlan
                         ? (value) => handleCustomCodeStatus(value)
@@ -112,7 +112,7 @@ export default function ButtonDisplayCustomRule({ status, code }: ButtonDisplayC
                   />
                 }}
               </Await>
-              {loading[ACTIONS.ButtonDisplayCustomRuleStatus + "Loading"] && (
+              {loading[ACTIONS.update_ButtonDisplayCustomRuleStatus + "Loading"] && (
                 <div style={{ position: "absolute", top: "6px", right: "8px", zIndex: 10 }}>
                   <Spinner size="small" />
                 </div>
@@ -147,7 +147,7 @@ export default function ButtonDisplayCustomRule({ status, code }: ButtonDisplayC
             <Button
               variant="primary"
               onClick={() => handleCustomCodeSave()}
-              loading={loading[ACTIONS.ButtonDisplayCustomRuleCodeSave + "Loading"]}
+              loading={loading[ACTIONS.update_ButtonDisplayCustomRuleCode + "Loading"]}
             >
               Save
             </Button>

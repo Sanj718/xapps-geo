@@ -10,54 +10,58 @@ import {
 import { ExternalIcon } from "@shopify/polaris-icons";
 import React from "react";
 import { useAppBridge } from "@shopify/app-bridge-react";
-import { Redirect } from "@shopify/app-bridge/actions";
-import {
-  DEV_EMBED_APP_ID,
-  PROD_EMBED_APP_ID,
-  RD_EMBED_APP_HANDLE,
-} from "../../../env";
+// import { Redirect } from "@shopify/app-bridge/actions";
+// import {
+//   DEV_EMBED_APP_ID,
+//   PROD_EMBED_APP_ID,
+//   RD_EMBED_APP_HANDLE,
+// } from "../../../env";
 import ExternalSettingsItem from "../_common/ExternalSettingsItem";
-import { getEmbedConst } from "../../helpers";
+// import { getEmbedConst } from "../../helpers";
+import { DEV_EMBED_APP_ID, PROD_EMBED_APP_ID, RD_EMBED_APP_HANDLE } from "../env";
+import { getEmbedConst } from "../_helpers";
 
 const { EMBED_APP_ID, EMBED_APP_HANDLE } =
   getEmbedConst(PROD_EMBED_APP_ID, DEV_EMBED_APP_ID, RD_EMBED_APP_HANDLE) || {};
 
 export default function AutoRedirectsSettings() {
   const app = useAppBridge();
-  const redirect = Redirect.create(app);
+  // const redirect = Redirect.create(app);
 
-  async function handleActivateEmbedRedirect() {
-    redirect?.dispatch(Redirect.Action.ADMIN_PATH, {
-      path: `/themes/current/editor?context=apps&activateAppId=${EMBED_APP_ID}/${EMBED_APP_HANDLE}`,
-      newContext: true,
-    });
-  }
+  // async function handleActivateEmbedRedirect() {
+  //   redirect?.dispatch(Redirect.Action.ADMIN_PATH, {
+  //     path: `/themes/current/editor?context=apps&activateAppId=${EMBED_APP_ID}/${EMBED_APP_HANDLE}`,
+  //     newContext: true,
+  //   });
+  // }
+
+  const embedPath = `shopify://admin/themes/current/editor?context=apps&activateAppId=${EMBED_APP_ID}/${EMBED_APP_HANDLE}`;
 
   const settingsItems = [
     {
       label: "Emergency disable all auto redirects",
       text: "Instantly turn off all auto redirects, disabling any redirection code on your site.",
-      buttonAction: handleActivateEmbedRedirect,
+      url: embedPath,
     },
     {
       label: "Auto redirect once",
       text: "Store visitors will be automatically redirected only once per visit (session/cookies based)",
-      buttonAction: handleActivateEmbedRedirect,
+      url: embedPath,
     },
     {
       label: "Disable auto redirects for Web crawlers",
       text: "Control redirects for search engine bots, allowing you to enable or disable redirection for web crawlers.",
-      buttonAction: handleActivateEmbedRedirect,
+      url: embedPath,
     },
     {
       label: "Disable URL param",
       text: `To prevent endless redirect loops from incorrect redirects, we've added a special URL parameter "?ngr-redirected=1". Disabling this feature is at your own risk.`,
-      buttonAction: handleActivateEmbedRedirect,
+      url: embedPath,
     },
     {
       label: "Disable preload overlay",
       text: "A white overlay is added to your site while detecting the visitor's geolocation. You can enable or disable this feature here.",
-      buttonAction: handleActivateEmbedRedirect,
+      url: embedPath,
     },
   ];
 
@@ -86,12 +90,12 @@ export default function AutoRedirectsSettings() {
         </Box>
         <Card roundedAbove="sm">
           <BlockStack gap="600">
-            {settingsItems.map(({ label, text, buttonAction }, index) => (
+            {settingsItems.map(({ label, text, url }, index) => (
               <ExternalSettingsItem
                 key={index}
                 label={label}
                 text={text}
-                action={buttonAction}
+                url={url}
               />
             ))}
           </BlockStack>

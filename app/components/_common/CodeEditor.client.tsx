@@ -24,14 +24,15 @@ export default function CodeEditor({ code, onChange = () => { }, language = "css
         readOnly: false,
         minimap: { enabled: false },
     }
-    return;
-    return <Editor
-        height="300px"
-        width="100%"
-        language={language}
-        defaultValue={code}
-        value={code}
-        onChange={(value) => value && onChange(value)}
-        options={options as any} 
-    />
+    return <div className="code-editor-container" style={{border: "1px solid #ccc"}}>
+        <Editor
+            height="300px"
+            width="100%"
+            language={language}
+            defaultValue={code}
+            value={code}
+            onChange={(value) => value && onChange(value)}
+            options={options as any}
+        />
+    </div>
 }

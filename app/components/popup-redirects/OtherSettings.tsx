@@ -64,7 +64,7 @@ export default function OtherSettings({
   async function saveOtherConfigs() {
     submit(
       {
-        _action: ACTIONS.CreateUpdateConfigs,
+        _action: ACTIONS.create_UpdateConfigs,
         data: {
           basicConfigs: localConfigs,
           advancedConfigs: advancedConfigs,
@@ -72,45 +72,9 @@ export default function OtherSettings({
       },
       requestHeaders,
     );
-    // setLoading(true);
-    // let error = true;
-    // let msg = tr.responses.error;
-
-    // try {
-    //   const response = await fetch(CREATE_SHOP_CONFIGS, {
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     method: "post",
-    //     body: JSON.stringify({
-    //       basic_configs: {
-    //         ...originConfigs,
-    //         forward_url_params: configs?.forward_url_params,
-    //         custom_rell_attr: configs?.custom_rell_attr,
-    //         domain_redirection: configs?.domain_redirection,
-    //       },
-    //       advanced_configs: originAdvancedConfigs,
-    //     }),
-    //   });
-    //   const responseJson = await response.json();
-
-    //   if (responseJson?.status) {
-    //     error = false;
-    //     msg = tr.responses.settings_saved;
-    //     reFetch((n) => !n);
-    //   }
-    // } catch (err) {
-    //   console.error("Fetch error:", err.message);
-    // }
-
-    // setToastData({
-    //   error,
-    //   msg,
-    // });
-    // setLoading(false);
   }
   
-  const loading = loadingStates(navigation, [ACTIONS.CreateUpdateConfigs]) as LoadingStates;
+  const loading = loadingStates(navigation, [ACTIONS.create_UpdateConfigs]) as LoadingStates;
   return (
     <>
       <InlineGrid columns={{ xs: "1fr", md: "auto  70%" }} gap="400">
@@ -232,7 +196,7 @@ export default function OtherSettings({
               <Button
                 variant="primary"
                 onClick={!isFreePlan ? saveOtherConfigs : undefined}
-                loading={loading[ACTIONS.CreateUpdateConfigs + "Loading"]}
+                loading={loading[ACTIONS.create_UpdateConfigs + "Loading"]}
                 disabled={isFreePlan}
               >
                 Save

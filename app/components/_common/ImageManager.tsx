@@ -72,7 +72,7 @@ export default function ImageManager({
   async function loadAssets(cursor?: string, isPrev: boolean = false): Promise<void> {
     fetcher.submit(
       {
-        _action: ACTIONS.AssetsData,
+        _action: ACTIONS.get_AssetsData,
         data: { cursor: cursor || null, isPrev },
       },
       requestHeaders,
@@ -85,7 +85,7 @@ export default function ImageManager({
 
   useMemo(() => {
     const { data: fetcherData } = fetcher;
-    if (fetcherData?._action === ACTIONS.AssetsData && fetcherData?.status) {
+    if (fetcherData?._action === ACTIONS.get_AssetsData && fetcherData?.status) {
       setFiles(fetcherData?.data?.edges);
       setPaginationInfo(fetcherData?.data?.pageInfo);
     }
@@ -112,7 +112,7 @@ export default function ImageManager({
     plural: "assets",
   };
 
-  const loading = loadingStates(fetcher, [ACTIONS.AssetsData]) as LoadingStates;
+  const loading = loadingStates(fetcher, [ACTIONS.get_AssetsData]) as LoadingStates;
   return (
     <InlineGrid gap="200" alignItems="center">
       <InlineStack align="space-between" gap="100">
@@ -142,7 +142,7 @@ export default function ImageManager({
         }}
       >
         <ResourceList
-          loading={loading[ACTIONS.AssetsData + "Loading"]}
+          loading={loading[ACTIONS.get_AssetsData + "Loading"]}
           resourceName={resourceName}
           items={files || []}
           renderItem={renderItem}

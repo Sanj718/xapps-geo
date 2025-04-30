@@ -39,24 +39,26 @@ exports.__esModule = true;
 exports.getAssets = exports.ACTIONS = void 0;
 var _helpers_1 = require("./_helpers");
 exports.ACTIONS = {
-    AnalyticsData: "analyticsData",
-    AssetsData: "assetsData",
-    CreateRedirect: "createRedirect",
-    UpdateRedirect: "updateRedirect",
-    DeleteRedirect: "deleteRedirect",
-    ToggleRedirectStatus: "toggleRedirectStatus",
-    ReorderRedirect: "reorderRedirect",
-    CreateUpdateConfigs: "createUpdateConfigs",
-    CreateAllowedPages: "createAllowedPages",
-    WidgetDisplayCustomRuleStatus: "widgetDisplayCustomRuleStatus",
-    WidgetDisplayCustomRuleCodeSave: "widgetDisplayCustomRuleCodeSave",
-    ButtonDisplayCustomRuleStatus: "buttonDisplayCustomRuleStatus",
-    ButtonDisplayCustomRuleCodeSave: "buttonDisplayCustomRuleCodeSave",
-    AutoRedirects: "autoRedirects",
-    CreateAutoRedirect: "createAutoRedirect",
-    UpdateAutoRedirect: "updateAutoRedirect",
-    DeleteAutoRedirect: "deleteAutoRedirect",
-    ReOrderAutoRedirects: "reOrderAutoRedirects"
+    get_AnalyticsData: "getAnalyticsData",
+    get_AssetsData: "getAssetsData",
+    create_Redirect: "create_Redirect",
+    update_Redirect: "updateRedirect",
+    delete_Redirect: "deleteRedirect",
+    toggle_RedirectStatus: "toggleRedirectStatus",
+    reorder_Redirect: "reorderRedirect",
+    create_UpdateConfigs: "createUpdateConfigs",
+    create_AllowedPages: "createAllowedPages",
+    update_WidgetDisplayCustomRuleStatus: "updateWidgetDisplayCustomRuleStatus",
+    update_WidgetDisplayCustomRuleCode: "updateWidgetDisplayCustomRuleCode",
+    update_ButtonDisplayCustomRuleStatus: "updateButtonDisplayCustomRuleStatus",
+    update_ButtonDisplayCustomRuleCode: "updateButtonDisplayCustomRuleCode",
+    get_AutoRedirects: "getAutoRedirects",
+    create_AutoRedirect: "createAutoRedirect",
+    update_AutoRedirect: "updateAutoRedirect",
+    delete_AutoRedirect: "deleteAutoRedirect",
+    reorder_AutoRedirects: "reOrderAutoRedirects",
+    update_AutoRedirectsCustomCode: "updateAutoRedirectsCustomCode",
+    update_AutoRedirectsCustomCodeStatus: "updateAutoRedirectsCustomCodeStatus"
 };
 exports.getAssets = function (_a) {
     var admin = _a.admin, data = _a.data;

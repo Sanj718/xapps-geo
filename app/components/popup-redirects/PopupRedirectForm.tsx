@@ -104,7 +104,7 @@ export default function PopupRedirectForm({
   }, [editItem]);
 
   useMemo(() => {
-    if (actionData?._action === ACTIONS.CreateRedirect && actionData?.status) {
+    if (actionData?._action === ACTIONS.create_Redirect && actionData?.status) {
       // if (redirects?.length >= 4 && isBasicPlan) {
       //   msg = tr.responses.limit_error;
       // }
@@ -113,12 +113,12 @@ export default function PopupRedirectForm({
       setRedirectItem(defaultRedirectItem);
       setSelectedCountry("--");
     }
-    if (actionData?._action === ACTIONS.DeleteRedirect && actionData?.status) {
+    if (actionData?._action === ACTIONS.delete_Redirect && actionData?.status) {
       shopify.modal.hide("edit-redirect");
       setRedirectItem(defaultRedirectItem);
       setSelectedCountry("--");
     }
-    if (actionData?._action === ACTIONS.UpdateRedirect && actionData?.status) {
+    if (actionData?._action === ACTIONS.update_Redirect && actionData?.status) {
       shopify.modal.hide("edit-redirect");
       setRedirectItem(defaultRedirectItem);
       setSelectedCountry("--");
@@ -180,7 +180,7 @@ export default function PopupRedirectForm({
     if (!redirectItem.id) return;
     submit(
       {
-        _action: ACTIONS.UpdateRedirect,
+        _action: ACTIONS.update_Redirect,
         data: {
           ...redirectItem,
           id: redirectItem.id,
@@ -196,7 +196,7 @@ export default function PopupRedirectForm({
     if (!id) return;
     submit(
       {
-        _action: ACTIONS.DeleteRedirect,
+        _action: ACTIONS.delete_Redirect,
         data: {
           id
         },
@@ -208,7 +208,7 @@ export default function PopupRedirectForm({
   async function handleAdd() {
     submit(
       {
-        _action: ACTIONS.CreateRedirect,
+        _action: ACTIONS.create_Redirect,
         data: {
           ...redirectItem,
           shopId: shopdb?.id,
@@ -222,7 +222,7 @@ export default function PopupRedirectForm({
     setLabelTranslation(false)
   }
 
-  const loading = loadingStates(navigation, [ACTIONS.CreateRedirect, ACTIONS.DeleteRedirect, ACTIONS.UpdateRedirect]) as LoadingStates;
+  const loading = loadingStates(navigation, [ACTIONS.create_Redirect, ACTIONS.delete_Redirect, ACTIONS.update_Redirect]) as LoadingStates;
 
   return (
     <InlineGrid gap="400">
@@ -488,7 +488,7 @@ export default function PopupRedirectForm({
             size="slim"
             tone="critical"
             onClick={() => { if (redirectItem?.id) { handleDelete(redirectItem.id) } }}
-            loading={loading[ACTIONS.DeleteRedirect + "Loading"]}
+            loading={loading[ACTIONS.delete_Redirect + "Loading"]}
             icon={DeleteIcon}
           >
             Delete
@@ -512,7 +512,7 @@ export default function PopupRedirectForm({
             variant="primary"
             onClick={editItem ? handleUpdate : handleAdd}
             disabled={addButtonStatus}
-            loading={loading[ACTIONS.CreateRedirect + "Loading"] || loading[ACTIONS.UpdateRedirect + "Loading"]}
+            loading={loading[ACTIONS.create_Redirect + "Loading"] || loading[ACTIONS.update_Redirect + "Loading"]}
           >
             {editItem ? "Save" : "Add"}
           </Button>

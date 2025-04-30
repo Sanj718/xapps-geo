@@ -91,7 +91,7 @@ export default function PopupDisplaySettings({
   async function savePageVisibility() {
     submit(
       {
-        _action: ACTIONS.CreateAllowedPages,
+        _action: ACTIONS.create_AllowedPages,
         data: {
           allowedPages: localAllowedPages,
           hideOnAllowedPages: localHidePages,
@@ -104,7 +104,7 @@ export default function PopupDisplaySettings({
   async function saveConfigs() {
     submit(
       {
-        _action: ACTIONS.CreateUpdateConfigs,
+        _action: ACTIONS.create_UpdateConfigs,
         data: {
           basicConfigs: localConfigs,
           advancedConfigs: advancedConfigs,
@@ -114,7 +114,7 @@ export default function PopupDisplaySettings({
     );
   }
 
-  const loading = loadingStates(navigation, [ACTIONS.CreateUpdateConfigs, ACTIONS.CreateAllowedPages]) as LoadingStates;
+  const loading = loadingStates(navigation, [ACTIONS.create_UpdateConfigs, ACTIONS.create_AllowedPages]) as LoadingStates;
   return (
     <InlineGrid columns={{ xs: "1fr", md: "auto  70%" }} gap="400">
       <Box
@@ -192,7 +192,7 @@ export default function PopupDisplaySettings({
                         setLocalConfigs((current: typeof localConfigs) => ({
                           ...current,
                           show: value,
-                        }))
+                        }))   
                       : undefined
                   }
                   value={localConfigs?.show}
@@ -343,7 +343,7 @@ export default function PopupDisplaySettings({
               </InlineGrid>
             </InlineGrid>
             <InlineStack align="end">
-              <Button variant="primary" onClick={saveConfigs} loading={loading[ACTIONS.CreateUpdateConfigs + "Loading"]}>
+              <Button variant="primary" onClick={saveConfigs} loading={loading[ACTIONS.create_UpdateConfigs + "Loading"]}>
                 Save
               </Button>
             </InlineStack>
@@ -418,7 +418,7 @@ export default function PopupDisplaySettings({
               <Button
                 disabled={!isProPlan}
                 variant="primary"
-                loading={loading[ACTIONS.CreateAllowedPages + "Loading"]}
+                loading={loading[ACTIONS.create_AllowedPages + "Loading"]}
                 onClick={isProPlan ? savePageVisibility : undefined}
               >
                 Save

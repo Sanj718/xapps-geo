@@ -86,7 +86,7 @@ export default function RedirectsList({
 
     submit(
       {
-        _action: ACTIONS.ReorderRedirect,
+        _action: ACTIONS.reorder_Redirect,
         data: {
           ids: updated_order_ids
         },
@@ -100,7 +100,7 @@ export default function RedirectsList({
     const newStatus = !item.status;
     submit(
       {
-        _action: ACTIONS.ToggleRedirectStatus,
+        _action: ACTIONS.toggle_RedirectStatus,
         data: {
           id: item.id,
           status: newStatus,
@@ -110,7 +110,7 @@ export default function RedirectsList({
     );
   }
 
-  const loading = loadingStates(navigation, [ACTIONS.ToggleRedirectStatus, ACTIONS.ReorderRedirect, ACTIONS.CreateRedirect, ACTIONS.UpdateRedirect, ACTIONS.DeleteRedirect]) as LoadingStates;
+  const loading = loadingStates(navigation, [ACTIONS.toggle_RedirectStatus, ACTIONS.reorder_Redirect, ACTIONS.create_Redirect, ACTIONS.update_Redirect, ACTIONS.delete_Redirect]) as LoadingStates;
 
   return (
     <>
@@ -161,7 +161,7 @@ export default function RedirectsList({
               }
               resourceName={resourceName}
               items={redirects}
-              loading={loading[ACTIONS.ToggleRedirectStatus + "Loading"] || loading[ACTIONS.ReorderRedirect + "Loading"] || loading[ACTIONS.CreateRedirect + "Loading"] || loading[ACTIONS.UpdateRedirect + "Loading"] || loading[ACTIONS.DeleteRedirect + "Loading"]}
+              loading={loading[ACTIONS.toggle_RedirectStatus + "Loading"] || loading[ACTIONS.reorder_Redirect + "Loading"] || loading[ACTIONS.create_Redirect + "Loading"] || loading[ACTIONS.update_Redirect + "Loading"] || loading[ACTIONS.delete_Redirect + "Loading"]}
               renderItem={(item: RedirectItem, rId, index) => {
                 const { id, url, label, flag, status } = item;
 
@@ -172,7 +172,7 @@ export default function RedirectsList({
                     id={String(id) || ""}
                     draggable
                     onDragStart={(ev) => {
-                      setDragId(id);
+                      setDragId(String(id));
                     }}
                     onDrop={handleDrop}
                     onDragOver={(ev) => ev.preventDefault()}

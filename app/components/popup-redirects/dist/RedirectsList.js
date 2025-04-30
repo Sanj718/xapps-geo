@@ -84,7 +84,7 @@ function RedirectsList(_a) {
                 updated_order = newBoxState.sort(function (a, b) { return a.order - b.order; });
                 updated_order_ids = updated_order.map(function (item) { return item.id; });
                 submit({
-                    _action: _actions_1.ACTIONS.ReorderRedirect,
+                    _action: _actions_1.ACTIONS.reorder_Redirect,
                     data: {
                         ids: updated_order_ids
                     }
@@ -101,7 +101,7 @@ function RedirectsList(_a) {
                     return [2 /*return*/];
                 newStatus = !item.status;
                 submit({
-                    _action: _actions_1.ACTIONS.ToggleRedirectStatus,
+                    _action: _actions_1.ACTIONS.toggle_RedirectStatus,
                     data: {
                         id: item.id,
                         status: newStatus
@@ -111,7 +111,7 @@ function RedirectsList(_a) {
             });
         });
     }
-    var loading = _helpers_1.loadingStates(navigation, [_actions_1.ACTIONS.ToggleRedirectStatus, _actions_1.ACTIONS.ReorderRedirect, _actions_1.ACTIONS.CreateRedirect, _actions_1.ACTIONS.UpdateRedirect, _actions_1.ACTIONS.DeleteRedirect]);
+    var loading = _helpers_1.loadingStates(navigation, [_actions_1.ACTIONS.toggle_RedirectStatus, _actions_1.ACTIONS.reorder_Redirect, _actions_1.ACTIONS.create_Redirect, _actions_1.ACTIONS.update_Redirect, _actions_1.ACTIONS.delete_Redirect]);
     return (react_1["default"].createElement(react_1["default"].Fragment, null,
         react_1["default"].createElement(polaris_1.InlineGrid, { columns: { xs: "1fr", md: "auto  70%" }, gap: "400" },
             react_1["default"].createElement(polaris_1.Box, { as: "section", paddingInlineStart: { xs: "400", sm: "0" }, paddingInlineEnd: { xs: "400", sm: "0" } },
@@ -130,12 +130,12 @@ function RedirectsList(_a) {
                                 gap: "20px"
                             } },
                             react_1["default"].createElement(polaris_1.Image, { source: empty_svg_1["default"], width: "200", height: "150", alt: "empty" }),
-                            react_1["default"].createElement(polaris_1.Text, { as: "p", variant: "headingSm" }, "Guide customers effortlessly \u2014 add your first redirect!")), resourceName: resourceName, items: redirects, loading: loading[_actions_1.ACTIONS.ToggleRedirectStatus + "Loading"] || loading[_actions_1.ACTIONS.ReorderRedirect + "Loading"] || loading[_actions_1.ACTIONS.CreateRedirect + "Loading"] || loading[_actions_1.ACTIONS.UpdateRedirect + "Loading"] || loading[_actions_1.ACTIONS.DeleteRedirect + "Loading"], renderItem: function (item, rId, index) {
+                            react_1["default"].createElement(polaris_1.Text, { as: "p", variant: "headingSm" }, "Guide customers effortlessly \u2014 add your first redirect!")), resourceName: resourceName, items: redirects, loading: loading[_actions_1.ACTIONS.toggle_RedirectStatus + "Loading"] || loading[_actions_1.ACTIONS.reorder_Redirect + "Loading"] || loading[_actions_1.ACTIONS.create_Redirect + "Loading"] || loading[_actions_1.ACTIONS.update_Redirect + "Loading"] || loading[_actions_1.ACTIONS.delete_Redirect + "Loading"], renderItem: function (item, rId, index) {
                             var id = item.id, url = item.url, label = item.label, flag = item.flag, status = item.status;
                             if (!id)
                                 return null;
                             return (react_1["default"].createElement("div", { className: "redirect-item", id: String(id) || "", draggable: true, onDragStart: function (ev) {
-                                    setDragId(id);
+                                    setDragId(String(id));
                                 }, onDrop: handleDrop, onDragOver: function (ev) { return ev.preventDefault(); } },
                                 react_1["default"].createElement(polaris_1.ResourceItem, { id: String(id), onClick: function () { }, verticalAlignment: "center", accessibilityLabel: "View details for " + label },
                                     react_1["default"].createElement(polaris_1.InlineStack, { blockAlign: "center", align: "space-between" },

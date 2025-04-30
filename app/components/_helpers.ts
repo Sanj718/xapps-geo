@@ -386,6 +386,18 @@ function run(geolocation, redirectButton) {
   return true;
 }`;
 
+export const defaultAutoRedirectsCode = `
+function pattern(redirectUrl, currentUrl, geolocation, forceRedirect) {
+  let newUrl = "";
+  // your logic
+  // force redirection logic: 
+  // if(gelocation.country === "CA"){
+  //   return forceRedirect("https://your-url.com")
+  // }
+  return newUrl;
+}
+`;
+
 export function useIsMounted() {
   const isMounted = useRef(false)
   useEffect(() => {

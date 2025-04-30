@@ -99,15 +99,15 @@ export default function AutoRedirectForm({
   }, [redirectItem]);
 
   useMemo(() => {
-    if (actionData?._action === ACTIONS.CreateAutoRedirect && actionData?.status) {
+    if (actionData?._action === ACTIONS.create_AutoRedirect && actionData?.status) {
       shopify.modal.hide("add-auto-redirect");
       setRedirectItem(defaultRedirectItem);
     }
-    if (actionData?._action === ACTIONS.DeleteAutoRedirect && actionData?.status) {
+    if (actionData?._action === ACTIONS.delete_AutoRedirect && actionData?.status) {
       shopify.modal.hide("edit-auto-redirect");
       setRedirectItem(defaultRedirectItem);
     }
-    if (actionData?._action === ACTIONS.UpdateAutoRedirect && actionData?.status) {
+    if (actionData?._action === ACTIONS.update_AutoRedirect && actionData?.status) {
       shopify.modal.hide("edit-auto-redirect");
       setRedirectItem(defaultRedirectItem);
     }
@@ -139,7 +139,7 @@ export default function AutoRedirectForm({
     if (!appId || !key) return;
     submit(
       {
-        _action: ACTIONS.DeleteAutoRedirect,
+        _action: ACTIONS.delete_AutoRedirect,
         data: {
           appId,
           key,
@@ -176,7 +176,7 @@ export default function AutoRedirectForm({
     );
   }
   const countries_conditionals = parseCountryCodesWithFullNames(countriesList);
-  const loading = loadingStates(navigation, [ACTIONS.CreateAutoRedirect, ACTIONS.UpdateAutoRedirect, ACTIONS.DeleteAutoRedirect]) as LoadingStates;
+  const loading = loadingStates(navigation, [ACTIONS.create_AutoRedirect, ACTIONS.update_AutoRedirect, ACTIONS.delete_AutoRedirect]) as LoadingStates;
   return (
     <InlineGrid gap="400">
       {editItem && (
@@ -311,7 +311,7 @@ export default function AutoRedirectForm({
               size="slim"
               tone="critical"
               onClick={() => handleDelete(redirectItem?.key)}
-              loading={loading[ACTIONS.DeleteAutoRedirect + "Loading"]}
+              loading={loading[ACTIONS.delete_AutoRedirect + "Loading"]}
               icon={DeleteIcon}
             >
               Delete
@@ -332,7 +332,7 @@ export default function AutoRedirectForm({
               variant="primary"
               onClick={editItem ? handleEdit : handleAdd}
               disabled={addButtonStatus}
-              loading={loading[ACTIONS.CreateAutoRedirect + "Loading"] || loading[ACTIONS.UpdateAutoRedirect + "Loading"]}
+              loading={loading[ACTIONS.create_AutoRedirect + "Loading"] || loading[ACTIONS.update_AutoRedirect + "Loading"]}
             >
               {editItem ? "Save" : "Add"}
             </Button>

@@ -79,7 +79,7 @@ export default function AutoRedirects({
     if (!appId) return;
     submit(
       {
-        _action: ACTIONS.ReOrderAutoRedirects,
+        _action: ACTIONS.reorder_AutoRedirects,
         data: {
           appId,
           data: updatedOrder,
@@ -107,7 +107,7 @@ export default function AutoRedirects({
     const updatedItem = toggleStatus(item);
     submit(
       {
-        _action: ACTIONS.UpdateAutoRedirect,
+        _action: ACTIONS.update_AutoRedirect,
         data: {
           appId,
           key: item?.node?.key,
@@ -118,7 +118,7 @@ export default function AutoRedirects({
     );
   }
 
-  const loading = loadingStates(navigation, [ACTIONS.CreateAutoRedirect, ACTIONS.UpdateAutoRedirect, ACTIONS.DeleteAutoRedirect, ACTIONS.ReOrderAutoRedirects]) as LoadingStates;
+  const loading = loadingStates(navigation, [ACTIONS.create_AutoRedirect, ACTIONS.update_AutoRedirect, ACTIONS.delete_AutoRedirect, ACTIONS.reorder_AutoRedirects]) as LoadingStates;
   return (
     <>
       <InlineGrid columns={{ xs: "1fr", md: "auto  70%" }} gap="400">
@@ -164,7 +164,7 @@ export default function AutoRedirects({
               }
               resourceName={resourceName}
               items={redirects}
-              loading={loading[ACTIONS.CreateAutoRedirect + "Loading"] || loading[ACTIONS.UpdateAutoRedirect + "Loading"] || loading[ACTIONS.DeleteAutoRedirect + "Loading"] || loading[ACTIONS.ReOrderAutoRedirects + "Loading"]}
+              loading={loading[ACTIONS.create_AutoRedirect + "Loading"] || loading[ACTIONS.update_AutoRedirect + "Loading"] || loading[ACTIONS.delete_AutoRedirect + "Loading"] || loading[ACTIONS.reorder_AutoRedirects + "Loading"]}
               renderItem={(item, index) => {
                 const { id, value } = item?.node;
                 const { url, location, except_r, status, block } =

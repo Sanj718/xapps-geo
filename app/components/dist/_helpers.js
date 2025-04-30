@@ -18,7 +18,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 exports.__esModule = true;
-exports.areObjectsEqual = exports.useIsMounted = exports.defaultButtonCode = exports.defaultWidgetCode = exports.NEW_DEFAULT_ICON = exports.OLD_STICKY_ICON = exports.OLD_DEFAULT_ICON = exports.jsonSafeParse = exports.loadingStates = exports.getDate = exports.formatDate = exports.isDateToday = exports.defaultState = exports.getPostgresTimestamp = exports.checkDifference = exports.ff = exports.getEmbedConst = exports.getTotals = exports.planParser = exports.getPureId = exports.isJson = exports.getKeyByValue = exports.charLimit = exports.continents_auto = exports.regeUrl = exports.parseCountryCodesWithFullNames = exports.parseLocations = exports.parseCountries = exports.hexToRGB = exports.default_allowed_configs = exports.default_advanced_configs = exports.default_basic_configs = exports.default_markets_basic_configs = exports.requestHeaders = exports.resp = void 0;
+exports.areObjectsEqual = exports.useIsMounted = exports.defaultAutoRedirectsCode = exports.defaultButtonCode = exports.defaultWidgetCode = exports.NEW_DEFAULT_ICON = exports.OLD_STICKY_ICON = exports.OLD_DEFAULT_ICON = exports.jsonSafeParse = exports.loadingStates = exports.getDate = exports.formatDate = exports.isDateToday = exports.defaultState = exports.getPostgresTimestamp = exports.checkDifference = exports.ff = exports.getEmbedConst = exports.getTotals = exports.planParser = exports.getPureId = exports.isJson = exports.getKeyByValue = exports.charLimit = exports.continents_auto = exports.regeUrl = exports.parseCountryCodesWithFullNames = exports.parseLocations = exports.parseCountries = exports.hexToRGB = exports.default_allowed_configs = exports.default_advanced_configs = exports.default_basic_configs = exports.default_markets_basic_configs = exports.requestHeaders = exports.resp = void 0;
 var strip_json_comments_1 = require("strip-json-comments");
 var date_fns_1 = require("date-fns");
 var react_1 = require("react");
@@ -341,6 +341,7 @@ exports.OLD_STICKY_ICON = "https://ngr-app.herokuapp.com/public/images/sticky-lo
 exports.NEW_DEFAULT_ICON = "default";
 exports.defaultWidgetCode = "\nfunction run(geolocation, openModal, hasBeenClosed) {\n  if(geolocation.country === \"CA\" && hasBeenClosed !== \"1\"){\n    //openModal()\n  }\n}\n";
 exports.defaultButtonCode = "\nfunction run(geolocation, redirectButton) {\n  if(geolocation.country === \"CA\" && redirectButton.label === \"Canada\"){\n    return false;\n  }\n  return true;\n}";
+exports.defaultAutoRedirectsCode = "\nfunction pattern(redirectUrl, currentUrl, geolocation, forceRedirect) {\n  let newUrl = \"\";\n  // your logic\n  // force redirection logic: \n  // if(gelocation.country === \"CA\"){\n  //   return forceRedirect(\"https://your-url.com\")\n  // }\n  return newUrl;\n}\n";
 function useIsMounted() {
     var isMounted = react_1.useRef(false);
     react_1.useEffect(function () {

@@ -55,7 +55,7 @@ var shopify_server_1 = require("app/shopify.server");
 function handleActions(_a) {
     var request = _a.request;
     return __awaiter(this, void 0, void 0, function () {
-        var _b, admin, session, _c, _action, data, response, response, response, response, response, response, response, response, response, response, response, response, response, response, response, response;
+        var _b, admin, session, _c, _action, data, response, response, response, response, response, response, response, response, response, response, response, response, response, response, response, response, response, response;
         return __generator(this, function (_d) {
             switch (_d.label) {
                 case 0: return [4 /*yield*/, shopify_server_1.authenticate.admin(request)];
@@ -64,106 +64,118 @@ function handleActions(_a) {
                     return [4 /*yield*/, (request === null || request === void 0 ? void 0 : request.json())];
                 case 2:
                     _c = (_d.sent()) || {}, _action = _c._action, data = _c.data;
-                    if (!(_action === _actions_1.ACTIONS.AssetsData)) return [3 /*break*/, 4];
+                    if (!(_action === _actions_1.ACTIONS.get_AssetsData)) return [3 /*break*/, 4];
                     return [4 /*yield*/, _actions_1.getAssets({ admin: admin, data: data })];
                 case 3:
                     response = _d.sent();
                     return [2 /*return*/, __assign({ _action: _action }, response)];
                 case 4:
-                    if (!(_action === _actions_1.ACTIONS.ToggleRedirectStatus)) return [3 /*break*/, 6];
+                    if (!(_action === _actions_1.ACTIONS.toggle_RedirectStatus)) return [3 /*break*/, 6];
                     return [4 /*yield*/, db_queries_server_1.updateRedirectStatus(__assign({ admin: admin }, data))];
                 case 5:
                     response = _d.sent();
                     return [2 /*return*/, __assign({ _action: _action }, response)];
                 case 6:
-                    if (!(_action === _actions_1.ACTIONS.ReorderRedirect)) return [3 /*break*/, 8];
+                    if (!(_action === _actions_1.ACTIONS.reorder_Redirect)) return [3 /*break*/, 8];
                     return [4 /*yield*/, db_queries_server_1.reorderRedirect(__assign(__assign({ admin: admin }, data), { shop: session.shop }))];
                 case 7:
                     response = _d.sent();
                     return [2 /*return*/, __assign({ _action: _action }, response)];
                 case 8:
-                    if (!(_action === _actions_1.ACTIONS.CreateRedirect)) return [3 /*break*/, 10];
+                    if (!(_action === _actions_1.ACTIONS.create_Redirect)) return [3 /*break*/, 10];
                     return [4 /*yield*/, db_queries_server_1.createRedirect(__assign({ admin: admin }, data))];
                 case 9:
                     response = _d.sent();
                     return [2 /*return*/, __assign({ _action: _action }, response)];
                 case 10:
-                    if (!(_action === _actions_1.ACTIONS.DeleteRedirect)) return [3 /*break*/, 12];
+                    if (!(_action === _actions_1.ACTIONS.delete_Redirect)) return [3 /*break*/, 12];
                     return [4 /*yield*/, db_queries_server_1.deleteRedirect(__assign(__assign({ admin: admin }, data), { shop: session.shop }))];
                 case 11:
                     response = _d.sent();
                     return [2 /*return*/, __assign({ _action: _action }, response)];
                 case 12:
-                    if (!(_action === _actions_1.ACTIONS.UpdateRedirect)) return [3 /*break*/, 14];
+                    if (!(_action === _actions_1.ACTIONS.update_Redirect)) return [3 /*break*/, 14];
                     return [4 /*yield*/, db_queries_server_1.updateRedirect(__assign({ admin: admin }, data))];
                 case 13:
                     response = _d.sent();
                     return [2 /*return*/, __assign({ _action: _action }, response)];
                 case 14:
-                    if (!(_action === _actions_1.ACTIONS.CreateUpdateConfigs)) return [3 /*break*/, 16];
+                    if (!(_action === _actions_1.ACTIONS.create_UpdateConfigs)) return [3 /*break*/, 16];
                     return [4 /*yield*/, db_queries_server_1.createUpdateConfigs(__assign({ shop: session.shop }, data))];
                 case 15:
                     response = _d.sent();
                     return [2 /*return*/, __assign({ _action: _action }, response)];
                 case 16:
-                    if (!(_action === _actions_1.ACTIONS.CreateAllowedPages)) return [3 /*break*/, 18];
+                    if (!(_action === _actions_1.ACTIONS.create_AllowedPages)) return [3 /*break*/, 18];
                     return [4 /*yield*/, db_queries_server_1.createUpdateAllowedPages(__assign({ shop: session.shop }, data))];
                 case 17:
                     response = _d.sent();
                     return [2 /*return*/, __assign({ _action: _action }, response)];
                 case 18:
-                    if (!(_action === _actions_1.ACTIONS.WidgetDisplayCustomRuleStatus)) return [3 /*break*/, 20];
-                    return [4 /*yield*/, admin_queries_server_1.saveWidgetEditorStatusToMetafield({ admin: admin, appId: data.appId, value: data.data })];
+                    if (!(_action === _actions_1.ACTIONS.update_WidgetDisplayCustomRuleStatus)) return [3 /*break*/, 20];
+                    return [4 /*yield*/, admin_queries_server_1.updateWidgetEditorStatus({ admin: admin, appId: data.appId, value: data.data })];
                 case 19:
                     response = _d.sent();
                     console.log("response", response);
                     return [2 /*return*/, __assign({ _action: _action }, response)];
                 case 20:
-                    if (!(_action === _actions_1.ACTIONS.WidgetDisplayCustomRuleCodeSave)) return [3 /*break*/, 22];
-                    return [4 /*yield*/, admin_queries_server_1.saveWidgetEditorCodeToMetafield({ admin: admin, appId: data.appId, value: data.data })];
+                    if (!(_action === _actions_1.ACTIONS.update_WidgetDisplayCustomRuleCode)) return [3 /*break*/, 22];
+                    return [4 /*yield*/, admin_queries_server_1.updateWidgetEditorCode({ admin: admin, appId: data.appId, value: data.data })];
                 case 21:
                     response = _d.sent();
                     return [2 /*return*/, __assign({ _action: _action }, response)];
                 case 22:
-                    if (!(_action === _actions_1.ACTIONS.ButtonDisplayCustomRuleStatus)) return [3 /*break*/, 24];
-                    return [4 /*yield*/, admin_queries_server_1.saveButtonEditorStatusToMetafield({ admin: admin, appId: data.appId, value: data.data })];
+                    if (!(_action === _actions_1.ACTIONS.update_ButtonDisplayCustomRuleStatus)) return [3 /*break*/, 24];
+                    return [4 /*yield*/, admin_queries_server_1.updateButtonEditorStatus({ admin: admin, appId: data.appId, value: data.data })];
                 case 23:
                     response = _d.sent();
                     console.log("response", response);
                     return [2 /*return*/, __assign({ _action: _action }, response)];
                 case 24:
-                    if (!(_action === _actions_1.ACTIONS.ButtonDisplayCustomRuleCodeSave)) return [3 /*break*/, 26];
-                    return [4 /*yield*/, admin_queries_server_1.saveButtonEditorCodeToMetafield({ admin: admin, appId: data.appId, value: data.data })];
+                    if (!(_action === _actions_1.ACTIONS.update_ButtonDisplayCustomRuleCode)) return [3 /*break*/, 26];
+                    return [4 /*yield*/, admin_queries_server_1.updateButtonEditorCode({ admin: admin, appId: data.appId, value: data.data })];
                 case 25:
                     response = _d.sent();
                     return [2 /*return*/, __assign({ _action: _action }, response)];
                 case 26:
-                    if (!(_action === _actions_1.ACTIONS.CreateAutoRedirect)) return [3 /*break*/, 28];
+                    if (!(_action === _actions_1.ACTIONS.create_AutoRedirect)) return [3 /*break*/, 28];
                     return [4 /*yield*/, admin_queries_server_1.createAutoRedirect({ admin: admin, appId: data.appId, value: data.data })];
                 case 27:
                     response = _d.sent();
                     console.log("response", response);
                     return [2 /*return*/, __assign({ _action: _action }, response)];
                 case 28:
-                    if (!(_action === _actions_1.ACTIONS.UpdateAutoRedirect)) return [3 /*break*/, 30];
+                    if (!(_action === _actions_1.ACTIONS.update_AutoRedirect)) return [3 /*break*/, 30];
                     console.log("data", data);
                     return [4 /*yield*/, admin_queries_server_1.updateAutoRedirect({ admin: admin, appId: data.appId, key: data.key, value: data.value })];
                 case 29:
                     response = _d.sent();
                     return [2 /*return*/, __assign({ _action: _action }, response)];
                 case 30:
-                    if (!(_action === _actions_1.ACTIONS.ReOrderAutoRedirects)) return [3 /*break*/, 32];
+                    if (!(_action === _actions_1.ACTIONS.reorder_AutoRedirects)) return [3 /*break*/, 32];
                     return [4 /*yield*/, admin_queries_server_1.reOrderAutoRedirects({ admin: admin, appId: data.appId, data: data.data })];
                 case 31:
                     response = _d.sent();
                     return [2 /*return*/, __assign({ _action: _action }, response)];
                 case 32:
-                    if (!(_action === _actions_1.ACTIONS.DeleteAutoRedirect)) return [3 /*break*/, 34];
+                    if (!(_action === _actions_1.ACTIONS.delete_AutoRedirect)) return [3 /*break*/, 34];
                     return [4 /*yield*/, admin_queries_server_1.deleteAutoRedirect({ admin: admin, appId: data.appId, key: data.key })];
                 case 33:
                     response = _d.sent();
                     return [2 /*return*/, __assign({ _action: _action }, response)];
-                case 34: return [2 /*return*/, {}];
+                case 34:
+                    if (!(_action === _actions_1.ACTIONS.update_AutoRedirectsCustomCodeStatus)) return [3 /*break*/, 36];
+                    return [4 /*yield*/, admin_queries_server_1.updateAutoRedirectsCustomCodeStatus({ admin: admin, appId: data.appId, value: data.data })];
+                case 35:
+                    response = _d.sent();
+                    return [2 /*return*/, __assign({ _action: _action }, response)];
+                case 36:
+                    if (!(_action === _actions_1.ACTIONS.update_AutoRedirectsCustomCode)) return [3 /*break*/, 38];
+                    return [4 /*yield*/, admin_queries_server_1.updateAutoRedirectsCustomCode({ admin: admin, appId: data.appId, value: data.data })];
+                case 37:
+                    response = _d.sent();
+                    return [2 /*return*/, __assign({ _action: _action }, response)];
+                case 38: return [2 /*return*/, {}];
             }
         });
     });

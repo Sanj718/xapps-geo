@@ -63,14 +63,14 @@ function handleActions(_a) {
                     return [4 /*yield*/, (request === null || request === void 0 ? void 0 : request.json())];
                 case 2:
                     _b = (_c.sent()) || {}, _action = _b._action, data = _b.data;
-                    if (!(_action === _actions_1.ACTIONS.ButtonDisplayCustomRuleStatus)) return [3 /*break*/, 4];
-                    return [4 /*yield*/, admin_queries_server_1.saveButtonEditorStatusToMetafield({ admin: admin, appId: data.appId, value: data.data })];
+                    if (!(_action === _actions_1.ACTIONS.update_ButtonDisplayCustomRuleStatus)) return [3 /*break*/, 4];
+                    return [4 /*yield*/, admin_queries_server_1.updateButtonEditorStatus({ admin: admin, appId: data.appId, value: data.data })];
                 case 3:
                     response = _c.sent();
                     return [2 /*return*/, __assign({ _action: _action }, response)];
                 case 4:
-                    if (!(_action === _actions_1.ACTIONS.ButtonDisplayCustomRuleCodeSave)) return [3 /*break*/, 6];
-                    return [4 /*yield*/, admin_queries_server_1.saveButtonEditorCodeToMetafield({ admin: admin, appId: data.appId, value: data.data })];
+                    if (!(_action === _actions_1.ACTIONS.update_ButtonDisplayCustomRuleCode)) return [3 /*break*/, 6];
+                    return [4 /*yield*/, admin_queries_server_1.updateButtonEditorCode({ admin: admin, appId: data.appId, value: data.data })];
                 case 5:
                     response = _c.sent();
                     return [2 /*return*/, __assign({ _action: _action }, response)];

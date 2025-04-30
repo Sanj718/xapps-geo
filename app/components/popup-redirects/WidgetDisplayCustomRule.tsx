@@ -46,7 +46,7 @@ export default function WidgetDisplayCustomRule({ status, code }: WidgetDisplayC
     if (!appId) return;
     submit(
       {
-        _action: ACTIONS.WidgetDisplayCustomRuleStatus,
+        _action: ACTIONS.update_WidgetDisplayCustomRuleStatus,
         data: {
           appId,
           data: value,
@@ -59,7 +59,7 @@ export default function WidgetDisplayCustomRule({ status, code }: WidgetDisplayC
     if (!appId) return;
     submit(
       {
-        _action: ACTIONS.WidgetDisplayCustomRuleCodeSave,
+        _action: ACTIONS.update_WidgetDisplayCustomRuleCode,
         data: {
           appId,
           data: customCode,
@@ -69,7 +69,7 @@ export default function WidgetDisplayCustomRule({ status, code }: WidgetDisplayC
     );
   }
 
-  const loading = loadingStates(navigation, [ACTIONS.WidgetDisplayCustomRuleStatus, ACTIONS.WidgetDisplayCustomRuleCodeSave]) as LoadingStates;
+  const loading = loadingStates(navigation, [ACTIONS.update_WidgetDisplayCustomRuleStatus, ACTIONS.update_WidgetDisplayCustomRuleCode]) as LoadingStates;
 
   return <>
     <InlineGrid columns={{ xs: "1fr", md: "auto  70%" }} gap="400">
@@ -95,29 +95,29 @@ export default function WidgetDisplayCustomRule({ status, code }: WidgetDisplayC
       </Box>
       <Card roundedAbove="sm">
         <InlineGrid gap="200">
-         <WidgetDisplayCustomRuleBanner />
+          <WidgetDisplayCustomRuleBanner />
           <div style={{ position: "relative" }}>
             <Suspense fallback={<Spinner size="small" />}>
               <Await resolve={status}>
-                {(status) => {
-                  return <Select
+                {({ value }: { value: string }) => (
+                  <Select
                     label="Status: "
                     labelInline
                     options={[
                       { label: "Active", value: "true" },
                       { label: "Draft", value: "false" },
                     ]}
-                    disabled={loading[ACTIONS.WidgetDisplayCustomRuleStatus + "Loading"] || !isProPlan}
+                    disabled={loading[ACTIONS.update_WidgetDisplayCustomRuleStatus + "Loading"] || !isProPlan}
                     onChange={
                       isProPlan
                         ? (value) => handleCustomCodeStatus(value)
                         : undefined
                     }
-                    value={status?.value || "false"}
+                    value={value || "false"}
                   />
-                }}
+                )}
               </Await>
-              {loading[ACTIONS.WidgetDisplayCustomRuleStatus + "Loading"] && (
+              {loading[ACTIONS.update_WidgetDisplayCustomRuleStatus + "Loading"] && (
                 <div style={{ position: "absolute", top: "6px", right: "8px", zIndex: 10 }}>
                   <Spinner size="small" />
                 </div>
@@ -152,7 +152,7 @@ export default function WidgetDisplayCustomRule({ status, code }: WidgetDisplayC
             <Button
               variant="primary"
               onClick={() => handleCustomCodeSave()}
-              loading={loading[ACTIONS.WidgetDisplayCustomRuleCodeSave + "Loading"]}
+              loading={loading[ACTIONS.update_WidgetDisplayCustomRuleCode + "Loading"]}
             >
               Save
             </Button>

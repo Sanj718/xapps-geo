@@ -53,6 +53,8 @@ var WidgetDisplayCustomRule_1 = require("app/components/popup-redirects/WidgetDi
 var ButtonDisplayCustomRule_1 = require("app/components/popup-redirects/ButtonDisplayCustomRule");
 var AutoRedirectsList_1 = require("app/components/auto-redirects/AutoRedirectsList");
 var polaris_icons_1 = require("@shopify/polaris-icons");
+var AutoRedirectsSettings_1 = require("app/components/auto-redirects/AutoRedirectsSettings");
+var AutoRedirectsCustomRule_1 = require("app/components/auto-redirects/AutoRedirectsCustomRule");
 var _a = _helpers_1.getEmbedConst(env_1.PROD_EMBED_APP_ID, env_1.DEV_EMBED_APP_ID, env_1.RD_EMBED_APP_HANDLE) || {}, EMBED_APP_ID = _a.EMBED_APP_ID, EMBED_APP_HANDLE = _a.EMBED_APP_HANDLE;
 var mainTabs = [
     {
@@ -73,13 +75,14 @@ exports.action = function (params) { return __awaiter(void 0, void 0, void 0, fu
 }); }); };
 function CustomRedirects() {
     var _a = react_2.useOutletContext(), shopInfo = _a.shopInfo, shopdb = _a.shopdb, activePlan = _a.activePlan, devPlan = _a.devPlan, veteranPlan = _a.veteranPlan, appId = _a.appId, appData = _a.appData;
-    var _b = react_2.useLoaderData(), allRedirects = _b.allRedirects, configs = _b.configs, widgetEditorStatus = _b.widgetEditorStatus, widgetEditorCode = _b.widgetEditorCode, buttonEditorStatus = _b.buttonEditorStatus, buttonEditorCode = _b.buttonEditorCode, allAutoRedirects = _b.allAutoRedirects;
+    var _b = react_2.useLoaderData(), allRedirects = _b.allRedirects, configs = _b.configs, widgetEditorStatus = _b.widgetEditorStatus, widgetEditorCode = _b.widgetEditorCode, buttonEditorStatus = _b.buttonEditorStatus, buttonEditorCode = _b.buttonEditorCode, allAutoRedirects = _b.allAutoRedirects, autoRedirectsCustomCodeStatus = _b.autoRedirectsCustomCodeStatus, autoRedirectsCustomCode = _b.autoRedirectsCustomCode;
     var actionData = react_2.useActionData();
-    var _c = react_1.useState({ msg: "", error: false }), toastData = _c[0], setToastData = _c[1];
-    var _d = react_1.useState(null), active = _d[0], setActive = _d[1];
-    var _e = react_1.useState([]), redirects = _e[0], setRedirects = _e[1];
-    var _f = react_1.useState([]), autoRedirects = _f[0], setAutoRedirects = _f[1];
-    var _g = react_1.useState(0), selectedTab = _g[0], setSelectedTab = _g[1];
+    var _c = react_2.useSearchParams(), searchParams = _c[0], setSearchParams = _c[1];
+    var _d = react_1.useState({ msg: "", error: false }), toastData = _d[0], setToastData = _d[1];
+    var _e = react_1.useState(null), active = _e[0], setActive = _e[1];
+    var _f = react_1.useState([]), redirects = _f[0], setRedirects = _f[1];
+    var _g = react_1.useState([]), autoRedirects = _g[0], setAutoRedirects = _g[1];
+    var _h = react_1.useState(0), selectedTab = _h[0], setSelectedTab = _h[1];
     var smUp = polaris_1.useBreakpoints().smUp;
     react_1.useMemo(function () {
         var _a;
@@ -91,41 +94,6 @@ function CustomRedirects() {
         var orderedAutoRedirects = (_a = allAutoRedirects === null || allAutoRedirects === void 0 ? void 0 : allAutoRedirects.data) === null || _a === void 0 ? void 0 : _a.sort(function (a, b) { return JSON.parse(a.node.value).order_r - JSON.parse(b.node.value).order_r; });
         setAutoRedirects(orderedAutoRedirects || []);
     }, [allAutoRedirects]);
-    // useMemo(() => {
-    //   if (actionData?.status) {
-    //     setToastData({ error: false, msg: tr.responses.success });
-    //   }
-    // }, [actionData]);
-    // async function loadAutoRedirects() {
-    //   let error = true;
-    //   let msg = tr.responses.error;
-    //   // await getLocalShopData();
-    //   try {
-    //     const response = await fetch(GET_AUTO_REDIRECTS);
-    //     const responseJson = await response.json();
-    //     if (responseJson?.status) {
-    //       const responseAppId =
-    //         responseJson?.data?.body?.data?.appInstallation?.id;
-    //       const responseRedirects =
-    //         responseJson?.data?.body?.data?.appInstallation?.metafields?.edges;
-    //       setAppId(responseAppId);
-    //       const updated_order = responseRedirects.sort(
-    //         (a, b) =>
-    //           JSON.parse(a.node.value).order_r - JSON.parse(b.node.value).order_r
-    //       );
-    //       setAutoRedirects(updated_order);
-    //       error = false;
-    //     }
-    //   } catch (err) {
-    //     console.log(err);
-    //   }
-    //   if (error) {
-    //     setToastData({
-    //       error,
-    //       msg,
-    //     });
-    //   }
-    // }
     react_1.useMemo(function () {
         // if (actionData && !actionData?.data?.status) {
         //   shopify.toast.show("Error, try again.", { isError: true });
@@ -150,10 +118,24 @@ function CustomRedirects() {
         //   navigate("/app");
         // }
     }, [actionData]);
+    react_1.useMemo(function () {
+        var tab = searchParams.get("tab");
+        if (tab) {
+            setSelectedTab(parseInt(tab));
+        }
+    }, [searchParams]);
     return (React.createElement(polaris_1.Page, null,
         React.createElement(PageTitle_1.PageTitle, { icon: polaris_icons_1.DomainRedirectIcon, title: "Custom redirects", status: active, loading: false, embedPath: EMBED_APP_ID + "/" + EMBED_APP_HANDLE }),
         React.createElement("br", null),
-        React.createElement(polaris_1.Tabs, { tabs: mainTabs, selected: selectedTab, onSelect: setSelectedTab, fitted: true },
+        React.createElement(polaris_1.Tabs, { tabs: mainTabs, selected: selectedTab, onSelect: function (value) {
+                setSelectedTab(value);
+                console.log(value);
+                var params = new URLSearchParams();
+                params.set("tab", value.toString());
+                setSearchParams(params, {
+                    preventScrollReset: true
+                });
+            }, fitted: true },
             React.createElement("br", null),
             selectedTab === 0 ? (React.createElement(polaris_1.BlockStack, { gap: { xs: "800", sm: "400" } },
                 React.createElement(RedirectsList_1["default"], { redirects: redirects }),
@@ -169,7 +151,10 @@ function CustomRedirects() {
                 React.createElement(ButtonDisplayCustomRule_1["default"], { status: buttonEditorStatus, code: buttonEditorCode }))) : (""),
             selectedTab === 1 ? (React.createElement(polaris_1.BlockStack, { gap: { xs: "800", sm: "400" } },
                 React.createElement(AutoRedirectsList_1["default"], { redirects: autoRedirects }),
-                smUp ? React.createElement(polaris_1.Divider, null) : null)) : ("")),
+                smUp ? React.createElement(polaris_1.Divider, null) : null,
+                React.createElement(AutoRedirectsSettings_1["default"], null),
+                smUp ? React.createElement(polaris_1.Divider, null) : null,
+                React.createElement(AutoRedirectsCustomRule_1["default"], { status: autoRedirectsCustomCodeStatus, code: autoRedirectsCustomCode }))) : ("")),
         (toastData === null || toastData === void 0 ? void 0 : toastData.msg) !== "" &&
             shopify.toast.show(toastData.msg, { isError: toastData.error }),
         React.createElement("br", null)));

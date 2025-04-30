@@ -123,15 +123,15 @@ function AutoRedirectForm(_a) {
         setAddButtonStatus(validator > 0 ? false : true);
     }, [redirectItem]);
     react_1.useMemo(function () {
-        if ((actionData === null || actionData === void 0 ? void 0 : actionData._action) === _actions_1.ACTIONS.CreateAutoRedirect && (actionData === null || actionData === void 0 ? void 0 : actionData.status)) {
+        if ((actionData === null || actionData === void 0 ? void 0 : actionData._action) === _actions_1.ACTIONS.create_AutoRedirect && (actionData === null || actionData === void 0 ? void 0 : actionData.status)) {
             shopify.modal.hide("add-auto-redirect");
             setRedirectItem(defaultRedirectItem);
         }
-        if ((actionData === null || actionData === void 0 ? void 0 : actionData._action) === _actions_1.ACTIONS.DeleteAutoRedirect && (actionData === null || actionData === void 0 ? void 0 : actionData.status)) {
+        if ((actionData === null || actionData === void 0 ? void 0 : actionData._action) === _actions_1.ACTIONS.delete_AutoRedirect && (actionData === null || actionData === void 0 ? void 0 : actionData.status)) {
             shopify.modal.hide("edit-auto-redirect");
             setRedirectItem(defaultRedirectItem);
         }
-        if ((actionData === null || actionData === void 0 ? void 0 : actionData._action) === _actions_1.ACTIONS.UpdateAutoRedirect && (actionData === null || actionData === void 0 ? void 0 : actionData.status)) {
+        if ((actionData === null || actionData === void 0 ? void 0 : actionData._action) === _actions_1.ACTIONS.update_AutoRedirect && (actionData === null || actionData === void 0 ? void 0 : actionData.status)) {
             shopify.modal.hide("edit-auto-redirect");
             setRedirectItem(defaultRedirectItem);
         }
@@ -164,7 +164,7 @@ function AutoRedirectForm(_a) {
                 if (!appId || !key)
                     return [2 /*return*/];
                 submit({
-                    _action: _actions_1.ACTIONS.DeleteAutoRedirect,
+                    _action: _actions_1.ACTIONS.delete_AutoRedirect,
                     data: {
                         appId: appId,
                         key: key
@@ -200,7 +200,7 @@ function AutoRedirectForm(_a) {
         });
     }
     var countries_conditionals = _helpers_1.parseCountryCodesWithFullNames(countries_json_1["default"]);
-    var loading = _helpers_1.loadingStates(navigation, [_actions_1.ACTIONS.CreateAutoRedirect, _actions_1.ACTIONS.UpdateAutoRedirect, _actions_1.ACTIONS.DeleteAutoRedirect]);
+    var loading = _helpers_1.loadingStates(navigation, [_actions_1.ACTIONS.create_AutoRedirect, _actions_1.ACTIONS.update_AutoRedirect, _actions_1.ACTIONS.delete_AutoRedirect]);
     return (react_1["default"].createElement(polaris_1.InlineGrid, { gap: "400" },
         editItem && (react_1["default"].createElement(polaris_1.Select, { label: "Status:", labelInline: true, options: [
                 { value: "active", label: "Active" },
@@ -261,12 +261,12 @@ function AutoRedirectForm(_a) {
                         } }))),
             react_1["default"].createElement(polaris_1.Divider, null),
             react_1["default"].createElement(polaris_1.InlineStack, { gap: "200", align: "space-between" },
-                editItem ? (react_1["default"].createElement(polaris_1.Button, { size: "slim", tone: "critical", onClick: function () { return handleDelete(redirectItem === null || redirectItem === void 0 ? void 0 : redirectItem.key); }, loading: loading[_actions_1.ACTIONS.DeleteAutoRedirect + "Loading"], icon: polaris_icons_1.DeleteIcon }, "Delete")) : (react_1["default"].createElement("div", null)),
+                editItem ? (react_1["default"].createElement(polaris_1.Button, { size: "slim", tone: "critical", onClick: function () { return handleDelete(redirectItem === null || redirectItem === void 0 ? void 0 : redirectItem.key); }, loading: loading[_actions_1.ACTIONS.delete_AutoRedirect + "Loading"], icon: polaris_icons_1.DeleteIcon }, "Delete")) : (react_1["default"].createElement("div", null)),
                 react_1["default"].createElement(polaris_1.InlineStack, { gap: "200" },
                     react_1["default"].createElement(polaris_1.Button, { onClick: function () {
                             shopify.modal.hide("add-auto-redirect");
                             shopify.modal.hide("edit-auto-redirect");
                         } }, "Cancel"),
-                    react_1["default"].createElement(polaris_1.Button, { variant: "primary", onClick: editItem ? handleEdit : handleAdd, disabled: addButtonStatus, loading: loading[_actions_1.ACTIONS.CreateAutoRedirect + "Loading"] || loading[_actions_1.ACTIONS.UpdateAutoRedirect + "Loading"] }, editItem ? "Save" : "Add"))))));
+                    react_1["default"].createElement(polaris_1.Button, { variant: "primary", onClick: editItem ? handleEdit : handleAdd, disabled: addButtonStatus, loading: loading[_actions_1.ACTIONS.create_AutoRedirect + "Loading"] || loading[_actions_1.ACTIONS.update_AutoRedirect + "Loading"] }, editItem ? "Save" : "Add"))))));
 }
 exports["default"] = AutoRedirectForm;

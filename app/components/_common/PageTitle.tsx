@@ -17,9 +17,9 @@ import statusGray from "../../assets/status-green.svg";
 // import { statusGreen, statusRed, statusGray } from "../../assets/index.js";
 
 interface PageTitleProps {
-  icon: React.ReactNode;
+  icon: any
   title: string;
-  status: boolean;
+  status: boolean | null;
   loading: boolean;
   embedPath?: string;
 }
