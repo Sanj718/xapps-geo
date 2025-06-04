@@ -50,7 +50,6 @@ export async function handleActions({ request }: ActionFunctionArgs) {
 
     if (_action === ACTIONS.update_WidgetDisplayCustomRuleStatus) {
         const response = await updateWidgetEditorStatus({ admin, appId: data.appId, value: data.data });
-        console.log("response", response);
         return { _action, ...response };
     }
 
@@ -61,7 +60,6 @@ export async function handleActions({ request }: ActionFunctionArgs) {
 
     if (_action === ACTIONS.update_ButtonDisplayCustomRuleStatus) {
         const response = await updateButtonEditorStatus({ admin, appId: data.appId, value: data.data });
-        console.log("response", response);
         return { _action, ...response };
     }
 
@@ -72,12 +70,10 @@ export async function handleActions({ request }: ActionFunctionArgs) {
 
     if (_action === ACTIONS.create_AutoRedirect) {
         const response = await createAutoRedirect({ admin, appId: data.appId, value: data.data });
-        console.log("response", response);
         return { _action, ...response };
     }
 
     if (_action === ACTIONS.update_AutoRedirect) {
-        console.log("data", data);
         const response = await updateAutoRedirect({ admin, appId: data.appId, key: data.key, value: data.value });
         return { _action, ...response };
     }

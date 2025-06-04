@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.updateAutoRedirectsCustomCode = exports.updateAutoRedirectsCustomCodeStatus = exports.getAutoRedirectsCustomCode = exports.getAutoRedirectsCustomCodeStatus = exports.deleteAutoRedirect = exports.reOrderAutoRedirects = exports.updateAutoRedirect = exports.getAllAutoRedirects = exports.createAutoRedirect = exports.getButtonEditorCode = exports.getButtonEditorStatus = exports.updateButtonEditorCode = exports.updateButtonEditorStatus = exports.getWidgetEditorCode = exports.getWidgetEditorStatus = exports.updateWidgetEditorCode = exports.updateWidgetEditorStatus = exports.getThemeEmbed = void 0;
+exports.registerBulkWebhookIfNotExists = exports.removeWebhook = exports.getAllRegisteredWebhooks = exports.getBulkOperation = exports.runMarketsSync = exports.updateAutoRedirectsCustomCode = exports.updateAutoRedirectsCustomCodeStatus = exports.getAutoRedirectsCustomCode = exports.getAutoRedirectsCustomCodeStatus = exports.deleteAutoRedirect = exports.reOrderAutoRedirects = exports.updateAutoRedirect = exports.getAllAutoRedirects = exports.createAutoRedirect = exports.getButtonEditorCode = exports.getButtonEditorStatus = exports.updateButtonEditorCode = exports.updateButtonEditorStatus = exports.getWidgetEditorCode = exports.getWidgetEditorStatus = exports.updateWidgetEditorCode = exports.updateWidgetEditorStatus = exports.getThemeEmbed = void 0;
 var uniqid_1 = require("uniqid");
 function getThemeEmbed(_a) {
     var _b, _c, _d, _e, _f, _g;
@@ -753,3 +753,179 @@ function updateAutoRedirectsCustomCode(_a) {
     });
 }
 exports.updateAutoRedirectsCustomCode = updateAutoRedirectsCustomCode;
+function runMarketsSync(_a) {
+    var _b;
+    var admin = _a.admin, data = _a.data;
+    return __awaiter(this, void 0, void 0, function () {
+        var response, responseJson, error_19;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    if (!admin)
+                        throw Error("admin not defined");
+                    _c.label = 1;
+                case 1:
+                    _c.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, admin.graphql("#graphql\n                mutation {\n                    bulkOperationRunQuery(\n                    query: \"\"\"\n                        {\n                            markets {\n                                edges {\n                                node {\n                                    __typename\n                                    id\n                                    handle\n                                    name\n                                    type\n                                    status\n                                    conditions {\n                                    __typename\n                                    conditionTypes\n                                    regionsCondition {\n                                        applicationLevel\n                                        regions {\n                                        edges {\n                                            node {\n                                            __typename\n                                            id\n                                            name\n                                            ... on MarketRegionCountry {\n                                                code\n                                                currency {\n                                                enabled\n                                                currencyName\n                                                currencyCode\n                                                }\n                                            }\n                                            }\n                                        }\n                                        }\n                                    }\n                                    }\n                                    webPresences {\n                                    edges {\n                                        node {\n                                        __typename\n                                        id\n                                        domain {\n                                            id\n                                            host\n                                            url\n                                            localization {\n                                            alternateLocales\n                                            country\n                                            defaultLocale\n                                            }\n                                        }\n                                        rootUrls {\n                                            url\n                                            locale\n                                        }\n                                        subfolderSuffix\n                                        defaultLocale {\n                                            locale\n                                            name\n                                            primary\n                                            published\n                                            marketWebPresences {\n                                            id\n                                            domain {\n                                                id\n                                                host\n                                                url\n                                                localization {\n                                                alternateLocales\n                                                country\n                                                defaultLocale\n                                                }\n                                            }\n                                            rootUrls {\n                                                url\n                                                locale\n                                            }\n                                            subfolderSuffix\n                                            }\n                                        }\n                                        alternateLocales {\n                                            locale\n                                            name\n                                            primary\n                                            published\n                                            marketWebPresences {\n                                            domain {\n                                                id\n                                                host\n                                                url\n                                                localization {\n                                                alternateLocales\n                                                country\n                                                defaultLocale\n                                                }\n                                            }\n                                            id\n                                            rootUrls {\n                                                url\n                                                locale\n                                            }\n                                            subfolderSuffix\n                                            }\n                                        }\n                                        }\n                                    }\n                                    }\n                                }\n                                }\n                            }\n                            } \n                        \"\"\"\n                    ) {\n                        bulkOperation {\n                            id\n                            status\n                            errorCode\n                        }\n                        userErrors {\n                            ...on BulkOperationUserError {\n                                code\n                                message\n                            }\n                        }\n                    }\n                }\n            ")];
+                case 2:
+                    response = _c.sent();
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    responseJson = _c.sent();
+                    return [2 /*return*/, (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.bulkOperationRunQuery];
+                case 4:
+                    error_19 = _c.sent();
+                    console.error(error_19);
+                    return [2 /*return*/, { status: false, error: error_19.toString() }];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.runMarketsSync = runMarketsSync;
+function getBulkOperation(_a) {
+    var _b;
+    var admin = _a.admin, bulkId = _a.bulkId;
+    return __awaiter(this, void 0, void 0, function () {
+        var response, responseJson, error_20;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    if (!admin)
+                        throw Error("admin not defined");
+                    _c.label = 1;
+                case 1:
+                    _c.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, admin.graphql("#graphql\n           query getBulkResponse($id: ID!) {\n                node(id: $id) {\n                ... on BulkOperation {\n                    id\n                    status\n                    errorCode\n                    createdAt\n                    completedAt\n                    objectCount\n                    fileSize\n                    url\n                    partialDataUrl\n                }\n                }\n            }\n            ", {
+                            variables: {
+                                id: bulkId
+                            }
+                        })];
+                case 2:
+                    response = _c.sent();
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    responseJson = _c.sent();
+                    return [2 /*return*/, (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.node];
+                case 4:
+                    error_20 = _c.sent();
+                    console.error("getBulkOperation: ", error_20);
+                    return [2 /*return*/, { status: false, error: error_20.toString() }];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.getBulkOperation = getBulkOperation;
+function getAllRegisteredWebhooks(_a) {
+    var _b, _c;
+    var admin = _a.admin;
+    return __awaiter(this, void 0, void 0, function () {
+        var response, responseJson, error_21;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
+                case 0:
+                    if (!admin)
+                        throw Error("admin not defined");
+                    _d.label = 1;
+                case 1:
+                    _d.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, admin.graphql("#graphql\n                query {\n                webhookSubscriptions(first: 10) {\n                    edges {\n                        node {\n                            id\n                            topic\n                            endpoint {\n                                __typename\n                                ... on WebhookHttpEndpoint {\n                                callbackUrl\n                                }\n                                ... on WebhookEventBridgeEndpoint {\n                                arn\n                                }\n                                ... on WebhookPubSubEndpoint {\n                                pubSubProject\n                                pubSubTopic\n                                }\n                            }\n                        }\n                    }\n                }\n            }")];
+                case 2:
+                    response = _d.sent();
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    responseJson = _d.sent();
+                    return [2 /*return*/, (_c = (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.webhookSubscriptions) === null || _c === void 0 ? void 0 : _c.edges];
+                case 4:
+                    error_21 = _d.sent();
+                    console.error(error_21);
+                    return [2 /*return*/, { status: false, error: error_21.toString() }];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.getAllRegisteredWebhooks = getAllRegisteredWebhooks;
+function removeWebhook(_a) {
+    var _b;
+    var admin = _a.admin, webhookId = _a.webhookId;
+    return __awaiter(this, void 0, void 0, function () {
+        var response, responseJson, error_22;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    if (!admin)
+                        throw Error("admin not defined");
+                    _c.label = 1;
+                case 1:
+                    _c.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, admin.graphql("#graphql\n            mutation webhookSubscriptionDelete($id: ID!) {\n              webhookSubscriptionDelete(id: $id) {\n                userErrors {\n                  field\n                  message\n                }\n                deletedWebhookSubscriptionId\n              }\n            }", {
+                            variables: {
+                                "id": webhookId
+                            }
+                        })];
+                case 2:
+                    response = _c.sent();
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    responseJson = _c.sent();
+                    return [2 /*return*/, (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.webhookSubscriptionDelete];
+                case 4:
+                    error_22 = _c.sent();
+                    console.error(error_22);
+                    return [2 /*return*/, { status: false, error: error_22.toString() }];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.removeWebhook = removeWebhook;
+function registerBulkWebhookIfNotExists(_a) {
+    var admin = _a.admin;
+    return __awaiter(this, void 0, void 0, function () {
+        var webhooks, findBulkWebhook, mutation, variables, response, responseJson, error_23;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    if (!admin)
+                        throw Error("admin not defined");
+                    return [4 /*yield*/, getAllRegisteredWebhooks({ admin: admin })];
+                case 1:
+                    webhooks = _b.sent();
+                    findBulkWebhook = webhooks.find(function (webhook) { return webhook.node.topic === "BULK_OPERATIONS_FINISH"; });
+                    if (!!findBulkWebhook) return [3 /*break*/, 6];
+                    _b.label = 2;
+                case 2:
+                    _b.trys.push([2, 5, , 6]);
+                    mutation = "#graphql\n                mutation webhookSubscriptionCreate($topic: WebhookSubscriptionTopic!, $webhookSubscription: WebhookSubscriptionInput!) {\n                  webhookSubscriptionCreate(\n                    topic: $topic,\n                    webhookSubscription: $webhookSubscription\n                  ) {\n                    userErrors {\n                      field\n                      message\n                    }\n                    webhookSubscription {\n                      id\n                      topic\n                      endpoint {\n                        __typename\n                        ... on WebhookHttpEndpoint {\n                          callbackUrl\n                        }\n                      }\n                    }\n                  }\n                }\n            ";
+                    variables = {
+                        topic: "BULK_OPERATIONS_FINISH",
+                        webhookSubscription: {
+                            callbackUrl: process.env.APP_URL + "/api/webhooks",
+                            format: "JSON"
+                        }
+                    };
+                    return [4 /*yield*/, admin.graphql(mutation, { variables: variables })];
+                case 3:
+                    response = _b.sent();
+                    return [4 /*yield*/, response.json()];
+                case 4:
+                    responseJson = _b.sent();
+                    if (responseJson.data.webhookSubscriptionCreate.userErrors.length > 0) {
+                        console.error("Failed to register BULK_OPERATIONS_FINISH webhook:", responseJson.data.webhookSubscriptionCreate.userErrors);
+                    }
+                    else {
+                        console.log("Successfully registered BULK_OPERATIONS_FINISH webhook");
+                    }
+                    return [3 /*break*/, 6];
+                case 5:
+                    error_23 = _b.sent();
+                    console.error("Error registering BULK_OPERATIONS_FINISH webhook:", error_23);
+                    return [3 /*break*/, 6];
+                case 6: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.registerBulkWebhookIfNotExists = registerBulkWebhookIfNotExists;

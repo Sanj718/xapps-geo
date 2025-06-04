@@ -67,7 +67,6 @@ function handleActions(_a) {
                     return [4 /*yield*/, admin_queries_server_1.updateWidgetEditorStatus({ admin: admin, appId: data.appId, value: data.data })];
                 case 3:
                     response = _c.sent();
-                    console.log("response", response);
                     return [2 /*return*/, __assign({ _action: _action }, response)];
                 case 4:
                     if (!(_action === _actions_1.ACTIONS.update_WidgetDisplayCustomRuleCode)) return [3 /*break*/, 6];

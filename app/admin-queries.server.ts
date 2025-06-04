@@ -774,3 +774,296 @@ export async function updateAutoRedirectsCustomCode({ admin, appId, value }: { a
         return { status: false, error: (error as Error).toString() };
     }
 }
+
+export async function runMarketsSync({ admin, data }: { admin: AdminApiContext, data: any }) {
+    if (!admin) throw Error("admin not defined");
+    try {
+        const response = await admin.graphql(
+            `#graphql
+                mutation {
+                    bulkOperationRunQuery(
+                    query: """
+                        {
+                            markets {
+                                edges {
+                                node {
+                                    __typename
+                                    id
+                                    handle
+                                    name
+                                    type
+                                    status
+                                    conditions {
+                                    __typename
+                                    conditionTypes
+                                    regionsCondition {
+                                        applicationLevel
+                                        regions {
+                                        edges {
+                                            node {
+                                            __typename
+                                            id
+                                            name
+                                            ... on MarketRegionCountry {
+                                                code
+                                                currency {
+                                                enabled
+                                                currencyName
+                                                currencyCode
+                                                }
+                                            }
+                                            }
+                                        }
+                                        }
+                                    }
+                                    }
+                                    webPresences {
+                                    edges {
+                                        node {
+                                        __typename
+                                        id
+                                        domain {
+                                            id
+                                            host
+                                            url
+                                            localization {
+                                            alternateLocales
+                                            country
+                                            defaultLocale
+                                            }
+                                        }
+                                        rootUrls {
+                                            url
+                                            locale
+                                        }
+                                        subfolderSuffix
+                                        defaultLocale {
+                                            locale
+                                            name
+                                            primary
+                                            published
+                                            marketWebPresences {
+                                            id
+                                            domain {
+                                                id
+                                                host
+                                                url
+                                                localization {
+                                                alternateLocales
+                                                country
+                                                defaultLocale
+                                                }
+                                            }
+                                            rootUrls {
+                                                url
+                                                locale
+                                            }
+                                            subfolderSuffix
+                                            }
+                                        }
+                                        alternateLocales {
+                                            locale
+                                            name
+                                            primary
+                                            published
+                                            marketWebPresences {
+                                            domain {
+                                                id
+                                                host
+                                                url
+                                                localization {
+                                                alternateLocales
+                                                country
+                                                defaultLocale
+                                                }
+                                            }
+                                            id
+                                            rootUrls {
+                                                url
+                                                locale
+                                            }
+                                            subfolderSuffix
+                                            }
+                                        }
+                                        }
+                                    }
+                                    }
+                                }
+                                }
+                            }
+                            } 
+                        """
+                    ) {
+                        bulkOperation {
+                            id
+                            status
+                            errorCode
+                        }
+                        userErrors {
+                            ...on BulkOperationUserError {
+                                code
+                                message
+                            }
+                        }
+                    }
+                }
+            `
+        );
+        const responseJson = await response.json();
+        return responseJson?.data?.bulkOperationRunQuery;
+    } catch (error) {
+        console.error(error);
+        return { status: false, error: (error as Error).toString() };
+    }
+}
+
+export async function getBulkOperation({ admin, bulkId }: { admin: AdminApiContext, bulkId: string }) {
+    if (!admin) throw Error("admin not defined");
+    try {
+        const response = await admin.graphql(
+            `#graphql
+           query getBulkResponse($id: ID!) {
+                node(id: $id) {
+                ... on BulkOperation {
+                    id
+                    status
+                    errorCode
+                    createdAt
+                    completedAt
+                    objectCount
+                    fileSize
+                    url
+                    partialDataUrl
+                }
+                }
+            }
+            `,
+            {
+                variables: {
+                    id: bulkId
+                }
+            }
+        );
+        const responseJson = await response.json();
+        return responseJson?.data?.node;
+    } catch (error) {
+        console.error("getBulkOperation: ", error);
+        return { status: false, error: (error as Error).toString() };
+    }
+}
+
+export async function getAllRegisteredWebhooks({ admin }: { admin: AdminApiContext }) {
+    if (!admin) throw Error("admin not defined");
+    try {
+        const response = await admin.graphql(
+            `#graphql
+                query {
+                webhookSubscriptions(first: 10) {
+                    edges {
+                        node {
+                            id
+                            topic
+                            endpoint {
+                                __typename
+                                ... on WebhookHttpEndpoint {
+                                callbackUrl
+                                }
+                                ... on WebhookEventBridgeEndpoint {
+                                arn
+                                }
+                                ... on WebhookPubSubEndpoint {
+                                pubSubProject
+                                pubSubTopic
+                                }
+                            }
+                        }
+                    }
+                }
+            }`,
+        );
+        const responseJson = await response.json();
+        return responseJson?.data?.webhookSubscriptions?.edges;
+    } catch (error) {
+        console.error(error);
+        return { status: false, error: (error as Error).toString() };
+    }
+}
+
+export async function removeWebhook({ admin, webhookId }: { admin: AdminApiContext, webhookId: string }) {
+    if (!admin) throw Error("admin not defined");
+    try {
+        const response = await admin.graphql(
+            `#graphql
+            mutation webhookSubscriptionDelete($id: ID!) {
+              webhookSubscriptionDelete(id: $id) {
+                userErrors {
+                  field
+                  message
+                }
+                deletedWebhookSubscriptionId
+              }
+            }`,
+            {
+                variables: {
+                    "id": webhookId
+                },
+            },
+        );
+        const responseJson = await response.json();
+        return responseJson?.data?.webhookSubscriptionDelete;
+
+    } catch (error) {
+        console.error(error);
+        return { status: false, error: (error as Error).toString() };
+    }
+}
+
+export async function registerBulkWebhookIfNotExists({ admin }: { admin: AdminApiContext }) {
+    if (!admin) throw Error("admin not defined");
+    const webhooks = await getAllRegisteredWebhooks({ admin });
+    // console.log(JSON.stringify(webhooks, null, 2));
+    const findBulkWebhook = webhooks.find((webhook: any) => webhook.node.topic === "BULK_OPERATIONS_FINISH");
+    if (!findBulkWebhook) {
+        try {
+            const mutation = `#graphql
+                mutation webhookSubscriptionCreate($topic: WebhookSubscriptionTopic!, $webhookSubscription: WebhookSubscriptionInput!) {
+                  webhookSubscriptionCreate(
+                    topic: $topic,
+                    webhookSubscription: $webhookSubscription
+                  ) {
+                    userErrors {
+                      field
+                      message
+                    }
+                    webhookSubscription {
+                      id
+                      topic
+                      endpoint {
+                        __typename
+                        ... on WebhookHttpEndpoint {
+                          callbackUrl
+                        }
+                      }
+                    }
+                  }
+                }
+            `;
+            const variables = {
+                topic: "BULK_OPERATIONS_FINISH",
+                webhookSubscription: {
+                    callbackUrl: process.env.APP_URL + "/api/webhooks",
+                    format: "JSON"
+                }
+            };
+            const response = await admin.graphql(mutation, { variables });
+            const responseJson = await response.json();
+            if (responseJson.data.webhookSubscriptionCreate.userErrors.length > 0) {
+                console.error("Failed to register BULK_OPERATIONS_FINISH webhook:", responseJson.data.webhookSubscriptionCreate.userErrors);
+            } else {
+                console.log("Successfully registered BULK_OPERATIONS_FINISH webhook");
+            }
+        } catch (error) {
+            console.error("Error registering BULK_OPERATIONS_FINISH webhook:", error);
+        }
+    }
+}

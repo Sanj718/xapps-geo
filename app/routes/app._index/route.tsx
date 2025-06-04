@@ -254,144 +254,146 @@ export default function Index() {
 
   return (
     <Page>
-      <InlineStack align="space-between" blockAlign="center">
-        <Text as="h1" variant="headingLg">
-          Welcome, {shopInfo?.shop?.name}! 👋
-        </Text>
-        <Text as="p" variant="bodyXs">
-          <InlineStack blockAlign="center" gap="150">
-            Your plan:{" "}
-            <Badge
-              tone={
-                isProPlan
-                  ? "success-strong"
-                  : isBasicPlan
-                    ? "success"
-                    : "attention"
-              }
-              progress={
-                isProPlan
-                  ? "complete"
-                  : isBasicPlan
-                    ? "partiallyComplete"
-                    : "incomplete"
-              }
-            >
-              {isProPlan ? "Pro" : isBasicPlan ? "Basic" : "Free"}
-            </Badge>
-            {(veteranPlan || devPlan) && (
-              <>
-                {" "}
-                +
-                <Tooltip
-                  width="wide"
-                  content={
-                    <small>
-                      {devPlan ? (
-                        <span>
-                          Your current plan is the <strong>Dev Plan</strong>,
-                          which includes all the features of the{" "}
-                          <strong>Pro Plan</strong>.
-                        </span>
-                      ) : veteranPlan ? (
-                        <span>
-                          <strong>Geolocation Redirects</strong> is{" "}
-                          <strong>no</strong> longer available for{" "}
-                          <strong>free</strong>. However, as a privileged
-                          veteran user, you are eligible for our app's{" "}
-                          <strong>Basic plan</strong>, free of charge.
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </small>
-                  }
-                >
-                  <Icon
-                    source={devPlan ? SandboxIcon : GiftCardFilledIcon}
-                    tone="success"
-                  />
-                </Tooltip>
-              </>
-            )}
-          </InlineStack>
-        </Text>
-      </InlineStack>
-      <br />
-      <Banner
-        icon={ConfettiIcon}
-        title="New Look, Better Experience!"
-        action={{
-          content: "Have questions or issues? Contact us!",
-          onAction: () => Tawk_API?.toggle(),
-        }}
-      >
-        We've updated the our app with a refreshed design and improved layout
-        for a better experience! 🎉
-      </Banner>
-      <br />
-      <InlineGrid columns={{ xs: 1, sm: 1, md: 2, lg: 2, xl: 2 }} gap="400">
-        <StartCard
-          title="Custom redirects"
-          status={redirectsEmbedStatus}
-          image={card1}
-          label="Customize custom redirects"
-          url="/app/redirects"
-        />
-        <StartCard
-          title="Markets redirects"
-          status={marketsEmbedStatus}
-          image={card2}
-          label="Customize markets redirects"
-          url="/app/markets"
-        />
-      </InlineGrid>
-      <br />
-      <Divider />
-      <br />
-      <InlineGrid columns={{ xs: 1, sm: 1, md: 2, lg: 2, xl: 2 }} gap="400">
-        <Stats
-          loading={loading[ACTIONS.AnalyticsData + "Loading"]}
-          title="Custom redirects performance"
-          totalPeriod={periodCustomRedirects}
-          totamlNum={totalCustomPopup + totalCustomAuto}
-          popupNum={totalCustomPopup}
-          popupPeriod={periodCustomPopupRedirects}
-          autoNum={totalCustomAuto}
-          autoPeriod={periodCustomAutoRedirects}
-        />
-        <Stats
-          loading={loading[ACTIONS.AnalyticsData + "Loading"]}
-          title="Markets redirects performance"
-          totalPeriod={periodMarketsRedirects}
-          totamlNum={totalMarketsPopup + totalMarketsAuto}
-          popupNum={totalMarketsPopup}
-          popupPeriod={periodMarketsPopupRedirects}
-          autoNum={totalMarketsAuto}
-          autoPeriod={periodMarketsAutoRedirects}
-        />
-      </InlineGrid>
-      <br />
-      <Divider />
-      <br />
-      <CalloutCard
-        illustration={rateCard}
-        title="Please share your thoughts"
-        primaryAction={{
-          content: "Good",
-          target: "_blank",
-          url: "https://apps.shopify.com/native-geo-redirects-popup?#modal-show=WriteReviewModal",
-          icon: ThumbsUpIcon,
-        }}
-        secondaryAction={{
-          content: "Bad",
-          url: "#",
-          icon: ThumbsDownIcon,
-          onAction: () => Tawk_API?.toggle(),
-        }}
-      >
-        <p>How's your experience been with the Geolocation Redirects app?</p>
-      </CalloutCard>
+      <div id="main-screen">
+        <InlineStack align="space-between" blockAlign="center">
+          <Text as="h1" variant="headingLg">
+            Welcome, {shopInfo?.shop?.name}! 👋
+          </Text>
+          <Text as="p" variant="bodyXs">
+            <InlineStack blockAlign="center" gap="150">
+              Your plan:{" "}
+              <Badge
+                tone={
+                  isProPlan
+                    ? "success-strong"
+                    : isBasicPlan
+                      ? "success"
+                      : "attention"
+                }
+                progress={
+                  isProPlan
+                    ? "complete"
+                    : isBasicPlan
+                      ? "partiallyComplete"
+                      : "incomplete"
+                }
+              >
+                {isProPlan ? "Pro" : isBasicPlan ? "Basic" : "Free"}
+              </Badge>
+              {(veteranPlan || devPlan) && (
+                <>
+                  {" "}
+                  +
+                  <Tooltip
+                    width="wide"
+                    content={
+                      <small>
+                        {devPlan ? (
+                          <span>
+                            Your current plan is the <strong>Dev Plan</strong>,
+                            which includes all the features of the{" "}
+                            <strong>Pro Plan</strong>.
+                          </span>
+                        ) : veteranPlan ? (
+                          <span>
+                            <strong>Geolocation Redirects</strong> is{" "}
+                            <strong>no</strong> longer available for{" "}
+                            <strong>free</strong>. However, as a privileged
+                            veteran user, you are eligible for our app's{" "}
+                            <strong>Basic plan</strong>, free of charge.
+                          </span>
+                        ) : (
+                          ""
+                        )}
+                      </small>
+                    }
+                  >
+                    <Icon
+                      source={devPlan ? SandboxIcon : GiftCardFilledIcon}
+                      tone="success"
+                    />
+                  </Tooltip>
+                </>
+              )}
+            </InlineStack>
+          </Text>
+        </InlineStack>
+        <br />
+        <Banner
+          icon={ConfettiIcon}
+          title="New Look, Better Experience!"
+          action={{
+            content: "Have questions or issues? Contact us!",
+            onAction: () => Tawk_API?.toggle(),
+          }}
+        >
+          We've updated the our app with a refreshed design and improved layout
+          for a better experience! 🎉
+        </Banner>
+        <br />
+        <InlineGrid columns={{ xs: 1, sm: 1, md: 2, lg: 2, xl: 2 }} gap="400">
+          <StartCard
+            title="Custom redirects"
+            status={redirectsEmbedStatus}
+            image={card1}
+            label="Customize custom redirects"
+            url="/app/redirects"
+          />
+          <StartCard
+            title="Markets redirects"
+            status={marketsEmbedStatus}
+            image={card2}
+            label="Customize markets redirects"
+            url="/app/markets"
+          />
+        </InlineGrid>
+        <br />
+        <Divider />
+        <br />
+        <InlineGrid columns={{ xs: 1, sm: 1, md: 2, lg: 2, xl: 2 }} gap="400">
+          <Stats
+            loading={loading[ACTIONS.AnalyticsData + "Loading"]}
+            title="Custom redirects performance"
+            totalPeriod={periodCustomRedirects}
+            totamlNum={totalCustomPopup + totalCustomAuto}
+            popupNum={totalCustomPopup}
+            popupPeriod={periodCustomPopupRedirects}
+            autoNum={totalCustomAuto}
+            autoPeriod={periodCustomAutoRedirects}
+          />
+          <Stats
+            loading={loading[ACTIONS.AnalyticsData + "Loading"]}
+            title="Markets redirects performance"
+            totalPeriod={periodMarketsRedirects}
+            totamlNum={totalMarketsPopup + totalMarketsAuto}
+            popupNum={totalMarketsPopup}
+            popupPeriod={periodMarketsPopupRedirects}
+            autoNum={totalMarketsAuto}
+            autoPeriod={periodMarketsAutoRedirects}
+          />
+        </InlineGrid>
+        <br />
+        <Divider />
+        <br />
+        <CalloutCard
+          illustration={rateCard}
+          title="Please share your thoughts"
+          primaryAction={{
+            content: "Good",
+            target: "_blank",
+            url: "https://apps.shopify.com/native-geo-redirects-popup?#modal-show=WriteReviewModal",
+            icon: ThumbsUpIcon,
+          }}
+          secondaryAction={{
+            content: "Bad",
+            url: "#",
+            icon: ThumbsDownIcon,
+            onAction: () => Tawk_API?.toggle(),
+          }}
+        >
+          <p>How's your experience been with the Geolocation Redirects app?</p>
+        </CalloutCard>
+      </div>
     </Page>
   );
 }

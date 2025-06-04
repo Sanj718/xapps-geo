@@ -2,7 +2,6 @@
 exports.__esModule = true;
 var polaris_1 = require("@shopify/polaris");
 var react_1 = require("react");
-var app_bridge_react_1 = require("@shopify/app-bridge-react");
 // import { Redirect } from "@shopify/app-bridge/actions";
 // import {
 //   DEV_EMBED_APP_ID,
@@ -15,14 +14,6 @@ var env_1 = require("../env");
 var _helpers_1 = require("../_helpers");
 var _a = _helpers_1.getEmbedConst(env_1.PROD_EMBED_APP_ID, env_1.DEV_EMBED_APP_ID, env_1.RD_EMBED_APP_HANDLE) || {}, EMBED_APP_ID = _a.EMBED_APP_ID, EMBED_APP_HANDLE = _a.EMBED_APP_HANDLE;
 function AutoRedirectsSettings() {
-    var app = app_bridge_react_1.useAppBridge();
-    // const redirect = Redirect.create(app);
-    // async function handleActivateEmbedRedirect() {
-    //   redirect?.dispatch(Redirect.Action.ADMIN_PATH, {
-    //     path: `/themes/current/editor?context=apps&activateAppId=${EMBED_APP_ID}/${EMBED_APP_HANDLE}`,
-    //     newContext: true,
-    //   });
-    // }
     var embedPath = "shopify://admin/themes/current/editor?context=apps&activateAppId=" + EMBED_APP_ID + "/" + EMBED_APP_HANDLE;
     var settingsItems = [
         {

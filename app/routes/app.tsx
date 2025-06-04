@@ -1,5 +1,5 @@
 import type { HeadersFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { NavLink, Outlet, useLoaderData, useRouteError } from "@remix-run/react";
+import { Link, NavLink, Outlet, useLoaderData, useNavigate, useRouteError, useViewTransitionState } from "@remix-run/react";
 import { boundary } from "@shopify/shopify-app-remix/server";
 import { AppProvider } from "@shopify/shopify-app-remix/react";
 import { NavMenu } from "@shopify/app-bridge-react";
@@ -8,6 +8,8 @@ import polarisStyles from "@shopify/polaris/build/esm/styles.css?url";
 import { authenticate } from "../shopify.server";
 import { useMemo, useState } from "react";
 import { getApp, getShop } from "../components/_loaders";
+import { getAllRegisteredWebhooks, registerBulkWebhookIfNotExists, removeWebhook } from "app/admin-queries.server";
+import "../assets/custom.scss";
 
 export const links = () => [{ rel: "stylesheet", href: polarisStyles }];
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -16,6 +18,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const appData = await getApp(admin);
   const shopInfo = await getShop(admin);
   const shopdb = await getShopdb({ shop: session.shop });
+  registerBulkWebhookIfNotExists({ admin });
+
+  // removeWebhook({ admin, webhookId: "gid://shopify/WebhookSubscription/1366407479484" });
+  const webhooks = await getAllRegisteredWebhooks({ admin });
+  console.log("webhooks: ", JSON.stringify(webhooks, null, 2));
 
   return {
     apiKey: process.env.SHOPIFY_API_KEY || "",
@@ -102,13 +109,19 @@ export default function App() {
     setDevPlan(dev ? true : false);
   }
 
+  function handleSideNavClick() {
+    const mainScreen = document.getElementById('main-screen');
+    if (mainScreen) mainScreen.innerHTML = `<div class="spinner"></div>`;
+  }
+
+
   return (
     <AppProvider isEmbeddedApp apiKey={apiKey}>
       <NavMenu>
-        <NavLink to="/app">Dashboard</NavLink>
-        <NavLink to="/app/redirects">Custom redirects</NavLink>
-        <NavLink to="/app/markets">Markets redirects</NavLink>
-        <NavLink to="/app/billing">Billing</NavLink>
+        <Link to="/app" viewTransition onClick={() => handleSideNavClick()}>Dashboard</Link>
+        <Link to="/app/redirects" viewTransition onClick={() => handleSideNavClick()}>Custom redirects</Link>
+        <Link to="/app/markets" viewTransition onClick={() => handleSideNavClick()}>Markets redirects</Link>
+        <Link to="/app/billing" viewTransition onClick={() => handleSideNavClick()}>Billing</Link>
       </NavMenu>
       <Outlet
         context={{

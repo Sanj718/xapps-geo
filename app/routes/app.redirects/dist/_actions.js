@@ -116,7 +116,6 @@ function handleActions(_a) {
                     return [4 /*yield*/, admin_queries_server_1.updateWidgetEditorStatus({ admin: admin, appId: data.appId, value: data.data })];
                 case 19:
                     response = _d.sent();
-                    console.log("response", response);
                     return [2 /*return*/, __assign({ _action: _action }, response)];
                 case 20:
                     if (!(_action === _actions_1.ACTIONS.update_WidgetDisplayCustomRuleCode)) return [3 /*break*/, 22];
@@ -129,7 +128,6 @@ function handleActions(_a) {
                     return [4 /*yield*/, admin_queries_server_1.updateButtonEditorStatus({ admin: admin, appId: data.appId, value: data.data })];
                 case 23:
                     response = _d.sent();
-                    console.log("response", response);
                     return [2 /*return*/, __assign({ _action: _action }, response)];
                 case 24:
                     if (!(_action === _actions_1.ACTIONS.update_ButtonDisplayCustomRuleCode)) return [3 /*break*/, 26];
@@ -142,11 +140,9 @@ function handleActions(_a) {
                     return [4 /*yield*/, admin_queries_server_1.createAutoRedirect({ admin: admin, appId: data.appId, value: data.data })];
                 case 27:
                     response = _d.sent();
-                    console.log("response", response);
                     return [2 /*return*/, __assign({ _action: _action }, response)];
                 case 28:
                     if (!(_action === _actions_1.ACTIONS.update_AutoRedirect)) return [3 /*break*/, 30];
-                    console.log("data", data);
                     return [4 /*yield*/, admin_queries_server_1.updateAutoRedirect({ admin: admin, appId: data.appId, key: data.key, value: data.value })];
                 case 29:
                     response = _d.sent();

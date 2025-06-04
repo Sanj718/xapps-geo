@@ -25,16 +25,6 @@ const { EMBED_APP_ID, EMBED_APP_HANDLE } =
   getEmbedConst(PROD_EMBED_APP_ID, DEV_EMBED_APP_ID, RD_EMBED_APP_HANDLE) || {};
 
 export default function AutoRedirectsSettings() {
-  const app = useAppBridge();
-  // const redirect = Redirect.create(app);
-
-  // async function handleActivateEmbedRedirect() {
-  //   redirect?.dispatch(Redirect.Action.ADMIN_PATH, {
-  //     path: `/themes/current/editor?context=apps&activateAppId=${EMBED_APP_ID}/${EMBED_APP_HANDLE}`,
-  //     newContext: true,
-  //   });
-  // }
-
   const embedPath = `shopify://admin/themes/current/editor?context=apps&activateAppId=${EMBED_APP_ID}/${EMBED_APP_HANDLE}`;
 
   const settingsItems = [

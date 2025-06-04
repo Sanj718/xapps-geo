@@ -1,0 +1,109 @@
+{
+  markets {
+    edges {
+      node {
+        __typename
+        id
+        handle
+        name
+        type
+        status
+        conditions {
+          __typename
+          conditionTypes
+          regionsCondition {
+            applicationLevel
+            regions {
+              edges {
+                node {
+                  __typename
+                  id
+                  name
+                  ... on MarketRegionCountry {
+                    code
+                    currency {
+                      enabled
+                      currencyName
+                      currencyCode
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        webPresences {
+          edges {
+            node {
+              __typename
+              id
+              domain {
+                id
+                host
+                url
+                localization {
+                  alternateLocales
+                  country
+                  defaultLocale
+                }
+              }
+              rootUrls {
+                url
+                locale
+              }
+              subfolderSuffix
+              defaultLocale {
+                locale
+                name
+                primary
+                published
+                marketWebPresences {
+                  id
+                  domain {
+                    id
+                    host
+                    url
+                    localization {
+                      alternateLocales
+                      country
+                      defaultLocale
+                    }
+                  }
+                  rootUrls {
+                    url
+                    locale
+                  }
+                  subfolderSuffix
+                }
+              }
+              alternateLocales {
+                locale
+                name
+                primary
+                published
+                marketWebPresences {
+                  domain {
+                    id
+                    host
+                    url
+                    localization {
+                      alternateLocales
+                      country
+                      defaultLocale
+                    }
+                  }
+                  id
+                  rootUrls {
+                    url
+                    locale
+                  }
+                  subfolderSuffix
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

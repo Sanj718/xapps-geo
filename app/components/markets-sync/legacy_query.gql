@@ -1,0 +1,58 @@
+{
+  markets {
+    edges {
+      node {
+        __typename
+        id
+        name
+        enabled
+        primary
+        currencySettings {
+          baseCurrency {
+            enabled
+            currencyCode
+          }
+          localCurrencies
+        }
+        regions {
+          edges {
+            node {
+              __typename
+              name
+              id
+              ... on MarketRegionCountry {
+                code
+                currency {
+                  enabled
+                  currencyName
+                  currencyCode
+                }
+              }
+            }
+          }
+        }
+        webPresence {
+          domain {
+            id
+          }
+          alternateLocales {
+            locale
+            primary
+            published
+            name
+          }
+          defaultLocale {
+            locale
+            primary
+            published
+            name
+          }
+          rootUrls {
+            locale
+            url
+          }
+        }
+      }
+    }
+  }
+}

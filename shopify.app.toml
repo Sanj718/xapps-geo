@@ -3,7 +3,7 @@
 client_id = "9966dc648683377b495dc8e5b5a704b1"
 name = "xapps-geo-ts"
 handle = "xapps-geo-ts"
-application_url = "https://keeping-economic-heath-worked.trycloudflare.com"
+application_url = "https://comes-worth-guest-genesis.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,13 +17,13 @@ scopes = "read_files,read_locales,read_markets,read_themes,write_files"
 
 [auth]
 redirect_urls = [
-  "https://keeping-economic-heath-worked.trycloudflare.com/auth/callback",
-  "https://keeping-economic-heath-worked.trycloudflare.com/auth/shopify/callback",
-  "https://keeping-economic-heath-worked.trycloudflare.com/api/auth/callback"
+  "https://comes-worth-guest-genesis.trycloudflare.com/auth/callback",
+  "https://comes-worth-guest-genesis.trycloudflare.com/auth/shopify/callback",
+  "https://comes-worth-guest-genesis.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
-api_version = "2025-01"
+api_version = "2025-07"
 
   [[webhooks.subscriptions]]
   topics = [ "app/scopes_update" ]

@@ -31,6 +31,10 @@ export const ACTIONS = {
   reorder_AutoRedirects: "reOrderAutoRedirects",
   update_AutoRedirectsCustomCode: "updateAutoRedirectsCustomCode",
   update_AutoRedirectsCustomCodeStatus: "updateAutoRedirectsCustomCodeStatus",
+  run_MarketsSync: "runMarketsSync",
+  get_MarketsSyncStatus: "getMarketsSyncStatus",
+  update_MarketsConfigs: "updateMarketsConfigs",
+  update_MarketsWidget: "updateMarketsWidget",
 }
 
 export const getAssets = async ({ admin, data }: GetAssetsParams) => {

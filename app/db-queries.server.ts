@@ -17,6 +17,11 @@ interface InitialConfigs extends Shop {
   advancedConfigs?: any;
 }
 
+interface MarketsConfigs extends Shop {
+  basicConfigs: any;
+  advancedConfigs?: any;
+}
+
 interface AllRedirects extends Shop {
   localesAllowed?: boolean;
 }
@@ -32,6 +37,14 @@ interface ReorderRedirects extends Shop {
 interface AllowedPagesProps extends Shop {
   allowedPages: any;
   hideOnAllowedPages?: boolean;
+}
+
+interface MarketSyncStatus extends Shop {
+  syncStatus: string;
+}
+
+interface MarketsData extends Shop {
+  markets: any;
 }
 
 // App Plans
@@ -59,8 +72,8 @@ export async function addActiveShop({ shop }: Shop): Promise<DBResponse> {
 
 export const createInitialConfigs = async ({
   shop,
-  basic_configs,
-  advanced_configs = null,
+  basicConfigs,
+  advancedConfigs = null,
 }: InitialConfigs): Promise<DBResponse> => {
   try {
     // First, fetch the shop's id from the activeShops table
@@ -73,14 +86,13 @@ export const createInitialConfigs = async ({
       throw new Error("Shop not found");
     }
 
-    // Now, insert or ignore the configs based on the shop_id
     const result = await prisma.configs.upsert({
       where: { shopId: activeShop.id }, // shopId should be unique in the configs table
       update: {}, // No update action is required, we just want to ignore conflicts
       create: {
         shopId: activeShop.id,
-        basicConfigs: basic_configs,
-        advancedConfigs: advanced_configs,
+        basicConfigs: basicConfigs,
+        advancedConfigs: advancedConfigs,
       },
     });
 
@@ -240,7 +252,7 @@ export const getAllRedirects = async ({ shop, localesAllowed }: AllRedirects): P
       status: true,
       locales: true,
     };
-
+    // TODO: Add localesAllowed to the select fields
     // if (localesAllowed) {
     //   selectFields['locales'] = true;
     // }
@@ -410,7 +422,6 @@ export const createUpdateConfigs = async ({
   basicConfigs,
   advancedConfigs = null,
 }: InitialConfigs): Promise<DBResponse> => {
-  console.log(typeof basicConfigs, typeof advancedConfigs);
   try {
     const activeShop = await prisma.activeShops.findUnique({
       where: { shop },
@@ -480,6 +491,212 @@ export const createUpdateAllowedPages = async ({
   }
 };
 
+export const createUpdateMarketConfigs = async ({
+  shop,
+  basicConfigs,
+  advancedConfigs = null,
+}: MarketsConfigs): Promise<DBResponse> => {
+  try {
+    const activeShop = await prisma.activeShops.findUnique({
+      where: { shop },
+      select: { id: true },
+    });
+
+    if (!activeShop) {
+      throw new Error("Shop not found");
+    }
+    const basicConfigsString = basicConfigs ? JSON.stringify(basicConfigs) : null
+    const advancedConfigsString = advancedConfigs ? JSON.stringify(advancedConfigs) : null
+
+    const result = await prisma.marketsConfigs.upsert({
+      where: { shopId: activeShop.id },
+      update: {
+        basicConfigs: basicConfigsString,
+        advancedConfigs: advancedConfigsString,
+      },
+      create: {
+        shopId: activeShop.id,
+        basicConfigs: basicConfigsString,
+        advancedConfigs: advancedConfigsString,
+      },
+    });
+
+    return { status: result ? true : false, data: result };
+  } catch (error: any) {
+    console.error(error);
+    return { status: false, error: (error as Error).toString() };
+  }
+};
+
+export const getMarketSyncStatus = async ({ shop }: Shop): Promise<DBResponse> => {
+  try {
+    const activeShop = await prisma.activeShops.findUnique({
+      where: { shop },
+      select: { id: true },
+    });
+
+    if (!activeShop) {
+      throw new Error("Shop not found");
+    }
+    const result = await prisma.markets.findFirst({
+      where: { shopId: activeShop.id },
+      select: { syncStatus: true }
+    });
+    // console.log('getMarketSyncStatus', result);
+    return { status: result ? true : false, data: result };
+  } catch (error: any) {
+    console.error(error);
+    return { status: false, error: (error as Error).toString() };
+  }
+};
+
+export const getMarketsData = async ({ shop }: Shop): Promise<DBResponse> => {
+  try {
+    const activeShop = await prisma.activeShops.findUnique({
+      where: { shop },
+      select: { id: true },
+    });
+
+    if (!activeShop) {
+      throw new Error("Shop not found");
+    }
+    const result = await prisma.markets.findFirst({
+      where: { shopId: activeShop.id },
+      select: { markets: true, syncStatus: true, lastSyncTimestamp: true }
+    });
+    return { status: result ? true : false, data: result };
+  } catch (error) {
+    console.error(error);
+    return { status: false, error: (error as Error).toString() };
+  }
+};
+
+export const getMarketConfigs = async ({ shop }: Shop): Promise<DBResponse> => {
+  try {
+    const activeShop = await prisma.activeShops.findUnique({
+      where: { shop },
+      select: { id: true },
+    });
+
+    if (!activeShop) {
+      throw new Error("Shop not found");
+    }
+    const result = await prisma.marketsConfigs.findFirst({
+      where: { shopId: activeShop.id },
+      select: { basicConfigs: true, advancedConfigs: true, widget: true, autoRedirect: true }
+    });
+    return { status: result ? true : false, data: result };
+  } catch (error) {
+    console.error(error);
+    return { status: false, error: (error as Error).toString() };
+  }
+};
+
+export const updateMarketSyncStatus = async ({ shop, syncStatus }: MarketSyncStatus): Promise<DBResponse> => {
+  try {
+    const activeShop = await prisma.activeShops.findUnique({
+      where: { shop },
+      select: { id: true },
+    });
+
+    if (!activeShop) {
+      throw new Error("Shop not found");
+    }
+    const result = await prisma.markets.upsert({
+      where: { shopId: activeShop.id },
+      update: { syncStatus },
+      create: { shopId: activeShop.id, syncStatus }
+    });
+    return { status: result ? true : false, data: result };
+  } catch (error: any) {
+    console.error(error);
+    return { status: false, error: (error as Error).toString() };
+  }
+};
+
+export const addMarketsData = async ({ shop, markets }: MarketsData): Promise<DBResponse> => {
+  try {
+    const activeShop = await prisma.activeShops.findUnique({
+      where: { shop },
+      select: { id: true },
+    });
+
+    if (!activeShop) {
+      throw new Error("Shop not found");
+    }
+    const timestamp = new Date().toISOString();
+    const result = await prisma.markets.upsert({
+      where: { shopId: activeShop.id },
+      update: { markets: JSON.stringify(markets), syncStatus: "SUCCESS", lastSyncTimestamp: timestamp },
+      create: { shopId: activeShop.id, markets: JSON.stringify(markets), syncStatus: "SUCCESS", lastSyncTimestamp: timestamp }
+    });
+
+    return { status: result ? true : false, data: result };
+  } catch (error) {
+    console.error(error);
+    return { status: false, error: (error as Error).toString() };
+  }
+};
+
+export const updateMarketsWidget = async ({ shop, widget }: { shop: string, widget: boolean }): Promise<DBResponse> => {
+  try {
+    const activeShop = await prisma.activeShops.findUnique({
+      where: { shop },
+      select: { id: true },
+    });
+
+    if (!activeShop) {
+      throw new Error("Shop not found");
+    }
+    const result = await prisma.marketsConfigs.update({
+      where: { shopId: activeShop.id },
+      data: { widget },
+    });
+    return { status: result ? true : false, data: result };
+  } catch (error) {
+    console.error(error);
+    return { status: false, error: (error as Error).toString() };
+  }
+};
+
+export const updateMarketsRedirect = async ({ shop, autoRedirect }: { shop: string, autoRedirect: boolean }): Promise<DBResponse> => {
+  try {
+    const activeShop = await prisma.activeShops.findUnique({
+      where: { shop },
+      select: { id: true },
+    });
+
+    if (!activeShop) {
+      throw new Error("Shop not found");
+    }
+    const result = await prisma.marketsConfigs.update({
+      where: { shopId: activeShop.id },
+      data: { autoRedirect },
+    });
+    return { status: result ? true : false, data: result };
+  } catch (error) {
+    console.error(error);
+    return { status: false, error: (error as Error).toString() };
+  }
+};
+
+
+
+// export const runMarketsSync = async ({ shop }: Shop): Promise<DBResponse> => {
+//   try {
+//     const result = await prisma.activeShops.update({
+//       where: { shop },
+//       data: {
+//         marketsSync: true,
+//       },
+//     });
+
+//     return { status: result ? true : false, data: result };
+//   } catch (error: any) {
+//     console.error(error);
+//     return { status: false, error: (error as Error).toString() };
+//   }
+// };
 //   shop_id,
 //   flag,
 //   label,

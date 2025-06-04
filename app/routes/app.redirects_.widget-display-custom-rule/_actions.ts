@@ -9,7 +9,6 @@ export async function handleActions({ request }: ActionFunctionArgs) {
 
     if (_action === ACTIONS.update_WidgetDisplayCustomRuleStatus) {
         const response = await updateWidgetEditorStatus({ admin, appId: data.appId, value: data.data });
-        console.log("response", response);
         return { _action, ...response };
     }
 

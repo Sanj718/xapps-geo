@@ -47,7 +47,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.createUpdateAllowedPages = exports.createUpdateConfigs = exports.getConfigs = exports.reorderRedirect = exports.deleteRedirect = exports.updateRedirectStatus = exports.updateRedirect = exports.getAllRedirects = exports.createRedirect = exports.getAnalyticsData = exports.removeShop = exports.disableShop = exports.getShopdb = exports.createInitialConfigs = exports.addActiveShop = void 0;
+exports.updateMarketsRedirect = exports.updateMarketsWidget = exports.addMarketsData = exports.updateMarketSyncStatus = exports.getMarketConfigs = exports.getMarketsData = exports.getMarketSyncStatus = exports.createUpdateMarketConfigs = exports.createUpdateAllowedPages = exports.createUpdateConfigs = exports.getConfigs = exports.reorderRedirect = exports.deleteRedirect = exports.updateRedirectStatus = exports.updateRedirect = exports.getAllRedirects = exports.createRedirect = exports.getAnalyticsData = exports.removeShop = exports.disableShop = exports.getShopdb = exports.createInitialConfigs = exports.addActiveShop = void 0;
 var _helpers_1 = require("./components/_helpers");
 var db_server_1 = require("./db.server");
 // App Plans
@@ -86,7 +86,7 @@ function addActiveShop(_a) {
 }
 exports.addActiveShop = addActiveShop;
 exports.createInitialConfigs = function (_a) {
-    var shop = _a.shop, basic_configs = _a.basic_configs, _b = _a.advanced_configs, advanced_configs = _b === void 0 ? null : _b;
+    var shop = _a.shop, basicConfigs = _a.basicConfigs, _b = _a.advancedConfigs, advancedConfigs = _b === void 0 ? null : _b;
     return __awaiter(void 0, void 0, Promise, function () {
         var activeShop, result, error_2;
         return __generator(this, function (_c) {
@@ -107,8 +107,8 @@ exports.createInitialConfigs = function (_a) {
                             update: {},
                             create: {
                                 shopId: activeShop.id,
-                                basicConfigs: basic_configs,
-                                advancedConfigs: advanced_configs
+                                basicConfigs: basicConfigs,
+                                advancedConfigs: advancedConfigs
                             }
                         })];
                 case 2:
@@ -524,15 +524,12 @@ exports.createUpdateConfigs = function (_a) {
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
-                    console.log(typeof basicConfigs, typeof advancedConfigs);
-                    _c.label = 1;
-                case 1:
-                    _c.trys.push([1, 4, , 5]);
+                    _c.trys.push([0, 3, , 4]);
                     return [4 /*yield*/, db_server_1["default"].activeShops.findUnique({
                             where: { shop: shop },
                             select: { id: true }
                         })];
-                case 2:
+                case 1:
                     activeShop = _c.sent();
                     if (!activeShop) {
                         throw new Error("Shop not found");
@@ -551,14 +548,14 @@ exports.createUpdateConfigs = function (_a) {
                                 advancedConfigs: advancedConfigsString
                             }
                         })];
-                case 3:
+                case 2:
                     result = _c.sent();
                     return [2 /*return*/, { status: result ? true : false, data: result }];
-                case 4:
+                case 3:
                     error_14 = _c.sent();
                     console.error(error_14);
                     return [2 /*return*/, { status: false, error: error_14.toString() }];
-                case 5: return [2 /*return*/];
+                case 4: return [2 /*return*/];
             }
         });
     });
@@ -605,6 +602,298 @@ exports.createUpdateAllowedPages = function (_a) {
         });
     });
 };
+exports.createUpdateMarketConfigs = function (_a) {
+    var shop = _a.shop, basicConfigs = _a.basicConfigs, _b = _a.advancedConfigs, advancedConfigs = _b === void 0 ? null : _b;
+    return __awaiter(void 0, void 0, Promise, function () {
+        var activeShop, basicConfigsString, advancedConfigsString, result, error_16;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    _c.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, db_server_1["default"].activeShops.findUnique({
+                            where: { shop: shop },
+                            select: { id: true }
+                        })];
+                case 1:
+                    activeShop = _c.sent();
+                    if (!activeShop) {
+                        throw new Error("Shop not found");
+                    }
+                    basicConfigsString = basicConfigs ? JSON.stringify(basicConfigs) : null;
+                    advancedConfigsString = advancedConfigs ? JSON.stringify(advancedConfigs) : null;
+                    return [4 /*yield*/, db_server_1["default"].marketsConfigs.upsert({
+                            where: { shopId: activeShop.id },
+                            update: {
+                                basicConfigs: basicConfigsString,
+                                advancedConfigs: advancedConfigsString
+                            },
+                            create: {
+                                shopId: activeShop.id,
+                                basicConfigs: basicConfigsString,
+                                advancedConfigs: advancedConfigsString
+                            }
+                        })];
+                case 2:
+                    result = _c.sent();
+                    return [2 /*return*/, { status: result ? true : false, data: result }];
+                case 3:
+                    error_16 = _c.sent();
+                    console.error(error_16);
+                    return [2 /*return*/, { status: false, error: error_16.toString() }];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+};
+exports.getMarketSyncStatus = function (_a) {
+    var shop = _a.shop;
+    return __awaiter(void 0, void 0, Promise, function () {
+        var activeShop, result, error_17;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, db_server_1["default"].activeShops.findUnique({
+                            where: { shop: shop },
+                            select: { id: true }
+                        })];
+                case 1:
+                    activeShop = _b.sent();
+                    if (!activeShop) {
+                        throw new Error("Shop not found");
+                    }
+                    return [4 /*yield*/, db_server_1["default"].markets.findFirst({
+                            where: { shopId: activeShop.id },
+                            select: { syncStatus: true }
+                        })];
+                case 2:
+                    result = _b.sent();
+                    // console.log('getMarketSyncStatus', result);
+                    return [2 /*return*/, { status: result ? true : false, data: result }];
+                case 3:
+                    error_17 = _b.sent();
+                    console.error(error_17);
+                    return [2 /*return*/, { status: false, error: error_17.toString() }];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+};
+exports.getMarketsData = function (_a) {
+    var shop = _a.shop;
+    return __awaiter(void 0, void 0, Promise, function () {
+        var activeShop, result, error_18;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, db_server_1["default"].activeShops.findUnique({
+                            where: { shop: shop },
+                            select: { id: true }
+                        })];
+                case 1:
+                    activeShop = _b.sent();
+                    if (!activeShop) {
+                        throw new Error("Shop not found");
+                    }
+                    return [4 /*yield*/, db_server_1["default"].markets.findFirst({
+                            where: { shopId: activeShop.id },
+                            select: { markets: true, syncStatus: true, lastSyncTimestamp: true }
+                        })];
+                case 2:
+                    result = _b.sent();
+                    return [2 /*return*/, { status: result ? true : false, data: result }];
+                case 3:
+                    error_18 = _b.sent();
+                    console.error(error_18);
+                    return [2 /*return*/, { status: false, error: error_18.toString() }];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+};
+exports.getMarketConfigs = function (_a) {
+    var shop = _a.shop;
+    return __awaiter(void 0, void 0, Promise, function () {
+        var activeShop, result, error_19;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, db_server_1["default"].activeShops.findUnique({
+                            where: { shop: shop },
+                            select: { id: true }
+                        })];
+                case 1:
+                    activeShop = _b.sent();
+                    if (!activeShop) {
+                        throw new Error("Shop not found");
+                    }
+                    return [4 /*yield*/, db_server_1["default"].marketsConfigs.findFirst({
+                            where: { shopId: activeShop.id },
+                            select: { basicConfigs: true, advancedConfigs: true, widget: true, autoRedirect: true }
+                        })];
+                case 2:
+                    result = _b.sent();
+                    return [2 /*return*/, { status: result ? true : false, data: result }];
+                case 3:
+                    error_19 = _b.sent();
+                    console.error(error_19);
+                    return [2 /*return*/, { status: false, error: error_19.toString() }];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+};
+exports.updateMarketSyncStatus = function (_a) {
+    var shop = _a.shop, syncStatus = _a.syncStatus;
+    return __awaiter(void 0, void 0, Promise, function () {
+        var activeShop, result, error_20;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, db_server_1["default"].activeShops.findUnique({
+                            where: { shop: shop },
+                            select: { id: true }
+                        })];
+                case 1:
+                    activeShop = _b.sent();
+                    if (!activeShop) {
+                        throw new Error("Shop not found");
+                    }
+                    return [4 /*yield*/, db_server_1["default"].markets.upsert({
+                            where: { shopId: activeShop.id },
+                            update: { syncStatus: syncStatus },
+                            create: { shopId: activeShop.id, syncStatus: syncStatus }
+                        })];
+                case 2:
+                    result = _b.sent();
+                    return [2 /*return*/, { status: result ? true : false, data: result }];
+                case 3:
+                    error_20 = _b.sent();
+                    console.error(error_20);
+                    return [2 /*return*/, { status: false, error: error_20.toString() }];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+};
+exports.addMarketsData = function (_a) {
+    var shop = _a.shop, markets = _a.markets;
+    return __awaiter(void 0, void 0, Promise, function () {
+        var activeShop, timestamp, result, error_21;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, db_server_1["default"].activeShops.findUnique({
+                            where: { shop: shop },
+                            select: { id: true }
+                        })];
+                case 1:
+                    activeShop = _b.sent();
+                    if (!activeShop) {
+                        throw new Error("Shop not found");
+                    }
+                    timestamp = new Date().toISOString();
+                    return [4 /*yield*/, db_server_1["default"].markets.upsert({
+                            where: { shopId: activeShop.id },
+                            update: { markets: JSON.stringify(markets), syncStatus: "SUCCESS", lastSyncTimestamp: timestamp },
+                            create: { shopId: activeShop.id, markets: JSON.stringify(markets), syncStatus: "SUCCESS", lastSyncTimestamp: timestamp }
+                        })];
+                case 2:
+                    result = _b.sent();
+                    return [2 /*return*/, { status: result ? true : false, data: result }];
+                case 3:
+                    error_21 = _b.sent();
+                    console.error(error_21);
+                    return [2 /*return*/, { status: false, error: error_21.toString() }];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+};
+exports.updateMarketsWidget = function (_a) {
+    var shop = _a.shop, widget = _a.widget;
+    return __awaiter(void 0, void 0, Promise, function () {
+        var activeShop, result, error_22;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, db_server_1["default"].activeShops.findUnique({
+                            where: { shop: shop },
+                            select: { id: true }
+                        })];
+                case 1:
+                    activeShop = _b.sent();
+                    if (!activeShop) {
+                        throw new Error("Shop not found");
+                    }
+                    return [4 /*yield*/, db_server_1["default"].marketsConfigs.update({
+                            where: { shopId: activeShop.id },
+                            data: { widget: widget }
+                        })];
+                case 2:
+                    result = _b.sent();
+                    return [2 /*return*/, { status: result ? true : false, data: result }];
+                case 3:
+                    error_22 = _b.sent();
+                    console.error(error_22);
+                    return [2 /*return*/, { status: false, error: error_22.toString() }];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+};
+exports.updateMarketsRedirect = function (_a) {
+    var shop = _a.shop, autoRedirect = _a.autoRedirect;
+    return __awaiter(void 0, void 0, Promise, function () {
+        var activeShop, result, error_23;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, db_server_1["default"].activeShops.findUnique({
+                            where: { shop: shop },
+                            select: { id: true }
+                        })];
+                case 1:
+                    activeShop = _b.sent();
+                    if (!activeShop) {
+                        throw new Error("Shop not found");
+                    }
+                    return [4 /*yield*/, db_server_1["default"].marketsConfigs.update({
+                            where: { shopId: activeShop.id },
+                            data: { autoRedirect: autoRedirect }
+                        })];
+                case 2:
+                    result = _b.sent();
+                    return [2 /*return*/, { status: result ? true : false, data: result }];
+                case 3:
+                    error_23 = _b.sent();
+                    console.error(error_23);
+                    return [2 /*return*/, { status: false, error: error_23.toString() }];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+};
+// export const runMarketsSync = async ({ shop }: Shop): Promise<DBResponse> => {
+//   try {
+//     const result = await prisma.activeShops.update({
+//       where: { shop },
+//       data: {
+//         marketsSync: true,
+//       },
+//     });
+//     return { status: result ? true : false, data: result };
+//   } catch (error: any) {
+//     console.error(error);
+//     return { status: false, error: (error as Error).toString() };
+//   }
+// };
 //   shop_id,
 //   flag,
 //   label,

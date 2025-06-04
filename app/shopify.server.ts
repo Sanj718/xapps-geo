@@ -3,6 +3,8 @@ import {
   ApiVersion,
   AppDistribution,
   shopifyApp,
+  RELEASE_CANDIDATE_API_VERSION,
+  DeliveryMethod
 } from "@shopify/shopify-app-remix/server";
 import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prisma";
 import prisma from "./db.server";
@@ -12,19 +14,32 @@ import { default_basic_configs } from "./components/_helpers";
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,
   apiSecretKey: process.env.SHOPIFY_API_SECRET || "",
-  apiVersion: ApiVersion.January25,
+  apiVersion: RELEASE_CANDIDATE_API_VERSION,
   scopes: process.env.SCOPES?.split(","),
   appUrl: process.env.SHOPIFY_APP_URL || "",
   authPathPrefix: "/auth",
   sessionStorage: new PrismaSessionStorage(prisma),
   distribution: AppDistribution.AppStore,
+  webhooks: {
+    //[TODO] Add all webhooks here
+    APP_UNINSTALLED: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: "/api/webhooks",
+    },
+    BULK_OPERATIONS_FINISH: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: "/api/webhooks",
+    },
+  },
   hooks: {
     afterAuth: async ({ session }) => {
+      console.log("[INFO] After auth", session);
       shopify.registerWebhooks({ session });
+    
       addActiveShop({ shop: session.shop });
       await createInitialConfigs({
         shop: session.shop,
-        basic_configs: JSON.stringify(default_basic_configs),
+        basicConfigs: JSON.stringify(default_basic_configs),
       });
     },
   },

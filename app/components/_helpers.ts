@@ -428,3 +428,42 @@ export function areObjectsEqual(obj1: any, obj2: any): boolean {
     return obj1[key] === obj2[key];
   });
 }
+
+function timingSafeEqual(bufA: Uint8Array, bufB: Uint8Array) {
+  const viewA = new Uint8Array(bufA);
+  const viewB = new Uint8Array(bufB);
+  let out = 0;
+  for (let i = 0; i < viewA.length; i++) {
+    out |= viewA[i] ^ viewB[i];
+  }
+  return out === 0;
+}
+
+export const safeCompare = (strA: string, strB: string) => {
+  if (typeof strA === typeof strB) {
+    const enc = new TextEncoder();
+    const buffA = enc.encode(JSON.stringify(strA));
+    const buffB = enc.encode(JSON.stringify(strB));
+    if (buffA.length === buffB.length) {
+      return timingSafeEqual(buffA, buffB);
+    }
+  }
+  return false;
+};
+
+export async function verifyWebhookRequest(request: Request) {
+  const secretKey = process.env.SHOPIFY_API_SECRET;
+  const hmac = request.headers.get("X-Shopify-Hmac-SHA256");
+  const requestStore = request.headers.get("x-shopify-shop-domain");
+  if (!secretKey || !hmac || !requestStore) return false;
+  
+  const body = await request.text();
+  
+  const crypto = await import('node:crypto');
+  const generatedHash = crypto
+    .createHmac("sha256", secretKey)
+    .update(body)
+    .digest("base64");
+  
+  return safeCompare(generatedHash, hmac);
+}

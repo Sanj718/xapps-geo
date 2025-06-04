@@ -109,64 +109,65 @@ export default function CustomRedirects() {
   }, [searchParams]);
 
   return (
-    <Page >
-      <PageTitle
-        icon={DomainRedirectIcon}
-        title="Custom redirects"
-        status={active}
-        loading={false}
-        embedPath={`${EMBED_APP_ID}/${EMBED_APP_HANDLE}`}
-      />
-      <br />
-      <Tabs
-        tabs={mainTabs}
-        selected={selectedTab}
-        onSelect={(value) => {
-          setSelectedTab(value);
-          console.log(value);
-          const params = new URLSearchParams();
-          params.set("tab", value.toString());
-          setSearchParams(params, {
-            preventScrollReset: true,
-          });
-        }}
-        fitted
-      >
+    <Page>
+      <div id="main-screen">
+        <PageTitle
+          icon={DomainRedirectIcon}
+          title="Custom redirects"
+          status={active}
+          loading={false}
+          embedPath={`${EMBED_APP_ID}/${EMBED_APP_HANDLE}`}
+        />
         <br />
-        {selectedTab === 0 ? (
-          <BlockStack gap={{ xs: "800", sm: "400" }}>
-            <RedirectsList redirects={redirects} />
-            {smUp ? <Divider /> : null}
-            <ContentStyle redirects={redirects} configs={configs} />
-            {smUp ? <Divider /> : null}
-            <PopupDisplaySettings configs={configs} />
-            {smUp ? <Divider /> : null}
-            <OtherSettings configs={configs} />
-            {smUp ? <Divider /> : null}
-            <WidgetDisplayCustomRule status={widgetEditorStatus} code={widgetEditorCode} />
-            {smUp ? <Divider /> : null}
-            <ButtonDisplayCustomRule status={buttonEditorStatus} code={buttonEditorCode} />
-          </BlockStack>
-        ) : (
-          ""
-        )}
-        {selectedTab === 1 ? (
-          <BlockStack gap={{ xs: "800", sm: "400" }}>
-            <AutoRedirects
-              redirects={autoRedirects}
-            />
-            {smUp ? <Divider /> : null}
-            <AutoRedirectsSettings />
-            {smUp ? <Divider /> : null}
-            <AutoRedirectsCustomRule status={autoRedirectsCustomCodeStatus} code={autoRedirectsCustomCode} />
-          </BlockStack>
-        ) : (
-          ""
-        )}
-      </Tabs>
-      {toastData?.msg !== "" &&
-        shopify.toast.show(toastData.msg, { isError: toastData.error })}
-      <br />
+        <Tabs
+          tabs={mainTabs}
+          selected={selectedTab}
+          onSelect={(value) => {
+            setSelectedTab(value);
+            const params = new URLSearchParams();
+            params.set("tab", value.toString());
+            setSearchParams(params, {
+              preventScrollReset: true,
+            });
+          }}
+          fitted
+        >
+          <br />
+          {selectedTab === 0 ? (
+            <BlockStack gap={{ xs: "800", sm: "400" }}>
+              <RedirectsList redirects={redirects} />
+              {smUp ? <Divider /> : null}
+              <ContentStyle redirects={redirects} configs={configs} />
+              {smUp ? <Divider /> : null}
+              <PopupDisplaySettings configs={configs} />
+              {smUp ? <Divider /> : null}
+              <OtherSettings configs={configs} />
+              {smUp ? <Divider /> : null}
+              <WidgetDisplayCustomRule status={widgetEditorStatus} code={widgetEditorCode} />
+              {smUp ? <Divider /> : null}
+              <ButtonDisplayCustomRule status={buttonEditorStatus} code={buttonEditorCode} />
+            </BlockStack>
+          ) : (
+            ""
+          )}
+          {selectedTab === 1 ? (
+            <BlockStack gap={{ xs: "800", sm: "400" }}>
+              <AutoRedirects
+                redirects={autoRedirects}
+              />
+              {smUp ? <Divider /> : null}
+              <AutoRedirectsSettings />
+              {smUp ? <Divider /> : null}
+              <AutoRedirectsCustomRule status={autoRedirectsCustomCodeStatus} code={autoRedirectsCustomCode} />
+            </BlockStack>
+          ) : (
+            ""
+          )}
+        </Tabs>
+        {toastData?.msg !== "" &&
+          shopify.toast.show(toastData.msg, { isError: toastData.error })}
+        <br />
+      </div>
     </Page>
   );
 }

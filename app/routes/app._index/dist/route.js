@@ -163,76 +163,77 @@ function Index() {
     }
     var loading = _helpers_1.loadingStates(navigation, [_actions_2.ACTIONS.AnalyticsData]);
     return (React.createElement(polaris_1.Page, null,
-        React.createElement(polaris_1.InlineStack, { align: "space-between", blockAlign: "center" },
-            React.createElement(polaris_1.Text, { as: "h1", variant: "headingLg" },
-                "Welcome, ", (_a = shopInfo === null || shopInfo === void 0 ? void 0 : shopInfo.shop) === null || _a === void 0 ? void 0 :
-                _a.name,
-                "! \uD83D\uDC4B"),
-            React.createElement(polaris_1.Text, { as: "p", variant: "bodyXs" },
-                React.createElement(polaris_1.InlineStack, { blockAlign: "center", gap: "150" },
-                    "Your plan:",
-                    " ",
-                    React.createElement(polaris_1.Badge, { tone: isProPlan
-                            ? "success-strong"
-                            : isBasicPlan
-                                ? "success"
-                                : "attention", progress: isProPlan
-                            ? "complete"
-                            : isBasicPlan
-                                ? "partiallyComplete"
-                                : "incomplete" }, isProPlan ? "Pro" : isBasicPlan ? "Basic" : "Free"),
-                    (veteranPlan || devPlan) && (React.createElement(React.Fragment, null,
+        React.createElement("div", { id: "main-screen" },
+            React.createElement(polaris_1.InlineStack, { align: "space-between", blockAlign: "center" },
+                React.createElement(polaris_1.Text, { as: "h1", variant: "headingLg" },
+                    "Welcome, ", (_a = shopInfo === null || shopInfo === void 0 ? void 0 : shopInfo.shop) === null || _a === void 0 ? void 0 :
+                    _a.name,
+                    "! \uD83D\uDC4B"),
+                React.createElement(polaris_1.Text, { as: "p", variant: "bodyXs" },
+                    React.createElement(polaris_1.InlineStack, { blockAlign: "center", gap: "150" },
+                        "Your plan:",
                         " ",
-                        "+",
-                        React.createElement(polaris_1.Tooltip, { width: "wide", content: React.createElement("small", null, devPlan ? (React.createElement("span", null,
-                                "Your current plan is the ",
-                                React.createElement("strong", null, "Dev Plan"),
-                                ", which includes all the features of the",
-                                " ",
-                                React.createElement("strong", null, "Pro Plan"),
-                                ".")) : veteranPlan ? (React.createElement("span", null,
-                                React.createElement("strong", null, "Geolocation Redirects"),
-                                " is",
-                                " ",
-                                React.createElement("strong", null, "no"),
-                                " longer available for",
-                                " ",
-                                React.createElement("strong", null, "free"),
-                                ". However, as a privileged veteran user, you are eligible for our app's",
-                                " ",
-                                React.createElement("strong", null, "Basic plan"),
-                                ", free of charge.")) : ("")) },
-                            React.createElement(polaris_1.Icon, { source: devPlan ? polaris_icons_1.SandboxIcon : polaris_icons_1.GiftCardFilledIcon, tone: "success" }))))))),
-        React.createElement("br", null),
-        React.createElement(polaris_1.Banner, { icon: polaris_icons_1.ConfettiIcon, title: "New Look, Better Experience!", action: {
-                content: "Have questions or issues? Contact us!",
-                onAction: function () { return Tawk_API === null || Tawk_API === void 0 ? void 0 : Tawk_API.toggle(); }
-            } }, "We've updated the our app with a refreshed design and improved layout for a better experience! \uD83C\uDF89"),
-        React.createElement("br", null),
-        React.createElement(polaris_1.InlineGrid, { columns: { xs: 1, sm: 1, md: 2, lg: 2, xl: 2 }, gap: "400" },
-            React.createElement(StartCard, { title: "Custom redirects", status: redirectsEmbedStatus, image: card1_svg_1["default"], label: "Customize custom redirects", url: "/app/redirects" }),
-            React.createElement(StartCard, { title: "Markets redirects", status: marketsEmbedStatus, image: card2_svg_1["default"], label: "Customize markets redirects", url: "/app/markets" })),
-        React.createElement("br", null),
-        React.createElement(polaris_1.Divider, null),
-        React.createElement("br", null),
-        React.createElement(polaris_1.InlineGrid, { columns: { xs: 1, sm: 1, md: 2, lg: 2, xl: 2 }, gap: "400" },
-            React.createElement(Stats, { loading: loading[_actions_2.ACTIONS.AnalyticsData + "Loading"], title: "Custom redirects performance", totalPeriod: periodCustomRedirects, totamlNum: totalCustomPopup + totalCustomAuto, popupNum: totalCustomPopup, popupPeriod: periodCustomPopupRedirects, autoNum: totalCustomAuto, autoPeriod: periodCustomAutoRedirects }),
-            React.createElement(Stats, { loading: loading[_actions_2.ACTIONS.AnalyticsData + "Loading"], title: "Markets redirects performance", totalPeriod: periodMarketsRedirects, totamlNum: totalMarketsPopup + totalMarketsAuto, popupNum: totalMarketsPopup, popupPeriod: periodMarketsPopupRedirects, autoNum: totalMarketsAuto, autoPeriod: periodMarketsAutoRedirects })),
-        React.createElement("br", null),
-        React.createElement(polaris_1.Divider, null),
-        React.createElement("br", null),
-        React.createElement(polaris_1.CalloutCard, { illustration: rateCard_svg_1["default"], title: "Please share your thoughts", primaryAction: {
-                content: "Good",
-                target: "_blank",
-                url: "https://apps.shopify.com/native-geo-redirects-popup?#modal-show=WriteReviewModal",
-                icon: polaris_icons_1.ThumbsUpIcon
-            }, secondaryAction: {
-                content: "Bad",
-                url: "#",
-                icon: polaris_icons_1.ThumbsDownIcon,
-                onAction: function () { return Tawk_API === null || Tawk_API === void 0 ? void 0 : Tawk_API.toggle(); }
-            } },
-            React.createElement("p", null, "How's your experience been with the Geolocation Redirects app?"))));
+                        React.createElement(polaris_1.Badge, { tone: isProPlan
+                                ? "success-strong"
+                                : isBasicPlan
+                                    ? "success"
+                                    : "attention", progress: isProPlan
+                                ? "complete"
+                                : isBasicPlan
+                                    ? "partiallyComplete"
+                                    : "incomplete" }, isProPlan ? "Pro" : isBasicPlan ? "Basic" : "Free"),
+                        (veteranPlan || devPlan) && (React.createElement(React.Fragment, null,
+                            " ",
+                            "+",
+                            React.createElement(polaris_1.Tooltip, { width: "wide", content: React.createElement("small", null, devPlan ? (React.createElement("span", null,
+                                    "Your current plan is the ",
+                                    React.createElement("strong", null, "Dev Plan"),
+                                    ", which includes all the features of the",
+                                    " ",
+                                    React.createElement("strong", null, "Pro Plan"),
+                                    ".")) : veteranPlan ? (React.createElement("span", null,
+                                    React.createElement("strong", null, "Geolocation Redirects"),
+                                    " is",
+                                    " ",
+                                    React.createElement("strong", null, "no"),
+                                    " longer available for",
+                                    " ",
+                                    React.createElement("strong", null, "free"),
+                                    ". However, as a privileged veteran user, you are eligible for our app's",
+                                    " ",
+                                    React.createElement("strong", null, "Basic plan"),
+                                    ", free of charge.")) : ("")) },
+                                React.createElement(polaris_1.Icon, { source: devPlan ? polaris_icons_1.SandboxIcon : polaris_icons_1.GiftCardFilledIcon, tone: "success" }))))))),
+            React.createElement("br", null),
+            React.createElement(polaris_1.Banner, { icon: polaris_icons_1.ConfettiIcon, title: "New Look, Better Experience!", action: {
+                    content: "Have questions or issues? Contact us!",
+                    onAction: function () { return Tawk_API === null || Tawk_API === void 0 ? void 0 : Tawk_API.toggle(); }
+                } }, "We've updated the our app with a refreshed design and improved layout for a better experience! \uD83C\uDF89"),
+            React.createElement("br", null),
+            React.createElement(polaris_1.InlineGrid, { columns: { xs: 1, sm: 1, md: 2, lg: 2, xl: 2 }, gap: "400" },
+                React.createElement(StartCard, { title: "Custom redirects", status: redirectsEmbedStatus, image: card1_svg_1["default"], label: "Customize custom redirects", url: "/app/redirects" }),
+                React.createElement(StartCard, { title: "Markets redirects", status: marketsEmbedStatus, image: card2_svg_1["default"], label: "Customize markets redirects", url: "/app/markets" })),
+            React.createElement("br", null),
+            React.createElement(polaris_1.Divider, null),
+            React.createElement("br", null),
+            React.createElement(polaris_1.InlineGrid, { columns: { xs: 1, sm: 1, md: 2, lg: 2, xl: 2 }, gap: "400" },
+                React.createElement(Stats, { loading: loading[_actions_2.ACTIONS.AnalyticsData + "Loading"], title: "Custom redirects performance", totalPeriod: periodCustomRedirects, totamlNum: totalCustomPopup + totalCustomAuto, popupNum: totalCustomPopup, popupPeriod: periodCustomPopupRedirects, autoNum: totalCustomAuto, autoPeriod: periodCustomAutoRedirects }),
+                React.createElement(Stats, { loading: loading[_actions_2.ACTIONS.AnalyticsData + "Loading"], title: "Markets redirects performance", totalPeriod: periodMarketsRedirects, totamlNum: totalMarketsPopup + totalMarketsAuto, popupNum: totalMarketsPopup, popupPeriod: periodMarketsPopupRedirects, autoNum: totalMarketsAuto, autoPeriod: periodMarketsAutoRedirects })),
+            React.createElement("br", null),
+            React.createElement(polaris_1.Divider, null),
+            React.createElement("br", null),
+            React.createElement(polaris_1.CalloutCard, { illustration: rateCard_svg_1["default"], title: "Please share your thoughts", primaryAction: {
+                    content: "Good",
+                    target: "_blank",
+                    url: "https://apps.shopify.com/native-geo-redirects-popup?#modal-show=WriteReviewModal",
+                    icon: polaris_icons_1.ThumbsUpIcon
+                }, secondaryAction: {
+                    content: "Bad",
+                    url: "#",
+                    icon: polaris_icons_1.ThumbsDownIcon,
+                    onAction: function () { return Tawk_API === null || Tawk_API === void 0 ? void 0 : Tawk_API.toggle(); }
+                } },
+                React.createElement("p", null, "How's your experience been with the Geolocation Redirects app?")))));
 }
 exports["default"] = Index;
 function Stats(_a) {

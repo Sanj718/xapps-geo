@@ -1,5 +1,6 @@
-import Editor from '@monaco-editor/react';
-import React from 'react';
+import { lazy, useEffect, useState } from 'react';
+
+const Editor = lazy(() => import('@monaco-editor/react'));
 
 interface CodeEditorProps {
     code: string;
@@ -9,6 +10,7 @@ interface CodeEditorProps {
 }
 
 export default function CodeEditor({ code, onChange = () => { }, language = "css", simple = false }: CodeEditorProps) {
+
     const options = simple ? {
         readOnly: false,
         minimap: { enabled: false },
@@ -24,15 +26,18 @@ export default function CodeEditor({ code, onChange = () => { }, language = "css
         readOnly: false,
         minimap: { enabled: false },
     }
-    return <div className="code-editor-container" style={{border: "1px solid #ccc"}}>
-        <Editor
-            height="300px"
-            width="100%"
-            language={language}
-            defaultValue={code}
-            value={code}
-            onChange={(value) => value && onChange(value)}
-            options={options as any}
-        />
-    </div>
+
+    return (
+        <div className="code-editor-container" style={{ border: "1px solid #ccc", borderRadius: "4px" }}>
+            <Editor
+                height="300px"
+                width="100%"
+                language={language}
+                defaultValue={code}
+                value={code}
+                onChange={(value) => value && onChange(value)}
+                options={options as any}
+            />
+        </div>
+    );
 }

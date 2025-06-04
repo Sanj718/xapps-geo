@@ -111,7 +111,7 @@ export default function AutoRedirectsCustomRule({ status, code }: AutoRedirectsC
             <div style={{ position: "relative" }}>
               <Suspense fallback={<Spinner size="small" />}>
                 <Await resolve={status}>
-                  {({ value }: { value: string }) => (
+                  {(status) => (
                     <Select
                       label="Status: "
                       labelInline
@@ -125,7 +125,7 @@ export default function AutoRedirectsCustomRule({ status, code }: AutoRedirectsC
                           ? (value) => handleCustomCodeStatus(value)
                           : undefined
                       }
-                      value={value || "false"}
+                      value={status?.value || "false"}
                     />
                   )}
                 </Await>

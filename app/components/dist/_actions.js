@@ -58,7 +58,11 @@ exports.ACTIONS = {
     delete_AutoRedirect: "deleteAutoRedirect",
     reorder_AutoRedirects: "reOrderAutoRedirects",
     update_AutoRedirectsCustomCode: "updateAutoRedirectsCustomCode",
-    update_AutoRedirectsCustomCodeStatus: "updateAutoRedirectsCustomCodeStatus"
+    update_AutoRedirectsCustomCodeStatus: "updateAutoRedirectsCustomCodeStatus",
+    run_MarketsSync: "runMarketsSync",
+    get_MarketsSyncStatus: "getMarketsSyncStatus",
+    update_MarketsConfigs: "updateMarketsConfigs",
+    update_MarketsWidget: "updateMarketsWidget"
 };
 exports.getAssets = function (_a) {
     var admin = _a.admin, data = _a.data;

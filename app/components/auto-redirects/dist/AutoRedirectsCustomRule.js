@@ -101,15 +101,12 @@ function AutoRedirectsCustomRule(_a) {
                     react_1["default"].createElement(AutoRedirectDisplayCustomRuleBanner_1["default"], null),
                     react_1["default"].createElement("div", { style: { position: "relative" } },
                         react_1["default"].createElement(react_1.Suspense, { fallback: react_1["default"].createElement(polaris_1.Spinner, { size: "small" }) },
-                            react_1["default"].createElement(react_2.Await, { resolve: status }, function (_a) {
-                                var value = _a.value;
-                                return (react_1["default"].createElement(polaris_1.Select, { label: "Status: ", labelInline: true, options: [
-                                        { label: "Active", value: "true" },
-                                        { label: "Draft", value: "false" },
-                                    ], disabled: loading[_actions_1.ACTIONS.update_AutoRedirectsCustomCodeStatus + "Loading"] || !isProPlan, onChange: isProPlan
-                                        ? function (value) { return handleCustomCodeStatus(value); }
-                                        : undefined, value: value || "false" }));
-                            }),
+                            react_1["default"].createElement(react_2.Await, { resolve: status }, function (status) { return (react_1["default"].createElement(polaris_1.Select, { label: "Status: ", labelInline: true, options: [
+                                    { label: "Active", value: "true" },
+                                    { label: "Draft", value: "false" },
+                                ], disabled: loading[_actions_1.ACTIONS.update_AutoRedirectsCustomCodeStatus + "Loading"] || !isProPlan, onChange: isProPlan
+                                    ? function (value) { return handleCustomCodeStatus(value); }
+                                    : undefined, value: (status === null || status === void 0 ? void 0 : status.value) || "false" })); }),
                             loading[_actions_1.ACTIONS.update_AutoRedirectsCustomCodeStatus + "Loading"] && (react_1["default"].createElement("div", { style: { position: "absolute", top: "6px", right: "8px", zIndex: 10 } },
                                 react_1["default"].createElement(polaris_1.Spinner, { size: "small" }))))),
                     react_1["default"].createElement(AutoRedirectDisplayCustomRuleCodeBanner_1["default"], null),
