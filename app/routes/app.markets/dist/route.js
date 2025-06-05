@@ -70,6 +70,8 @@ var MarketsPopupControls_1 = require("app/components/markets-popup/MarketsPopupC
 var react_2 = require("@remix-run/react");
 var _actions_2 = require("app/components/_actions");
 var locales_json_1 = require("../../components/locales.json");
+var MarketsPopupDisplaySettings_1 = require("app/components/markets-popup/MarketsPopupDisplaySettings");
+var MarketsAutoControls_1 = require("app/components/markets-auto-redirects/MarketsAutoControls");
 var _a = _helpers_1.getEmbedConst(env_1.PROD_EMBED_APP_ID, env_1.DEV_EMBED_APP_ID, env_1.MK_EMBED_APP_HANDLE) || {}, EMBED_APP_ID = _a.EMBED_APP_ID, EMBED_APP_HANDLE = _a.EMBED_APP_HANDLE;
 // [TODO] find correct way to add ts check here.
 exports.loader = function (params) { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
@@ -91,10 +93,11 @@ var mainTabs = [
 var timesRun = 0;
 var interval;
 function MarketsRedirects() {
-    var _a, _b, _c;
-    var _d = react_2.useOutletContext(), shopInfo = _d.shopInfo, shopdb = _d.shopdb, activePlan = _d.activePlan, devPlan = _d.devPlan, veteranPlan = _d.veteranPlan, appId = _d.appId, appData = _d.appData;
-    var _e = _helpers_1.planParser(activePlan), isProPlan = _e.isProPlan, isBasicPlan = _e.isBasicPlan, isFreePlan = _e.isFreePlan;
-    var _f = react_2.useLoaderData(), marketsConfigs = _f.marketsConfigs, marketsData = _f.marketsData;
+    var _a, _b, _c, _d;
+    var _e = react_2.useOutletContext(), shopInfo = _e.shopInfo, shopdb = _e.shopdb, activePlan = _e.activePlan, devPlan = _e.devPlan, veteranPlan = _e.veteranPlan, appId = _e.appId, appData = _e.appData;
+    var _f = _helpers_1.planParser(activePlan), isProPlan = _f.isProPlan, isBasicPlan = _f.isBasicPlan, isFreePlan = _f.isFreePlan;
+    var _g = react_2.useLoaderData(), marketsConfigs = _g.marketsConfigs, marketsData = _g.marketsData;
+    var _h = react_2.useSearchParams(), searchParams = _h[0], setSearchParams = _h[1];
     // const { basicConfigs, advancedConfigs, hideOnAllowedPages, allowedPages } = configs?.data[0] || {}
     // const { activePlan, shopData, appId } = useContext(AppContext);
     // const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
@@ -103,19 +106,19 @@ function MarketsRedirects() {
     var smUp = polaris_1.useBreakpoints().smUp;
     var submit = react_2.useSubmit();
     var actionData = react_2.useActionData();
-    var _g = react_1.useState(true), initialLoading = _g[0], setInitialLoading = _g[1];
-    var _h = react_1.useState(null), secondaryLocales = _h[0], setSecondaryLocales = _h[1];
-    var _j = react_1.useState(_helpers_1.defaultState), toastData = _j[0], setToastData = _j[1];
-    var _k = react_1.useState(false), marketsSyncLoading = _k[0], setMarketsSyncLoading = _k[1];
-    var _l = react_1.useState(0), selectedTab = _l[0], setSelectedTab = _l[1];
+    var _j = react_1.useState(true), initialLoading = _j[0], setInitialLoading = _j[1];
+    var _k = react_1.useState(null), secondaryLocales = _k[0], setSecondaryLocales = _k[1];
+    var _l = react_1.useState(_helpers_1.defaultState), toastData = _l[0], setToastData = _l[1];
+    var _m = react_1.useState(false), marketsSyncLoading = _m[0], setMarketsSyncLoading = _m[1];
+    var _o = react_1.useState(0), selectedTab = _o[0], setSelectedTab = _o[1];
     // const [marketsPopup, setMarketsPopup] = useState(false);
     // const [marketRedirect, setMarketRedirect] = useState(false);
     // const [marketsData, setMarketsData] = useState(null);
-    var _m = react_1.useState(false), noConfigs = _m[0], setNoConfigs = _m[1];
-    var _o = react_1.useState(false), refetchSettings = _o[0], setRefetchSettings = _o[1];
-    var _p = react_1.useState(null), active = _p[0], setActive = _p[1];
-    var _q = react_1.useState(__assign(__assign({}, _helpers_1.default_markets_basic_configs), (_a = marketsConfigs === null || marketsConfigs === void 0 ? void 0 : marketsConfigs.data) === null || _a === void 0 ? void 0 : _a.basicConfigs)), localConfigs = _q[0], setLocalConfigs = _q[1];
-    var _r = react_1.useState(__assign(__assign({}, _helpers_1.default_advanced_configs), (_b = marketsConfigs === null || marketsConfigs === void 0 ? void 0 : marketsConfigs.data) === null || _b === void 0 ? void 0 : _b.advancedConfigs)), localAdvancedConfigs = _r[0], setLocalAdvancedConfigs = _r[1];
+    var _p = react_1.useState(false), noConfigs = _p[0], setNoConfigs = _p[1];
+    var _q = react_1.useState(false), refetchSettings = _q[0], setRefetchSettings = _q[1];
+    var _r = react_1.useState(null), active = _r[0], setActive = _r[1];
+    var _s = react_1.useState(__assign(__assign({}, _helpers_1.default_markets_basic_configs), (_a = marketsConfigs === null || marketsConfigs === void 0 ? void 0 : marketsConfigs.data) === null || _a === void 0 ? void 0 : _a.basicConfigs)), localConfigs = _s[0], setLocalConfigs = _s[1];
+    var _t = react_1.useState(__assign(__assign({}, _helpers_1.default_advanced_configs), (_b = marketsConfigs === null || marketsConfigs === void 0 ? void 0 : marketsConfigs.data) === null || _b === void 0 ? void 0 : _b.advancedConfigs)), localAdvancedConfigs = _t[0], setLocalAdvancedConfigs = _t[1];
     // useMemo(() => {
     //   const sLocales = shopData?.locales?.filter((item) => !item.primary) || null;
     //   setSecondaryLocales(sLocales);
@@ -216,15 +219,17 @@ function MarketsRedirects() {
     //     });
     // }, [refetchSettings]);
     react_1.useMemo(function () {
-        var _a;
-        // if (actionData?._action === ACTIONS.update_MarketsConfigs && actionData?.status) {
-        //   // setMarketsSyncLoading(false);
-        // }
+        var _a, _b, _c;
         if ((actionData === null || actionData === void 0 ? void 0 : actionData._action) === _actions_2.ACTIONS.get_MarketsSyncStatus && (actionData === null || actionData === void 0 ? void 0 : actionData.status)) {
-            if (((_a = actionData === null || actionData === void 0 ? void 0 : actionData.data) === null || _a === void 0 ? void 0 : _a.syncStatus) === "SUCCESS") {
+            if (((_a = actionData === null || actionData === void 0 ? void 0 : actionData.data) === null || _a === void 0 ? void 0 : _a.syncStatus) !== "") {
                 setMarketsSyncLoading(false);
                 clearInterval(interval);
+            }
+            if (((_b = actionData === null || actionData === void 0 ? void 0 : actionData.data) === null || _b === void 0 ? void 0 : _b.syncStatus) === "SUCCESS") {
                 shopify.toast.show(locales_json_1["default"].responses.success_markets);
+            }
+            if (((_c = actionData === null || actionData === void 0 ? void 0 : actionData.data) === null || _c === void 0 ? void 0 : _c.syncStatus) === "ERROR") {
+                shopify.toast.show(locales_json_1["default"].responses.error_markets);
             }
         }
     }, [actionData]);
@@ -247,7 +252,8 @@ function MarketsRedirects() {
                 }, 1000);
                 interval = setInterval(function () { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
                     return [2 /*return*/, checkMarketsStatus(interval)];
-                }); }); }, 5000);
+                }); }); }, 5000 // [TODO] Make this dynamic
+                );
                 return [2 /*return*/];
             });
         });
@@ -287,18 +293,36 @@ function MarketsRedirects() {
             });
         });
     }
-    console.log("marketsConfigs: ", marketsConfigs);
+    react_1.useMemo(function () {
+        var tab = searchParams.get("tab");
+        if (tab) {
+            setSelectedTab(parseInt(tab));
+        }
+    }, [searchParams]);
+    console.log("marketsConfigs: ", marketsConfigs, localConfigs, localAdvancedConfigs);
     return (react_1["default"].createElement(polaris_1.Page, null,
         react_1["default"].createElement("div", { id: "main-screen" },
             react_1["default"].createElement(PageTitle_1.PageTitle, { icon: polaris_icons_1.MarketsIcon, title: "Markets redirects", status: active, loading: false, embedPath: EMBED_APP_ID + "/" + EMBED_APP_HANDLE }),
             react_1["default"].createElement("br", null),
-            react_1["default"].createElement(polaris_1.Tabs, { tabs: mainTabs, selected: selectedTab, onSelect: setSelectedTab, fitted: true },
+            react_1["default"].createElement(polaris_1.Tabs, { tabs: mainTabs, selected: selectedTab, onSelect: function (value) {
+                    setSelectedTab(value);
+                    var params = new URLSearchParams();
+                    params.set("tab", value.toString());
+                    setSearchParams(params, {
+                        preventScrollReset: true
+                    });
+                }, fitted: true },
                 react_1["default"].createElement("br", null),
                 selectedTab === 0 ? (react_1["default"].createElement(polaris_1.BlockStack, { gap: { xs: "800", sm: "400" } },
                     react_1["default"].createElement(MarketsPopupControls_1["default"], { marketsData: marketsData === null || marketsData === void 0 ? void 0 : marketsData.data, marketsSync: handleMarketsSync, marketsSyncLoading: marketsSyncLoading, marketsPopup: (_c = marketsConfigs === null || marketsConfigs === void 0 ? void 0 : marketsConfigs.data) === null || _c === void 0 ? void 0 : _c.widget }),
                     smUp ? react_1["default"].createElement(polaris_1.Divider, null) : null,
+                    smUp ? react_1["default"].createElement(polaris_1.Divider, null) : null,
+                    react_1["default"].createElement(MarketsPopupDisplaySettings_1["default"], { configs: localConfigs, setConfigs: setLocalConfigs, advancedConfigs: localAdvancedConfigs }),
+                    smUp ? react_1["default"].createElement(polaris_1.Divider, null) : null,
                     react_1["default"].createElement(MarketsOtherSettings_1["default"], null))) : (""),
                 selectedTab === 1 ? (react_1["default"].createElement(polaris_1.BlockStack, { gap: { xs: "800", sm: "400" } },
+                    react_1["default"].createElement(MarketsAutoControls_1["default"], { marketsData: marketsData === null || marketsData === void 0 ? void 0 : marketsData.data, marketsSync: handleMarketsSync, marketsSyncLoading: marketsSyncLoading, marketRedirect: (_d = marketsConfigs === null || marketsConfigs === void 0 ? void 0 : marketsConfigs.data) === null || _d === void 0 ? void 0 : _d.autoRedirect }),
+                    smUp ? react_1["default"].createElement(polaris_1.Divider, null) : null,
                     react_1["default"].createElement(MarketsAutoSettings_1["default"], null))) : ("")),
             (toastData === null || toastData === void 0 ? void 0 : toastData.msg) !== "" && (react_1["default"].createElement(polaris_1.Toast, { content: toastData.msg, error: toastData.error, onDismiss: function () { return setToastData(__assign(__assign({}, toastData), { msg: "" })); } })),
             react_1["default"].createElement("br", null))));

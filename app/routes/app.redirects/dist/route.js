@@ -78,11 +78,10 @@ function CustomRedirects() {
     var _b = react_2.useLoaderData(), allRedirects = _b.allRedirects, configs = _b.configs, widgetEditorStatus = _b.widgetEditorStatus, widgetEditorCode = _b.widgetEditorCode, buttonEditorStatus = _b.buttonEditorStatus, buttonEditorCode = _b.buttonEditorCode, allAutoRedirects = _b.allAutoRedirects, autoRedirectsCustomCodeStatus = _b.autoRedirectsCustomCodeStatus, autoRedirectsCustomCode = _b.autoRedirectsCustomCode;
     var actionData = react_2.useActionData();
     var _c = react_2.useSearchParams(), searchParams = _c[0], setSearchParams = _c[1];
-    var _d = react_1.useState({ msg: "", error: false }), toastData = _d[0], setToastData = _d[1];
-    var _e = react_1.useState(null), active = _e[0], setActive = _e[1];
-    var _f = react_1.useState([]), redirects = _f[0], setRedirects = _f[1];
-    var _g = react_1.useState([]), autoRedirects = _g[0], setAutoRedirects = _g[1];
-    var _h = react_1.useState(0), selectedTab = _h[0], setSelectedTab = _h[1];
+    var _d = react_1.useState(null), active = _d[0], setActive = _d[1];
+    var _e = react_1.useState([]), redirects = _e[0], setRedirects = _e[1];
+    var _f = react_1.useState([]), autoRedirects = _f[0], setAutoRedirects = _f[1];
+    var _g = react_1.useState(0), selectedTab = _g[0], setSelectedTab = _g[1];
     var smUp = polaris_1.useBreakpoints().smUp;
     react_1.useMemo(function () {
         var _a;
@@ -155,8 +154,6 @@ function CustomRedirects() {
                     React.createElement(AutoRedirectsSettings_1["default"], null),
                     smUp ? React.createElement(polaris_1.Divider, null) : null,
                     React.createElement(AutoRedirectsCustomRule_1["default"], { status: autoRedirectsCustomCodeStatus, code: autoRedirectsCustomCode }))) : ("")),
-            (toastData === null || toastData === void 0 ? void 0 : toastData.msg) !== "" &&
-                shopify.toast.show(toastData.msg, { isError: toastData.error }),
             React.createElement("br", null))));
 }
 exports["default"] = CustomRedirects;

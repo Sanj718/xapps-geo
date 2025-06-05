@@ -55,7 +55,7 @@ var shopify_server_1 = require("app/shopify.server");
 function handleActions(_a) {
     var request = _a.request;
     return __awaiter(this, void 0, void 0, function () {
-        var _b, admin, session, _c, _action, data, response, response, response, response;
+        var _b, admin, session, _c, _action, data, response, response, response, response, response, response2;
         return __generator(this, function (_d) {
             switch (_d.label) {
                 case 0: return [4 /*yield*/, shopify_server_1.authenticate.admin(request)];
@@ -87,7 +87,16 @@ function handleActions(_a) {
                 case 9:
                     response = _d.sent();
                     return [2 /*return*/, __assign({ _action: _action }, response)];
-                case 10: return [2 /*return*/, {}];
+                case 10:
+                    if (!(_action === _actions_1.ACTIONS.update_MarketsRedirect)) return [3 /*break*/, 13];
+                    return [4 /*yield*/, db_queries_server_1.updateMarketsRedirect({ shop: session.shop, autoRedirect: data.autoRedirect })];
+                case 11:
+                    response = _d.sent();
+                    return [4 /*yield*/, admin_queries_server_1.setMarketsAutoRedirect({ admin: admin, appId: data.appId, value: data.autoRedirect })];
+                case 12:
+                    response2 = _d.sent();
+                    return [2 /*return*/, __assign(__assign({ _action: _action }, response), response2)];
+                case 13: return [2 /*return*/, {}];
             }
         });
     });

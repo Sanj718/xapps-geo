@@ -35,6 +35,7 @@ export const ACTIONS = {
   get_MarketsSyncStatus: "getMarketsSyncStatus",
   update_MarketsConfigs: "updateMarketsConfigs",
   update_MarketsWidget: "updateMarketsWidget",
+  update_MarketsRedirect: "updateMarketsRedirect",
 }
 
 export const getAssets = async ({ admin, data }: GetAssetsParams) => {

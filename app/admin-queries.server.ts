@@ -1067,3 +1067,42 @@ export async function registerBulkWebhookIfNotExists({ admin }: { admin: AdminAp
         }
     }
 }
+
+export async function setMarketsAutoRedirect({ admin, appId, value }: { admin: AdminApiContext, appId: string, value: boolean }) {
+    if (!admin) throw Error("admin not defined");
+    try {
+        const response = await admin.graphql(
+            `#graphql
+            mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {
+                metafieldsSet(metafields: $metafields) {
+                    metafields {
+                        key
+                        namespace
+                        value
+                        createdAt
+                        updatedAt
+                    }
+                }
+            }
+            `,
+            {
+                variables: {
+                    metafields: [
+                        {
+                            key: "auto_redirect",
+                            namespace: "markets",
+                            ownerId: appId,
+                            type: "boolean",
+                            value,
+                        }
+                    ]
+                }
+            }
+        );
+        const responseJson = await response.json();
+        return { status: responseJson?.data?.metafieldsSet?.metafields[0]?.key !== "", data: responseJson?.data?.metafieldsSet?.metafields[0] };
+    } catch (error) {
+        console.error(error);
+        return { status: false, error: (error as Error).toString() };
+    }
+}

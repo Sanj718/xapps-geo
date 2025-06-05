@@ -54,7 +54,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 exports.__esModule = true;
-exports.verifyWebhookRequest = exports.safeCompare = exports.areObjectsEqual = exports.useIsMounted = exports.defaultAutoRedirectsCode = exports.defaultButtonCode = exports.defaultWidgetCode = exports.NEW_DEFAULT_ICON = exports.OLD_STICKY_ICON = exports.OLD_DEFAULT_ICON = exports.jsonSafeParse = exports.loadingStates = exports.getDate = exports.formatDate = exports.isDateToday = exports.defaultState = exports.getPostgresTimestamp = exports.checkDifference = exports.ff = exports.getEmbedConst = exports.getTotals = exports.planParser = exports.getPureId = exports.isJson = exports.getKeyByValue = exports.charLimit = exports.continents_auto = exports.regeUrl = exports.parseCountryCodesWithFullNames = exports.parseLocations = exports.parseCountries = exports.hexToRGB = exports.default_allowed_configs = exports.default_advanced_configs = exports.default_basic_configs = exports.default_markets_basic_configs = exports.requestHeaders = exports.resp = void 0;
+exports.verifyWebhookRequest = exports.safeCompare = exports.areObjectsEqual = exports.useIsMounted = exports.defaultAutoRedirectsCode = exports.defaultButtonCode = exports.defaultWidgetCode = exports.NEW_DEFAULT_ICON = exports.OLD_STICKY_ICON = exports.OLD_DEFAULT_ICON = exports.jsonSafeParse = exports.loadingStates = exports.getDate = exports.formatDate = exports.isDateToday = exports.defaultState = exports.getPostgresTimestamp = exports.checkDifference = exports.ff = exports.getEmbedConst = exports.getTotals = exports.planParser = exports.getPureId = exports.isJson = exports.getKeyByValue = exports.charLimit = exports.continents_markets = exports.continents_auto = exports.regeUrl = exports.parseCountryCodesWithFullNames = exports.parseLocations = exports.parseCountries = exports.hexToRGB = exports.default_allowed_configs = exports.default_advanced_configs = exports.default_basic_configs = exports.default_markets_basic_configs = exports.requestHeaders = exports.resp = void 0;
 var strip_json_comments_1 = require("strip-json-comments");
 var date_fns_1 = require("date-fns");
 var react_1 = require("react");
@@ -208,6 +208,15 @@ exports.continents_auto = [
     { value: "C:NA", label: "North america" },
     { value: "C:OC", label: "Oceania" },
     { value: "C:SA", label: "South america" },
+];
+exports.continents_markets = [
+    { value: "AF", label: "Africa" },
+    { value: "AN", label: "Antarctica" },
+    { value: "AS", label: "Asia" },
+    { value: "EU", label: "Europe" },
+    { value: "NA", label: "North america" },
+    { value: "OC", label: "Oceania" },
+    { value: "SA", label: "South america" },
 ];
 function charLimit(input, limit) {
     if (!input || input === "")

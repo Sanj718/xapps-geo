@@ -1,8 +1,8 @@
 import { ActionFunctionArgs } from "@remix-run/node";
-import { runMarketsSync } from "app/admin-queries.server";
+import { runMarketsSync, setMarketsAutoRedirect } from "app/admin-queries.server";
 import { ACTIONS } from "app/components/_actions";
 import { MarketsProcess } from "app/components/markets-sync/index.server";
-import { createUpdateMarketConfigs, getMarketSyncStatus, updateMarketsWidget } from "app/db-queries.server";
+import { createUpdateMarketConfigs, getMarketSyncStatus, updateMarketsRedirect, updateMarketsWidget } from "app/db-queries.server";
 import { authenticate } from "app/shopify.server";
 
 export async function handleActions({ request }: ActionFunctionArgs) {
@@ -27,6 +27,12 @@ export async function handleActions({ request }: ActionFunctionArgs) {
     if (_action === ACTIONS.update_MarketsWidget) {
         const response = await updateMarketsWidget({ shop: session.shop, widget: data.widget });
         return { _action, ...response };
+    }
+
+    if (_action === ACTIONS.update_MarketsRedirect) {
+        const response = await updateMarketsRedirect({ shop: session.shop, autoRedirect: data.autoRedirect });
+        const response2 = await setMarketsAutoRedirect({ admin, appId: data.appId, value: data.autoRedirect });
+        return { _action, ...response, ...response2 };
     }
 
 

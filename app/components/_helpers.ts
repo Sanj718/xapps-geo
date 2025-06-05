@@ -176,6 +176,16 @@ export const continents_auto = [
   { value: "C:SA", label: "South america" },
 ];
 
+export const continents_markets = [
+  { value: "AF", label: "Africa" },
+  { value: "AN", label: "Antarctica" },
+  { value: "AS", label: "Asia" },
+  { value: "EU", label: "Europe" },
+  { value: "NA", label: "North america" },
+  { value: "OC", label: "Oceania" },
+  { value: "SA", label: "South america" },
+];
+
 export function charLimit(input: string | undefined, limit: number) {
   if (!input || input === "") return;
 
@@ -456,14 +466,14 @@ export async function verifyWebhookRequest(request: Request) {
   const hmac = request.headers.get("X-Shopify-Hmac-SHA256");
   const requestStore = request.headers.get("x-shopify-shop-domain");
   if (!secretKey || !hmac || !requestStore) return false;
-  
+
   const body = await request.text();
-  
+
   const crypto = await import('node:crypto');
   const generatedHash = crypto
     .createHmac("sha256", secretKey)
     .update(body)
     .digest("base64");
-  
+
   return safeCompare(generatedHash, hmac);
 }

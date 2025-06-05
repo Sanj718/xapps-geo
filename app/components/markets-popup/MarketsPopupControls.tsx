@@ -5,19 +5,15 @@ import {
   Box,
   Button,
   Card,
-  Checkbox,
   Divider,
-  Icon,
   InlineGrid,
   InlineStack,
   Text,
-  TextField,
   Tooltip,
 } from "@shopify/polaris";
-import React, { useState } from "react";
+import React from "react";
 import { CalendarTimeIcon } from "@shopify/polaris-icons";
 import {
-  useActionData,
   useNavigation,
   useOutletContext,
   useSubmit,
@@ -39,10 +35,8 @@ export default function MarketsPopupControls({
   marketsSync,
   marketsSyncLoading,
 }: MarketsPopupControlsProps) {
-  const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
+  const { shopdb, activePlan } =
     useOutletContext<OutletContext>();
-  const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
-  // const [loading, setLoading] = useState(false);
   const submit = useSubmit();
   const navigation = useNavigation()
 
@@ -52,7 +46,6 @@ export default function MarketsPopupControls({
       {
         _action: ACTIONS.update_MarketsWidget,
         data: {
-          shopId: shopdb?.id,
           widget: !marketsPopup,
         },
       },
@@ -61,7 +54,7 @@ export default function MarketsPopupControls({
   };
 
   const loading = loadingStates(navigation, [ACTIONS.update_MarketsWidget]) as LoadingStates;
-  console.log("marketsPopup: ", marketsPopup);
+
   return (
     <>
       <InlineGrid columns={{ xs: "1fr", md: "auto  70%" }} gap="400">
@@ -110,7 +103,7 @@ export default function MarketsPopupControls({
                       icon={CalendarTimeIcon}
                     >
                       {marketsData?.lastSyncTimestamp
-                        ? String(marketsData.lastSyncTimestamp)
+                        ? marketsData?.lastSyncTimestamp?.toISOString()
                         : "N/A"}
                     </Badge>
                   </Tooltip>

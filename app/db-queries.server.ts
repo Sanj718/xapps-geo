@@ -585,7 +585,7 @@ export const getMarketConfigs = async ({ shop }: Shop): Promise<DBResponse> => {
       where: { shopId: activeShop.id },
       select: { basicConfigs: true, advancedConfigs: true, widget: true, autoRedirect: true }
     });
-    return { status: result ? true : false, data: result };
+    return { status: result ? true : false, data: { ...result, basicConfigs: jsonSafeParse(result?.basicConfigs || '{}'), advancedConfigs: jsonSafeParse(result?.advancedConfigs || '{}') } };
   } catch (error) {
     console.error(error);
     return { status: false, error: (error as Error).toString() };

@@ -40,37 +40,38 @@ var polaris_1 = require("@shopify/polaris");
 var react_1 = require("react");
 var polaris_icons_1 = require("@shopify/polaris-icons");
 var react_2 = require("@remix-run/react");
-var _helpers_1 = require("../_helpers");
 var _actions_1 = require("../_actions");
-function MarketsPopupControls(_a) {
+var _helpers_1 = require("../_helpers");
+var PromoBadge_1 = require("../_common/PromoBadge");
+function MarketsAutoControls(_a) {
     var _b;
-    var marketsData = _a.marketsData, marketsPopup = _a.marketsPopup, marketsSync = _a.marketsSync, marketsSyncLoading = _a.marketsSyncLoading;
+    var marketsData = _a.marketsData, marketRedirect = _a.marketRedirect, marketsSyncLoading = _a.marketsSyncLoading, marketsSync = _a.marketsSync;
     var _c = react_2.useOutletContext(), shopdb = _c.shopdb, activePlan = _c.activePlan;
+    var _d = _helpers_1.planParser(activePlan), isProPlan = _d.isProPlan, isBasicPlan = _d.isBasicPlan, isFreePlan = _d.isFreePlan;
     var submit = react_2.useSubmit();
     var navigation = react_2.useNavigation();
-    function handleMarketsPopup() {
+    function handleMarketsAuto() {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                console.log("handleMarketsPopup");
                 submit({
-                    _action: _actions_1.ACTIONS.update_MarketsWidget,
+                    _action: _actions_1.ACTIONS.update_MarketsRedirect,
                     data: {
-                        widget: !marketsPopup
+                        autoRedirect: !marketRedirect,
+                        appId: shopdb === null || shopdb === void 0 ? void 0 : shopdb.appId
                     }
                 }, _helpers_1.requestHeaders);
                 return [2 /*return*/];
             });
         });
     }
-    ;
-    var loading = _helpers_1.loadingStates(navigation, [_actions_1.ACTIONS.update_MarketsWidget]);
+    var loading = _helpers_1.loadingStates(navigation, [_actions_1.ACTIONS.update_MarketsRedirect, _actions_1.ACTIONS.run_MarketsSync]);
     return (react_1["default"].createElement(react_1["default"].Fragment, null,
         react_1["default"].createElement(polaris_1.InlineGrid, { columns: { xs: "1fr", md: "auto  70%" }, gap: "400" },
             react_1["default"].createElement(polaris_1.Box, { as: "section", paddingInlineStart: { xs: "400", sm: "0" }, paddingInlineEnd: { xs: "400", sm: "0" } },
                 react_1["default"].createElement("div", { style: { paddingLeft: "1rem" } },
                     react_1["default"].createElement(polaris_1.BlockStack, { gap: "400" },
-                        react_1["default"].createElement(polaris_1.Text, { as: "h3", variant: "headingMd" }, "Popup controls"),
-                        react_1["default"].createElement(polaris_1.Text, { as: "p", variant: "bodyMd" }, "Manage and configure settings for synchronizing and enabling/disabling popup based on regional preferences.")))),
+                        react_1["default"].createElement(polaris_1.Text, { as: "h3", variant: "headingMd" }, "Auto redirect controls"),
+                        react_1["default"].createElement(polaris_1.Text, { as: "p", variant: "bodyMd" }, "Manage and configure settings for synchronizing and auto redirecting based on regional preferences.")))),
             react_1["default"].createElement(polaris_1.Card, { roundedAbove: "sm" },
                 react_1["default"].createElement(polaris_1.InlineGrid, { gap: "600" },
                     !(marketsData === null || marketsData === void 0 ? void 0 : marketsData.lastSyncTimestamp) && (react_1["default"].createElement(polaris_1.Banner, { tone: "warning" },
@@ -95,10 +96,11 @@ function MarketsPopupControls(_a) {
                     react_1["default"].createElement(polaris_1.Divider, null),
                     react_1["default"].createElement(polaris_1.InlineGrid, { columns: "70% auto", gap: "200" },
                         react_1["default"].createElement(polaris_1.InlineGrid, { gap: "100" },
-                            react_1["default"].createElement(polaris_1.Text, { as: "h2", variant: "headingSm" }, "Markets popup"),
-                            react_1["default"].createElement(polaris_1.Text, { as: "p", variant: "bodyXs" }, "Enable or disable the markets popup functionality.")),
+                            react_1["default"].createElement(PromoBadge_1["default"], { type: "pro" }),
+                            react_1["default"].createElement(polaris_1.Text, { as: "h2", variant: "headingSm" }, "Markets auto redirect"),
+                            react_1["default"].createElement(polaris_1.Text, { as: "p", variant: "bodyXs" }, "Automatically redirects visitors to the appropriate market (country, currency, and language, if configured) based on their geolocation.")),
                         react_1["default"].createElement(polaris_1.InlineStack, { align: "end", blockAlign: "center" },
                             react_1["default"].createElement("div", null,
-                                react_1["default"].createElement(polaris_1.Button, { disabled: !marketsData, tone: "success", size: "slim", onClick: handleMarketsPopup, loading: loading[_actions_1.ACTIONS.update_MarketsWidget + "Loading"], pressed: marketsPopup && !loading[_actions_1.ACTIONS.update_MarketsWidget + "Loading"] ? true : false }, marketsPopup ? "Active" : "Disabled")))))))));
+                                react_1["default"].createElement(polaris_1.Button, { disabled: !marketsData || !isProPlan, size: "slim", onClick: isProPlan ? handleMarketsAuto : undefined, loading: loading[_actions_1.ACTIONS.update_MarketsRedirect + "Loading"], pressed: marketRedirect && !loading[_actions_1.ACTIONS.update_MarketsRedirect + "Loading"] ? true : false }, marketRedirect ? "Enabled" : "Enable")))))))));
 }
-exports["default"] = MarketsPopupControls;
+exports["default"] = MarketsAutoControls;

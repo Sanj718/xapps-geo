@@ -60,7 +60,6 @@ export default function CustomRedirects() {
   const { allRedirects, configs, widgetEditorStatus, widgetEditorCode, buttonEditorStatus, buttonEditorCode, allAutoRedirects, autoRedirectsCustomCodeStatus, autoRedirectsCustomCode } = useLoaderData<typeof loader>();
   const actionData = useActionData();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [toastData, setToastData] = useState({ msg: "", error: false });
   const [active, setActive] = useState(null);
   const [redirects, setRedirects] = useState<RedirectItem[]>([]);
   const [autoRedirects, setAutoRedirects] = useState<AutoRedirectItem[]>([]);
@@ -164,8 +163,6 @@ export default function CustomRedirects() {
             ""
           )}
         </Tabs>
-        {toastData?.msg !== "" &&
-          shopify.toast.show(toastData.msg, { isError: toastData.error })}
         <br />
       </div>
     </Page>

@@ -735,7 +735,7 @@ exports.getMarketConfigs = function (_a) {
                         })];
                 case 2:
                     result = _b.sent();
-                    return [2 /*return*/, { status: result ? true : false, data: result }];
+                    return [2 /*return*/, { status: result ? true : false, data: __assign(__assign({}, result), { basicConfigs: _helpers_1.jsonSafeParse((result === null || result === void 0 ? void 0 : result.basicConfigs) || '{}'), advancedConfigs: _helpers_1.jsonSafeParse((result === null || result === void 0 ? void 0 : result.advancedConfigs) || '{}') }) }];
                 case 3:
                     error_19 = _b.sent();
                     console.error(error_19);

@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.registerBulkWebhookIfNotExists = exports.removeWebhook = exports.getAllRegisteredWebhooks = exports.getBulkOperation = exports.runMarketsSync = exports.updateAutoRedirectsCustomCode = exports.updateAutoRedirectsCustomCodeStatus = exports.getAutoRedirectsCustomCode = exports.getAutoRedirectsCustomCodeStatus = exports.deleteAutoRedirect = exports.reOrderAutoRedirects = exports.updateAutoRedirect = exports.getAllAutoRedirects = exports.createAutoRedirect = exports.getButtonEditorCode = exports.getButtonEditorStatus = exports.updateButtonEditorCode = exports.updateButtonEditorStatus = exports.getWidgetEditorCode = exports.getWidgetEditorStatus = exports.updateWidgetEditorCode = exports.updateWidgetEditorStatus = exports.getThemeEmbed = void 0;
+exports.setMarketsAutoRedirect = exports.registerBulkWebhookIfNotExists = exports.removeWebhook = exports.getAllRegisteredWebhooks = exports.getBulkOperation = exports.runMarketsSync = exports.updateAutoRedirectsCustomCode = exports.updateAutoRedirectsCustomCodeStatus = exports.getAutoRedirectsCustomCode = exports.getAutoRedirectsCustomCodeStatus = exports.deleteAutoRedirect = exports.reOrderAutoRedirects = exports.updateAutoRedirect = exports.getAllAutoRedirects = exports.createAutoRedirect = exports.getButtonEditorCode = exports.getButtonEditorStatus = exports.updateButtonEditorCode = exports.updateButtonEditorStatus = exports.getWidgetEditorCode = exports.getWidgetEditorStatus = exports.updateWidgetEditorCode = exports.updateWidgetEditorStatus = exports.getThemeEmbed = void 0;
 var uniqid_1 = require("uniqid");
 function getThemeEmbed(_a) {
     var _b, _c, _d, _e, _f, _g;
@@ -929,3 +929,45 @@ function registerBulkWebhookIfNotExists(_a) {
     });
 }
 exports.registerBulkWebhookIfNotExists = registerBulkWebhookIfNotExists;
+function setMarketsAutoRedirect(_a) {
+    var _b, _c, _d, _e, _f;
+    var admin = _a.admin, appId = _a.appId, value = _a.value;
+    return __awaiter(this, void 0, void 0, function () {
+        var response, responseJson, error_24;
+        return __generator(this, function (_g) {
+            switch (_g.label) {
+                case 0:
+                    if (!admin)
+                        throw Error("admin not defined");
+                    _g.label = 1;
+                case 1:
+                    _g.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, admin.graphql("#graphql\n            mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {\n                metafieldsSet(metafields: $metafields) {\n                    metafields {\n                        key\n                        namespace\n                        value\n                        createdAt\n                        updatedAt\n                    }\n                }\n            }\n            ", {
+                            variables: {
+                                metafields: [
+                                    {
+                                        key: "auto_redirect",
+                                        namespace: "markets",
+                                        ownerId: appId,
+                                        type: "boolean",
+                                        value: value
+                                    }
+                                ]
+                            }
+                        })];
+                case 2:
+                    response = _g.sent();
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    responseJson = _g.sent();
+                    return [2 /*return*/, { status: ((_d = (_c = (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.metafieldsSet) === null || _c === void 0 ? void 0 : _c.metafields[0]) === null || _d === void 0 ? void 0 : _d.key) !== "", data: (_f = (_e = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _e === void 0 ? void 0 : _e.metafieldsSet) === null || _f === void 0 ? void 0 : _f.metafields[0] }];
+                case 4:
+                    error_24 = _g.sent();
+                    console.error(error_24);
+                    return [2 /*return*/, { status: false, error: error_24.toString() }];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.setMarketsAutoRedirect = setMarketsAutoRedirect;

@@ -62,7 +62,8 @@ exports.ACTIONS = {
     run_MarketsSync: "runMarketsSync",
     get_MarketsSyncStatus: "getMarketsSyncStatus",
     update_MarketsConfigs: "updateMarketsConfigs",
-    update_MarketsWidget: "updateMarketsWidget"
+    update_MarketsWidget: "updateMarketsWidget",
+    update_MarketsRedirect: "updateMarketsRedirect"
 };
 exports.getAssets = function (_a) {
     var admin = _a.admin, data = _a.data;

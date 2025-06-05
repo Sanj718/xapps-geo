@@ -5,114 +5,55 @@ import {
   Box,
   Button,
   Card,
-  Checkbox,
   Divider,
-  Icon,
   InlineGrid,
   InlineStack,
   Text,
-  TextField,
   Tooltip,
 } from "@shopify/polaris";
-import React, { useContext, useState } from "react";
-import { AppContext } from "../AppContext";
-import { planParser } from "../../helpers";
+import React from "react";
 import {
-  QuestionCircleIcon,
   CalendarTimeIcon,
-  InfoIcon,
 } from "@shopify/polaris-icons";
-import {
-  CREATE_SHOP_CONFIGS,
-  UPDATE_MARKETS_REDIRECT,
-} from "../../../helpers/endpoints";
-import tr from "../../helpers/translations.json";
-import { useAuthenticatedFetch } from "../../hooks";
-import { PromoBadge } from "../PromoBadge";
+import { useNavigation, useOutletContext, useSubmit } from "@remix-run/react";
+import { LoadingStates, OutletContext } from "../_types";
+import { ACTIONS } from "../_actions";
+import { loadingStates, planParser, requestHeaders } from "../_helpers";
+import PromoBadge from "../_common/PromoBadge";
+
+interface MarketsAutoControlsProps {
+  marketsData: any;
+  marketRedirect: boolean;
+  marketsSync: () => void;
+  marketsSyncLoading: boolean;
+}
 
 export default function MarketsAutoControls({
-  initialLoading,
   marketsData,
   marketRedirect,
-  reFetch,
-  marketsSync,
   marketsSyncLoading,
-  setToastData,
-}) {
-  const fetch = useAuthenticatedFetch();
-  const { activePlan, shopData, appId } = useContext(AppContext);
+  marketsSync,
+}: MarketsAutoControlsProps) {
+  const { shopdb, activePlan } =
+    useOutletContext<OutletContext>();
   const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
-  const [loading, setLoading] = useState(false);
-
-  // async function saveOtherConfigs() {
-  //   setLoading(true);
-  //   let error = true;
-  //   let msg = tr.responses.error;
-
-  //   try {
-  //     const response = await fetch(CREATE_SHOP_CONFIGS, {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       method: "post",
-  //       body: JSON.stringify({
-  //         basic_configs: {
-  //           ...originConfigs,
-  //           forward_url_params: configs?.forward_url_params,
-  //           custom_rell_attr: configs?.custom_rell_attr,
-  //           domain_redirection: configs?.domain_redirection,
-  //         },
-  //         advanced_configs: originAdvancedConfigs,
-  //       }),
-  //     });
-  //     const responseJson = await response.json();
-
-  //     if (responseJson?.status) {
-  //       error = false;
-  //       msg = tr.responses.settings_saved;
-  //       reFetch((n) => !n);
-  //     }
-  //   } catch (err) {
-  //     console.error("Fetch error:", err.message);
-  //   }
-
-  //   setToastData({
-  //     error,
-  //     msg,
-  //   });
-  //   setLoading(false);
-  // }
+  const submit = useSubmit();
+  const navigation = useNavigation();
 
   async function handleMarketsAuto() {
-    setLoading(true);
-    let error = true;
-    let msg = tr.responses.error;
-
-    try {
-      const response = await fetch(UPDATE_MARKETS_REDIRECT, {
-        headers: {
-          "Content-Type": "application/json",
+    submit(
+      {
+        _action: ACTIONS.update_MarketsRedirect,
+        data: {
+          autoRedirect: !marketRedirect,
+          appId: shopdb?.appId,
         },
-        method: "post",
-        body: JSON.stringify({ shop_id: shopData?.shopData?.id, appId }),
-      });
-      const responseJson = await response.json();
-
-      if (responseJson?.status) {
-        error = false;
-        msg = tr.responses.success;
-        await reFetch((n) => !n);
-      }
-    } catch (err) {
-      console.error("Fetch error:", err.message);
-    }
-
-    setToastData({
-      error,
-      msg,
-    });
-    setLoading(false);
+      },
+      requestHeaders,
+    );
   }
+
+  const loading = loadingStates(navigation, [ACTIONS.update_MarketsRedirect, ACTIONS.run_MarketsSync]) as LoadingStates;
 
   return (
     <>
@@ -136,7 +77,7 @@ export default function MarketsAutoControls({
         </Box>
         <Card roundedAbove="sm">
           <InlineGrid gap="600">
-            {!initialLoading && !marketsData?.last_sync_timestamp && (
+            {!marketsData?.lastSyncTimestamp && (
               <Banner tone="warning">
                 <small>
                   Perform an <strong>initial sync</strong> to ensure your
@@ -154,20 +95,16 @@ export default function MarketsAutoControls({
                   <Tooltip content="Last sync date/time in UTC.">
                     <Badge
                       tone={
-                        marketsData?.last_sync_timestamp
+                        marketsData?.lastSyncTimestamp
                           ? "info"
-                          : !initialLoading
-                          ? "attention"
-                          : "read-only"
+                          : "attention"
                       }
                       size="small"
                       icon={CalendarTimeIcon}
                     >
-                      {marketsData?.last_sync_timestamp
-                        ? marketsData.last_sync_timestamp
-                        : !initialLoading
-                        ? "N/A"
-                        : "loading..."}
+                      {marketsData?.lastSyncTimestamp
+                        ? marketsData?.lastSyncTimestamp?.toISOString()
+                        : "N/A"}
                     </Badge>
                   </Tooltip>
                 </InlineStack>
@@ -209,8 +146,8 @@ export default function MarketsAutoControls({
                     disabled={!marketsData || !isProPlan}
                     size="slim"
                     onClick={isProPlan ? handleMarketsAuto : undefined}
-                    loading={loading}
-                    pressed={marketRedirect && !loading ? true : false}
+                    loading={loading[ACTIONS.update_MarketsRedirect + "Loading"]}
+                    pressed={marketRedirect && !loading[ACTIONS.update_MarketsRedirect + "Loading"] ? true : false}
                   >
                     {marketRedirect ? "Enabled" : "Enable"}
                   </Button>

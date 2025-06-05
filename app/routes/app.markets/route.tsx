@@ -32,12 +32,14 @@ import {
 import MarketsOtherSettings from "app/components/markets-popup/MarketsOtherSettings";
 import MarketsAutoSettings from "app/components/markets-auto-redirects/MarketsAutoSettings";
 import MarketsPopupControls from "app/components/markets-popup/MarketsPopupControls";
-import { useActionData, useLoaderData, useOutletContext, useSubmit } from "@remix-run/react";
+import { useActionData, useLoaderData, useOutletContext, useSearchParams, useSubmit } from "@remix-run/react";
 import { ACTIONS } from "app/components/_actions";
 import { ActionReturn, OutletContext } from "app/components/_types";
 import tr from "../../components/locales.json";
 import { ActionFunctionArgs } from "@remix-run/node";
 import { LoaderFunctionArgs } from "@remix-run/node";
+import MarketsPopupDisplaySettings from "app/components/markets-popup/MarketsPopupDisplaySettings";
+import MarketsAutoControls from "app/components/markets-auto-redirects/MarketsAutoControls";
 
 const { EMBED_APP_ID, EMBED_APP_HANDLE } =
   getEmbedConst(PROD_EMBED_APP_ID, DEV_EMBED_APP_ID, MK_EMBED_APP_HANDLE) || {};
@@ -66,6 +68,7 @@ export default function MarketsRedirects() {
     useOutletContext<OutletContext>();
   const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
   const { marketsConfigs, marketsData } = useLoaderData<typeof loader>();
+  const [searchParams, setSearchParams] = useSearchParams();
   // const { basicConfigs, advancedConfigs, hideOnAllowedPages, allowedPages } = configs?.data[0] || {}
   // const { activePlan, shopData, appId } = useContext(AppContext);
   // const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
@@ -205,15 +208,18 @@ export default function MarketsRedirects() {
   // }, [refetchSettings]);
 
   useMemo(() => {
-    // if (actionData?._action === ACTIONS.update_MarketsConfigs && actionData?.status) {
-    //   // setMarketsSyncLoading(false);
-    // }
     if (actionData?._action === ACTIONS.get_MarketsSyncStatus && actionData?.status) {
-      if (actionData?.data?.syncStatus === "SUCCESS") {
+      if (actionData?.data?.syncStatus !== "") {
         setMarketsSyncLoading(false);
         clearInterval(interval);
+      }
+      if (actionData?.data?.syncStatus === "SUCCESS") {
         shopify.toast.show(tr.responses.success_markets);
       }
+      if (actionData?.data?.syncStatus === "ERROR") {
+        shopify.toast.show(tr.responses.error_markets);
+      }
+
     }
   }, [actionData]);
 
@@ -235,7 +241,7 @@ export default function MarketsRedirects() {
     }, 1000);
     interval = setInterval(
       async () => checkMarketsStatus(interval),
-      5000
+      5000 // [TODO] Make this dynamic
     );
   }
 
@@ -271,7 +277,16 @@ export default function MarketsRedirects() {
       requestHeaders,
     );
   }
-  console.log("marketsConfigs: ", marketsConfigs);
+
+  useMemo(() => {
+    const tab = searchParams.get("tab");
+    if (tab) {
+      setSelectedTab(parseInt(tab));
+    }
+  }, [searchParams]);
+
+
+  console.log("marketsConfigs: ", marketsConfigs, localConfigs, localAdvancedConfigs);
   return (
     <Page>
       <div id="main-screen">
@@ -286,7 +301,14 @@ export default function MarketsRedirects() {
         <Tabs
           tabs={mainTabs}
           selected={selectedTab}
-          onSelect={setSelectedTab}
+          onSelect={(value) => {
+            setSelectedTab(value);
+            const params = new URLSearchParams();
+            params.set("tab", value.toString());
+            setSearchParams(params, {
+              preventScrollReset: true,
+            });
+          }}
           fitted
         >
           <br />
@@ -299,30 +321,23 @@ export default function MarketsRedirects() {
                 marketsPopup={marketsConfigs?.data?.widget}
               />
               {smUp ? <Divider /> : null}
-              {/* 
-            <MarketsContentStyle
-              marketsData={marketsData}
-              reFetch={setRefetchSettings}
-              configs={localConfigs}
-              setConfigs={setLocalConfigs}
-              advancedConfigs={localAdvancedConfigs}
-              setAdvancedConfigs={setLocalAdvancedConfigs}
-              secondaryLocales={secondaryLocales}
-              setToastData={setToastData}
-            />
-            {smUp ? <Divider /> : null}
-            <MarketsPopupDisplaySettings
-              initialLoading={initialLoading}
-              reFetch={setRefetchSettings}
-              configs={localConfigs}
-              setConfigs={setLocalConfigs}
-              advancedConfigs={localAdvancedConfigs}
-              // pageVisibility={localPageVisibility}
-              // setPageVisibility={setLocalPageVisibility}
-              setToastData={setToastData}
-            />
-            {smUp ? <Divider /> : null}
-           */}
+              {/* <MarketsContentStyle
+                marketsData={marketsData}
+                reFetch={setRefetchSettings}
+                configs={localConfigs}
+                setConfigs={setLocalConfigs}
+                advancedConfigs={localAdvancedConfigs}
+                setAdvancedConfigs={setLocalAdvancedConfigs}
+                secondaryLocales={secondaryLocales}
+                setToastData={setToastData}
+              /> */}
+              {smUp ? <Divider /> : null}
+              <MarketsPopupDisplaySettings
+                configs={localConfigs}
+                setConfigs={setLocalConfigs}
+                advancedConfigs={localAdvancedConfigs}
+              />
+              {smUp ? <Divider /> : null}
               <MarketsOtherSettings />
             </BlockStack>
           ) : (
@@ -331,16 +346,13 @@ export default function MarketsRedirects() {
 
           {selectedTab === 1 ? (
             <BlockStack gap={{ xs: "800", sm: "400" }}>
-              {/* <MarketsAutoControls
-              initialLoading={initialLoading}
-              marketsData={marketsData}
-              marketsSync={handleMarketsSync}
-              marketsSyncLoading={marketsSyncLoading}
-              marketRedirect={marketRedirect}
-              reFetch={setRefetchSettings}
-              setToastData={setToastData}
-            />
-            */}
+              <MarketsAutoControls
+                marketsData={marketsData?.data}
+                marketsSync={handleMarketsSync}
+                marketsSyncLoading={marketsSyncLoading}
+                marketRedirect={marketsConfigs?.data?.autoRedirect}
+              />
+              {smUp ? <Divider /> : null}
               <MarketsAutoSettings />
             </BlockStack>
           ) : (
