@@ -46,7 +46,7 @@ exports.ACTIONS = {
     delete_Redirect: "deleteRedirect",
     toggle_RedirectStatus: "toggleRedirectStatus",
     reorder_Redirect: "reorderRedirect",
-    create_UpdateConfigs: "createUpdateConfigs",
+    update_RedirectsConfigs: "updateRedirectsConfigs",
     create_AllowedPages: "createAllowedPages",
     update_WidgetDisplayCustomRuleStatus: "updateWidgetDisplayCustomRuleStatus",
     update_WidgetDisplayCustomRuleCode: "updateWidgetDisplayCustomRuleCode",
@@ -63,7 +63,10 @@ exports.ACTIONS = {
     get_MarketsSyncStatus: "getMarketsSyncStatus",
     update_MarketsConfigs: "updateMarketsConfigs",
     update_MarketsWidget: "updateMarketsWidget",
-    update_MarketsRedirect: "updateMarketsRedirect"
+    update_MarketsRedirect: "updateMarketsRedirect",
+    cancel_Subscription: "cancelSubscription",
+    subscribe_BasicPlan: "subscribeBasicPlan",
+    subscribe_ProPlan: "subscribeProPlan"
 };
 exports.getAssets = function (_a) {
     var admin = _a.admin, data = _a.data;

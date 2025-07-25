@@ -93,7 +93,7 @@ var shopify = server_1.shopifyApp(__assign({ apiKey: process.env.SHOPIFY_API_KEY
     ? { customShopDomains: [process.env.SHOP_CUSTOM_DOMAIN] }
     : {})));
 exports["default"] = shopify;
-exports.apiVersion = server_1.ApiVersion.January25;
+exports.apiVersion = server_1.ApiVersion.July25;
 exports.addDocumentResponseHeaders = shopify.addDocumentResponseHeaders;
 exports.authenticate = shopify.authenticate;
 exports.unauthenticated = shopify.unauthenticated;

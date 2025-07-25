@@ -66,7 +66,6 @@ var mainTabs = [
         content: "Auto redirects"
     },
 ];
-// [TODO] find correct way to add ts check here.
 exports.loader = function (params) { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
     return [2 /*return*/, _loaders_1.handleLoaders(params)];
 }); }); };

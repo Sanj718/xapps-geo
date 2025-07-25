@@ -64,7 +64,7 @@ export default function OtherSettings({
   async function saveOtherConfigs() {
     submit(
       {
-        _action: ACTIONS.create_UpdateConfigs,
+        _action: ACTIONS.update_RedirectsConfigs,
         data: {
           basicConfigs: localConfigs,
           advancedConfigs: advancedConfigs,
@@ -74,7 +74,7 @@ export default function OtherSettings({
     );
   }
   
-  const loading = loadingStates(navigation, [ACTIONS.create_UpdateConfigs]) as LoadingStates;
+  const loading = loadingStates(navigation, [ACTIONS.update_RedirectsConfigs]) as LoadingStates;
   return (
     <>
       <InlineGrid columns={{ xs: "1fr", md: "auto  70%" }} gap="400">
@@ -196,7 +196,7 @@ export default function OtherSettings({
               <Button
                 variant="primary"
                 onClick={!isFreePlan ? saveOtherConfigs : undefined}
-                loading={loading[ACTIONS.create_UpdateConfigs + "Loading"]}
+                loading={loading[ACTIONS.update_RedirectsConfigs + "Loading"]}
                 disabled={isFreePlan}
               >
                 Save

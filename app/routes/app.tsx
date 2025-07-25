@@ -1,17 +1,19 @@
 import type { HeadersFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { Link, NavLink, Outlet, useLoaderData, useNavigate, useRouteError, useViewTransitionState } from "@remix-run/react";
+import { Link, Outlet, useLoaderData, useNavigate, useRouteError, useViewTransitionState } from "@remix-run/react";
 import { boundary } from "@shopify/shopify-app-remix/server";
 import { AppProvider } from "@shopify/shopify-app-remix/react";
 import { NavMenu } from "@shopify/app-bridge-react";
-import polarisStyles from "@shopify/polaris/build/esm/styles.css?url";
+// import polarisStyles from "@shopify/polaris/build/esm/styles.css?url";
 
 import { authenticate } from "../shopify.server";
 import { useMemo, useState } from "react";
 import { getApp, getShop } from "../components/_loaders";
 import { getAllRegisteredWebhooks, registerBulkWebhookIfNotExists, removeWebhook } from "app/admin-queries.server";
+import "@shopify/polaris/build/esm/styles.css";
 import "../assets/custom.scss";
+import { handleSideNavClick } from "app/components/_helpers";
 
-export const links = () => [{ rel: "stylesheet", href: polarisStyles }];
+// export const links = () => [{ rel: "stylesheet", href: polarisStyles }];
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { getShopdb } = await import("../db-queries.server");
   const { admin, session } = await authenticate.admin(request);
@@ -109,19 +111,14 @@ export default function App() {
     setDevPlan(dev ? true : false);
   }
 
-  function handleSideNavClick() {
-    const mainScreen = document.getElementById('main-screen');
-    if (mainScreen) mainScreen.innerHTML = `<div class="spinner"></div>`;
-  }
-
 
   return (
     <AppProvider isEmbeddedApp apiKey={apiKey}>
       <NavMenu>
-        <Link to="/app" viewTransition onClick={() => handleSideNavClick()}>Dashboard</Link>
+        <Link rel="home" to="/app" viewTransition onClick={() => handleSideNavClick()}>Home</Link>
         <Link to="/app/redirects" viewTransition onClick={() => handleSideNavClick()}>Custom redirects</Link>
         <Link to="/app/markets" viewTransition onClick={() => handleSideNavClick()}>Markets redirects</Link>
-        <Link to="/app/billing" viewTransition onClick={() => handleSideNavClick()}>Billing</Link>
+        <Link to="/app/plans" viewTransition onClick={() => handleSideNavClick()}>Plans</Link>
       </NavMenu>
       <Outlet
         context={{

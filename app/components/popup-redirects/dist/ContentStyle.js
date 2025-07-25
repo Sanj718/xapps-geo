@@ -18,18 +18,19 @@ var _helpers_1 = require("../_helpers");
 var react_2 = require("@remix-run/react");
 var RedirectsPopupPreview_1 = require("./RedirectsPopupPreview");
 function ContentStyle(_a) {
-    var _b;
     var redirects = _a.redirects, configs = _a.configs;
-    var _c = react_2.useOutletContext(), shopInfo = _c.shopInfo, shopdb = _c.shopdb, activePlan = _c.activePlan, devPlan = _c.devPlan, veteranPlan = _c.veteranPlan, appId = _c.appId, appData = _c.appData;
-    var _d = (configs === null || configs === void 0 ? void 0 : configs.data[0]) || {}, basicConfigs = _d.basicConfigs, advancedConfigs = _d.advancedConfigs, hideOnAllowedPages = _d.hideOnAllowedPages, allowedPages = _d.allowedPages;
-    var submit = react_2.useSubmit();
-    var navigation = react_2.useNavigation();
+    var _b = react_2.useOutletContext(), shopInfo = _b.shopInfo, shopdb = _b.shopdb, activePlan = _b.activePlan, devPlan = _b.devPlan, veteranPlan = _b.veteranPlan, appId = _b.appId, appData = _b.appData;
+    var _c = (configs === null || configs === void 0 ? void 0 : configs.data[0]) || {}, basicConfigs = _c.basicConfigs, advancedConfigs = _c.advancedConfigs, hideOnAllowedPages = _c.hideOnAllowedPages, allowedPages = _c.allowedPages;
+    // const submit = useSubmit()
+    // const navigation = useNavigation();
     var navigate = react_2.useNavigate();
-    var _e = _helpers_1.planParser(activePlan), isProPlan = _e.isProPlan, isBasicPlan = _e.isBasicPlan, isFreePlan = _e.isFreePlan;
-    var _f = react_1.useState(false), customizePopupVisibilityChange = _f[0], setCustomizePopupVisibilityChange = _f[1];
-    var _g = react_1.useState(__assign(__assign({}, _helpers_1.default_basic_configs), basicConfigs)), localConfigs = _g[0], setLocalConfigs = _g[1];
-    var _h = react_1.useState(__assign(__assign({}, _helpers_1.default_advanced_configs), advancedConfigs)), localAdvancedConfigs = _h[0], setLocalAdvancedConfigs = _h[1];
-    var secondaryLocales = (_b = shopInfo === null || shopInfo === void 0 ? void 0 : shopInfo.shopLocales) === null || _b === void 0 ? void 0 : _b.filter(function (item) { return !item.primary; });
+    var _d = _helpers_1.planParser(activePlan), isProPlan = _d.isProPlan, isBasicPlan = _d.isBasicPlan, isFreePlan = _d.isFreePlan;
+    // const [customizePopupVisibilityChange, setCustomizePopupVisibilityChange] = useState(false);
+    // const [localConfigs, setLocalConfigs] = useState({ ...default_basic_configs, ...basicConfigs });
+    // const [localAdvancedConfigs, setLocalAdvancedConfigs] = useState({ ...default_advanced_configs, ...advancedConfigs });
+    // const secondaryLocales = shopInfo?.shopLocales?.filter(
+    //   (item) => !item.primary,
+    // );
     return (react_1["default"].createElement(react_1["default"].Fragment, null,
         react_1["default"].createElement(polaris_1.InlineGrid, { columns: { xs: "1fr", md: "auto  70%" }, gap: "400" },
             react_1["default"].createElement(polaris_1.Box, { as: "section", paddingInlineStart: { xs: "400", sm: "0" }, paddingInlineEnd: { xs: "400", sm: "0" } },

@@ -47,18 +47,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.headers = exports.ErrorBoundary = exports.loader = exports.links = void 0;
+exports.headers = exports.ErrorBoundary = exports.loader = void 0;
 var react_1 = require("@remix-run/react");
 var server_1 = require("@shopify/shopify-app-remix/server");
 var react_2 = require("@shopify/shopify-app-remix/react");
 var app_bridge_react_1 = require("@shopify/app-bridge-react");
-var styles_css_url_1 = require("@shopify/polaris/build/esm/styles.css?url");
+// import polarisStyles from "@shopify/polaris/build/esm/styles.css?url";
 var shopify_server_1 = require("../shopify.server");
 var react_3 = require("react");
 var _loaders_1 = require("../components/_loaders");
 var admin_queries_server_1 = require("app/admin-queries.server");
+require("@shopify/polaris/build/esm/styles.css");
 require("../assets/custom.scss");
-exports.links = function () { return [{ rel: "stylesheet", href: styles_css_url_1["default"] }]; };
+var _helpers_1 = require("app/components/_helpers");
+// export const links = () => [{ rel: "stylesheet", href: polarisStyles }];
 exports.loader = function (_a) {
     var request = _a.request;
     return __awaiter(void 0, void 0, void 0, function () {
@@ -151,17 +153,12 @@ function App() {
             });
         });
     }
-    function handleSideNavClick() {
-        var mainScreen = document.getElementById('main-screen');
-        if (mainScreen)
-            mainScreen.innerHTML = "<div class=\"spinner\"></div>";
-    }
     return (React.createElement(react_2.AppProvider, { isEmbeddedApp: true, apiKey: apiKey },
         React.createElement(app_bridge_react_1.NavMenu, null,
-            React.createElement(react_1.Link, { to: "/app", viewTransition: true, onClick: function () { return handleSideNavClick(); } }, "Dashboard"),
-            React.createElement(react_1.Link, { to: "/app/redirects", viewTransition: true, onClick: function () { return handleSideNavClick(); } }, "Custom redirects"),
-            React.createElement(react_1.Link, { to: "/app/markets", viewTransition: true, onClick: function () { return handleSideNavClick(); } }, "Markets redirects"),
-            React.createElement(react_1.Link, { to: "/app/billing", viewTransition: true, onClick: function () { return handleSideNavClick(); } }, "Billing")),
+            React.createElement(react_1.Link, { rel: "home", to: "/app", viewTransition: true, onClick: function () { return _helpers_1.handleSideNavClick(); } }, "Home"),
+            React.createElement(react_1.Link, { to: "/app/redirects", viewTransition: true, onClick: function () { return _helpers_1.handleSideNavClick(); } }, "Custom redirects"),
+            React.createElement(react_1.Link, { to: "/app/markets", viewTransition: true, onClick: function () { return _helpers_1.handleSideNavClick(); } }, "Markets redirects"),
+            React.createElement(react_1.Link, { to: "/app/plans", viewTransition: true, onClick: function () { return _helpers_1.handleSideNavClick(); } }, "Plans")),
         React.createElement(react_1.Outlet, { context: {
                 shopInfo: shopInfo,
                 shopdb: shopdb,

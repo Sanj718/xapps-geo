@@ -2,12 +2,14 @@ import { ActionFunctionArgs } from '@remix-run/node';
 // import db from '../db.server';
 import { authenticate } from '../shopify.server';
 import { MarketsProcess } from 'app/components/markets-sync/index.server';
+import { getBackupRegion } from 'app/admin-queries.server';
 // import { MarketsProcess } from 'app/components/markets-sync/index.server';
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     const { topic, shop, session, payload, admin } = await authenticate.webhook(request);
     console.log("[INFO] Webhook received", topic, shop);
     switch (topic) {
+        // [TODO] add all webhooks here
         case 'APP_UNINSTALLED':
             // Webhook requests can trigger after an app is uninstalled
             // If the app is already uninstalled, the session may be undefined.

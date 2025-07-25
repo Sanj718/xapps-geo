@@ -72,8 +72,8 @@ var _actions_2 = require("app/components/_actions");
 var locales_json_1 = require("../../components/locales.json");
 var MarketsPopupDisplaySettings_1 = require("app/components/markets-popup/MarketsPopupDisplaySettings");
 var MarketsAutoControls_1 = require("app/components/markets-auto-redirects/MarketsAutoControls");
+var MarketsContentStyle_1 = require("app/components/markets-popup/MarketsContentStyle");
 var _a = _helpers_1.getEmbedConst(env_1.PROD_EMBED_APP_ID, env_1.DEV_EMBED_APP_ID, env_1.MK_EMBED_APP_HANDLE) || {}, EMBED_APP_ID = _a.EMBED_APP_ID, EMBED_APP_HANDLE = _a.EMBED_APP_HANDLE;
-// [TODO] find correct way to add ts check here.
 exports.loader = function (params) { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
     return [2 /*return*/, _loaders_1.handleLoaders(params)];
 }); }); };
@@ -299,7 +299,7 @@ function MarketsRedirects() {
             setSelectedTab(parseInt(tab));
         }
     }, [searchParams]);
-    console.log("marketsConfigs: ", marketsConfigs, localConfigs, localAdvancedConfigs);
+    // console.log("marketsConfigs: ", marketsConfigs, localConfigs, localAdvancedConfigs);
     return (react_1["default"].createElement(polaris_1.Page, null,
         react_1["default"].createElement("div", { id: "main-screen" },
             react_1["default"].createElement(PageTitle_1.PageTitle, { icon: polaris_icons_1.MarketsIcon, title: "Markets redirects", status: active, loading: false, embedPath: EMBED_APP_ID + "/" + EMBED_APP_HANDLE }),
@@ -316,6 +316,7 @@ function MarketsRedirects() {
                 selectedTab === 0 ? (react_1["default"].createElement(polaris_1.BlockStack, { gap: { xs: "800", sm: "400" } },
                     react_1["default"].createElement(MarketsPopupControls_1["default"], { marketsData: marketsData === null || marketsData === void 0 ? void 0 : marketsData.data, marketsSync: handleMarketsSync, marketsSyncLoading: marketsSyncLoading, marketsPopup: (_c = marketsConfigs === null || marketsConfigs === void 0 ? void 0 : marketsConfigs.data) === null || _c === void 0 ? void 0 : _c.widget }),
                     smUp ? react_1["default"].createElement(polaris_1.Divider, null) : null,
+                    react_1["default"].createElement(MarketsContentStyle_1["default"], { marketsData: marketsData, configs: localConfigs, advancedConfigs: localAdvancedConfigs }),
                     smUp ? react_1["default"].createElement(polaris_1.Divider, null) : null,
                     react_1["default"].createElement(MarketsPopupDisplaySettings_1["default"], { configs: localConfigs, setConfigs: setLocalConfigs, advancedConfigs: localAdvancedConfigs }),
                     smUp ? react_1["default"].createElement(polaris_1.Divider, null) : null,
@@ -324,7 +325,6 @@ function MarketsRedirects() {
                     react_1["default"].createElement(MarketsAutoControls_1["default"], { marketsData: marketsData === null || marketsData === void 0 ? void 0 : marketsData.data, marketsSync: handleMarketsSync, marketsSyncLoading: marketsSyncLoading, marketRedirect: (_d = marketsConfigs === null || marketsConfigs === void 0 ? void 0 : marketsConfigs.data) === null || _d === void 0 ? void 0 : _d.autoRedirect }),
                     smUp ? react_1["default"].createElement(polaris_1.Divider, null) : null,
                     react_1["default"].createElement(MarketsAutoSettings_1["default"], null))) : ("")),
-            (toastData === null || toastData === void 0 ? void 0 : toastData.msg) !== "" && (react_1["default"].createElement(polaris_1.Toast, { content: toastData.msg, error: toastData.error, onDismiss: function () { return setToastData(__assign(__assign({}, toastData), { msg: "" })); } })),
             react_1["default"].createElement("br", null))));
 }
 exports["default"] = MarketsRedirects;

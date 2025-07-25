@@ -51,7 +51,6 @@ const pageTemplates = [
   "account pages",
 ];
 
-//[TODO] find correct way to add ts check here.
 interface PopupDisplaySettingsProps {
   configs: any
 }
@@ -104,7 +103,7 @@ export default function PopupDisplaySettings({
   async function saveConfigs() {
     submit(
       {
-        _action: ACTIONS.create_UpdateConfigs,
+        _action: ACTIONS.update_RedirectsConfigs,
         data: {
           basicConfigs: localConfigs,
           advancedConfigs: advancedConfigs,
@@ -113,8 +112,8 @@ export default function PopupDisplaySettings({
       requestHeaders,
     );
   }
-
-  const loading = loadingStates(navigation, [ACTIONS.create_UpdateConfigs, ACTIONS.create_AllowedPages]) as LoadingStates;
+console.log(localConfigs)
+  const loading = loadingStates(navigation, [ACTIONS.update_RedirectsConfigs, ACTIONS.create_AllowedPages]) as LoadingStates;
   return (
     <InlineGrid columns={{ xs: "1fr", md: "auto  70%" }} gap="400">
       <Box
@@ -192,7 +191,7 @@ export default function PopupDisplaySettings({
                         setLocalConfigs((current: typeof localConfigs) => ({
                           ...current,
                           show: value,
-                        }))   
+                        }))
                       : undefined
                   }
                   value={localConfigs?.show}
@@ -303,7 +302,10 @@ export default function PopupDisplaySettings({
                   }
                   value={localConfigs?.location}
                 />
-                <div>
+                <div style={{
+                  opacity: localConfigs?.geo ? 1 : 0.5,
+                  pointerEvents: localConfigs?.geo ? "initial" : "none",
+                }}>
                   <div
                     style={{
                       display:
@@ -343,7 +345,7 @@ export default function PopupDisplaySettings({
               </InlineGrid>
             </InlineGrid>
             <InlineStack align="end">
-              <Button variant="primary" onClick={saveConfigs} loading={loading[ACTIONS.create_UpdateConfigs + "Loading"]}>
+              <Button variant="primary" onClick={saveConfigs} loading={loading[ACTIONS.update_RedirectsConfigs + "Loading"]}>
                 Save
               </Button>
             </InlineStack>

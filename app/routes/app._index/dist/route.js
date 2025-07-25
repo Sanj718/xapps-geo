@@ -205,11 +205,6 @@ function Index() {
                                     ", free of charge.")) : ("")) },
                                 React.createElement(polaris_1.Icon, { source: devPlan ? polaris_icons_1.SandboxIcon : polaris_icons_1.GiftCardFilledIcon, tone: "success" }))))))),
             React.createElement("br", null),
-            React.createElement(polaris_1.Banner, { icon: polaris_icons_1.ConfettiIcon, title: "New Look, Better Experience!", action: {
-                    content: "Have questions or issues? Contact us!",
-                    onAction: function () { return Tawk_API === null || Tawk_API === void 0 ? void 0 : Tawk_API.toggle(); }
-                } }, "We've updated the our app with a refreshed design and improved layout for a better experience! \uD83C\uDF89"),
-            React.createElement("br", null),
             React.createElement(polaris_1.InlineGrid, { columns: { xs: 1, sm: 1, md: 2, lg: 2, xl: 2 }, gap: "400" },
                 React.createElement(StartCard, { title: "Custom redirects", status: redirectsEmbedStatus, image: card1_svg_1["default"], label: "Customize custom redirects", url: "/app/redirects" }),
                 React.createElement(StartCard, { title: "Markets redirects", status: marketsEmbedStatus, image: card2_svg_1["default"], label: "Customize markets redirects", url: "/app/markets" })),

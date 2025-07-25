@@ -32,26 +32,6 @@ function RedirectsPopupPreview(_a) {
     var handleDropdown = react_1.useCallback(function () {
         setDropdownOpen(!dropdownOpen);
     }, [dropdownOpen]);
-    // useEffect(() => {
-    //   const scrollableElement = document.querySelector(".Polaris-Modal__Body");
-    //   const previewElement = outerRef.current as HTMLElement | null;
-    //   const handleScroll = () => {
-    //     if (scrollableElement && previewElement) {
-    //       previewElement.style.top =
-    //         scrollableElement.scrollTop > 4
-    //           ? scrollableElement.scrollTop + "px"
-    //           : "4px";
-    //     }
-    //   };
-    //   if (scrollableElement) {
-    //     scrollableElement.addEventListener("scroll", handleScroll);
-    //   }
-    //   return () => {
-    //     if (scrollableElement) {
-    //       scrollableElement.removeEventListener("scroll", handleScroll);
-    //     }
-    //   };
-    // }, []);
     react_1.useEffect(function () {
         var updateWidth = function () {
             if (containerRef.current) {
@@ -69,21 +49,21 @@ function RedirectsPopupPreview(_a) {
         react_1["default"].createElement("div", { ref: containerRef, className: "ngr-preview-container " + customCSSClass, style: { "--c-width": "" + containerWidth } },
             react_1["default"].createElement("div", { id: "ngr-modal-preview", ref: outerRef },
                 !disable_basic_css && (react_1["default"].createElement("style", { dangerouslySetInnerHTML: {
-                        __html: "\n            .ngr-modal{\n              " + (font && font != "" && font !== "inherit"
+                        __html: "\n                .ngr-modal{\n                  " + (font && font != "" && font !== "inherit"
                             ? "font-family:'" + font + "', sans-serif;"
-                            : "") + "\n            }\n            .ngr-modal__content{\n              " + (modalBgColor != ""
+                            : "") + "\n                }\n                .ngr-modal__content{\n                  " + (modalBgColor != ""
                             ? "background-color:" + modalBgColor + ";"
-                            : "") + "\n              " + (modalTextColor != "" ? "color:" + modalTextColor + ";" : "") + "\n              " + (modalBorderColor != ""
+                            : "") + "\n                  " + (modalTextColor != "" ? "color:" + modalTextColor + ";" : "") + "\n                  " + (modalBorderColor != ""
                             ? "border-color:" + modalBorderColor + ";"
-                            : "") + "\n            }\n            .ngr-modal__close{\n              " + (modalBgColor != ""
+                            : "") + "\n                }\n                .ngr-modal__close{\n                  " + (modalBgColor != ""
                             ? "background-color:" + modalBgColor + " !important;"
-                            : "") + "\n              " + (modalTextColor != "" ? "color:" + modalTextColor + ";" : "") + "\n            }\n            .ngr-redirects__link{\n                " + (buttonsBgColor != ""
+                            : "") + "\n                  " + (modalTextColor != "" ? "color:" + modalTextColor + ";" : "") + "\n                }\n                .ngr-redirects__link{\n                    " + (buttonsBgColor != ""
                             ? "background-color:" + buttonsBgColor + ";"
-                            : "") + "\n                " + (buttonsColor != "" ? "border-color:" + buttonsColor + ";" : "") + "\n                " + (buttonsColor != "" ? "color:" + buttonsColor + ";" : "") + "\n            }\n            .ngr-redirects__link:hover{\n                " + (buttonsColor != ""
+                            : "") + "\n                    " + (buttonsColor != "" ? "border-color:" + buttonsColor + ";" : "") + "\n                    " + (buttonsColor != "" ? "color:" + buttonsColor + ";" : "") + "\n                }\n                .ngr-redirects__link:hover{\n                    " + (buttonsColor != ""
                             ? "background-color:" + buttonsColor + ";"
-                            : "") + "\n                " + (buttonsBgColor != ""
+                            : "") + "\n                    " + (buttonsBgColor != ""
                             ? "border-color:" + buttonsBgColor + ";"
-                            : "") + "\n                " + (buttonsBgColor != "" ? "color:" + buttonsBgColor + ";" : "") + "\n            }\n            "
+                            : "") + "\n                    " + (buttonsBgColor != "" ? "color:" + buttonsBgColor + ";" : "") + "\n                }\n                .ngr-modal__content .ngr-select{\n                  " + (buttonsBgColor != "" ? "background-color:" + buttonsBgColor + ";" : "") + " \n                }\n                .ngr-modal__content .ngr-select__label{\n                  " + (buttonsColor != "" ? "color:" + buttonsColor + ";" : "") + "\n                  " + (buttonsColor != "" ? "border-color:" + buttonsColor + ";" : "") + "\n                }\n                .ngr-select::before{\n                  " + (buttonsColor != "" ? "background-color:" + buttonsColor + ";" : "") + "\n                }\n                "
                     } })),
                 css && (react_1["default"].createElement("style", { dangerouslySetInnerHTML: {
                         __html: css
@@ -106,7 +86,7 @@ function RedirectsPopupPreview(_a) {
                         showFlag && (react_1["default"].createElement("div", { className: "ngr-modal__flag" },
                             react_1["default"].createElement("img", { loading: "lazy", alt: "CA", width: "100", height: "50", src: ca_svg_1["default"] }))),
                         (redirects === null || redirects === void 0 ? void 0 : redirects.length) ? (react_1["default"].createElement("div", { "data-ngr-redirects": true }, layout === "dropdown" ? (react_1["default"].createElement("div", { className: "ngr-select", "data-open": dropdownOpen, onClick: handleDropdown },
-                            react_1["default"].createElement("div", { className: "select-placeholder" }, dropdownPlaceholder || "Select"),
+                            react_1["default"].createElement("div", { className: "ngr-select__label" }, dropdownPlaceholder || "Select"),
                             react_1["default"].createElement("ul", null, redirects.map(function (item) {
                                 if (!(item === null || item === void 0 ? void 0 : item.status))
                                     return;

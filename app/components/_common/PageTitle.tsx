@@ -17,14 +17,15 @@ import statusGray from "../../assets/status-green.svg";
 // import { statusGreen, statusRed, statusGray } from "../../assets/index.js";
 
 interface PageTitleProps {
-  icon: any
+  icon?: any
   title: string;
-  status: boolean | null;
-  loading: boolean;
+  status?: boolean | null;
+  loading?: boolean;
   embedPath?: string;
+  hideStatus?: boolean;
 }
 
-export function PageTitle({ icon, title, status, loading, embedPath = "" }: PageTitleProps) {
+export function PageTitle({ icon, title, status, loading, embedPath = "", hideStatus = false }: PageTitleProps) {
   // const redirect = Redirect.create(useAppBridge());
 
   // async function handleActivateEmbedRedirect() {
@@ -39,11 +40,12 @@ export function PageTitle({ icon, title, status, loading, embedPath = "" }: Page
       <InlineStack gap="200" align="space-between">
         <InlineStack gap="200" blockAlign="center">
           {icon && <Icon source={icon} />}
-          <Text as="h1" variant="headingLg">
+          <Text as="h1" variant="headingXl">
             {title}
           </Text>
         </InlineStack>
         <InlineStack gap="300" blockAlign="center">
+          {!hideStatus && (
           <Tooltip
             width="wide"
             content={
@@ -81,6 +83,7 @@ export function PageTitle({ icon, title, status, loading, embedPath = "" }: Page
               />
             </InlineStack>
           </Tooltip>
+          )}
           <Button
             size="micro"
             icon={QuestionCircleIcon}

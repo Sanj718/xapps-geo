@@ -30,6 +30,7 @@
     "name": "Old Church Slavonic / Old Bulgarian",
     "native": "словѣньскъ / slověnĭskŭ"
   },
+  "ckb":{"name":"Central Kurdish","native":"Kurdî / كوردی","rtl":1},
   "cv": { "name": "Chuvash", "native": "Чăваш" },
   "cy": { "name": "Welsh", "native": "Cymraeg" },
   "da": { "name": "Danish", "native": "Dansk" },

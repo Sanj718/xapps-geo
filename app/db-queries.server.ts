@@ -1,4 +1,4 @@
-import { jsonSafeParse } from "./components/_helpers";
+import { default_basic_configs, jsonSafeParse } from "./components/_helpers";
 import { EditRedirectItem, RedirectItem } from "./components/_types";
 import prisma from "./db.server";
 
@@ -45,6 +45,24 @@ interface MarketSyncStatus extends Shop {
 
 interface MarketsData extends Shop {
   markets: any;
+  backupRegion: any;
+}
+
+interface MarketsWidgetProps extends Shop {
+  widget: boolean;
+}
+
+interface MarketsRedirectProps extends Shop {
+  autoRedirect: boolean;
+}
+
+interface ChangePlanProps extends Shop {
+  plan: number; 
+  shopifyPlanId: string;
+}
+
+interface CancelPlanProps extends Shop {
+  cancelShopifyPlanId: string;
 }
 
 // App Plans
@@ -614,7 +632,7 @@ export const updateMarketSyncStatus = async ({ shop, syncStatus }: MarketSyncSta
   }
 };
 
-export const addMarketsData = async ({ shop, markets }: MarketsData): Promise<DBResponse> => {
+export const addMarketsData = async ({ shop, markets, backupRegion }: MarketsData): Promise<DBResponse> => {
   try {
     const activeShop = await prisma.activeShops.findUnique({
       where: { shop },
@@ -625,10 +643,11 @@ export const addMarketsData = async ({ shop, markets }: MarketsData): Promise<DB
       throw new Error("Shop not found");
     }
     const timestamp = new Date().toISOString();
+    const marketsString = JSON.stringify({...markets, "BackupRegion": backupRegion});
     const result = await prisma.markets.upsert({
       where: { shopId: activeShop.id },
-      update: { markets: JSON.stringify(markets), syncStatus: "SUCCESS", lastSyncTimestamp: timestamp },
-      create: { shopId: activeShop.id, markets: JSON.stringify(markets), syncStatus: "SUCCESS", lastSyncTimestamp: timestamp }
+      update: { markets: marketsString, syncStatus: "SUCCESS", lastSyncTimestamp: timestamp },
+      create: { shopId: activeShop.id, markets: marketsString, syncStatus: "SUCCESS", lastSyncTimestamp: timestamp }
     });
 
     return { status: result ? true : false, data: result };
@@ -638,7 +657,7 @@ export const addMarketsData = async ({ shop, markets }: MarketsData): Promise<DB
   }
 };
 
-export const updateMarketsWidget = async ({ shop, widget }: { shop: string, widget: boolean }): Promise<DBResponse> => {
+export const updateMarketsWidget = async ({ shop, widget }: MarketsWidgetProps): Promise<DBResponse> => {
   try {
     const activeShop = await prisma.activeShops.findUnique({
       where: { shop },
@@ -659,7 +678,7 @@ export const updateMarketsWidget = async ({ shop, widget }: { shop: string, widg
   }
 };
 
-export const updateMarketsRedirect = async ({ shop, autoRedirect }: { shop: string, autoRedirect: boolean }): Promise<DBResponse> => {
+export const updateMarketsRedirect = async ({ shop, autoRedirect }: MarketsRedirectProps): Promise<DBResponse> => {
   try {
     const activeShop = await prisma.activeShops.findUnique({
       where: { shop },
@@ -680,6 +699,166 @@ export const updateMarketsRedirect = async ({ shop, autoRedirect }: { shop: stri
   }
 };
 
+export const changePlan = async ({ shop, plan, shopifyPlanId = "" }: ChangePlanProps) => {
+  try {
+    const result = await prisma.activeShops.update({
+      where: { shop },
+      data: { plan, shopifyPlanId },
+    });
+    return { status: result ? true : false, data: result };
+  } catch (error: any) {
+    console.error(error);
+    return { status: false, error: (error as Error).toString() };
+  }
+};
+
+export const getShopData = async ({ shop }: Shop): Promise<DBResponse> => {
+  try {
+    const activeShop = await prisma.activeShops.findUnique({
+      where: { 
+        shop,
+        status: 1,
+        OR: [
+          { plan: { gt: 0 } },
+          { veteran: true }
+        ]
+      },
+      select: {
+        id: true,
+        plan: true,
+        dev: true,
+        redirects: {
+          where: {
+            status: true
+          },
+          orderBy: {
+            order: 'asc'
+          },
+          select: {
+            flag: true,
+            label: true,
+            url: true,
+            order: true,
+            locales: true,
+            domainRedirection: true,
+            conditional: true,
+            conditionalLocation: true
+          }
+        },
+        configs: {
+          where: {
+            status: true
+          },
+          select: {
+            basicConfigs: true,
+            allowedPages: true,
+            hideOnAllowedPages: true,
+            advancedConfigs: true
+          }
+        }
+      }
+    });
+
+    if (!activeShop) {
+      throw new Error("Shop not found");
+    }
+
+    const isProPlan = activeShop.plan === 2;
+    const isBasicPlan = activeShop.plan === 1;
+
+    const redirects = activeShop.redirects.map(redirect => ({
+      ...redirect,
+      locales: isProPlan || activeShop.dev ? jsonSafeParse(redirect.locales) : null,
+      domainRedirection: isProPlan || activeShop.dev ? redirect.domainRedirection : null,
+      conditional: isProPlan || activeShop.dev ? redirect.conditional : null,
+      conditionalLocation: isProPlan || activeShop.dev ? redirect.conditionalLocation : null,
+      plan: activeShop.plan
+    }));
+
+    const configs = activeShop.configs[0];
+    if (configs) {
+      configs.basicConfigs = {...default_basic_configs, ...jsonSafeParse(configs.basicConfigs)};
+      configs.allowedPages = isProPlan || activeShop.dev ? jsonSafeParse(configs.allowedPages) : null;
+      configs.hideOnAllowedPages = isProPlan || activeShop.dev ? configs.hideOnAllowedPages : false;
+      configs.advancedConfigs = isProPlan || activeShop.dev ? jsonSafeParse(configs.advancedConfigs) : null;
+      configs.plan = activeShop.plan;
+    }
+
+
+    return {
+      status: !!configs,
+      data: {
+        redirects: isProPlan ? redirects : redirects.slice(0, isBasicPlan ? BASIC_PLAN_LIMIT : FREE_PLAN_LIMIT),
+        configs
+      }
+    };
+
+  } catch (error) {
+    console.error(error);
+    return { status: false, error: (error as Error).toString() };
+  }
+};
+// export const getMarketsData = async (shop: string) => {
+//   try {
+//     const activeShop = await prisma.activeShops.findFirst({
+//       where: {
+//         shop,
+//         status: true,
+//         plan: {
+//           gt: 0
+//         }
+//       },
+//       select: {
+//         id: true,
+//         plan: true,
+//         dev: true,
+//         markets: {
+//           select: {
+//             markets: true
+//           }
+//         },
+//         marketsConfigs: {
+//           select: {
+//             shop_id: true,
+//             basic_configs: true,
+//             widget: true,
+//             auto_redirect: true,
+//             advanced_configs: true
+//           }
+//         }
+//       }
+//     });
+
+//     if (!activeShop) {
+//       return {
+//         status: false,
+//         data: null
+//       };
+//     }
+
+//     const configs = activeShop.marketsConfigs[0];
+//     if (configs && (activeShop.plan === 2 || activeShop.dev)) {
+//       configs.advanced_configs = configs.advanced_configs;
+//     } else if (configs) {
+//       configs.advanced_configs = null;
+//     }
+
+//     return {
+//       status: true,
+//       data: {
+//         markets: activeShop.markets[0]?.markets,
+//         configs
+//       }
+//     };
+
+//   } catch (error) {
+//     console.error(error); 
+//     return {
+//       status: false,
+//       data: null
+//     };
+//   }
+// };
 
 
 // export const runMarketsSync = async ({ shop }: Shop): Promise<DBResponse> => {

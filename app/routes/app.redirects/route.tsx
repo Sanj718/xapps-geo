@@ -46,9 +46,6 @@ const mainTabs = [
   },
 ];
 
-
-
-// [TODO] find correct way to add ts check here.
 export const loader = async (params: LoaderFunctionArgs) => handleLoaders(params);
 
 export const action = async (params: ActionFunctionArgs) => handleActions(params);

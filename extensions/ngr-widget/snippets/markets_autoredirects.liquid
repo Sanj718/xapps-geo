@@ -1,0 +1,174 @@
+{% comment %} theme-check-disable {% endcomment %}
+<script>
+  function ngrMarketsRun(){
+    const AUTO_REDIRECT = {{ auto_redirect }};
+    const STORE_PLAN = "{{ plan }}";
+    const storeAvaiableCountries = {{ localization.available_countries | map: 'iso_code' | json }};
+    const storeAvaiableLanguagesRaw = {{ localization.available_languages | json }};
+    const storeAvaiableLanguages = {{ localization.available_languages |  map: 'iso_code' | json }};
+    const currentMarketCountry = "{{ localization.country.iso_code }}";
+    const currentMarketLng = "{{ localization.language.iso_code }}";
+    const LOGGER_NAME = "[NGRP APP MARKETS]:";
+    const NGR_SESSION_NAME = "ngr-markets-session";
+    const NGR_AUTORD_NAME = "ngr-auto-markets";
+    const NGR_TEST_PARAM = "ngr-markets-test";
+    const NGR_TEST_HASH = "#" + NGR_TEST_PARAM;
+    const HOST = "{{ host }}";
+    const AUTO_ONCE_TYPE = "{{ auto_once_type }}";
+    const AUTO_ONCE = {{ auto_once }};
+    let isBot = false;
+    {% if auto_bots -%}
+      if(navigator && navigator.userAgent){
+        isBot = /bot|googlebot|crawler|spider|robot|crawling|Lighthouse|slurp/i.test(navigator.userAgent);
+      }
+    {%- endif %}
+    if(!window.location?.host?.includes(".shopifypreview.com") && !isBot && !window.Shopify.designMode && !(window.location.search.includes(NGR_TEST_PARAM) || window.location.hash === NGR_TEST_HASH)){
+      {% if test_mode %} window.ngr_test_markets_customizer = true; {% endif %}
+      console.info(`%c ${LOGGER_NAME} Loaded! `,
+        "background: #027f5f; color: #fff; padding: 3px; font-weight: bold;")
+      try{
+        ngrInitialize()
+      }catch(e){
+        console.error(`${LOGGER_NAME} GEO location issue. `, e)
+      }
+      async function ngrInitialize(){
+        const ngrCurrentGeo = await ngrGeoRequest();
+        if(!AUTO_REDIRECT || (window.location.host !== "liveproduction.myshopify.com" && STORE_PLAN !== "Pro plan") || !ngrCurrentGeo) return;
+        {% comment %} if(!AUTO_REDIRECT) return; {% endcomment %}
+        const primaryLanguage = storeAvaiableLanguagesRaw?.length > 1 ? storeAvaiableLanguagesRaw.find(itm => itm.shop_locale.primary)?.shop_locale?.locale : storeAvaiableLanguagesRaw[0]?.shop_locale?.locale;
+        const countryPreferedLng = window.ngr_countries_window[ngrCurrentGeo.country]?.languages;
+        const avaiableLanguage = countryPreferedLng?.find(lng => storeAvaiableLanguages.includes(lng)) //|| primaryLanguage;
+        const countryCondition = ngrCurrentGeo?.country !== currentMarketCountry && storeAvaiableCountries.includes(ngrCurrentGeo.country)
+        const languageCondition = avaiableLanguage && avaiableLanguage !== currentMarketLng
+        
+        const redirectCondition = countryCondition || languageCondition;
+        const customCondition = window.location.search.includes("shpxid");
+      
+        if(redirectCondition && !customCondition){
+          const rootUrl = window.Shopify.routes.root + "localization";
+          if(ngrCurrentGeo.country === "CH" && window.location.host.includes("got-bag.com")) return;
+          postData(rootUrl, {
+            form_type: "localization", 
+            utf8: "✓", 
+            _method: "put", 
+            return_to: window?.location?.pathname, 
+            country_code: ngrCurrentGeo.country, 
+            ...(avaiableLanguage ? { locale_code: avaiableLanguage } : {}),
+          });        
+        }else{
+          setRedirectOnce();
+        }
+      }
+      function postData(path, params, method) {
+        if(checkRedirectOnce()) return;
+        const hidden_form = document.createElement('form');
+        hidden_form.method = method || 'post';
+        hidden_form.action = path;
+        hidden_form.setAttribute("accept-charset", "UTF-8");
+        hidden_form.enctype = "multipart/form-data";
+        for (const key in params) {
+            if (params.hasOwnProperty(key)) {
+                const hidden_input = document.createElement
+                    ('input');
+                hidden_input.type = 'hidden';
+                hidden_input.name = key;
+                hidden_input.value = params[key];
+                hidden_form.appendChild(hidden_input);
+            }
+        }
+        document.body.appendChild(hidden_form);
+        track();
+        setRedirectOnce();
+        hidden_form.submit();
+      }
+      {% comment %} function redirectUser(redirect_url){
+        if(checkRedirectOnce()) return;
+        if(window.location.href !== redirect_url && !window.location.search.includes("country=")){
+          track();
+          setRedirectOnce();
+          return window.location.replace(redirect_url);
+        }
+      } {% endcomment %}
+      function track() {
+        try{
+          const dataEndpoint = `${HOST}/api/shop/markets-auto?shop=${window?.Shopify?.shop}`;
+          fetch(dataEndpoint)
+          return;
+        }catch(e){
+          console.log(e)
+        }
+      }
+      function setRedirectOnce(){
+        if(!AUTO_ONCE) return;
+        if(AUTO_ONCE_TYPE === "session"){
+          sessionStorage.setItem(NGR_AUTORD_NAME, 1);
+          return
+        }
+        if(AUTO_ONCE_TYPE === "cookies"){
+          ngrSetCookie(NGR_AUTORD_NAME, 1, 7)
+          return
+        }
+      }
+      function checkRedirectOnce(){
+        if(AUTO_ONCE){
+          if(AUTO_ONCE_TYPE === "session"){
+            return sessionStorage?.getItem(NGR_AUTORD_NAME) ? true : false
+          }
+          if(AUTO_ONCE_TYPE === "cookies"){
+            return ngrGetCookie(NGR_AUTORD_NAME) ? true : false
+          }
+          return false
+        }
+        return false
+      }
+      async function ngrGeoRequest(){
+        const savedUserData = ngrGetCookie(NGR_SESSION_NAME);
+        if (savedUserData && !window.location.search.includes(NGR_TEST_PARAM) &&  window.location.hash !== NGR_TEST_HASH) {
+          return JSON.parse(savedUserData)
+        }
+        try{
+          const countries = window.ngr_countries_window
+          const userGeo = await fetch("/browsing_context_suggestions.json").then(
+            (resp) => resp.json()
+          );
+          if (!countries || !userGeo)
+            return console.error(
+              `${LOGGER_NAME} User GEO location or countries list not detected. Contact app support please.`
+            );
+          const userCountry = userGeo?.detected_values?.country?.handle;
+          const userLocation = {
+            country_name: userGeo?.detected_values?.country?.name || userGeo?.detected_values?.country_name || countries[userCountry]?.name,
+            country: userCountry,
+            continent: countries[userCountry]?.continent,
+          };
+          ngrSetCookie(NGR_SESSION_NAME, JSON.stringify(userLocation), 7);
+          window[NGR_SESSION_NAME] = userLocation
+          return userLocation;
+        }catch(e){
+          console.error(`${LOGGER_NAME} GEO location issue. `, e)
+        }
+      }
+      function ngrSetCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+          var date = new Date();
+          date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+          expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+      }
+      function ngrGetCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(";");
+        for (var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == " ") c = c.substring(1, c.length);
+          if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+      }
+    }
+  }
+  ngrMarketsRun()
+</script>
+{% comment %} theme-check-enable {% endcomment %}

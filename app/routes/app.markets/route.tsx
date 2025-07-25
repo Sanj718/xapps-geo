@@ -40,11 +40,10 @@ import { ActionFunctionArgs } from "@remix-run/node";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import MarketsPopupDisplaySettings from "app/components/markets-popup/MarketsPopupDisplaySettings";
 import MarketsAutoControls from "app/components/markets-auto-redirects/MarketsAutoControls";
+import MarketsContentStyle from "app/components/markets-popup/MarketsContentStyle";
 
 const { EMBED_APP_ID, EMBED_APP_HANDLE } =
   getEmbedConst(PROD_EMBED_APP_ID, DEV_EMBED_APP_ID, MK_EMBED_APP_HANDLE) || {};
-
-// [TODO] find correct way to add ts check here.
 export const loader = async (params: LoaderFunctionArgs) => handleLoaders(params);
 
 export const action = async (params: ActionFunctionArgs) => handleActions(params);
@@ -286,7 +285,7 @@ export default function MarketsRedirects() {
   }, [searchParams]);
 
 
-  console.log("marketsConfigs: ", marketsConfigs, localConfigs, localAdvancedConfigs);
+  // console.log("marketsConfigs: ", marketsConfigs, localConfigs, localAdvancedConfigs);
   return (
     <Page>
       <div id="main-screen">
@@ -321,16 +320,11 @@ export default function MarketsRedirects() {
                 marketsPopup={marketsConfigs?.data?.widget}
               />
               {smUp ? <Divider /> : null}
-              {/* <MarketsContentStyle
+              <MarketsContentStyle
                 marketsData={marketsData}
-                reFetch={setRefetchSettings}
                 configs={localConfigs}
-                setConfigs={setLocalConfigs}
                 advancedConfigs={localAdvancedConfigs}
-                setAdvancedConfigs={setLocalAdvancedConfigs}
-                secondaryLocales={secondaryLocales}
-                setToastData={setToastData}
-              /> */}
+              />
               {smUp ? <Divider /> : null}
               <MarketsPopupDisplaySettings
                 configs={localConfigs}
@@ -359,14 +353,6 @@ export default function MarketsRedirects() {
             ""
           )}
         </Tabs>
-
-        {toastData?.msg !== "" && (
-          <Toast
-            content={toastData.msg}
-            error={toastData.error}
-            onDismiss={() => setToastData({ ...toastData, msg: "" })}
-          />
-        )}
         <br />
       </div>
     </Page>

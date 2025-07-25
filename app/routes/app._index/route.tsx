@@ -318,7 +318,7 @@ export default function Index() {
             </InlineStack>
           </Text>
         </InlineStack>
-        <br />
+        {/* <br />
         <Banner
           icon={ConfettiIcon}
           title="New Look, Better Experience!"
@@ -329,7 +329,7 @@ export default function Index() {
         >
           We've updated the our app with a refreshed design and improved layout
           for a better experience! 🎉
-        </Banner>
+        </Banner> */}
         <br />
         <InlineGrid columns={{ xs: 1, sm: 1, md: 2, lg: 2, xl: 2 }} gap="400">
           <StartCard

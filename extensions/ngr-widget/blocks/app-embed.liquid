@@ -1,0 +1,131 @@
+{% comment %} theme-check-disable {% endcomment %}
+{%- liquid
+  assign app_metafields = app.metafields.redirects
+  assign auto_custom_code = app.metafields.settings.custom_code
+  assign auto_custom_code_status = app.metafields.settings.custom_code_status
+  assign widget_custom_code = app.metafields.widget_settings.widget_show_code
+  assign widget_custom_code_status = app.metafields.widget_settings.widget_code_status
+  assign buttons_custom_code = app.metafields.widget_settings.buttons_show_code
+  assign buttons_custom_code_status = app.metafields.widget_settings.buttons_code_status
+  assign plan = app.metafields.store_info.plan | default: 'Free plan'
+  assign root_url = routes.root_url
+  assign host = 'https://ngr-app2.herokuapp.com'
+  assign test_mode = block.settings.ngr_test_mode
+  assign auto_once = block.settings.ngr_auto_once
+  assign auto_once_type = block.settings.ngr_auto_once_type
+  assign auto_bots = block.settings.ngr_auto_bots
+  assign disable_overlay = block.settings.ngr_disable_overlay
+  assign disable_param = block.settings.ngr_auto_foot
+
+  if template.name != 'gift_card' and template.name != 'password'
+    assign menu_icon = ''
+    if block.settings.ngr_menu_icon != blank
+      assign menu_icon = block.settings.ngr_menu_icon | image_url: width: 30
+    endif
+    render 'countries'
+
+    if block.settings.ngr_force_disable == false
+      render 'autoredirects', redirects: app_metafields, auto_custom_code: auto_custom_code, auto_custom_code_status: auto_custom_code_status, host: host, test_mode: test_mode, root_url: root_url, auto_once: auto_once, auto_once_type: auto_once_type, auto_bots: auto_bots, plan: plan, disable_overlay: disable_overlay, disable_param: disable_param
+    endif
+
+    if block.settings.ngr_disable_widget == false
+      render 'widget', menu_icon: menu_icon, test_mode: test_mode, widget_custom_code: widget_custom_code, widget_custom_code_status: widget_custom_code_status, buttons_custom_code: buttons_custom_code, buttons_custom_code_status: buttons_custom_code_status
+    endif
+  endif
+-%}
+{% comment %} theme-check-enable {% endcomment %}
+{% schema %}
+{
+  "name": "Popup & Auto redirects",
+  "target": "body",
+  "javascript": "native-geo-redirects.min.js",
+  "stylesheet": "native-geo-redirects.min.css",
+  "class": "ngr-embed-block",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Widget redirects settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "ngr_test_mode",
+      "info": "You can activate Preview mode and see your current widget. This will only work in Shopify customizer to preview the widget before saving & publishing. It will ignore any GEO location rules and show your widget.",
+      "label": "Preview mode",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "ngr_disable_widget",
+      "info": "You can emergency disable your widget for all users.",
+      "label": "⚠️ Emergency disable Widget.",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Auto redirect settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "ngr_force_disable",
+      "info": "You can disable all autoredirects. Any autoredirection code is going to be disabled.",
+      "label": "⚠️ Emergency disable Auto-redirects.",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "ngr_auto_once",
+      "info": "Your store visitors will be auto-redirected only once per session/cookies.",
+      "label": "Auto redirect once",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "ngr_auto_once_type",
+      "info": "You can choose your 'Auto redirect once' logic.",
+      "label": "Auto redirect once type",
+      "options": [
+        {
+          "value": "session",
+          "label": "Session"
+        },
+        {
+          "value": "cookies",
+          "label": "Cookies"
+        }
+      ],
+      "default": "session"
+    },
+    {
+      "type": "checkbox",
+      "id": "ngr_auto_bots",
+      "info": "You can enable/disable auto redirects on Web crawlers or search bots.",
+      "label": "Disable auto redirects for Web crawlers",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "ngr_auto_foot",
+      "info": "To prevent endless redirection loops caused by incorrect redirects, we're adding a special URL parameter [?ngr-redicted=1]. Disabling it is at your own risk.",
+      "label": "Disable url param",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "ngr_disable_overlay",
+      "info": "[For autoredirects only] We are adding a white overlay to your site while the geolocation being detected. You can enable/disable it here.",
+      "label": "Disable preload overlay",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Other settings"
+    },
+    {
+      "type": "image_picker",
+      "id": "ngr_menu_icon",
+      "info": "You can set an icon to the custom link with [ngr-icon] string. You can learn more in app dashboard Help & FAQ section.",
+      "label": "Select icon"
+    }
+  ]
+}
+{% endschema %}

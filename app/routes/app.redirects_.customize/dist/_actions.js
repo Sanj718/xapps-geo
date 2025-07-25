@@ -70,7 +70,7 @@ function handleActions(_a) {
                     response = _d.sent();
                     return [2 /*return*/, __assign({ _action: _action }, response)];
                 case 4:
-                    if (!(_action === _actions_1.ACTIONS.create_UpdateConfigs)) return [3 /*break*/, 6];
+                    if (!(_action === _actions_1.ACTIONS.update_RedirectsConfigs)) return [3 /*break*/, 6];
                     return [4 /*yield*/, db_queries_server_1.createUpdateConfigs(__assign({ shop: session.shop }, data))];
                 case 5:
                     response = _d.sent();

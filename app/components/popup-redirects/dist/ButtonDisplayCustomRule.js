@@ -55,6 +55,7 @@ function ButtonDisplayCustomRule(_a) {
     var navigation = react_2.useNavigation();
     var navigate = react_2.useNavigate();
     var _d = react_1.useState(_helpers_1.defaultButtonCode), customCode = _d[0], setCustomCode = _d[1];
+    // [TODO] disable status code if not pro plan
     function handleCustomCodeStatus(value) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {

@@ -1,0 +1,23 @@
+<ngr-app-markets
+  style="display: none"
+  data-lng="{{ localization.language.iso_code }}"
+  data-shopify-template="{{ template.name }}"
+  data-shopify-template-dir="{{ template.directory }}"
+  data-flag-src="{{ "ac.svg" | asset_url }}"
+  data-custom-opener-icon-src="{{ menu_icon }}"
+  data-widget-icon="{{ 'earth-americas-solid.svg' | asset_url }}"
+  data-widget-sticky-icon="{{ 'sticky-logo.png' | asset_img_url: 'original' }}"
+  data-test-mode="{{ test_mode }}"
+>
+  <template id="NGR-Markets-Template">
+    <div class="ngr-markets-modal" data-ngr-markets-modal>
+      <div role="dialog" aria-label="" aria-modal="true" class="ngr-markets-modal__content" tabindex="-1">
+        <button class="ngr-markets-modal__close" type="button" aria-label="Close" data-ngr-markets-close>✕</button>
+        {%- form 'localization' -%}
+          <div data-ngr-markets-content></div>
+          <button class="ngr-markets-modal__button-main" type="submit" data-ngr-markets-button>Shop now</button>
+        {%- endform -%}
+      </div>
+    </div>
+  </template>
+</ngr-app-markets>

@@ -63,7 +63,6 @@ var PopupContent_1 = require("app/components/_common/PopupContent");
 var ImageManager_1 = require("app/components/_common/ImageManager");
 var IconSettings_1 = require("app/components/popup-redirects/IconSettings");
 var _a = _helpers_1.getEmbedConst(env_1.PROD_EMBED_APP_ID, env_1.DEV_EMBED_APP_ID, env_1.RD_EMBED_APP_HANDLE) || {}, EMBED_APP_ID = _a.EMBED_APP_ID, EMBED_APP_HANDLE = _a.EMBED_APP_HANDLE;
-// [TODO] find correct way to add ts check here.
 exports.loader = function (params) { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
     return [2 /*return*/, _loaders_1.handleLoaders(params)];
 }); }); };
@@ -80,17 +79,16 @@ function CustomizePopupPage() {
     var navigation = react_2.useNavigation();
     var navigate = react_2.useNavigate();
     var _e = react_1.useState(false), hasChange = _e[0], setHasChange = _e[1];
-    var _f = react_1.useState({ msg: "", error: false }), toastData = _f[0], setToastData = _f[1];
-    var _g = react_1.useState([]), redirects = _g[0], setRedirects = _g[1];
-    var _h = (configs === null || configs === void 0 ? void 0 : configs.data[0]) || {}, basicConfigs = _h.basicConfigs, advancedConfigs = _h.advancedConfigs, hideOnAllowedPages = _h.hideOnAllowedPages, allowedPages = _h.allowedPages;
-    var _j = react_1.useState(__assign(__assign({}, _helpers_1.default_basic_configs), basicConfigs)), localConfigs = _j[0], setLocalConfigs = _j[1];
-    var _k = react_1.useState(__assign(__assign({}, _helpers_1.default_advanced_configs), advancedConfigs)), localAdvancedConfigs = _k[0], setLocalAdvancedConfigs = _k[1];
+    var _f = react_1.useState([]), redirects = _f[0], setRedirects = _f[1];
+    var _g = (configs === null || configs === void 0 ? void 0 : configs.data[0]) || {}, basicConfigs = _g.basicConfigs, advancedConfigs = _g.advancedConfigs, hideOnAllowedPages = _g.hideOnAllowedPages, allowedPages = _g.allowedPages;
+    var _h = react_1.useState(__assign(__assign({}, _helpers_1.default_basic_configs), basicConfigs)), localConfigs = _h[0], setLocalConfigs = _h[1];
+    var _j = react_1.useState(__assign(__assign({}, _helpers_1.default_advanced_configs), advancedConfigs)), localAdvancedConfigs = _j[0], setLocalAdvancedConfigs = _j[1];
     var secondaryLocales = (_a = shopInfo === null || shopInfo === void 0 ? void 0 : shopInfo.shopLocales) === null || _a === void 0 ? void 0 : _a.filter(function (item) { return !item.primary; });
     function saveConfigs() {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 submit({
-                    _action: _actions_2.ACTIONS.create_UpdateConfigs,
+                    _action: _actions_2.ACTIONS.update_RedirectsConfigs,
                     data: {
                         basicConfigs: localConfigs,
                         advancedConfigs: localAdvancedConfigs
@@ -148,17 +146,17 @@ function CustomizePopupPage() {
         setLocalConfigs(function (current) { return (__assign(__assign({}, current), { icon: assets.url })); });
         shopify.modal.hide("icon-upload-popup");
     }
-    var loading = _helpers_1.loadingStates(navigation, [_actions_2.ACTIONS.create_UpdateConfigs]);
+    var loading = _helpers_1.loadingStates(navigation, [_actions_2.ACTIONS.update_RedirectsConfigs]);
     return (React.createElement(polaris_1.Page, { fullWidth: true, compactTitle: true, title: "Customize your popup", backAction: {
             content: "Back",
             onAction: function () { return navigate("/app/redirects#ngr-modal-preview", {
                 viewTransition: true,
                 preventScrollReset: true
             }); }
-        }, primaryAction: { content: "Save", disabled: !hasChange, onAction: saveConfigs, loading: loading[_actions_2.ACTIONS.create_UpdateConfigs + "Loading"] } },
-        React.createElement(CustomizePopup_1["default"], { redirects: redirects, configs: localConfigs, setConfigs: setLocalConfigs, advancedConfigs: localAdvancedConfigs, setAdvancedConfigs: setLocalAdvancedConfigs, saveConfigs: saveConfigs }),
+        }, primaryAction: { content: "Save", disabled: !hasChange, onAction: saveConfigs, loading: loading[_actions_2.ACTIONS.update_RedirectsConfigs + "Loading"] } },
+        React.createElement(CustomizePopup_1["default"], { redirects: redirects, configs: localConfigs, setConfigs: setLocalConfigs, advancedConfigs: localAdvancedConfigs, setAdvancedConfigs: setLocalAdvancedConfigs }),
         React.createElement(app_bridge_react_1.SaveBar, { id: "configs-save-bar", discardConfirmation: true },
-            React.createElement("button", { variant: "primary", onClick: saveConfigs, loading: loading[_actions_2.ACTIONS.create_UpdateConfigs + "Loading"] ? "true" : undefined }),
+            React.createElement("button", { variant: "primary", onClick: saveConfigs, loading: loading[_actions_2.ACTIONS.update_RedirectsConfigs + "Loading"] ? "true" : undefined }),
             React.createElement("button", { onClick: function () {
                     shopify.saveBar.hide('configs-save-bar');
                     navigate("/app/redirects");
@@ -228,8 +226,6 @@ function CustomizePopupPage() {
                                     // @ts-ignore
                                     titleOnChange: titleOnChange, titleDisabled: !isProPlan }));
                             }))))))),
-        (toastData === null || toastData === void 0 ? void 0 : toastData.msg) !== "" &&
-            shopify.toast.show(toastData.msg, { isError: toastData.error }),
         React.createElement("br", null)));
 }
 exports["default"] = CustomizePopupPage;

@@ -36,7 +36,7 @@ export default function ButtonDisplayCustomRule({ status, code }: ButtonDisplayC
   const navigate = useNavigate();
   const [customCode, setCustomCode] = useState(defaultButtonCode);
 
-
+  // [TODO] disable status code if not pro plan
   async function handleCustomCodeStatus(value: string) {
     if (!appId) return;
     submit(

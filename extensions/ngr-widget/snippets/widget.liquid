@@ -1,0 +1,29 @@
+<ngr-app
+  style="display: none"
+  data-markets="false"
+  data-menu-icon="{{ menu_icon }}"
+  data-lng="{{ localization.language.iso_code }}"
+  data-shopify-template="{{ template.name }}"
+  data-shopify-template-dir="{{ template.directory }}"
+  data-flag-src="{{ localization.country | image_url: width: 100 }}"
+  {% comment %} data-flag-src="{{ "ac.svg" | asset_url }}" {% endcomment %}
+  data-custom-opener-icon-src="{{ menu_icon }}"
+  data-widget-icon="{{ 'earth-americas-solid.svg' | asset_url }}"
+  data-widget-sticky-icon="{{ 'sticky-logo.png' | asset_url }}"
+  data-test-mode="{{ test_mode }}"
+>
+  {%- if buttons_custom_code_status and buttons_custom_code and buttons_custom_code != blank -%}
+  <script data-ngr-buttons-code>const showButtonsCustomCode = eval({{- buttons_custom_code -}})</script>
+  {%- endif -%}
+  {%- if widget_custom_code_status and widget_custom_code and widget_custom_code != blank -%}
+    <script  data-ngr-widget-code>const showWidgetCustomCode = eval({{- widget_custom_code -}})</script>
+  {%- endif -%}
+  <template id="NGR-Redirects-Template">
+    <div class="ngr-modal" data-ngr-modal>
+      <div role="dialog" aria-label="" aria-modal="true" class="ngr-modal__content" tabindex="-1" data-ngr-modal-content>
+        <button class="ngr-modal__close" type="button" aria-label="Close" data-ngr-close>✕</button>
+        <div data-ngr-redirects></div>
+      </div>
+    </div>
+  </template>
+</ngr-app>

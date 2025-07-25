@@ -18,7 +18,7 @@ export const ACTIONS = {
   delete_Redirect: "deleteRedirect",
   toggle_RedirectStatus: "toggleRedirectStatus",
   reorder_Redirect: "reorderRedirect",
-  create_UpdateConfigs: "createUpdateConfigs",
+  update_RedirectsConfigs: "updateRedirectsConfigs",
   create_AllowedPages: "createAllowedPages",
   update_WidgetDisplayCustomRuleStatus: "updateWidgetDisplayCustomRuleStatus",
   update_WidgetDisplayCustomRuleCode: "updateWidgetDisplayCustomRuleCode",
@@ -36,6 +36,9 @@ export const ACTIONS = {
   update_MarketsConfigs: "updateMarketsConfigs",
   update_MarketsWidget: "updateMarketsWidget",
   update_MarketsRedirect: "updateMarketsRedirect",
+  cancel_Subscription: "cancelSubscription",
+  subscribe_BasicPlan: "subscribeBasicPlan",
+  subscribe_ProPlan: "subscribeProPlan",
 }
 
 export const getAssets = async ({ admin, data }: GetAssetsParams) => {

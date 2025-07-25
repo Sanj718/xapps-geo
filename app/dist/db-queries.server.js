@@ -47,7 +47,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.updateMarketsRedirect = exports.updateMarketsWidget = exports.addMarketsData = exports.updateMarketSyncStatus = exports.getMarketConfigs = exports.getMarketsData = exports.getMarketSyncStatus = exports.createUpdateMarketConfigs = exports.createUpdateAllowedPages = exports.createUpdateConfigs = exports.getConfigs = exports.reorderRedirect = exports.deleteRedirect = exports.updateRedirectStatus = exports.updateRedirect = exports.getAllRedirects = exports.createRedirect = exports.getAnalyticsData = exports.removeShop = exports.disableShop = exports.getShopdb = exports.createInitialConfigs = exports.addActiveShop = void 0;
+exports.getShopData = exports.changePlan = exports.updateMarketsRedirect = exports.updateMarketsWidget = exports.addMarketsData = exports.updateMarketSyncStatus = exports.getMarketConfigs = exports.getMarketsData = exports.getMarketSyncStatus = exports.createUpdateMarketConfigs = exports.createUpdateAllowedPages = exports.createUpdateConfigs = exports.getConfigs = exports.reorderRedirect = exports.deleteRedirect = exports.updateRedirectStatus = exports.updateRedirect = exports.getAllRedirects = exports.createRedirect = exports.getAnalyticsData = exports.removeShop = exports.disableShop = exports.getShopdb = exports.createInitialConfigs = exports.addActiveShop = void 0;
 var _helpers_1 = require("./components/_helpers");
 var db_server_1 = require("./db.server");
 // App Plans
@@ -780,9 +780,9 @@ exports.updateMarketSyncStatus = function (_a) {
     });
 };
 exports.addMarketsData = function (_a) {
-    var shop = _a.shop, markets = _a.markets;
+    var shop = _a.shop, markets = _a.markets, backupRegion = _a.backupRegion;
     return __awaiter(void 0, void 0, Promise, function () {
-        var activeShop, timestamp, result, error_21;
+        var activeShop, timestamp, marketsString, result, error_21;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -797,10 +797,11 @@ exports.addMarketsData = function (_a) {
                         throw new Error("Shop not found");
                     }
                     timestamp = new Date().toISOString();
+                    marketsString = JSON.stringify(__assign(__assign({}, markets), { "BackupRegion": backupRegion }));
                     return [4 /*yield*/, db_server_1["default"].markets.upsert({
                             where: { shopId: activeShop.id },
-                            update: { markets: JSON.stringify(markets), syncStatus: "SUCCESS", lastSyncTimestamp: timestamp },
-                            create: { shopId: activeShop.id, markets: JSON.stringify(markets), syncStatus: "SUCCESS", lastSyncTimestamp: timestamp }
+                            update: { markets: marketsString, syncStatus: "SUCCESS", lastSyncTimestamp: timestamp },
+                            create: { shopId: activeShop.id, markets: marketsString, syncStatus: "SUCCESS", lastSyncTimestamp: timestamp }
                         })];
                 case 2:
                     result = _b.sent();
@@ -880,6 +881,171 @@ exports.updateMarketsRedirect = function (_a) {
         });
     });
 };
+exports.changePlan = function (_a) {
+    var shop = _a.shop, plan = _a.plan, _b = _a.shopifyPlanId, shopifyPlanId = _b === void 0 ? "" : _b;
+    return __awaiter(void 0, void 0, void 0, function () {
+        var result, error_24;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    _c.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, db_server_1["default"].activeShops.update({
+                            where: { shop: shop },
+                            data: { plan: plan, shopifyPlanId: shopifyPlanId }
+                        })];
+                case 1:
+                    result = _c.sent();
+                    return [2 /*return*/, { status: result ? true : false, data: result }];
+                case 2:
+                    error_24 = _c.sent();
+                    console.error(error_24);
+                    return [2 /*return*/, { status: false, error: error_24.toString() }];
+                case 3: return [2 /*return*/];
+            }
+        });
+    });
+};
+exports.getShopData = function (_a) {
+    var shop = _a.shop;
+    return __awaiter(void 0, void 0, Promise, function () {
+        var activeShop_1, isProPlan_1, isBasicPlan, redirects, configs, error_25;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, db_server_1["default"].activeShops.findUnique({
+                            where: {
+                                shop: shop,
+                                status: 1,
+                                OR: [
+                                    { plan: { gt: 0 } },
+                                    { veteran: true }
+                                ]
+                            },
+                            select: {
+                                id: true,
+                                plan: true,
+                                dev: true,
+                                redirects: {
+                                    where: {
+                                        status: true
+                                    },
+                                    orderBy: {
+                                        order: 'asc'
+                                    },
+                                    select: {
+                                        flag: true,
+                                        label: true,
+                                        url: true,
+                                        order: true,
+                                        locales: true,
+                                        domainRedirection: true,
+                                        conditional: true,
+                                        conditionalLocation: true
+                                    }
+                                },
+                                configs: {
+                                    where: {
+                                        status: true
+                                    },
+                                    select: {
+                                        basicConfigs: true,
+                                        allowedPages: true,
+                                        hideOnAllowedPages: true,
+                                        advancedConfigs: true
+                                    }
+                                }
+                            }
+                        })];
+                case 1:
+                    activeShop_1 = _b.sent();
+                    if (!activeShop_1) {
+                        throw new Error("Shop not found");
+                    }
+                    isProPlan_1 = activeShop_1.plan === 2;
+                    isBasicPlan = activeShop_1.plan === 1;
+                    redirects = activeShop_1.redirects.map(function (redirect) { return (__assign(__assign({}, redirect), { locales: isProPlan_1 || activeShop_1.dev ? _helpers_1.jsonSafeParse(redirect.locales) : null, domainRedirection: isProPlan_1 || activeShop_1.dev ? redirect.domainRedirection : null, conditional: isProPlan_1 || activeShop_1.dev ? redirect.conditional : null, conditionalLocation: isProPlan_1 || activeShop_1.dev ? redirect.conditionalLocation : null, plan: activeShop_1.plan })); });
+                    configs = activeShop_1.configs[0];
+                    if (configs) {
+                        configs.basicConfigs = __assign(__assign({}, _helpers_1.default_basic_configs), _helpers_1.jsonSafeParse(configs.basicConfigs));
+                        configs.allowedPages = isProPlan_1 || activeShop_1.dev ? _helpers_1.jsonSafeParse(configs.allowedPages) : null;
+                        configs.hideOnAllowedPages = isProPlan_1 || activeShop_1.dev ? configs.hideOnAllowedPages : false;
+                        configs.advancedConfigs = isProPlan_1 || activeShop_1.dev ? _helpers_1.jsonSafeParse(configs.advancedConfigs) : null;
+                        configs.plan = activeShop_1.plan;
+                    }
+                    return [2 /*return*/, {
+                            status: !!configs,
+                            data: {
+                                redirects: isProPlan_1 ? redirects : redirects.slice(0, isBasicPlan ? BASIC_PLAN_LIMIT : FREE_PLAN_LIMIT),
+                                configs: configs
+                            }
+                        }];
+                case 2:
+                    error_25 = _b.sent();
+                    console.error(error_25);
+                    return [2 /*return*/, { status: false, error: error_25.toString() }];
+                case 3: return [2 /*return*/];
+            }
+        });
+    });
+};
+// export const getMarketsData = async (shop: string) => {
+//   try {
+//     const activeShop = await prisma.activeShops.findFirst({
+//       where: {
+//         shop,
+//         status: true,
+//         plan: {
+//           gt: 0
+//         }
+//       },
+//       select: {
+//         id: true,
+//         plan: true,
+//         dev: true,
+//         markets: {
+//           select: {
+//             markets: true
+//           }
+//         },
+//         marketsConfigs: {
+//           select: {
+//             shop_id: true,
+//             basic_configs: true,
+//             widget: true,
+//             auto_redirect: true,
+//             advanced_configs: true
+//           }
+//         }
+//       }
+//     });
+//     if (!activeShop) {
+//       return {
+//         status: false,
+//         data: null
+//       };
+//     }
+//     const configs = activeShop.marketsConfigs[0];
+//     if (configs && (activeShop.plan === 2 || activeShop.dev)) {
+//       configs.advanced_configs = configs.advanced_configs;
+//     } else if (configs) {
+//       configs.advanced_configs = null;
+//     }
+//     return {
+//       status: true,
+//       data: {
+//         markets: activeShop.markets[0]?.markets,
+//         configs
+//       }
+//     };
+//   } catch (error) {
+//     console.error(error); 
+//     return {
+//       status: false,
+//       data: null
+//     };
+//   }
+// };
 // export const runMarketsSync = async ({ shop }: Shop): Promise<DBResponse> => {
 //   try {
 //     const result = await prisma.activeShops.update({

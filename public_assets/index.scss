@@ -293,7 +293,7 @@
       min-width: 80px;
       line-height: 22px;
     }
-    .select-placeholder{
+    .ngr-select__label{
       font-size: 12px;
       padding: 4px 20px 4px 8px;
       min-width: 80px;
@@ -438,7 +438,7 @@
     select ~ div {
       padding: 4px 20px 4px 8px;
     }
-    .select-placeholder{
+    .ngr-select__label{
       padding: 4px 20px 4px 8px;
     }
     ul {
@@ -527,7 +527,7 @@ ngr-select,
     transform: scaleY(0);
     transition: 0.3s ease;
   }
-  .select-placeholder {
+  .ngr-select__label{
     // width: 100%;
     max-width: 100%;
     padding: 8px 30px 8px 8px;

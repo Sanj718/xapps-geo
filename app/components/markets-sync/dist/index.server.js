@@ -55,7 +55,7 @@ var admin_queries_server_js_1 = require("app/admin-queries.server.js");
 var lineReader_server_1 = require("./lineReader.server");
 var MarketsProcess = /** @class */ (function () {
     function MarketsProcess() {
-        this.tempFolder = "marketsSync";
+        this.tempFolder = "markets_sync";
         this.lineReader = null;
         this.result = {};
     }
@@ -178,19 +178,26 @@ var MarketsProcess = /** @class */ (function () {
                             db_queries_server_1.updateMarketSyncStatus({ shop: session.shop, syncStatus: "ERROR" });
                         });
                         lineR.on("end", function () { return __awaiter(_this, void 0, void 0, function () {
+                            var backupRegion, error_3;
                             return __generator(this, function (_a) {
-                                // console.log("FINAL: ", _self.result);
-                                try {
-                                    if (!_self_1.result)
-                                        throw new Error("[MARKETS SYNC] _self.result is empty or undefined");
-                                    console.log("[MARKETS SYNC] Markets Saved");
-                                    db_queries_server_1.addMarketsData({ shop: session.shop, markets: _self_1.result });
+                                switch (_a.label) {
+                                    case 0:
+                                        _a.trys.push([0, 2, , 3]);
+                                        if (!_self_1.result)
+                                            throw new Error("[MARKETS SYNC] _self.result is empty or undefined");
+                                        console.log("[MARKETS SYNC] Markets Saved");
+                                        return [4 /*yield*/, admin_queries_server_js_1.getBackupRegion({ admin: admin })];
+                                    case 1:
+                                        backupRegion = _a.sent();
+                                        db_queries_server_1.addMarketsData({ shop: session.shop, markets: _self_1.result, backupRegion: backupRegion });
+                                        return [3 /*break*/, 3];
+                                    case 2:
+                                        error_3 = _a.sent();
+                                        console.log(error_3);
+                                        db_queries_server_1.updateMarketSyncStatus({ shop: session.shop, syncStatus: "ERROR" });
+                                        return [3 /*break*/, 3];
+                                    case 3: return [2 /*return*/];
                                 }
-                                catch (error) {
-                                    console.log(error);
-                                    db_queries_server_1.updateMarketSyncStatus({ shop: session.shop, syncStatus: "ERROR" });
-                                }
-                                return [2 /*return*/];
                             });
                         }); });
                         return [3 /*break*/, 8];

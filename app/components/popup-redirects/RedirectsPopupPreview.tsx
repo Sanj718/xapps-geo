@@ -102,29 +102,6 @@ export default function RedirectsPopupPreview({
     setDropdownOpen(!dropdownOpen);
   }, [dropdownOpen]);
 
-  // useEffect(() => {
-  //   const scrollableElement = document.querySelector(".Polaris-Modal__Body");
-  //   const previewElement = outerRef.current as HTMLElement | null;
-
-  //   const handleScroll = () => {
-  //     if (scrollableElement && previewElement) {
-  //       previewElement.style.top =
-  //         scrollableElement.scrollTop > 4
-  //           ? scrollableElement.scrollTop + "px"
-  //           : "4px";
-  //     }
-  //   };
-
-  //   if (scrollableElement) {
-  //     scrollableElement.addEventListener("scroll", handleScroll);
-  //   }
-  //   return () => {
-  //     if (scrollableElement) {
-  //       scrollableElement.removeEventListener("scroll", handleScroll);
-  //     }
-  //   };
-  // }, []);
-
   useEffect(() => {
     const updateWidth = () => {
       if (containerRef.current) {
@@ -156,51 +133,61 @@ export default function RedirectsPopupPreview({
             <style
               dangerouslySetInnerHTML={{
                 __html: `
-            .ngr-modal{
-              ${font && font != "" && font !== "inherit"
-                    ? "font-family:'" + font + "', sans-serif;"
-                    : ""
-                  }
-            }
-            .ngr-modal__content{
-              ${modalBgColor != ""
-                    ? "background-color:" + modalBgColor + ";"
-                    : ""
-                  }
-              ${modalTextColor != "" ? "color:" + modalTextColor + ";" : ""}
-              ${modalBorderColor != ""
-                    ? "border-color:" + modalBorderColor + ";"
-                    : ""
-                  }
-            }
-            .ngr-modal__close{
-              ${modalBgColor != ""
-                    ? "background-color:" + modalBgColor + " !important;"
-                    : ""
-                  }
-              ${modalTextColor != "" ? "color:" + modalTextColor + ";" : ""}
-            }
-            .ngr-redirects__link{
-                ${buttonsBgColor != ""
-                    ? "background-color:" + buttonsBgColor + ";"
-                    : ""
-                  }
-                ${buttonsColor != "" ? "border-color:" + buttonsColor + ";" : ""
-                  }
-                ${buttonsColor != "" ? "color:" + buttonsColor + ";" : ""}
-            }
-            .ngr-redirects__link:hover{
-                ${buttonsColor != ""
-                    ? "background-color:" + buttonsColor + ";"
-                    : ""
-                  }
-                ${buttonsBgColor != ""
-                    ? "border-color:" + buttonsBgColor + ";"
-                    : ""
-                  }
-                ${buttonsBgColor != "" ? "color:" + buttonsBgColor + ";" : ""}
-            }
-            `,
+                .ngr-modal{
+                  ${font && font != "" && font !== "inherit"
+                        ? "font-family:'" + font + "', sans-serif;"
+                        : ""
+                      }
+                }
+                .ngr-modal__content{
+                  ${modalBgColor != ""
+                        ? "background-color:" + modalBgColor + ";"
+                        : ""
+                      }
+                  ${modalTextColor != "" ? "color:" + modalTextColor + ";" : ""}
+                  ${modalBorderColor != ""
+                        ? "border-color:" + modalBorderColor + ";"
+                        : ""
+                      }
+                }
+                .ngr-modal__close{
+                  ${modalBgColor != ""
+                        ? "background-color:" + modalBgColor + " !important;"
+                        : ""
+                      }
+                  ${modalTextColor != "" ? "color:" + modalTextColor + ";" : ""}
+                }
+                .ngr-redirects__link{
+                    ${buttonsBgColor != ""
+                        ? "background-color:" + buttonsBgColor + ";"
+                        : ""
+                      }
+                    ${buttonsColor != "" ? "border-color:" + buttonsColor + ";" : ""
+                      }
+                    ${buttonsColor != "" ? "color:" + buttonsColor + ";" : ""}
+                }
+                .ngr-redirects__link:hover{
+                    ${buttonsColor != ""
+                        ? "background-color:" + buttonsColor + ";"
+                        : ""
+                      }
+                    ${buttonsBgColor != ""
+                        ? "border-color:" + buttonsBgColor + ";"
+                        : ""
+                      }
+                    ${buttonsBgColor != "" ? "color:" + buttonsBgColor + ";" : ""}
+                }
+                .ngr-modal__content .ngr-select{
+                  ${buttonsBgColor != "" ? "background-color:" + buttonsBgColor + ";" : ""} 
+                }
+                .ngr-modal__content .ngr-select__label{
+                  ${buttonsColor != "" ? "color:" + buttonsColor + ";" : ""}
+                  ${buttonsColor != "" ? "border-color:" + buttonsColor + ";" : ""}
+                }
+                .ngr-select::before{
+                  ${buttonsColor != "" ? "background-color:" + buttonsColor + ";" : ""}
+                }
+                `,
               }}
             />
           )}
@@ -291,7 +278,7 @@ export default function RedirectsPopupPreview({
                       data-open={dropdownOpen}
                       onClick={handleDropdown}
                     >
-                      <div className="select-placeholder">
+                      <div className="ngr-select__label">
                         {dropdownPlaceholder || "Select"}
                       </div>
                       <ul>

@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.setMarketsAutoRedirect = exports.registerBulkWebhookIfNotExists = exports.removeWebhook = exports.getAllRegisteredWebhooks = exports.getBulkOperation = exports.runMarketsSync = exports.updateAutoRedirectsCustomCode = exports.updateAutoRedirectsCustomCodeStatus = exports.getAutoRedirectsCustomCode = exports.getAutoRedirectsCustomCodeStatus = exports.deleteAutoRedirect = exports.reOrderAutoRedirects = exports.updateAutoRedirect = exports.getAllAutoRedirects = exports.createAutoRedirect = exports.getButtonEditorCode = exports.getButtonEditorStatus = exports.updateButtonEditorCode = exports.updateButtonEditorStatus = exports.getWidgetEditorCode = exports.getWidgetEditorStatus = exports.updateWidgetEditorCode = exports.updateWidgetEditorStatus = exports.getThemeEmbed = void 0;
+exports.subscribeProPlan = exports.subscribeBasicPlan = exports.cancelSubscription = exports.setMarketsAutoRedirect = exports.registerBulkWebhookIfNotExists = exports.removeWebhook = exports.getAllRegisteredWebhooks = exports.getBulkOperation = exports.getBackupRegion = exports.runMarketsSync = exports.updateAutoRedirectsCustomCode = exports.updateAutoRedirectsCustomCodeStatus = exports.getAutoRedirectsCustomCode = exports.getAutoRedirectsCustomCodeStatus = exports.deleteAutoRedirect = exports.reOrderAutoRedirects = exports.updateAutoRedirect = exports.getAllAutoRedirects = exports.createAutoRedirect = exports.getButtonEditorCode = exports.getButtonEditorStatus = exports.updateButtonEditorCode = exports.updateButtonEditorStatus = exports.getWidgetEditorCode = exports.getWidgetEditorStatus = exports.updateWidgetEditorCode = exports.updateWidgetEditorStatus = exports.getThemeEmbed = void 0;
 var uniqid_1 = require("uniqid");
 function getThemeEmbed(_a) {
     var _b, _c, _d, _e, _f, _g;
@@ -766,7 +766,7 @@ function runMarketsSync(_a) {
                     _c.label = 1;
                 case 1:
                     _c.trys.push([1, 4, , 5]);
-                    return [4 /*yield*/, admin.graphql("#graphql\n                mutation {\n                    bulkOperationRunQuery(\n                    query: \"\"\"\n                        {\n                            markets {\n                                edges {\n                                node {\n                                    __typename\n                                    id\n                                    handle\n                                    name\n                                    type\n                                    status\n                                    conditions {\n                                    __typename\n                                    conditionTypes\n                                    regionsCondition {\n                                        applicationLevel\n                                        regions {\n                                        edges {\n                                            node {\n                                            __typename\n                                            id\n                                            name\n                                            ... on MarketRegionCountry {\n                                                code\n                                                currency {\n                                                enabled\n                                                currencyName\n                                                currencyCode\n                                                }\n                                            }\n                                            }\n                                        }\n                                        }\n                                    }\n                                    }\n                                    webPresences {\n                                    edges {\n                                        node {\n                                        __typename\n                                        id\n                                        domain {\n                                            id\n                                            host\n                                            url\n                                            localization {\n                                            alternateLocales\n                                            country\n                                            defaultLocale\n                                            }\n                                        }\n                                        rootUrls {\n                                            url\n                                            locale\n                                        }\n                                        subfolderSuffix\n                                        defaultLocale {\n                                            locale\n                                            name\n                                            primary\n                                            published\n                                            marketWebPresences {\n                                            id\n                                            domain {\n                                                id\n                                                host\n                                                url\n                                                localization {\n                                                alternateLocales\n                                                country\n                                                defaultLocale\n                                                }\n                                            }\n                                            rootUrls {\n                                                url\n                                                locale\n                                            }\n                                            subfolderSuffix\n                                            }\n                                        }\n                                        alternateLocales {\n                                            locale\n                                            name\n                                            primary\n                                            published\n                                            marketWebPresences {\n                                            domain {\n                                                id\n                                                host\n                                                url\n                                                localization {\n                                                alternateLocales\n                                                country\n                                                defaultLocale\n                                                }\n                                            }\n                                            id\n                                            rootUrls {\n                                                url\n                                                locale\n                                            }\n                                            subfolderSuffix\n                                            }\n                                        }\n                                        }\n                                    }\n                                    }\n                                }\n                                }\n                            }\n                            } \n                        \"\"\"\n                    ) {\n                        bulkOperation {\n                            id\n                            status\n                            errorCode\n                        }\n                        userErrors {\n                            ...on BulkOperationUserError {\n                                code\n                                message\n                            }\n                        }\n                    }\n                }\n            ")];
+                    return [4 /*yield*/, admin.graphql("#graphql\n                mutation {\n                    bulkOperationRunQuery(\n                    groupObjects: false,\n                    query: \"\"\"\n                        {\n                            markets {\n                                edges {\n                                node {\n                                    __typename\n                                    id\n                                    handle\n                                    name\n                                    type\n                                    status\n                                    conditions {\n                                    __typename\n                                    conditionTypes\n                                    regionsCondition {\n                                        applicationLevel\n                                        regions {\n                                        edges {\n                                            node {\n                                            __typename\n                                            id\n                                            name\n                                            ... on MarketRegionCountry {\n                                                code\n                                                currency {\n                                                enabled\n                                                currencyName\n                                                currencyCode\n                                                }\n                                            }\n                                            }\n                                        }\n                                        }\n                                    }\n                                    }\n                                    webPresences {\n                                        edges {\n                                            node {\n                                                __typename\n                                                id\n                                                domain {\n                                                    id\n                                                    host\n                                                    url\n                                                    localization {\n                                                        alternateLocales\n                                                        country\n                                                        defaultLocale\n                                                    }\n                                                }\n                                                rootUrls {\n                                                    url\n                                                    locale\n                                                }\n                                                subfolderSuffix\n                                                defaultLocale {\n                                                    locale\n                                                    name\n                                                    primary\n                                                    published\n                                                    marketWebPresences {\n                                                        id\n                                                        domain {\n                                                            id\n                                                            host\n                                                            url\n                                                            localization {\n                                                                alternateLocales\n                                                                country\n                                                                defaultLocale\n                                                            }\n                                                        }\n                                                        rootUrls {\n                                                            url\n                                                            locale\n                                                        }\n                                                        subfolderSuffix\n                                                    }\n                                                }\n                                                alternateLocales {\n                                                    locale\n                                                    name\n                                                    primary\n                                                    published\n                                                    marketWebPresences {\n                                                    domain {\n                                                        id\n                                                        host\n                                                        url\n                                                        localization {\n                                                            alternateLocales\n                                                            country\n                                                            defaultLocale\n                                                        }\n                                                    }\n                                                    id\n                                                    rootUrls {\n                                                        url\n                                                        locale\n                                                    }\n                                                    subfolderSuffix\n                                                    }\n                                                }\n                                            }\n                                        }\n                                    }\n                                }\n                                }\n                            }\n                            } \n                        \"\"\"\n                    ) {\n                        bulkOperation {\n                            id\n                            status\n                            errorCode\n                        }\n                        userErrors {\n                            ...on BulkOperationUserError {\n                                code\n                                message\n                            }\n                        }\n                    }\n                }\n            ")];
                 case 2:
                     response = _c.sent();
                     return [4 /*yield*/, response.json()];
@@ -783,11 +783,41 @@ function runMarketsSync(_a) {
     });
 }
 exports.runMarketsSync = runMarketsSync;
+function getBackupRegion(_a) {
+    var _b;
+    var admin = _a.admin;
+    return __awaiter(this, void 0, void 0, function () {
+        var response, responseJson, error_20;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    if (!admin)
+                        throw Error("admin not defined");
+                    _c.label = 1;
+                case 1:
+                    _c.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, admin.graphql("#graphql\n            query getBackupRegion{\n                backupRegion{\n                    __typename\n                    id\n                    name\n                }\n            }\n           ")];
+                case 2:
+                    response = _c.sent();
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    responseJson = _c.sent();
+                    return [2 /*return*/, (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.backupRegion];
+                case 4:
+                    error_20 = _c.sent();
+                    console.error(error_20);
+                    return [2 /*return*/, { status: false, error: error_20.toString() }];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.getBackupRegion = getBackupRegion;
 function getBulkOperation(_a) {
     var _b;
     var admin = _a.admin, bulkId = _a.bulkId;
     return __awaiter(this, void 0, void 0, function () {
-        var response, responseJson, error_20;
+        var response, responseJson, error_21;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
@@ -808,9 +838,9 @@ function getBulkOperation(_a) {
                     responseJson = _c.sent();
                     return [2 /*return*/, (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.node];
                 case 4:
-                    error_20 = _c.sent();
-                    console.error("getBulkOperation: ", error_20);
-                    return [2 /*return*/, { status: false, error: error_20.toString() }];
+                    error_21 = _c.sent();
+                    console.error("getBulkOperation: ", error_21);
+                    return [2 /*return*/, { status: false, error: error_21.toString() }];
                 case 5: return [2 /*return*/];
             }
         });
@@ -821,7 +851,7 @@ function getAllRegisteredWebhooks(_a) {
     var _b, _c;
     var admin = _a.admin;
     return __awaiter(this, void 0, void 0, function () {
-        var response, responseJson, error_21;
+        var response, responseJson, error_22;
         return __generator(this, function (_d) {
             switch (_d.label) {
                 case 0:
@@ -838,9 +868,9 @@ function getAllRegisteredWebhooks(_a) {
                     responseJson = _d.sent();
                     return [2 /*return*/, (_c = (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.webhookSubscriptions) === null || _c === void 0 ? void 0 : _c.edges];
                 case 4:
-                    error_21 = _d.sent();
-                    console.error(error_21);
-                    return [2 /*return*/, { status: false, error: error_21.toString() }];
+                    error_22 = _d.sent();
+                    console.error(error_22);
+                    return [2 /*return*/, { status: false, error: error_22.toString() }];
                 case 5: return [2 /*return*/];
             }
         });
@@ -851,7 +881,7 @@ function removeWebhook(_a) {
     var _b;
     var admin = _a.admin, webhookId = _a.webhookId;
     return __awaiter(this, void 0, void 0, function () {
-        var response, responseJson, error_22;
+        var response, responseJson, error_23;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
@@ -872,9 +902,9 @@ function removeWebhook(_a) {
                     responseJson = _c.sent();
                     return [2 /*return*/, (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.webhookSubscriptionDelete];
                 case 4:
-                    error_22 = _c.sent();
-                    console.error(error_22);
-                    return [2 /*return*/, { status: false, error: error_22.toString() }];
+                    error_23 = _c.sent();
+                    console.error(error_23);
+                    return [2 /*return*/, { status: false, error: error_23.toString() }];
                 case 5: return [2 /*return*/];
             }
         });
@@ -884,7 +914,7 @@ exports.removeWebhook = removeWebhook;
 function registerBulkWebhookIfNotExists(_a) {
     var admin = _a.admin;
     return __awaiter(this, void 0, void 0, function () {
-        var webhooks, findBulkWebhook, mutation, variables, response, responseJson, error_23;
+        var webhooks, findBulkWebhook, mutation, variables, response, responseJson, error_24;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -920,8 +950,8 @@ function registerBulkWebhookIfNotExists(_a) {
                     }
                     return [3 /*break*/, 6];
                 case 5:
-                    error_23 = _b.sent();
-                    console.error("Error registering BULK_OPERATIONS_FINISH webhook:", error_23);
+                    error_24 = _b.sent();
+                    console.error("Error registering BULK_OPERATIONS_FINISH webhook:", error_24);
                     return [3 /*break*/, 6];
                 case 6: return [2 /*return*/];
             }
@@ -933,7 +963,7 @@ function setMarketsAutoRedirect(_a) {
     var _b, _c, _d, _e, _f;
     var admin = _a.admin, appId = _a.appId, value = _a.value;
     return __awaiter(this, void 0, void 0, function () {
-        var response, responseJson, error_24;
+        var response, responseJson, error_25;
         return __generator(this, function (_g) {
             switch (_g.label) {
                 case 0:
@@ -962,12 +992,140 @@ function setMarketsAutoRedirect(_a) {
                     responseJson = _g.sent();
                     return [2 /*return*/, { status: ((_d = (_c = (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.metafieldsSet) === null || _c === void 0 ? void 0 : _c.metafields[0]) === null || _d === void 0 ? void 0 : _d.key) !== "", data: (_f = (_e = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _e === void 0 ? void 0 : _e.metafieldsSet) === null || _f === void 0 ? void 0 : _f.metafields[0] }];
                 case 4:
-                    error_24 = _g.sent();
-                    console.error(error_24);
-                    return [2 /*return*/, { status: false, error: error_24.toString() }];
+                    error_25 = _g.sent();
+                    console.error(error_25);
+                    return [2 /*return*/, { status: false, error: error_25.toString() }];
                 case 5: return [2 /*return*/];
             }
         });
     });
 }
 exports.setMarketsAutoRedirect = setMarketsAutoRedirect;
+function cancelSubscription(_a) {
+    var _b;
+    var admin = _a.admin, id = _a.id;
+    return __awaiter(this, void 0, void 0, function () {
+        var response, responseJson, error_26;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    if (!admin)
+                        throw Error("admin not defined");
+                    _c.label = 1;
+                case 1:
+                    _c.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, admin.graphql("#graphql\n                mutation AppSubscriptionCancel($id: ID!){\n                    appSubscriptionCancel(id: $id) {\n                        userErrors {\n                            field\n                            message\n                        }\n                        appSubscription {\n                            id\n                            status\n                            returnUrl\n                        }\n                    }\n                }\n            ", {
+                            variables: {
+                                id: id
+                            }
+                        })];
+                case 2:
+                    response = _c.sent();
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    responseJson = _c.sent();
+                    return [2 /*return*/, (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.appSubscriptionCancel];
+                case 4:
+                    error_26 = _c.sent();
+                    console.error(error_26);
+                    return [2 /*return*/, { status: false, error: error_26.toString() }];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.cancelSubscription = cancelSubscription;
+function subscribeBasicPlan(_a) {
+    var _b;
+    var admin = _a.admin, shop = _a.shop;
+    return __awaiter(this, void 0, void 0, function () {
+        var response, responseJson, error_27;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    if (!admin)
+                        throw Error("admin not defined");
+                    _c.label = 1;
+                case 1:
+                    _c.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, admin.graphql("#graphql\n            mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test: Boolean!){\n                appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, test: $test) {\n                    userErrors {\n                        field\n                        message\n                    }\n                    appSubscription {\n                        id\n                    }\n                    confirmationUrl\n                }\n            }\n            ", {
+                            variables: {
+                                name: "Basic plan",
+                                lineItems: [{
+                                        plan: {
+                                            appRecurringPricingDetails: {
+                                                interval: "EVERY_30_DAYS",
+                                                price: {
+                                                    amount: 4.99,
+                                                    currencyCode: "USD"
+                                                }
+                                            }
+                                        }
+                                    }],
+                                returnUrl: process.env.APP_URL + ("?shop=" + shop + "&host=" + Buffer.from(shop + "/admin").toString("base64")),
+                                test: true // [TODO] remove this
+                            }
+                        })];
+                case 2:
+                    response = _c.sent();
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    responseJson = _c.sent();
+                    return [2 /*return*/, (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.appSubscriptionCreate];
+                case 4:
+                    error_27 = _c.sent();
+                    console.error(error_27);
+                    return [2 /*return*/, { status: false, error: error_27.toString() }];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.subscribeBasicPlan = subscribeBasicPlan;
+function subscribeProPlan(_a) {
+    var _b;
+    var admin = _a.admin, shop = _a.shop;
+    return __awaiter(this, void 0, void 0, function () {
+        var response, responseJson, error_28;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    if (!admin)
+                        throw Error("admin not defined");
+                    _c.label = 1;
+                case 1:
+                    _c.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, admin.graphql("#graphql\n            mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test: Boolean!){\n                appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, test: $test) {\n                    userErrors {\n                        field\n                        message\n                    }\n                    appSubscription {\n                        id\n                    }\n                    confirmationUrl\n                }\n            }\n            ", {
+                            variables: {
+                                name: "Pro plan",
+                                lineItems: [{
+                                        plan: {
+                                            appRecurringPricingDetails: {
+                                                interval: "EVERY_30_DAYS",
+                                                price: {
+                                                    amount: 8.99,
+                                                    currencyCode: "USD"
+                                                }
+                                            }
+                                        }
+                                    }],
+                                returnUrl: process.env.APP_URL + ("?shop=" + shop + "&host=" + Buffer.from(shop + "/admin").toString("base64")),
+                                test: true // [TODO] remove this
+                            }
+                        })];
+                case 2:
+                    response = _c.sent();
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    responseJson = _c.sent();
+                    return [2 /*return*/, (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.appSubscriptionCreate];
+                case 4:
+                    error_28 = _c.sent();
+                    console.error(error_28);
+                    return [2 /*return*/, { status: false, error: error_28.toString() }];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.subscribeProPlan = subscribeProPlan;

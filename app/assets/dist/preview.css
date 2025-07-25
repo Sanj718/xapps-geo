@@ -57,17 +57,17 @@
   background: #cccc;
   border: 1px solid #ccc;
 }
-#ngr-modal-preview .ngr-modal {
+#ngr-modal-preview .ngr-modal, #ngr-modal-preview .ngr-markets-modal {
   position: absolute;
 }
-#ngr-modal-preview .ngr-modal.sticky-bar {
+#ngr-modal-preview .ngr-modal.sticky-bar, #ngr-modal-preview .ngr-markets-modal.sticky-bar {
   position: absolute;
 }
-#ngr-modal-preview .ngr-modal__content {
+#ngr-modal-preview .ngr-modal__content, #ngr-modal-preview .ngr-markets-modal__content {
   padding: 2rem;
   box-shadow: 0 0 3px 0px #ccc;
 }
-#ngr-modal-preview .ngr-modal__content p {
+#ngr-modal-preview .ngr-modal__content p, #ngr-modal-preview .ngr-markets-modal__content p {
   margin: 1rem 0;
 }
 

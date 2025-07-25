@@ -122,7 +122,7 @@ function PopupDisplaySettings(_a) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 submit({
-                    _action: _actions_1.ACTIONS.create_UpdateConfigs,
+                    _action: _actions_1.ACTIONS.update_RedirectsConfigs,
                     data: {
                         basicConfigs: localConfigs,
                         advancedConfigs: advancedConfigs
@@ -132,7 +132,8 @@ function PopupDisplaySettings(_a) {
             });
         });
     }
-    var loading = _helpers_1.loadingStates(navigation, [_actions_1.ACTIONS.create_UpdateConfigs, _actions_1.ACTIONS.create_AllowedPages]);
+    console.log(localConfigs);
+    var loading = _helpers_1.loadingStates(navigation, [_actions_1.ACTIONS.update_RedirectsConfigs, _actions_1.ACTIONS.create_AllowedPages]);
     return (react_1["default"].createElement(polaris_1.InlineGrid, { columns: { xs: "1fr", md: "auto  70%" }, gap: "400" },
         react_1["default"].createElement(polaris_1.Box, { as: "section", paddingInlineStart: { xs: "400", sm: "0" }, paddingInlineEnd: { xs: "400", sm: "0" } },
             react_1["default"].createElement("div", { style: { paddingLeft: "1rem" } },
@@ -228,7 +229,10 @@ function PopupDisplaySettings(_a) {
                                 ], onChange: function (value) {
                                     return setLocalConfigs(function (current) { return (__assign(__assign({}, current), { location: value })); });
                                 }, value: localConfigs === null || localConfigs === void 0 ? void 0 : localConfigs.location }),
-                            react_1["default"].createElement("div", null,
+                            react_1["default"].createElement("div", { style: {
+                                    opacity: (localConfigs === null || localConfigs === void 0 ? void 0 : localConfigs.geo) ? 1 : 0.5,
+                                    pointerEvents: (localConfigs === null || localConfigs === void 0 ? void 0 : localConfigs.geo) ? "initial" : "none"
+                                } },
                                 react_1["default"].createElement("div", { style: {
                                         display: (localConfigs === null || localConfigs === void 0 ? void 0 : localConfigs.location) === "continent"
                                             ? "block"
@@ -246,7 +250,7 @@ function PopupDisplaySettings(_a) {
                                     } },
                                     react_1["default"].createElement(ListWithTags_1["default"], { list: countries, setConfigs: setLocalConfigs, configs: localConfigs, id: "countries", helpText: "", placeholder: "Select countries" }))))),
                     react_1["default"].createElement(polaris_1.InlineStack, { align: "end" },
-                        react_1["default"].createElement(polaris_1.Button, { variant: "primary", onClick: saveConfigs, loading: loading[_actions_1.ACTIONS.create_UpdateConfigs + "Loading"] }, "Save")))),
+                        react_1["default"].createElement(polaris_1.Button, { variant: "primary", onClick: saveConfigs, loading: loading[_actions_1.ACTIONS.update_RedirectsConfigs + "Loading"] }, "Save")))),
             react_1["default"].createElement(polaris_1.Card, { roundedAbove: "sm" },
                 react_1["default"].createElement(polaris_1.InlineGrid, { gap: "200" },
                     react_1["default"].createElement(polaris_1.InlineGrid, { gap: "200" },

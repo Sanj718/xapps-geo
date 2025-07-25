@@ -24,7 +24,7 @@ require("../../assets/custom.scss");
 var CodeEditor_client_1 = require("../_common/CodeEditor.client");
 function CustomizePopup(_a) {
     var _b;
-    var redirects = _a.redirects, configs = _a.configs, setConfigs = _a.setConfigs, advancedConfigs = _a.advancedConfigs, setAdvancedConfigs = _a.setAdvancedConfigs, saveConfigs = _a.saveConfigs;
+    var redirects = _a.redirects, configs = _a.configs, setConfigs = _a.setConfigs, advancedConfigs = _a.advancedConfigs, setAdvancedConfigs = _a.setAdvancedConfigs;
     var _c = react_2.useOutletContext(), shopInfo = _c.shopInfo, shopdb = _c.shopdb, activePlan = _c.activePlan, devPlan = _c.devPlan, veteranPlan = _c.veteranPlan, appId = _c.appId, appData = _c.appData;
     var _d = _helpers_1.planParser(activePlan), isProPlan = _d.isProPlan, isBasicPlan = _d.isBasicPlan, isFreePlan = _d.isFreePlan;
     var secondaryLocales = (_b = shopInfo === null || shopInfo === void 0 ? void 0 : shopInfo.shopLocales) === null || _b === void 0 ? void 0 : _b.filter(function (item) { return !item.primary; });

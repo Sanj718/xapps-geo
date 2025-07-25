@@ -782,6 +782,7 @@ export async function runMarketsSync({ admin, data }: { admin: AdminApiContext, 
             `#graphql
                 mutation {
                     bulkOperationRunQuery(
+                    groupObjects: false,
                     query: """
                         {
                             markets {
@@ -818,75 +819,75 @@ export async function runMarketsSync({ admin, data }: { admin: AdminApiContext, 
                                     }
                                     }
                                     webPresences {
-                                    edges {
-                                        node {
-                                        __typename
-                                        id
-                                        domain {
-                                            id
-                                            host
-                                            url
-                                            localization {
-                                            alternateLocales
-                                            country
-                                            defaultLocale
-                                            }
-                                        }
-                                        rootUrls {
-                                            url
-                                            locale
-                                        }
-                                        subfolderSuffix
-                                        defaultLocale {
-                                            locale
-                                            name
-                                            primary
-                                            published
-                                            marketWebPresences {
-                                            id
-                                            domain {
+                                        edges {
+                                            node {
+                                                __typename
                                                 id
-                                                host
-                                                url
-                                                localization {
-                                                alternateLocales
-                                                country
-                                                defaultLocale
+                                                domain {
+                                                    id
+                                                    host
+                                                    url
+                                                    localization {
+                                                        alternateLocales
+                                                        country
+                                                        defaultLocale
+                                                    }
+                                                }
+                                                rootUrls {
+                                                    url
+                                                    locale
+                                                }
+                                                subfolderSuffix
+                                                defaultLocale {
+                                                    locale
+                                                    name
+                                                    primary
+                                                    published
+                                                    marketWebPresences {
+                                                        id
+                                                        domain {
+                                                            id
+                                                            host
+                                                            url
+                                                            localization {
+                                                                alternateLocales
+                                                                country
+                                                                defaultLocale
+                                                            }
+                                                        }
+                                                        rootUrls {
+                                                            url
+                                                            locale
+                                                        }
+                                                        subfolderSuffix
+                                                    }
+                                                }
+                                                alternateLocales {
+                                                    locale
+                                                    name
+                                                    primary
+                                                    published
+                                                    marketWebPresences {
+                                                    domain {
+                                                        id
+                                                        host
+                                                        url
+                                                        localization {
+                                                            alternateLocales
+                                                            country
+                                                            defaultLocale
+                                                        }
+                                                    }
+                                                    id
+                                                    rootUrls {
+                                                        url
+                                                        locale
+                                                    }
+                                                    subfolderSuffix
+                                                    }
                                                 }
                                             }
-                                            rootUrls {
-                                                url
-                                                locale
-                                            }
-                                            subfolderSuffix
-                                            }
                                         }
-                                        alternateLocales {
-                                            locale
-                                            name
-                                            primary
-                                            published
-                                            marketWebPresences {
-                                            domain {
-                                                id
-                                                host
-                                                url
-                                                localization {
-                                                alternateLocales
-                                                country
-                                                defaultLocale
-                                                }
-                                            }
-                                            id
-                                            rootUrls {
-                                                url
-                                                locale
-                                            }
-                                            subfolderSuffix
-                                            }
-                                        }
-                                        }
-                                    }
                                     }
                                 }
                                 }
@@ -911,6 +912,28 @@ export async function runMarketsSync({ admin, data }: { admin: AdminApiContext, 
         );
         const responseJson = await response.json();
         return responseJson?.data?.bulkOperationRunQuery;
+    } catch (error) {
+        console.error(error);
+        return { status: false, error: (error as Error).toString() };
+    }
+}
+
+export async function getBackupRegion({ admin }: { admin: AdminApiContext }) {
+    if (!admin) throw Error("admin not defined");
+    try {
+        const response = await admin.graphql(
+            `#graphql
+            query getBackupRegion{
+                backupRegion{
+                    __typename
+                    id
+                    name
+                }
+            }
+           `
+        );
+        const responseJson = await response.json();
+        return responseJson?.data?.backupRegion;
     } catch (error) {
         console.error(error);
         return { status: false, error: (error as Error).toString() };
@@ -988,7 +1011,6 @@ export async function getAllRegisteredWebhooks({ admin }: { admin: AdminApiConte
         return { status: false, error: (error as Error).toString() };
     }
 }
-
 export async function removeWebhook({ admin, webhookId }: { admin: AdminApiContext, webhookId: string }) {
     if (!admin) throw Error("admin not defined");
     try {
@@ -1017,7 +1039,6 @@ export async function removeWebhook({ admin, webhookId }: { admin: AdminApiConte
         return { status: false, error: (error as Error).toString() };
     }
 }
-
 export async function registerBulkWebhookIfNotExists({ admin }: { admin: AdminApiContext }) {
     if (!admin) throw Error("admin not defined");
     const webhooks = await getAllRegisteredWebhooks({ admin });
@@ -1101,6 +1122,129 @@ export async function setMarketsAutoRedirect({ admin, appId, value }: { admin: A
         );
         const responseJson = await response.json();
         return { status: responseJson?.data?.metafieldsSet?.metafields[0]?.key !== "", data: responseJson?.data?.metafieldsSet?.metafields[0] };
+    } catch (error) {
+        console.error(error);
+        return { status: false, error: (error as Error).toString() };
+    }
+}
+
+export async function cancelSubscription({ admin, id }: { admin: AdminApiContext, id: string }) {
+    if (!admin) throw Error("admin not defined");
+    try {
+        const response = await admin.graphql(
+            `#graphql
+                mutation AppSubscriptionCancel($id: ID!){
+                    appSubscriptionCancel(id: $id) {
+                        userErrors {
+                            field
+                            message
+                        }
+                        appSubscription {
+                            id
+                            status
+                            returnUrl
+                        }
+                    }
+                }
+            `,
+            {
+                variables: {
+                    id
+                }
+            }
+        );
+        const responseJson = await response.json();
+        return responseJson?.data?.appSubscriptionCancel;
+    } catch (error) {
+        console.error(error);
+        return { status: false, error: (error as Error).toString() };
+    }
+}
+
+export async function subscribeBasicPlan({ admin, shop }: { admin: AdminApiContext, shop: string }) {
+    if (!admin) throw Error("admin not defined");
+    try {
+        const response = await admin.graphql(
+            `#graphql
+            mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test: Boolean!){
+                appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, test: $test) {
+                    userErrors {
+                        field
+                        message
+                    }
+                    appSubscription {
+                        id
+                    }
+                    confirmationUrl
+                }
+            }
+            `,
+            {
+                variables: {
+                    name: "Basic plan",
+                    lineItems: [{
+                        plan: {
+                            appRecurringPricingDetails: {
+                                interval: "EVERY_30_DAYS",
+                                price: {
+                                    amount: 4.99,
+                                    currencyCode: "USD"
+                                }
+                            }
+                        }
+                    }],
+                    returnUrl: process.env.APP_URL + `?shop=${shop}&host=${Buffer.from(`${shop}/admin`).toString("base64")}`,
+                    test: true // [TODO] remove this
+                }
+            }
+        );
+        const responseJson = await response.json();
+        return responseJson?.data?.appSubscriptionCreate;
+    } catch (error) {
+        console.error(error);
+        return { status: false, error: (error as Error).toString() };
+    }
+}
+
+export async function subscribeProPlan({ admin, shop }: { admin: AdminApiContext, shop: string }) {
+    if (!admin) throw Error("admin not defined");
+    try {
+        const response = await admin.graphql(
+            `#graphql
+            mutation AppSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $test: Boolean!){
+                appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, test: $test) {
+                    userErrors {
+                        field
+                        message
+                    }
+                    appSubscription {
+                        id
+                    }
+                    confirmationUrl
+                }
+            }
+            `,
+            {
+                variables: {
+                    name: "Pro plan",
+                    lineItems: [{
+                        plan: {
+                            appRecurringPricingDetails: {
+                                interval: "EVERY_30_DAYS",
+                                price: {
+                                    amount: 8.99,
+                                    currencyCode: "USD"
+                                }
+                            }
+                        }
+                    }],
+                    returnUrl: process.env.APP_URL + `?shop=${shop}&host=${Buffer.from(`${shop}/admin`).toString("base64")}`,
+                    test: true // [TODO] remove this
+                }
+            }
+        );
+        const responseJson = await response.json();
+        return responseJson?.data?.appSubscriptionCreate;
     } catch (error) {
         console.error(error);
         return { status: false, error: (error as Error).toString() };

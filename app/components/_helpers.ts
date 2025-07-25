@@ -477,3 +477,8 @@ export async function verifyWebhookRequest(request: Request) {
 
   return safeCompare(generatedHash, hmac);
 }
+
+export function handleSideNavClick() {
+  const mainScreen = document.getElementById('main-screen');
+  if (mainScreen) mainScreen.innerHTML = `<div class="spinner"></div>`;
+}

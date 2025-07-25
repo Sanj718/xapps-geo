@@ -9,7 +9,7 @@ var status_green_svg_2 = require("../../assets/status-green.svg");
 var status_green_svg_3 = require("../../assets/status-green.svg");
 function PageTitle(_a) {
     // const redirect = Redirect.create(useAppBridge());
-    var icon = _a.icon, title = _a.title, status = _a.status, loading = _a.loading, _b = _a.embedPath, embedPath = _b === void 0 ? "" : _b;
+    var icon = _a.icon, title = _a.title, status = _a.status, loading = _a.loading, _b = _a.embedPath, embedPath = _b === void 0 ? "" : _b, _c = _a.hideStatus, hideStatus = _c === void 0 ? false : _c;
     // async function handleActivateEmbedRedirect() {
     //   redirect?.dispatch(Redirect.Action.ADMIN_PATH, {
     //     path: `/themes/current/editor?context=apps&activateAppId=${embedPath}`,
@@ -20,9 +20,9 @@ function PageTitle(_a) {
         react_1["default"].createElement(polaris_1.InlineStack, { gap: "200", align: "space-between" },
             react_1["default"].createElement(polaris_1.InlineStack, { gap: "200", blockAlign: "center" },
                 icon && react_1["default"].createElement(polaris_1.Icon, { source: icon }),
-                react_1["default"].createElement(polaris_1.Text, { as: "h1", variant: "headingLg" }, title)),
+                react_1["default"].createElement(polaris_1.Text, { as: "h1", variant: "headingXl" }, title)),
             react_1["default"].createElement(polaris_1.InlineStack, { gap: "300", blockAlign: "center" },
-                react_1["default"].createElement(polaris_1.Tooltip, { width: "wide", content: react_1["default"].createElement(polaris_1.Box, { padding: "200" },
+                !hideStatus && (react_1["default"].createElement(polaris_1.Tooltip, { width: "wide", content: react_1["default"].createElement(polaris_1.Box, { padding: "200" },
                         react_1["default"].createElement(polaris_1.InlineGrid, { gap: "100" },
                             react_1["default"].createElement(polaris_1.Text, { as: "p", variant: "headingXs" },
                                 "Status: ",
@@ -40,7 +40,7 @@ function PageTitle(_a) {
                         // onClick={handleActivateEmbedRedirect}
                         , { 
                             // onClick={handleActivateEmbedRedirect}
-                            size: "micro", icon: polaris_icons_1.AdjustIcon }))),
+                            size: "micro", icon: polaris_icons_1.AdjustIcon })))),
                 react_1["default"].createElement(polaris_1.Button, { size: "micro", icon: polaris_icons_1.QuestionCircleIcon, url: "https://geolocationredirects-xapps.tawk.help/", target: "_blank" }, "Help center")))));
 }
 exports.PageTitle = PageTitle;

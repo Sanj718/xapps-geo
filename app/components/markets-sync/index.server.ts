@@ -5,7 +5,7 @@ import { promisify } from "util";
 import { resolve } from "path";
 import { addMarketsData, updateMarketSyncStatus } from "app/db-queries.server";
 import { isJson } from "../_helpers.js";
-import { getBulkOperation } from "app/admin-queries.server.js";
+import { getBackupRegion, getBulkOperation } from "app/admin-queries.server.js";
 import { AdminApiContext } from "@shopify/shopify-app-remix/server";
 import LineByLineReader from "./lineReader.server";
 
@@ -15,7 +15,7 @@ export class MarketsProcess {
   private result: Record<string, any>;
 
   constructor() {
-    this.tempFolder = "marketsSync";
+    this.tempFolder = "markets_sync";
     this.lineReader = null;
     this.result = {};
   }
@@ -139,7 +139,9 @@ export class MarketsProcess {
               "[MARKETS SYNC] _self.result is empty or undefined"
             );
           console.log("[MARKETS SYNC] Markets Saved")
-          addMarketsData({ shop: session.shop, markets: _self.result });
+          const backupRegion = await getBackupRegion({ admin });    
+          addMarketsData({ shop: session.shop, markets: _self.result, backupRegion });
+          
         } catch (error) {
           console.log(error);
           updateMarketSyncStatus({ shop: session.shop, syncStatus: "ERROR" });

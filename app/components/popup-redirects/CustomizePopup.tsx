@@ -37,10 +37,9 @@ interface CustomizePopupProps {
     setConfigs: any;
     advancedConfigs: any;
     setAdvancedConfigs: any;
-    saveConfigs: any;
 }
 
-export default function CustomizePopup({ redirects, configs, setConfigs, advancedConfigs, setAdvancedConfigs, saveConfigs }: CustomizePopupProps) {
+export default function CustomizePopup({ redirects, configs, setConfigs, advancedConfigs, setAdvancedConfigs }: CustomizePopupProps) {
     const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
         useOutletContext<OutletContext>();
     const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);

@@ -24,7 +24,6 @@ import IconSettings from "app/components/popup-redirects/IconSettings";
 const { EMBED_APP_ID, EMBED_APP_HANDLE } =
   getEmbedConst(PROD_EMBED_APP_ID, DEV_EMBED_APP_ID, RD_EMBED_APP_HANDLE) || {};
 
-// [TODO] find correct way to add ts check here.
 export const loader = async (params: LoaderFunctionArgs) => handleLoaders(params);
 
 export const action = async (params: ActionFunctionArgs) => handleActions(params);
@@ -40,7 +39,6 @@ export default function CustomizePopupPage() {
   const navigation = useNavigation()
   const navigate = useNavigate();
   const [hasChange, setHasChange] = useState(false);
-  const [toastData, setToastData] = useState({ msg: "", error: false });
   const [redirects, setRedirects] = useState<RedirectItem[]>([]);
   const { basicConfigs, advancedConfigs, hideOnAllowedPages, allowedPages } = configs?.data[0] || {}
   const [localConfigs, setLocalConfigs] = useState({ ...default_basic_configs, ...basicConfigs });
@@ -52,7 +50,7 @@ export default function CustomizePopupPage() {
   async function saveConfigs() {
     submit(
       {
-        _action: ACTIONS.create_UpdateConfigs,
+        _action: ACTIONS.update_RedirectsConfigs,
         data: {
           basicConfigs: localConfigs,
           advancedConfigs: localAdvancedConfigs,
@@ -116,7 +114,7 @@ export default function CustomizePopupPage() {
     shopify.modal.hide("icon-upload-popup");
   }
 
-  const loading = loadingStates(navigation, [ACTIONS.create_UpdateConfigs]) as LoadingStates;
+  const loading = loadingStates(navigation, [ACTIONS.update_RedirectsConfigs]) as LoadingStates;
   return (
     <Page
       fullWidth
@@ -128,7 +126,7 @@ export default function CustomizePopupPage() {
           preventScrollReset: true,
         })
       }}
-      primaryAction={{ content: "Save", disabled: !hasChange, onAction: saveConfigs, loading: loading[ACTIONS.create_UpdateConfigs + "Loading"] }}
+      primaryAction={{ content: "Save", disabled: !hasChange, onAction: saveConfigs, loading: loading[ACTIONS.update_RedirectsConfigs + "Loading"] }}
     >
       <CustomizePopup
         redirects={redirects}
@@ -136,10 +134,9 @@ export default function CustomizePopupPage() {
         setConfigs={setLocalConfigs}
         advancedConfigs={localAdvancedConfigs}
         setAdvancedConfigs={setLocalAdvancedConfigs}
-        saveConfigs={saveConfigs}
       />
       <SaveBar id="configs-save-bar" discardConfirmation>
-        <button variant="primary" onClick={saveConfigs} loading={loading[ACTIONS.create_UpdateConfigs + "Loading"] ? "true" : undefined}></button>
+        <button variant="primary" onClick={saveConfigs} loading={loading[ACTIONS.update_RedirectsConfigs + "Loading"] ? "true" : undefined}></button>
         <button onClick={() => {
           shopify.saveBar.hide('configs-save-bar');
           navigate("/app/redirects");
@@ -170,7 +167,7 @@ export default function CustomizePopupPage() {
                             : ""
                           : ""}
                         titleOnChange={isProPlan ? (value) =>
-                          setLocalConfigs((current) => ({
+                          setLocalConfigs((current: typeof localConfigs) => ({
                             ...current,
                             title_locales: {
                               ...current?.title_locales,
@@ -185,7 +182,7 @@ export default function CustomizePopupPage() {
                             : ""
                           : ""}
                         textOnChange={isProPlan ? (value) => {
-                          setLocalConfigs((current) => ({
+                          setLocalConfigs((current: typeof localConfigs) => ({
                             ...current,
                             text_locales: {
                               ...current.text_locales,
@@ -261,8 +258,6 @@ export default function CustomizePopupPage() {
           </AppProvider>
         </Box>
       </Modal>
-      {toastData?.msg !== "" &&
-        shopify.toast.show(toastData.msg, { isError: toastData.error })}
       <br />
     </Page>
   );

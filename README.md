@@ -60,6 +60,54 @@ pnpm run dev
 
 Press P to open the URL to your app. Once you click install, you can start development.
 
+### Building Public Assets
+
+This project includes a custom build process for compiling assets from the `public_assets` folder, following the same logic as the webpack configuration. The build process handles:
+
+- **JavaScript files**: `index.js` and `index-markets.js` are compiled and minified to `native-geo-redirects.min.js` and `native-geo-markets.min.js`
+- **SCSS files**: `index.scss` and `index-markets.scss` are compiled to CSS and saved as `native-geo-redirects.min.css` and `native-geo-markets.min.css`
+- **Minification**: Both JavaScript and CSS files are minified for production builds
+- **String replacement**: `__HOST__` placeholders are replaced with the appropriate host URLs based on environment
+- **Output location**: All compiled assets are placed in `extensions/ngr-widget/assets/`
+
+#### Build Commands
+
+```shell
+# Build only the public assets for extensions (development mode)
+npm run build:assets
+
+# Build only the public assets for extensions (production mode)
+npm run build:assets:prod
+
+# Watch mode for assets (rebuilds on file changes)
+npm run watch:assets
+
+# Build the main Remix application
+npm run build
+
+# Build both public assets and the main application
+npm run build:all
+```
+
+#### Development Commands
+
+```shell
+# Start development mode (builds assets + starts Shopify app dev + watches for changes)
+npm run dev
+
+# Watch only the assets (useful for development)
+npm run dev:assets
+```
+
+#### Deployment Commands
+
+```shell
+# Deploy the app (builds assets + deploys to Shopify)
+npm run deploy
+```
+
+The compiled assets will be available in the `extensions/ngr-widget/assets/` folder and can be used by the Shopify app extension.
+
 Local development is powered by [the Shopify CLI](https://shopify.dev/docs/apps/tools/cli). It logs into your partners account, connects to an app, provides environment variables, updates remote config, creates a tunnel and provides commands to generate extensions.
 
 ### Authenticating and querying data

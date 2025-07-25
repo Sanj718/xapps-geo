@@ -13,7 +13,7 @@ export async function handleActions({ request }: ActionFunctionArgs) {
         return { _action, ...response };
     }
 
-    if (_action === ACTIONS.create_UpdateConfigs) {
+    if (_action === ACTIONS.update_RedirectsConfigs) {
         const response = await createUpdateConfigs({ shop: session.shop, ...data });
         return { _action, ...response };
     }

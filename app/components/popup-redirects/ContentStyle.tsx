@@ -34,16 +34,16 @@ export default function ContentStyle({
   const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
     useOutletContext<OutletContext>();
   const { basicConfigs, advancedConfigs, hideOnAllowedPages, allowedPages } = configs?.data[0] || {}
-  const submit = useSubmit()
-  const navigation = useNavigation();
+  // const submit = useSubmit()
+  // const navigation = useNavigation();
   const navigate = useNavigate();
   const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
-  const [customizePopupVisibilityChange, setCustomizePopupVisibilityChange] = useState(false);
-  const [localConfigs, setLocalConfigs] = useState({ ...default_basic_configs, ...basicConfigs });
-  const [localAdvancedConfigs, setLocalAdvancedConfigs] = useState({ ...default_advanced_configs, ...advancedConfigs });
-  const secondaryLocales = shopInfo?.shopLocales?.filter(
-    (item) => !item.primary,
-  );
+  // const [customizePopupVisibilityChange, setCustomizePopupVisibilityChange] = useState(false);
+  // const [localConfigs, setLocalConfigs] = useState({ ...default_basic_configs, ...basicConfigs });
+  // const [localAdvancedConfigs, setLocalAdvancedConfigs] = useState({ ...default_advanced_configs, ...advancedConfigs });
+  // const secondaryLocales = shopInfo?.shopLocales?.filter(
+  //   (item) => !item.primary,
+  // );
 
   return (
     <>
@@ -95,34 +95,12 @@ export default function ContentStyle({
               variant="primary"
               icon={ThemeEditIcon}
               onClick={() => navigate("/app/redirects/customize")}
-              // onClick={() => shopify.modal.show("customize-popup")}
             >
               Customize
             </Button>
           </InlineStack>
         </Card>
       </InlineGrid>
-
-      {/* Customize your popup
-      <Modal id="customize-popup" variant="max" onShow={() => setCustomizePopupVisibilityChange(true)} onHide={() => setCustomizePopupVisibilityChange(false)}>
-        <TitleBar title="Customize your popup">
-          <button variant="primary" onClick={() => saveConfigs()} loading={loading[ACTIONS.CreateUpdateConfigs + "Loading"] ? "loading" : false}>Save</button>
-          <button onClick={() => shopify.modal.hide('customize-popup')}>Close</button>
-        </TitleBar>
-        <Box padding="400">
-          <AppProvider i18n={{}} apiKey={""}>
-            <CustomizePopup
-              redirects={redirects} configs={localConfigs}
-              setConfigs={setLocalConfigs}
-              advancedConfigs={localAdvancedConfigs}
-              setAdvancedConfigs={setLocalAdvancedConfigs}
-            />
-          </AppProvider>
-        </Box>
-      </Modal> */}
-
-
-
     </>
   );
 }

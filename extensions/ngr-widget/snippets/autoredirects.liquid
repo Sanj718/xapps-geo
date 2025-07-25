@@ -1,0 +1,282 @@
+{% comment %} theme-check-disable {% endcomment %}
+{%- if redirects != blank and disable_overlay != true -%}
+  {%- style -%}
+    [data-ngr-body-hide] {
+      display: none !important;
+    }
+  {%- endstyle -%}
+{%- endif -%}
+<script>
+  setTimeout(function () {
+    document.body.removeAttribute('data-ngr-body-hide');
+  }, 5000);
+  function ngrSetCookie(name, value, days) {
+    var expires = "";
+    if (days) {
+      var date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (encodeURIComponent(value) || "") + expires + "; path=/";
+  }
+  function ngrGetCookie(name) {
+    var nameEQ = name + "=";
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = cookies[i].trim();
+      if (cookie.indexOf(nameEQ) === 0) {
+        return decodeURIComponent(cookie.substring(nameEQ.length, cookie.length));
+      }
+    }
+    return null;
+  }
+  function ngrDeleteCookie(name) {
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  }   
+  function ngrAutoRun(){
+    const STORE_PLAN = "{{ plan }}";
+    const NGR_REDIRECTED = "ngr-redirected"
+    const LOGGER_NAME = "[NGRP APP]:";
+    const NGR_SESSION_NAME = "ngr-session";
+    const NGR_AUTORD_NAME = "ngr-auto";
+    const ENABLE_DEV_MODE_PARAM = "xgeo-off";
+    const DISABLE_DEV_MODE_PARAM = "xgeo-reset";
+    const NGR_TEST_PARAM = "ngr-test";
+    const NGR_TEST_HASH = "#" + NGR_TEST_PARAM;
+    const HOST = "{{ host }}";
+    const AUTO_ONCE_TYPE = "{{ auto_once_type }}";
+    const AUTO_ONCE = {{ auto_once }};
+    const ROOT_URL = "{{ root_url }}";
+    {% comment %} https://github.com/GoogleChrome/lighthouse/blob/main/core/config/constants.js {% endcomment %}
+    const userAgents = {
+      mobile: 'Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36',
+      desktop: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+    };
+    let isBot = false;
+    if(window.location.search.includes(ENABLE_DEV_MODE_PARAM)){
+      ngrSetCookie(ENABLE_DEV_MODE_PARAM, 1, 7);
+    }
+    if(window.location.search.includes(DISABLE_DEV_MODE_PARAM)){
+      ngrDeleteCookie(ENABLE_DEV_MODE_PARAM);
+    }
+    
+    const isPreviewMode = ngrGetCookie(ENABLE_DEV_MODE_PARAM);
+    {% if auto_bots -%}
+      if(navigator && navigator.userAgent){
+        isBot = /bot|adsbot|googlebot|crawler|spider|robot|crawling|slurp/i.test(navigator.userAgent);
+       if(navigator.userAgent === userAgents.mobile || navigator.userAgent === userAgents.desktop){
+          isBot = true;
+        } 
+      }
+    {%- endif %}
+   
+    if(!isPreviewMode && !window.location?.host?.includes(".shopifypreview.com") && !isBot && !window.Shopify.designMode && !(window.location.search.includes(NGR_TEST_PARAM) || window.location.hash === NGR_TEST_HASH)){
+      {% if test_mode %} window.ngr_test_customizer = true; {% endif %}
+      document.body.setAttribute("data-ngr-body-hide", "")
+      console.info(`%c ${LOGGER_NAME} Loaded`,
+        "background: #027f5f; color: #fff; padding: 3px; font-weight: bold;")
+      try{
+        ngrInitialize()
+      }catch(e){
+        document.body.removeAttribute("data-ngr-body-hide")
+        console.error(`${LOGGER_NAME} GEO location issue. `, e)
+      }
+      async function ngrInitialize(){
+        const ngrCurrentGeo = await ngrGeoRequest();
+        const ngrAutoRedirects = [
+          {%- for redirect in redirects -%}
+            {%- assign redirect_value = redirect | last -%}
+            {{- redirect_value.value | json -}}
+            {%- unless forloop.last -%}, {%- endunless -%}
+          {%- endfor -%}
+        ];
+        if(!ngrAutoRedirects || !ngrAutoRedirects?.length) return;
+        if(window.Shopify.designMode || window.location.search.includes(NGR_TEST_PARAM) || window.location.hash === NGR_TEST_HASH){
+          document.body.removeAttribute("data-ngr-body-hide")
+          return console.info(`${LOGGER_NAME} Auto redirections disabled, you are in Shopify customizer or in testing mode.`);
+        }
+        const suitableRedirects = ngrAutoRedirects.filter(item => item.status).sort((a, b) => a.order_r - b.order_r);
+        for (let index = 0; index < suitableRedirects.length; index++) {
+          const item = suitableRedirects[index];
+          let itemStringUrl = item.url.replace(/\/$/, '');
+          let itemUrl = new URL(item.url.replace(/\/$/, ''));
+          // Remove preview_theme_id from current search
+          const cleanedSearch = removePreviewThemeId(window.location.search);
+          const currentParams = new URLSearchParams(cleanedSearch);
+          const existingParams = new URLSearchParams(itemUrl.search);
+
+          for (const [key, value] of currentParams.entries()) {
+            existingParams.set(key, value);
+          }
+          itemUrl.search = existingParams.toString();
+
+          // Combine itemUrl's path and current page's path
+          const basePath = (itemUrl.pathname && itemUrl.pathname !== '/')
+            ? itemUrl.pathname.replace(/\/$/, '')
+            : '';
+          const currentPath = window.location.pathname.replace(/^\/+/, '');
+          let combinedPath = joinPathsAvoidDuplicate(basePath, currentPath);
+          if (!combinedPath.startsWith('/')) {
+            combinedPath = '/' + combinedPath;
+          }
+
+          // Compose the final redirect URL
+          let domainRedirectUrl = itemUrl.origin + combinedPath + (itemUrl.search ? itemUrl.search : '') + window.location.hash;
+
+          const locationIncludes = item.location.includes(ngrCurrentGeo.country) || item.location.includes("C:" + ngrCurrentGeo.continent)
+          const customCodeString = `{{ auto_custom_code | replace: "`", "" | replace: '"', "" | replace: "'", "" }}`;
+          //[TODO] add pro plan logic here: STORE_PLAN === "Pro plan"
+          {% unless auto_custom_code_status == false %}
+          if(customCodeString && customCodeString !== ""){
+            try{
+              const customCode = eval({{ auto_custom_code }});
+              const customUrl = customCode(itemStringUrl, window?.location?.href, ngrCurrentGeo, redirectUser);
+              if(customUrl && typeof customUrl === "string"){
+                if(item.domain_redirection){
+                  domainRedirectUrl = customUrl;
+                }else{
+                  itemStringUrl = customUrl;
+                } 
+              }
+            }catch(e){
+              console.log("Error: ", e);
+            }
+          }
+          {% endunless %}
+          if(item.block && (!item.except_r && locationIncludes || item.except_r && !locationIncludes)){
+            blockUser();
+            return
+          }
+          if(!item.block && item.domain_redirection && (!item.except_r && locationIncludes || item.except_r && !locationIncludes)){
+            redirectUser(domainRedirectUrl, itemStringUrl)
+            return
+          }
+          if(!item.block && !item.domain_redirection && (!item.except_r && locationIncludes || item.except_r && !locationIncludes)){
+            redirectUser(itemStringUrl)
+            return
+          }
+        }
+        document.body.removeAttribute("data-ngr-body-hide")
+      }
+      function redirectUser(redirectUrl, orignalUrl){
+        if(checkRedirectOnce() || window.location.search.includes(NGR_REDIRECTED)){
+          document.body.removeAttribute("data-ngr-body-hide")
+          return;
+        }
+       
+        const generatedUrl = orignalUrl && new URL(orignalUrl);
+        const equalHost = window.location.host === generatedUrl?.host;
+        const checkCondition = equalHost ? !window.location.href.includes(orignalUrl) : true;
+        const locationHref = window.location.href.replace(/\/$/, '');
+        {% comment %} if(locationHref.includes("liveproduction.myshopify.com")){
+          console.log("redirectUrl", redirectUrl, locationHref, checkCondition, orignalUrl)
+          return
+        } {% endcomment %}
+        if(locationHref !== redirectUrl && checkCondition){
+          track();
+          setRedirectOnce();
+          return window.location.replace({% if disable_param %}redirectUrl{% else %}footprint(redirectUrl){% endif %});
+        }
+        document.body.removeAttribute("data-ngr-body-hide")
+      }
+      function footprint(urlString){
+        const url = new URL(urlString);
+        url.searchParams.append(NGR_REDIRECTED, 1);
+        return url.toString();
+      }
+      function blockUser(){
+        track();
+        window.location.replace("about:blank");
+      }
+      function track() {
+        try{
+          const dataEndpoint = `${HOST}/api/shop/auto?shop=${window?.Shopify?.shop}`;
+          fetch(dataEndpoint)
+          return;
+        }catch(e){
+          console.log(e)
+        }
+      }
+      function removePreviewThemeId(search) {
+        return search.replace(
+          /([?&])preview_theme_id=\d+(&?)/,
+          (match, p1, p2) => {
+            return p1 === "?" && p2 ? "?" : p1;
+          }
+        );
+      }
+      function setRedirectOnce(){
+        if(!AUTO_ONCE) return;
+        if(AUTO_ONCE_TYPE === "session"){
+          sessionStorage.setItem(NGR_AUTORD_NAME, 1);
+          return
+        }
+        if(AUTO_ONCE_TYPE === "cookies"){
+          ngrSetCookie(NGR_AUTORD_NAME, 1, 7)
+          return
+        }
+      }
+      function checkRedirectOnce(){
+        if(AUTO_ONCE){
+          if(AUTO_ONCE_TYPE === "session"){
+            return sessionStorage?.getItem(NGR_AUTORD_NAME) ? true : false
+          }
+          if(AUTO_ONCE_TYPE === "cookies"){
+            return ngrGetCookie(NGR_AUTORD_NAME) ? true : false
+          }
+          return false
+        }
+        return false
+      }
+      async function ngrGeoRequest(){
+        const savedUserData = ngrGetCookie(NGR_SESSION_NAME);
+        if (savedUserData && isJsonParsable(savedUserData) && !window.location.search.includes(NGR_TEST_PARAM) &&  window.location.hash !== NGR_TEST_HASH) {
+          return JSON.parse(savedUserData)
+        }
+        try{
+          const countries = window.ngr_countries_window
+          const userGeo = await fetch("/browsing_context_suggestions.json").then(
+            (resp) => resp.json()
+          );
+          if (!countries || !userGeo)
+            return console.error(
+              `${LOGGER_NAME} User GEO location or countries list not detected. Contact app support please.`
+            );
+          const userCountry = userGeo?.detected_values?.country?.handle;
+          const userLocation = {
+            country_name: userGeo?.detected_values?.country?.name || userGeo?.detected_values?.country_name || countries[userCountry]?.name,
+            country: userCountry,
+            continent: countries[userCountry]?.continent,
+          };
+          console.log("userLocation", userLocation)
+          ngrSetCookie(NGR_SESSION_NAME, JSON.stringify(userLocation), 7);
+          window[NGR_SESSION_NAME] = userLocation
+          return userLocation;
+        }catch(e){
+          console.error(`${LOGGER_NAME} GEO location issue. `, e)
+        }
+      }
+      function isJsonParsable(input){try{JSON.parse(input);return true}catch(e){return false}}
+      function joinPathsAvoidDuplicate(basePath, currentPath) {
+        basePath = basePath.replace(/\/$/, '');
+        currentPath = currentPath.replace(/^\/+/, '');
+        if (currentPath.toLowerCase().startsWith(basePath.replace(/^\/+/, '').toLowerCase() + '/')) {
+          return '/' + currentPath;
+        }
+        if (currentPath.toLowerCase() === basePath.replace(/^\/+/, '').toLowerCase()) {
+          return '/' + currentPath;
+        }
+        if (basePath && currentPath) {
+          return basePath + '/' + currentPath;
+        } else if (basePath) {
+          return basePath;
+        } else {
+          return '/' + currentPath;
+        }
+      }
+
+    }
+  }
+  ngrAutoRun()
+</script>
+{% comment %} theme-check-enable {% endcomment %}
