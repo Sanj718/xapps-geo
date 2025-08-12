@@ -1,4 +1,4 @@
-import { default_basic_configs, jsonSafeParse } from "./components/_helpers";
+import { default_basic_configs, default_markets_basic_configs, jsonSafeParse } from "./components/_helpers";
 import { EditRedirectItem, RedirectItem } from "./components/_types";
 import prisma from "./db.server";
 
@@ -57,7 +57,7 @@ interface MarketsRedirectProps extends Shop {
 }
 
 interface ChangePlanProps extends Shop {
-  plan: number; 
+  plan: number;
   shopifyPlanId: string;
 }
 
@@ -256,8 +256,13 @@ export async function createRedirect({
   }
 }
 
-export const getAllRedirects = async ({ shop, localesAllowed }: AllRedirects): Promise<DBResponse> => {
+export const getAllRedirects = async ({ shop }: AllRedirects): Promise<DBResponse> => {
   try {
+    const activeShop = await prisma.activeShops.findUnique({
+      where: { shop },
+      select: { plan: true },
+    });
+
     const selectFields = {
       id: true,
       flag: true,
@@ -268,12 +273,8 @@ export const getAllRedirects = async ({ shop, localesAllowed }: AllRedirects): P
       conditionalLocation: true,
       domainRedirection: true,
       status: true,
-      locales: true,
+      locales: activeShop?.plan === 2 ? true : false,
     };
-    // TODO: Add localesAllowed to the select fields
-    // if (localesAllowed) {
-    //   selectFields['locales'] = true;
-    // }
 
     const redirects = await prisma.redirects.findMany({
       where: {
@@ -286,8 +287,8 @@ export const getAllRedirects = async ({ shop, localesAllowed }: AllRedirects): P
 
     const parsedRedirects = redirects.map((redirect) => ({
       ...redirect,
-      locales: redirect.locales ? jsonSafeParse(redirect.locales) : null,
-      conditionalLocation: redirect.conditionalLocation
+      locales: redirect?.locales ? jsonSafeParse(redirect?.locales) : null,
+      conditionalLocation: redirect?.conditionalLocation
         ? jsonSafeParse(redirect.conditionalLocation)
         : null,
     }));
@@ -643,7 +644,7 @@ export const addMarketsData = async ({ shop, markets, backupRegion }: MarketsDat
       throw new Error("Shop not found");
     }
     const timestamp = new Date().toISOString();
-    const marketsString = JSON.stringify({...markets, "BackupRegion": backupRegion});
+    const marketsString = JSON.stringify({ ...markets, "BackupRegion": backupRegion });
     const result = await prisma.markets.upsert({
       where: { shopId: activeShop.id },
       update: { markets: marketsString, syncStatus: "SUCCESS", lastSyncTimestamp: timestamp },
@@ -712,10 +713,10 @@ export const changePlan = async ({ shop, plan, shopifyPlanId = "" }: ChangePlanP
   }
 };
 
-export const getShopData = async ({ shop }: Shop): Promise<DBResponse> => {
+export const getPublicShopData = async ({ shop }: Shop): Promise<DBResponse> => {
   try {
     const activeShop = await prisma.activeShops.findUnique({
-      where: { 
+      where: {
         shop,
         status: 1,
         OR: [
@@ -777,13 +778,13 @@ export const getShopData = async ({ shop }: Shop): Promise<DBResponse> => {
 
     const configs = activeShop.configs[0];
     if (configs) {
-      configs.basicConfigs = {...default_basic_configs, ...jsonSafeParse(configs.basicConfigs)};
+      const parsedBasicConfigs = jsonSafeParse(configs.basicConfigs);
+      configs.basicConfigs = { ...default_basic_configs, ...parsedBasicConfigs };
       configs.allowedPages = isProPlan || activeShop.dev ? jsonSafeParse(configs.allowedPages) : null;
       configs.hideOnAllowedPages = isProPlan || activeShop.dev ? configs.hideOnAllowedPages : false;
       configs.advancedConfigs = isProPlan || activeShop.dev ? jsonSafeParse(configs.advancedConfigs) : null;
-      configs.plan = activeShop.plan;
+      (configs as any).plan = activeShop.plan;
     }
-
 
     return {
       status: !!configs,
@@ -798,68 +799,104 @@ export const getShopData = async ({ shop }: Shop): Promise<DBResponse> => {
     return { status: false, error: (error as Error).toString() };
   }
 };
-// export const getMarketsData = async (shop: string) => {
-//   try {
-//     const activeShop = await prisma.activeShops.findFirst({
-//       where: {
-//         shop,
-//         status: true,
-//         plan: {
-//           gt: 0
-//         }
-//       },
-//       select: {
-//         id: true,
-//         plan: true,
-//         dev: true,
-//         markets: {
-//           select: {
-//             markets: true
-//           }
-//         },
-//         marketsConfigs: {
-//           select: {
-//             shop_id: true,
-//             basic_configs: true,
-//             widget: true,
-//             auto_redirect: true,
-//             advanced_configs: true
-//           }
-//         }
-//       }
-//     });
+export const getPublicMarketsData = async ({ shop }: Shop): Promise<DBResponse> => {
+  try {
+    const activeShop = await prisma.activeShops.findFirst({
+      where: {
+        shop,
+        status: 1,
+        OR: [
+          { plan: { gt: 0 } },
+          { veteran: true }
+        ]
+      },
+      select: {
+        id: true,
+        plan: true,
+        dev: true,
+        markets: {
+          select: {
+            markets: true
+          }
+        },
+        marketsConfigs: {
+          select: {
+            basicConfigs: true,
+            widget: true,
+            autoRedirect: true,
+            advancedConfigs: true
+          }
+        }
+      }
+    });
 
-//     if (!activeShop) {
-//       return {
-//         status: false,
-//         data: null
-//       };
-//     }
+    if (!activeShop) {
+      return {
+        status: false,
+        data: null
+      };
+    }
 
-//     const configs = activeShop.marketsConfigs[0];
-//     if (configs && (activeShop.plan === 2 || activeShop.dev)) {
-//       configs.advanced_configs = configs.advanced_configs;
-//     } else if (configs) {
-//       configs.advanced_configs = null;
-//     }
+    const isProPlan = activeShop.plan === 2;
+    const markets = jsonSafeParse(activeShop.markets[0]?.markets);
+    const configs = activeShop.marketsConfigs[0];
+    
+    if (configs) {
+      const parsedBasicConfigs = jsonSafeParse(configs.basicConfigs);
+      if(isProPlan || activeShop.dev){
+        configs.basicConfigs = { ...default_markets_basic_configs, ...parsedBasicConfigs };
+        configs.advancedConfigs = jsonSafeParse(configs.advancedConfigs);
+      }else{
+        if (parsedBasicConfigs) {
+          (configs as any).basicConfigs = {
+            ...default_markets_basic_configs,
+            buttonText: parsedBasicConfigs.buttonText,
+            icon: parsedBasicConfigs.icon,
+            title: parsedBasicConfigs.title,
+            showFlag: parsedBasicConfigs.showFlag,
+          };
+        }else{
+          (configs as any).basicConfigs = default_markets_basic_configs;
+        }
+      }
+    }
 
-//     return {
-//       status: true,
-//       data: {
-//         markets: activeShop.markets[0]?.markets,
-//         configs
-//       }
-//     };
+    return {
+      status: true,
+      data: {
+        markets,
+        configs
+      }
+    };
 
-//   } catch (error) {
-//     console.error(error); 
-//     return {
-//       status: false,
-//       data: null
-//     };
-//   }
-// };
+  } catch (error) {
+    console.error(error);
+    return {
+      status: false,
+      data: null
+    };
+  }
+};
 
+
+export async function cancelPlan({ shop, cancelShopifyPlanId }: CancelPlanProps): Promise<DBResponse> {
+  try {
+    if (!shop) throw new Error("shop undefined");
+    const result = await prisma.activeShops.update({
+      where: {
+        shop,
+        shopifyPlanId: cancelShopifyPlanId
+      },
+      data: {
+        plan: 3
+      }
+    });
+    return { status: result?.id ? true : false, data: result };
+  } catch (error: any) {
+    console.error(error);
+    return { status: false, error: (error as Error).toString() };
+  }
+}
 
 // export const runMarketsSync = async ({ shop }: Shop): Promise<DBResponse> => {
 //   try {

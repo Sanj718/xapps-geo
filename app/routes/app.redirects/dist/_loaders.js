@@ -40,15 +40,20 @@ exports.handleLoaders = void 0;
 var admin_queries_server_1 = require("app/admin-queries.server");
 var db_queries_server_1 = require("app/db-queries.server");
 var shopify_server_1 = require("app/shopify.server");
+var strip_json_comments_1 = require("strip-json-comments");
 function handleLoaders(_a) {
     var request = _a.request;
     return __awaiter(this, void 0, void 0, function () {
-        var _b, admin, session, widgetEditorStatus, widgetEditorCode, buttonEditorStatus, buttonEditorCode, autoRedirectsCustomCodeStatus, autoRedirectsCustomCode, allAutoRedirects, allRedirects, configs;
+        var _b, admin, session, themeCode, themeEmbedData, widgetEditorStatus, widgetEditorCode, buttonEditorStatus, buttonEditorCode, autoRedirectsCustomCodeStatus, autoRedirectsCustomCode, allAutoRedirects, allRedirects, configs;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0: return [4 /*yield*/, shopify_server_1.authenticate.admin(request)];
                 case 1:
                     _b = _c.sent(), admin = _b.admin, session = _b.session;
+                    return [4 /*yield*/, admin_queries_server_1.getThemeEmbed({ admin: admin })];
+                case 2:
+                    themeCode = _c.sent();
+                    themeEmbedData = themeCode && JSON.parse(strip_json_comments_1["default"](themeCode) || "{}");
                     widgetEditorStatus = admin_queries_server_1.getWidgetEditorStatus({ admin: admin });
                     widgetEditorCode = admin_queries_server_1.getWidgetEditorCode({ admin: admin });
                     buttonEditorStatus = admin_queries_server_1.getButtonEditorStatus({ admin: admin });
@@ -56,15 +61,15 @@ function handleLoaders(_a) {
                     autoRedirectsCustomCodeStatus = admin_queries_server_1.getAutoRedirectsCustomCodeStatus({ admin: admin });
                     autoRedirectsCustomCode = admin_queries_server_1.getAutoRedirectsCustomCode({ admin: admin });
                     return [4 /*yield*/, admin_queries_server_1.getAllAutoRedirects({ admin: admin })];
-                case 2:
+                case 3:
                     allAutoRedirects = _c.sent();
                     return [4 /*yield*/, db_queries_server_1.getAllRedirects({ shop: session.shop })];
-                case 3:
+                case 4:
                     allRedirects = _c.sent();
                     return [4 /*yield*/, db_queries_server_1.getConfigs({ shop: session.shop })];
-                case 4:
+                case 5:
                     configs = _c.sent();
-                    return [2 /*return*/, { allRedirects: allRedirects, configs: configs, widgetEditorStatus: widgetEditorStatus, widgetEditorCode: widgetEditorCode, buttonEditorStatus: buttonEditorStatus, buttonEditorCode: buttonEditorCode, allAutoRedirects: allAutoRedirects, autoRedirectsCustomCodeStatus: autoRedirectsCustomCodeStatus, autoRedirectsCustomCode: autoRedirectsCustomCode }];
+                    return [2 /*return*/, { themeEmbedData: themeEmbedData, allRedirects: allRedirects, configs: configs, widgetEditorStatus: widgetEditorStatus, widgetEditorCode: widgetEditorCode, buttonEditorStatus: buttonEditorStatus, buttonEditorCode: buttonEditorCode, allAutoRedirects: allAutoRedirects, autoRedirectsCustomCodeStatus: autoRedirectsCustomCodeStatus, autoRedirectsCustomCode: autoRedirectsCustomCode }];
             }
         });
     });

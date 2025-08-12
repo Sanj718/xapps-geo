@@ -81,13 +81,13 @@ export default function AutoRedirectForm({
             value === null ||
             value === undefined ||
             value === "" ||
-            !value.length
+            !value?.length
           ) {
             validator *= 0;
           }
 
           if (key === "url") {
-            if (!isWebUri(value)) {
+            if (!isWebUri(value as string)) {
               validator *= 0;
             }
           }
@@ -113,7 +113,7 @@ export default function AutoRedirectForm({
     }
   }, [actionData]);
 
-  function validateUrlField(value, field) {
+  function validateUrlField(value: string, field: string) {
     setFieldValidation({
       ...fieldValidation,
       [field]: !isWebUri(value),
@@ -124,7 +124,7 @@ export default function AutoRedirectForm({
     if (!appId) return;
     submit(
       {
-        _action: ACTIONS.UpdateAutoRedirect,
+        _action: ACTIONS.update_AutoRedirect,
         data: {
           appId,
           key: editItem?.node?.key,
@@ -163,7 +163,7 @@ export default function AutoRedirectForm({
     if (!appId) return;
     submit(
       {
-        _action: ACTIONS.CreateAutoRedirect,
+        _action: ACTIONS.create_AutoRedirect,
         data: {
           appId,
           data: {

@@ -37,47 +37,91 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.action = void 0;
-// import db from '../db.server';
 var shopify_server_1 = require("../shopify.server");
 var index_server_1 = require("app/components/markets-sync/index.server");
-// import { MarketsProcess } from 'app/components/markets-sync/index.server';
+var db_queries_server_1 = require("app/db-queries.server");
+var db_server_1 = require("../db.server");
+var _helpers_server_1 = require("app/components/_helpers.server");
 exports.action = function (_a) {
     var request = _a.request;
     return __awaiter(void 0, void 0, void 0, function () {
-        var _b, topic, shop, session, payload, admin, _c, initMarketsProcess;
-        return __generator(this, function (_d) {
-            switch (_d.label) {
+        var _b, topic, shop, session, payload, admin, _c, _d, status, admin_graphql_api_id, created_at, name, plan, initMarketsProcess, current;
+        return __generator(this, function (_e) {
+            switch (_e.label) {
                 case 0: return [4 /*yield*/, shopify_server_1.authenticate.webhook(request)];
                 case 1:
-                    _b = _d.sent(), topic = _b.topic, shop = _b.shop, session = _b.session, payload = _b.payload, admin = _b.admin;
-                    console.log("[INFO] Webhook received", topic, shop);
+                    _b = _e.sent(), topic = _b.topic, shop = _b.shop, session = _b.session, payload = _b.payload, admin = _b.admin;
+                    console.log("Received " + topic + " webhook for " + shop);
                     _c = topic;
                     switch (_c) {
                         case 'APP_UNINSTALLED': return [3 /*break*/, 2];
-                        case 'CUSTOMERS_DATA_REQUEST': return [3 /*break*/, 3];
-                        case 'CUSTOMERS_REDACT': return [3 /*break*/, 3];
-                        case 'SHOP_REDACT': return [3 /*break*/, 3];
-                        case "BULK_OPERATIONS_FINISH": return [3 /*break*/, 3];
+                        case 'CUSTOMERS_DATA_REQUEST': return [3 /*break*/, 5];
+                        case 'CUSTOMERS_REDACT': return [3 /*break*/, 5];
+                        case 'SHOP_REDACT': return [3 /*break*/, 5];
+                        case 'APP_SUBSCRIPTIONS_UPDATE': return [3 /*break*/, 5];
+                        case "BULK_OPERATIONS_FINISH": return [3 /*break*/, 11];
+                        case 'APP_SCOPES_UPDATE': return [3 /*break*/, 14];
                     }
-                    return [3 /*break*/, 6];
+                    return [3 /*break*/, 17];
                 case 2:
-                    // Webhook requests can trigger after an app is uninstalled
-                    // If the app is already uninstalled, the session may be undefined.
-                    if (session) {
-                        // await db.session.deleteMany({where: {shop}});
-                    }
-                    return [3 /*break*/, 7];
+                    if (!session) return [3 /*break*/, 4];
+                    return [4 /*yield*/, db_server_1["default"].session.deleteMany({ where: { shop: shop } })];
                 case 3:
-                    if (!(session && shop)) return [3 /*break*/, 5];
-                    console.log("[INFO] Bulk operation finished webhook", session, payload);
+                    _e.sent();
+                    db_queries_server_1.removeShop({ shop: shop });
+                    _e.label = 4;
+                case 4: return [3 /*break*/, 18];
+                case 5:
+                    console.log("[INFO] App subscriptions update webhook", session, payload);
+                    _d = payload === null || payload === void 0 ? void 0 : payload.app_subscription, status = _d.status, admin_graphql_api_id = _d.admin_graphql_api_id, created_at = _d.created_at, name = _d.name;
+                    _helpers_server_1.sendExportToEmail("Subscription info: ", { name: name, shop: shop, status: status });
+                    if (!(status === "ACTIVE")) return [3 /*break*/, 7];
+                    plan = name === "Basic plan" ? 1 : name === "Pro plan" ? 2 : 3;
+                    return [4 /*yield*/, db_queries_server_1.changePlan({
+                            shop: shop,
+                            plan: plan,
+                            shopifyPlanId: admin_graphql_api_id
+                        })];
+                case 6:
+                    _e.sent();
+                    return [3 /*break*/, 10];
+                case 7:
+                    if (!(status === "EXPIRED")) return [3 /*break*/, 8];
+                    console.log("Subscription expired: ", shop, payload);
+                    return [3 /*break*/, 10];
+                case 8: return [4 /*yield*/, db_queries_server_1.cancelPlan({
+                        shop: shop,
+                        cancelShopifyPlanId: admin_graphql_api_id
+                    })];
+                case 9:
+                    _e.sent();
+                    _e.label = 10;
+                case 10: return [3 /*break*/, 18];
+                case 11:
+                    if (!(session && shop)) return [3 /*break*/, 13];
                     initMarketsProcess = new index_server_1.MarketsProcess();
                     return [4 /*yield*/, initMarketsProcess.initSync({ admin: admin, session: session, bulkId: payload === null || payload === void 0 ? void 0 : payload.admin_graphql_api_id })];
-                case 4:
-                    _d.sent();
-                    _d.label = 5;
-                case 5: return [3 /*break*/, 7];
-                case 6: throw new Response('Unhandled webhook topic', { status: 404 });
-                case 7: throw new Response();
+                case 12:
+                    _e.sent();
+                    _e.label = 13;
+                case 13: return [3 /*break*/, 18];
+                case 14:
+                    current = payload.current;
+                    if (!session) return [3 /*break*/, 16];
+                    return [4 /*yield*/, db_server_1["default"].session.update({
+                            where: {
+                                id: session.id
+                            },
+                            data: {
+                                scope: current.toString()
+                            }
+                        })];
+                case 15:
+                    _e.sent();
+                    _e.label = 16;
+                case 16: return [3 /*break*/, 18];
+                case 17: throw new Response('Unhandled webhook topic', { status: 404 });
+                case 18: throw new Response();
             }
         });
     });

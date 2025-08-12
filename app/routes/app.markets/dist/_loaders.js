@@ -37,24 +37,30 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.handleLoaders = void 0;
+var admin_queries_server_1 = require("app/admin-queries.server");
 var db_queries_server_1 = require("app/db-queries.server");
 var shopify_server_1 = require("app/shopify.server");
+var strip_json_comments_1 = require("strip-json-comments");
 function handleLoaders(_a) {
     var request = _a.request;
     return __awaiter(this, void 0, void 0, function () {
-        var _b, admin, session, marketsData, marketsConfigs;
+        var _b, admin, session, themeCode, themeEmbedData, marketsData, marketsConfigs;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0: return [4 /*yield*/, shopify_server_1.authenticate.admin(request)];
                 case 1:
                     _b = _c.sent(), admin = _b.admin, session = _b.session;
-                    return [4 /*yield*/, db_queries_server_1.getMarketsData({ shop: session.shop })];
+                    return [4 /*yield*/, admin_queries_server_1.getThemeEmbed({ admin: admin })];
                 case 2:
+                    themeCode = _c.sent();
+                    themeEmbedData = themeCode && JSON.parse(strip_json_comments_1["default"](themeCode) || "{}");
+                    return [4 /*yield*/, db_queries_server_1.getMarketsData({ shop: session.shop })];
+                case 3:
                     marketsData = _c.sent();
                     return [4 /*yield*/, db_queries_server_1.getMarketConfigs({ shop: session.shop })];
-                case 3:
+                case 4:
                     marketsConfigs = _c.sent();
-                    return [2 /*return*/, { marketsData: marketsData, marketsConfigs: marketsConfigs }];
+                    return [2 /*return*/, { marketsData: marketsData, marketsConfigs: marketsConfigs, themeEmbedData: themeEmbedData }];
             }
         });
     });

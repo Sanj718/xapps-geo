@@ -84,3 +84,7 @@
     transform: rotate(360deg);
   }
 }
+.redirect-status .Polaris-Icon {
+  width: 26px;
+  height: 26px;
+}

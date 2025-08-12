@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import type { SubmitOptions } from "@remix-run/react";
 import { Navigation, Fetcher } from "@remix-run/react";
 import { useCallback, useEffect, useRef } from "react";
+
 export function resp(status: boolean, data: any, errors: string | null) {
   const errorsToString = errors && JSON.stringify(errors);
   return {
@@ -482,3 +483,4 @@ export function handleSideNavClick() {
   const mainScreen = document.getElementById('main-screen');
   if (mainScreen) mainScreen.innerHTML = `<div class="spinner"></div>`;
 }
+

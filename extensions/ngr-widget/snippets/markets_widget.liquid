@@ -3,7 +3,7 @@
   data-lng="{{ localization.language.iso_code }}"
   data-shopify-template="{{ template.name }}"
   data-shopify-template-dir="{{ template.directory }}"
-  data-flag-src="{{ "ac.svg" | asset_url }}"
+  data-flag-src="{{ localization.country | image_url: width: 100 }}"
   data-custom-opener-icon-src="{{ menu_icon }}"
   data-widget-icon="{{ 'earth-americas-solid.svg' | asset_url }}"
   data-widget-sticky-icon="{{ 'sticky-logo.png' | asset_img_url: 'original' }}"

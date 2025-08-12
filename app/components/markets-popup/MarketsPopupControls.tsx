@@ -129,9 +129,12 @@ export default function MarketsPopupControls({
             <Divider />
             <InlineGrid columns="70% auto" gap="200">
               <InlineGrid gap="100">
-                <Text as="h2" variant="headingSm">
-                  Markets popup
-                </Text>
+                <InlineStack gap="200" blockAlign="center">
+                  <Text as="h2" variant="headingSm">
+                    Markets popup
+                  </Text>
+                  <Badge tone={marketsPopup ? "success" : "enabled"} size="small">{marketsPopup ? "Active" : "Draft"}</Badge>
+                </InlineStack>
                 <Text as="p" variant="bodyXs">
                   Enable or disable the markets popup functionality.
                 </Text>
@@ -146,7 +149,7 @@ export default function MarketsPopupControls({
                     loading={loading[ACTIONS.update_MarketsWidget + "Loading"]}
                     pressed={marketsPopup && !loading[ACTIONS.update_MarketsWidget + "Loading"] ? true : false}
                   >
-                    {marketsPopup ? "Active" : "Disabled"}
+                    {marketsPopup ? "Disable" : "Enable"}
                   </Button>
                 </div>
               </InlineStack>

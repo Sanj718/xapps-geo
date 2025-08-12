@@ -1,14 +1,15 @@
 class NGRMarkets extends HTMLElement {
+  // @ts-ignore
   HOST = __HOST__;
   MAIN_CSS = "native-geo-markets.min.css";
   SHOW_RULES = {
     load: "everyload",
     cookie: "cookie",
-    session: "session"
+    session: "session",
   };
   VARS = {
     KEY: "ngr-markets-session",
-    CLOSED_KEY: "ngr-markets-closed"
+    CLOSED_KEY: "ngr-markets-closed",
   };
 
   constructor() {
@@ -20,6 +21,7 @@ class NGRMarkets extends HTMLElement {
     this.modal = null;
     this.customOpenerIconSrc = this.dataset.customOpenerIconSrc;
     this.testMode = false;
+    // @ts-ignore
     this.userLocale = this.dataset.lng || window.Shopify.locale;
     this.shopifyTemplate = this.dataset.shopifyTemplate;
     this.shopifytemplateDir = this.dataset.shopifyTemplateDir;
@@ -46,7 +48,7 @@ class NGRMarkets extends HTMLElement {
     const geoData = await this.getGeo();
     if (!geoData || !geoData?.country) {
       console.error(
-        "[NGR APP]: GEO Location not detected. Contact app support."
+        "[NGR APP]: GEO Location not detected. Contact app support.",
       );
       return;
     }
@@ -59,7 +61,7 @@ class NGRMarkets extends HTMLElement {
     }
 
     if (configs?.widget) {
-      if (this.topBarMoveTop(configs?.basic_configs?.type)) return;
+      if (this.topBarMoveTop(configs?.basicConfigs?.type)) return;
 
       const widget = this.widget(markets, configs);
       if (!widget) {
@@ -73,8 +75,8 @@ class NGRMarkets extends HTMLElement {
       if (customStyles) shadowRoot.appendChild(customStyles);
       shadowRoot.appendChild(widget);
       this.customOpenerIcon();
-      this.widgetEvents(shadowRoot, configs?.basic_configs?.showFrequency);
-      await this.widgetLogic(shadowRoot, configs?.basic_configs, markets);
+      this.widgetEvents(shadowRoot, configs?.basicConfigs?.showFrequency);
+      await this.widgetLogic(shadowRoot, configs?.basicConfigs, markets);
       this.displayWidget();
     }
   }
@@ -83,6 +85,7 @@ class NGRMarkets extends HTMLElement {
     if (
       window.location.search.includes("ngr-markets-test") ||
       window.location.hash === "#ngr-markets-test" ||
+      // @ts-ignore
       (this.dataset.testMode === "true" && window.Shopify.designMode)
     ) {
       this.testMode = true;
@@ -99,6 +102,7 @@ class NGRMarkets extends HTMLElement {
   }
 
   async getData() {
+    // @ts-ignore
     const store_url = window?.Shopify?.shop;
     const dataEndpoint = `${this.HOST}/api/shop-markets?shop=${store_url}`;
     try {
@@ -116,12 +120,12 @@ class NGRMarkets extends HTMLElement {
     }
     const countries = await this.getCountriesJSON();
     const userGeo = await fetch("/browsing_context_suggestions.json").then(
-      (resp) => resp.json()
+      (resp) => resp.json(),
     );
 
     if (!countries || !userGeo)
       return console.error(
-        "[NGR APP]: User GEO location or countries list not detected. Contact app support please."
+        "[NGR APP]: User GEO location or countries list not detected. Contact app support please.",
       );
     const userCountry = userGeo?.detected_values?.country.handle;
     const userLocation = {
@@ -129,7 +133,7 @@ class NGRMarkets extends HTMLElement {
         userGeo?.detected_values?.country?.name ||
         userGeo?.detected_values?.country_name,
       country: userCountry,
-      continent: countries[userCountry]?.continent
+      continent: countries[userCountry]?.continent,
     };
 
     this.setCookie(this.VARS.KEY, JSON.stringify(userLocation), 7);
@@ -150,33 +154,34 @@ class NGRMarkets extends HTMLElement {
 
   widget(markets, configs) {
     if (!this.template || !markets || !configs) return;
-    const { basic_configs, advanced_configs, plan } = configs;
+    const { basicConfigs, advancedConfigs, plan } = configs;
+    // @ts-ignore
     const html = this.template?.content?.cloneNode(true);
     const modal = html.querySelector("[data-ngr-markets-modal]");
     this.modal = modal;
 
-    if (plan === 2 && advanced_configs && advanced_configs?.html_id !== "") {
-      modal.setAttribute("id", advanced_configs?.html_id);
+    if (plan === 2 && advancedConfigs && advancedConfigs?.html_id !== "") {
+      modal.setAttribute("id", advancedConfigs?.html_id);
     }
 
-    return this.builder(html, basic_configs, markets, plan);
+    return this.builder(html, basicConfigs, markets, plan);
   }
 
   genCustomStyles(configs) {
     if (!configs) return;
-    const { basic_configs, advanced_configs, plan } = configs;
+    const { basicConfigs, advancedConfigs, plan } = configs;
     const custom_styles = document.createElement("style");
     let custom_css = "";
 
-    if (basic_configs && !advanced_configs?.disable_basic_css && plan !== 3) {
+    if (basicConfigs && !advancedConfigs?.disable_basic_css && plan !== 3) {
       const {
         modalBgColor,
         modalTextColor,
         modalBorderColor,
         buttonsBgColor,
         buttonsColor,
-        font
-      } = basic_configs;
+        font,
+      } = basicConfigs;
 
       custom_css += `
         .ngr-markets-modal{
@@ -229,8 +234,8 @@ class NGRMarkets extends HTMLElement {
         }
         `;
     }
-    if (advanced_configs && advanced_configs.css !== "" && plan === 2) {
-      custom_css += advanced_configs.css;
+    if (advancedConfigs && advancedConfigs.css !== "" && plan === 2) {
+      custom_css += advancedConfigs.css;
     }
 
     custom_styles.textContent = custom_css
@@ -241,7 +246,7 @@ class NGRMarkets extends HTMLElement {
 
   customOpenerIcon() {
     const customOpener = document.querySelectorAll(
-      "[href$='#ngr-markets-open']"
+      "[href$='#ngr-markets-open']",
     );
     if (
       this.customOpenerIconSrc &&
@@ -255,13 +260,14 @@ class NGRMarkets extends HTMLElement {
         if (element?.textContent?.includes("[ngr-markets-icon]")) {
           element.innerHTML = element.innerHTML.replace(
             /\[ngr\-markets\-icon]/g,
-            iconElement
+            iconElement,
           );
         }
       }
     }
   }
 
+  // @ts-ignore
   widgetEvents(shadowRoot, showFrequency, plan) {
     const _self = this;
     const modalElement = shadowRoot.querySelector("[data-ngr-markets-modal]");
@@ -275,7 +281,7 @@ class NGRMarkets extends HTMLElement {
     }
 
     const toggleButton = modalElement.querySelector(
-      "[data-ngr-markets-toggle]"
+      "[data-ngr-markets-toggle]",
     );
     if (toggleButton) {
       toggleButton.addEventListener("click", () => {
@@ -284,15 +290,17 @@ class NGRMarkets extends HTMLElement {
     }
 
     const submitButton = modalElement.querySelector(
-      "[data-ngr-markets-button]"
+      "[data-ngr-markets-button]",
     );
     if (submitButton) {
       submitButton.addEventListener("click", (e) => {
         _self.analytics();
         if (
           modalElement.querySelector("[name='country_code']")?.value ===
+            // @ts-ignore
             window?.Shopify?.country &&
           modalElement.querySelector("[name='language_code']")?.value ===
+            // @ts-ignore
             window?.Shopify?.locale
         ) {
           e.preventDefault();
@@ -310,7 +318,9 @@ class NGRMarkets extends HTMLElement {
     document.addEventListener("click", (event) => {
       if (event) {
         const element =
+          // @ts-ignore
           event.target.closest("[data-ngr-markets-open]") ||
+          // @ts-ignore
           event.target.closest("[href$='#ngr-markets-open']");
         if (element) {
           event.preventDefault();
@@ -320,12 +330,12 @@ class NGRMarkets extends HTMLElement {
     });
   }
 
-  async widgetLogic(shadowRoot, basic_configs, markets) {
-    if (!basic_configs || !shadowRoot)
+  async widgetLogic(shadowRoot, basicConfigs, markets) {
+    if (!basicConfigs || !shadowRoot)
       return console.error(
-        "[NGR APP]: Configs or shadowRoot list not found. Contact app support please."
+        "[NGR APP]: Configs or shadowRoot list not found. Contact app support please.",
       );
-    const { showRules, showFrequency } = basic_configs;
+    const { showRules, showFrequency } = basicConfigs;
 
     if (this.testMode) {
       this.openModal();
@@ -335,7 +345,7 @@ class NGRMarkets extends HTMLElement {
 
     if (showRules === "autoGeo") {
       const marketCountries = markets.MarketRegionCountry.map(
-        (item) => item.code
+        (item) => item.code,
       );
 
       const savedUserData = this.getCookie(this.VARS.KEY);
@@ -349,12 +359,12 @@ class NGRMarkets extends HTMLElement {
 
       const countries = await this.getCountriesJSON();
       const userGeo = await fetch("/browsing_context_suggestions.json").then(
-        (resp) => resp.json()
+        (resp) => resp.json(),
       );
 
       if (!countries || !userGeo)
         return console.error(
-          "[NGR APP]: User GEO location or countries list not detected. Contact app support please."
+          "[NGR APP]: User GEO location or countries list not detected. Contact app support please.",
         );
       const userCountry = userGeo?.detected_values?.country.handle;
       const userLocation = {
@@ -362,7 +372,7 @@ class NGRMarkets extends HTMLElement {
           userGeo?.detected_values?.country?.name ||
           userGeo?.detected_values?.country_name,
         country: userCountry,
-        continent: countries[userCountry]?.continent
+        continent: countries[userCountry]?.continent,
       };
 
       this.setCookie(this.VARS.KEY, JSON.stringify(userLocation), 7);
@@ -378,7 +388,7 @@ class NGRMarkets extends HTMLElement {
   widgetBehaviour(
     showFrequency = this.SHOW_RULES.session,
     userLocation,
-    markets
+    markets,
   ) {
     if (!userLocation?.country && showFrequency === this.SHOW_RULES.load)
       return this.openModal();
@@ -403,15 +413,18 @@ class NGRMarkets extends HTMLElement {
     };
     const userCountry = userLocation?.country;
     if (userCountry) {
+      // @ts-ignore
       const storeCountry = window?.Shopify?.country;
+      // @ts-ignore
       const storeLng = window?.Shopify?.locale;
       const defaultLng =
+        // @ts-ignore
         userCountry && window?.ngr_countries_window[userCountry]?.languages[0];
       const userCountryMarketId = markets?.MarketRegionCountry?.find(
-        (item) => item?.code === userCountry
+        (item) => item?.code === userCountry,
       )?.__parentId;
       const marketWebPresence = markets?.Market?.find(
-        (item) => item?.id === userCountryMarketId
+        (item) => item?.id === userCountryMarketId,
       )?.webPresence;
       let availableLanguages = [];
       if (marketWebPresence) {
@@ -424,7 +437,7 @@ class NGRMarkets extends HTMLElement {
             ? marketWebPresence?.alternateLocales
                 ?.filter((item) => item?.published)
                 .map((item) => item.locale)
-            : marketWebPresence?.alternateLocales) || [])
+            : marketWebPresence?.alternateLocales) || []),
         ];
       }
       // console.log("availableLanguages", availableLanguages);
@@ -447,7 +460,7 @@ class NGRMarkets extends HTMLElement {
   /**
    * Element builders
    */
-  builder(html, basic_configs, markets, plan) {
+  builder(html, basicConfigs, markets, plan) {
     const {
       title,
       title_locales,
@@ -456,6 +469,7 @@ class NGRMarkets extends HTMLElement {
       buttonText,
       buttonText_locales,
       showFlag,
+      // @ts-ignore
       showFrequency,
       topbarSticky,
       stickyOpener,
@@ -463,15 +477,17 @@ class NGRMarkets extends HTMLElement {
       icon,
       iconWidth,
       stickyToggleIcon,
-      type
-    } = basic_configs;
+      type,
+    } = basicConfigs;
 
     const savedUserData = this.getUserData();
     const userGeoCountry =
       savedUserData?.country_name ||
+      // @ts-ignore
       window.ngr_countries_window[savedUserData?.country]?.name;
 
     const userGeoCountryEng =
+      // @ts-ignore
       window.ngr_countries_window[savedUserData?.country]?.name;
 
     let localeTitle = title;
@@ -486,7 +502,10 @@ class NGRMarkets extends HTMLElement {
       localeText = localeText.replace(/\[\[country\]\]/g, userGeoCountry);
     }
     if (userGeoCountryEng) {
-      localeText = localeText.replace(/\[\[country_eng\]\]/g, userGeoCountryEng);
+      localeText = localeText.replace(
+        /\[\[country_eng\]\]/g,
+        userGeoCountryEng,
+      );
     }
 
     const closeButton = html.querySelector("[data-ngr-markets-close]");
@@ -494,12 +513,13 @@ class NGRMarkets extends HTMLElement {
       stickyToggleIcon,
       stickyOpener,
       savedUserData?.country,
-      window?.Shopify?.country
+      // @ts-ignore
+      window?.Shopify?.country,
     );
     const iconElement = this.buildIconElement(icon, iconWidth);
     const titleElement = this.buildTitleElement(localeTitle);
     const textElement = this.buildTextElement(localeText, plan);
-    const marketsElement = this.buildMarketsDropdowns(markets, basic_configs);
+    const marketsElement = this.buildMarketsDropdowns(markets, basicConfigs);
     const flagElement = this.buildFlagElement(savedUserData?.country);
 
     const submitButton = html.querySelector("[data-ngr-markets-button]");
@@ -510,11 +530,14 @@ class NGRMarkets extends HTMLElement {
     if (type === "topbar") {
       this.modal.classList.add("top-bar");
       if (topbarSticky) {
+        // @ts-ignore
         this.style.top = 0;
         this.style.position = "sticky";
         this.style.zIndex = "999999999999";
       }
-      marketsElement.appendChild(submitButton);
+      if (marketsElement) {
+        marketsElement.appendChild(submitButton);
+      }
     }
     if (type === "sticky") {
       this.modal.classList.add("sticky-bar");
@@ -562,17 +585,19 @@ class NGRMarkets extends HTMLElement {
     iconSrc,
     stickyOpener,
     geoCountryCode,
-    marketCountryCode
+    marketCountryCode,
   ) {
     if (stickyOpener === "geo" && geoCountryCode) {
+      // @ts-ignore
       iconSrc = this.flagSrc.replace(
-        "ac.svg",
-        `${geoCountryCode.toLowerCase()}.svg`
+        /\b([a-z]+)\.svg/,
+        `${geoCountryCode.toLowerCase()}.svg`,
       );
     } else if (stickyOpener === "market" && marketCountryCode) {
+      // @ts-ignore
       iconSrc = this.flagSrc.replace(
-        "ac.svg",
-        `${marketCountryCode.toLowerCase()}.svg`
+        /\b([a-z]+)\.svg/,
+        `${marketCountryCode.toLowerCase()}.svg`,
       );
     } else {
       iconSrc = iconSrc === "default" ? this.widgetStickyIcon : iconSrc;
@@ -625,17 +650,31 @@ class NGRMarkets extends HTMLElement {
     return element;
   }
 
-  buildMarketsDropdowns(marketsData, basic_configs) {
+  buildMarketsDropdowns(marketsData, basicConfigs) {
     if (!marketsData || !marketsData.MarketRegionCountry.length) return;
 
     const { dropdownDefault, showLngSelector, showCountrySelector } =
-      basic_configs;
+      basicConfigs;
+
+    const { MarketRegionCountry, Market, MarketWebPresence, BackupRegion } =
+      marketsData;
 
     let preferedCountry = null;
-    const availableMarkets = marketsData.Market?.filter((item) => item.enabled);
-    availableMarkets.sort((a, b) => (a.name > b.name ? 1 : -1));
+    const sortedMarketCountries = MarketRegionCountry.sort((a, b) =>
+      a.name > b.name ? 1 : -1,
+    );
+    const sortedMarkets = Market;
 
+    const availableMarkets = sortedMarkets?.filter(
+      (item) => item.enabled || item.status === "ACTIVE",
+    );
     const availableMarketIds = availableMarkets?.map((item) => item.id);
+    // @ts-ignore
+    const primaryMarketId = MarketWebPresence?.length
+      ? MarketRegionCountry?.find((item) => item.id === BackupRegion?.id)
+          ?.__parentId
+      : sortedMarketCountries?.find((item) => item.primary)?.__parentId;
+
     const mainElement = document.createElement("div");
     mainElement.classList.add("ngr-markets-modal__form-content");
 
@@ -645,31 +684,33 @@ class NGRMarkets extends HTMLElement {
       selectElementMarketWrapper.classList.add("country-selector");
       const selectElementMarket = document.createElement("select");
       selectElementMarket.name = "country_code";
-      const regions = marketsData.MarketRegionCountry;
-      regions?.sort((a, b) => (a.name > b.name ? 1 : -1));
 
-      regions?.forEach((market) => {
-        if (!availableMarketIds.includes(market.__parentId)) return;
+      const regions = sortedMarketCountries;
+
+      regions?.forEach((region) => {
+        if (!availableMarketIds.includes(region.__parentId)) return;
         const optionElement = document.createElement("option");
         const currencySymbol =
-          window?.ngr_currencies_window[market.currency.currencyCode]
+          // @ts-ignore
+          window?.ngr_currencies_window[region.currency.currencyCode]
             ?.symbol_native;
         const nativeCountryName =
-          window?.ngr_countries_window[market.code]?.native || "";
+          // @ts-ignore
+          window?.ngr_countries_window[region.code]?.native || "";
+
         optionElement.textContent =
-          nativeCountryName !== market.name
-            ? market.name +
+          nativeCountryName !== region.name
+            ? region.name +
               " / " +
               nativeCountryName +
-              ` (${market.currency.currencyCode} ${currencySymbol})`
-            : market.name +
-              ` (${market.currency.currencyCode} ${currencySymbol})`;
-        optionElement.value = market.code;
-        // optionElement.setAttribute("data-currency", market.currency.currencyCode);
-        optionElement.setAttribute("data-market", market.__parentId);
+              ` (${region.currency.currencyCode} ${currencySymbol})`
+            : region.name +
+              ` (${region.currency.currencyCode} ${currencySymbol})`;
+        optionElement.value = region.code;
+        optionElement.setAttribute("data-market", region.__parentId);
         selectElementMarket.appendChild(optionElement);
-        if (market.code === this?.userGeoData?.country) {
-          preferedCountry = market.code;
+        if (region.code === this?.userGeoData?.country) {
+          preferedCountry = region.code;
         }
       });
 
@@ -677,56 +718,66 @@ class NGRMarkets extends HTMLElement {
         selectElementMarket.value = preferedCountry;
       } else {
         const allOptions = selectElementMarket.options;
+        // @ts-ignore
         const targetValue = window?.Shopify?.country;
         const hasValue = Array.from(allOptions).some(
-          (option) => option.value === targetValue
+          (option) => option.value === targetValue,
         );
 
         selectElementMarket.value = hasValue
           ? targetValue
           : allOptions.length > 0
-          ? allOptions[0].value
-          : 0;
+            ? allOptions[0].value
+            : 0;
       }
       selectElementMarketWrapper.appendChild(selectElementMarket);
       mainElement.appendChild(selectElementMarketWrapper);
     }
-    const allWebPresences = [];
 
-    availableMarkets?.forEach((item) => {
-      item.webPresence?.rootUrls.forEach((rootUrl) =>
-        allWebPresences.push({ ...rootUrl, id: item.id })
+    const allWebPresences = [];
+    const selectElementMarket = mainElement.querySelector(
+      ".country-selector select",
+    );
+    const selectedOption =
+      selectElementMarket?.options[selectElementMarket?.selectedIndex];
+    const selectedMarketId =
+      selectedOption?.getAttribute("data-market") || primaryMarketId;
+
+    if (MarketWebPresence?.length) {
+      const findWebPresence = MarketWebPresence.find(
+        (item) => item.__parentId === selectedMarketId,
       );
-    });
+      findWebPresence?.rootUrls?.forEach((rootUrl) =>
+        allWebPresences.push({
+          ...rootUrl,
+          marketId: selectedMarketId,
+        }),
+      );
+    } else {
+      const primaryMarket = Market.find(
+        (item) => item.id === selectedMarketId || item.primary,
+      );
+      primaryMarket?.webPresence?.rootUrls.forEach((rootUrl) =>
+        allWebPresences.push({ ...rootUrl, marketId: primaryMarket.id }),
+      );
+    }
 
     if (showLngSelector) {
       let preferedLngs = [];
       const selectElementMarket = mainElement.querySelector(
-        ".country-selector select"
+        ".country-selector select",
       );
-      // const selectedOptionElement =
-      //   selectElementMarket?.options[selectElementMarket.selectedIndex];
-      // const selectedMarketId =
-      //   selectedOptionElement?.getAttribute("data-market");
-      const marketPrimaryId = availableMarkets?.find(
-        (item) => item.primary
-      )?.id;
-
       const selectElementLngWrapper = document.createElement("div");
       selectElementLngWrapper.classList.add("select");
       const selectElementLng = document.createElement("select");
       selectElementLng.name = "language_code";
 
       allWebPresences?.forEach((item) => {
-        const optionElement = this.createLngOption(
-          item,
-          allWebPresences,
-          mainElement,
-          marketPrimaryId
-        );
+        const optionElement = this.createLngOption(item);
         if (optionElement) selectElementLng.appendChild(optionElement);
         const itemLocale = item?.locale;
         const countryPreferedLng =
+          // @ts-ignore
           window?.ngr_countries_window[this?.userGeoData?.country]?.languages;
         if (
           itemLocale &&
@@ -744,35 +795,57 @@ class NGRMarkets extends HTMLElement {
           selectElementLng.value = preferedLngs[0];
         } else {
           selectElementLng.selectedIndex = 0;
-          // const firstAvaiableOption = [...selectElementLng.options]?.find(
-          //   (option) => !option?.hasAttribute("disabled")
-          // );
-          // if (firstAvaiableOption)
-          //   selectElementLng.value = firstAvaiableOption?.value;
         }
       } else {
+        // @ts-ignore
         selectElementLng.value = window?.Shopify?.locale;
       }
 
       if (showCountrySelector && selectElementMarket) {
-        selectElementMarket.addEventListener("change", () => {
-          selectElementLng.options.length = 0;
-          allWebPresences?.forEach((item) => {
-            const optionElement = this.createLngOption(
-              item,
-              allWebPresences,
-              mainElement,
-              marketPrimaryId
-            );
-            if (optionElement) selectElementLng.appendChild(optionElement);
-            selectElementLng.selectedIndex = 0;
-            // const firstAvaiableOption = [...selectElementLng.options]?.find(
-            //   (option) => !option?.hasAttribute("disabled")
-            // );
-            // if (firstAvaiableOption)
-            //   selectElementLng.value = firstAvaiableOption?.value;
-          });
-        });
+        selectElementMarket.addEventListener(
+          "change",
+          (selectedCountryElement) => {
+            const selectedOption =
+              selectedCountryElement?.target?.options[
+                selectedCountryElement?.target?.selectedIndex
+              ];
+            const selectedMarketId =
+              selectedOption?.getAttribute("data-market") || primaryMarketId;
+            if (!selectedMarketId) return;
+            selectElementLng.options.length = 0;
+            const allWebPresences = [];
+
+            if (MarketWebPresence?.length) {
+              const findWebPresence = MarketWebPresence.find(
+                (item) => item.__parentId === selectedMarketId,
+              );
+              findWebPresence?.rootUrls?.forEach((rootUrl) =>
+                allWebPresences.push({
+                  ...rootUrl,
+                  marketId: selectedMarketId,
+                }),
+              );
+            } else {
+              const primaryMarket = Market.find(
+                (item) => item.id === selectedMarketId || item.primary,
+              );
+              primaryMarket?.webPresence?.rootUrls.forEach((rootUrl) =>
+                allWebPresences.push({
+                  ...rootUrl,
+                  marketId: primaryMarket.id,
+                }),
+              );
+            }
+
+            if (allWebPresences?.length) {
+              allWebPresences?.forEach((item) => {
+                const optionElement = this.createLngOption(item);
+                if (optionElement) selectElementLng.appendChild(optionElement);
+                selectElementLng.selectedIndex = 0;
+              });
+            }
+          },
+        );
       }
 
       selectElementLngWrapper.appendChild(selectElementLng);
@@ -782,25 +855,9 @@ class NGRMarkets extends HTMLElement {
     return mainElement;
   }
 
-  createLngOption(item, allItems, mainElement, marketPrimaryId) {
-    const selectElementMarket = mainElement.querySelector(
-      ".country-selector select"
-    );
-    const selectedMarketId =
-      selectElementMarket?.options[
-        selectElementMarket.selectedIndex
-      ]?.getAttribute("data-market");
-
-    const webPresenceNotNull = allItems.find(
-      (opt) => opt.id === selectedMarketId
-    );
-    if (
-      (item?.id !== selectedMarketId && webPresenceNotNull) ||
-      (item?.id !== marketPrimaryId && !webPresenceNotNull)
-    )
-      return;
-
+  createLngOption(item) {
     const optionElement = document.createElement("option");
+    // @ts-ignore
     const lngObj = window?.ngr_languages_window[item.locale];
     const lngName =
       lngObj?.name !== lngObj?.native
@@ -808,7 +865,7 @@ class NGRMarkets extends HTMLElement {
         : lngObj?.name;
     optionElement.textContent = lngName || item.locale;
     optionElement.value = item.locale;
-    optionElement.setAttribute("data-market", item.id);
+    optionElement.setAttribute("data-market", item.marketId);
     return optionElement;
   }
 
@@ -821,8 +878,8 @@ class NGRMarkets extends HTMLElement {
     )
       return;
     const flagSrc = this.flagSrc.replace(
-      "ac.svg",
-      `${countryCode.toLowerCase()}.svg`
+      /\b([a-z]+)\.svg/,
+      `${countryCode.toLowerCase()}.svg`,
     );
     const elementWrapper = document.createElement("div");
     elementWrapper.classList.add("ngr-markets-modal__flag");
@@ -846,6 +903,7 @@ class NGRMarkets extends HTMLElement {
    */
   analytics() {
     try {
+      // @ts-ignore
       const store_url = window?.Shopify?.shop;
       const dataEndpoint = `${this.HOST}/api/shop/markets-button?shop=${store_url}`;
       fetch(dataEndpoint);
@@ -873,6 +931,7 @@ class NGRMarkets extends HTMLElement {
       if (!preventModalClose) widgetModal.removeAttribute("data-open");
 
       if (showFrequency && showFrequency === this.SHOW_RULES.session) {
+        // @ts-ignore
         sessionStorage.setItem(this.VARS.CLOSED_KEY, 1);
       } else if (showFrequency && showFrequency === this.SHOW_RULES.cookie) {
         this.setCookie(this.VARS.CLOSED_KEY, 1, 7);
@@ -892,6 +951,7 @@ class NGRMarkets extends HTMLElement {
   }
 
   getUserData() {
+    // @ts-ignore
     return JSON.parse(this.getCookie(this.VARS.KEY)) || window?.[this.VARS.KEY];
   }
 

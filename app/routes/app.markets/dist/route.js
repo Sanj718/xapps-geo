@@ -96,128 +96,33 @@ function MarketsRedirects() {
     var _a, _b, _c, _d;
     var _e = react_2.useOutletContext(), shopInfo = _e.shopInfo, shopdb = _e.shopdb, activePlan = _e.activePlan, devPlan = _e.devPlan, veteranPlan = _e.veteranPlan, appId = _e.appId, appData = _e.appData;
     var _f = _helpers_1.planParser(activePlan), isProPlan = _f.isProPlan, isBasicPlan = _f.isBasicPlan, isFreePlan = _f.isFreePlan;
-    var _g = react_2.useLoaderData(), marketsConfigs = _g.marketsConfigs, marketsData = _g.marketsData;
+    var _g = react_2.useLoaderData(), themeEmbedData = _g.themeEmbedData, marketsConfigs = _g.marketsConfigs, marketsData = _g.marketsData;
     var _h = react_2.useSearchParams(), searchParams = _h[0], setSearchParams = _h[1];
-    // const { basicConfigs, advancedConfigs, hideOnAllowedPages, allowedPages } = configs?.data[0] || {}
-    // const { activePlan, shopData, appId } = useContext(AppContext);
-    // const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
-    // const redirect = Redirect.create(useAppBridge());
-    // const fetch = useAuthenticatedFetch();
     var smUp = polaris_1.useBreakpoints().smUp;
     var submit = react_2.useSubmit();
     var actionData = react_2.useActionData();
-    var _j = react_1.useState(true), initialLoading = _j[0], setInitialLoading = _j[1];
-    var _k = react_1.useState(null), secondaryLocales = _k[0], setSecondaryLocales = _k[1];
-    var _l = react_1.useState(_helpers_1.defaultState), toastData = _l[0], setToastData = _l[1];
-    var _m = react_1.useState(false), marketsSyncLoading = _m[0], setMarketsSyncLoading = _m[1];
-    var _o = react_1.useState(0), selectedTab = _o[0], setSelectedTab = _o[1];
-    // const [marketsPopup, setMarketsPopup] = useState(false);
-    // const [marketRedirect, setMarketRedirect] = useState(false);
-    // const [marketsData, setMarketsData] = useState(null);
-    var _p = react_1.useState(false), noConfigs = _p[0], setNoConfigs = _p[1];
-    var _q = react_1.useState(false), refetchSettings = _q[0], setRefetchSettings = _q[1];
-    var _r = react_1.useState(null), active = _r[0], setActive = _r[1];
-    var _s = react_1.useState(__assign(__assign({}, _helpers_1.default_markets_basic_configs), (_a = marketsConfigs === null || marketsConfigs === void 0 ? void 0 : marketsConfigs.data) === null || _a === void 0 ? void 0 : _a.basicConfigs)), localConfigs = _s[0], setLocalConfigs = _s[1];
-    var _t = react_1.useState(__assign(__assign({}, _helpers_1.default_advanced_configs), (_b = marketsConfigs === null || marketsConfigs === void 0 ? void 0 : marketsConfigs.data) === null || _b === void 0 ? void 0 : _b.advancedConfigs)), localAdvancedConfigs = _t[0], setLocalAdvancedConfigs = _t[1];
-    // useMemo(() => {
-    //   const sLocales = shopData?.locales?.filter((item) => !item.primary) || null;
-    //   setSecondaryLocales(sLocales);
-    // }, [shopData]);
-    // async function loadMarkets() {
-    //   let error = true;
-    //   let msg = tr.responses.error;
-    //   // await getLocalShopData();
-    //   try {
-    //     const response = await fetch(GET_SYNCED_MARKETS);
-    //     const responseJson = await response.json();
-    //     if (responseJson?.status) {
-    //       setMarketsData(responseJson?.data);
-    //       error = false;
-    //     }
-    //   } catch (err) {
-    //     console.log(err);
-    //   }
-    //   if (error) {
-    //     setToastData({
-    //       error,
-    //       msg,
-    //     });
-    //   }
-    // }
-    // async function loadSettings() {
-    //   let error = true;
-    //   let msg = tr.responses.error_settings_load;
-    //   try {
-    //     const response = await fetch(GET_MARKET_CONFIGS);
-    //     const responseJson = await response.json();
-    //     if (responseJson?.data && responseJson?.data[0]) {
-    //       const storeSavedConfigs = JSON.parse(
-    //         responseJson.data[0].basic_configs
-    //       );
-    //       const storeSavedAdvancedConfigs = JSON.parse(
-    //         responseJson.data[0].advanced_configs
-    //       );
-    //       const widgetStatus = responseJson?.data[0]?.widget;
-    //       const autoRedirectStatus = responseJson?.data[0]?.auto_redirect;
-    //       setMarketsPopup(widgetStatus);
-    //       setMarketRedirect(autoRedirectStatus);
-    //       setConfigs({ ...configs, ...storeSavedConfigs });
-    //       setAdvancedConfigs({
-    //         ...advancedConfigs,
-    //         ...storeSavedAdvancedConfigs,
-    //       });
-    //       setLocalConfigs({ ...configs, ...storeSavedConfigs });
-    //       setLocalAdvancedConfigs({
-    //         ...advancedConfigs,
-    //         ...storeSavedAdvancedConfigs,
-    //       });
-    //       error = false;
-    //     } else {
-    //       setNoConfigs(true);
-    //     }
-    //   } catch (err) {
-    //     console.log(err);
-    //   }
-    //   if (error) {
-    //     setToastData({
-    //       error,
-    //       msg,
-    //     });
-    //   }
-    // }
-    // async function loadEmbedData() {
-    //   try {
-    //     const response = await fetch(CHECK_EMBED);
-    //     const responseJson = await response.json();
-    //     if (responseJson?.data) {
-    //       const parsedValue =
-    //         isJson(responseJson.data) && JSON.parse(responseJson.data);
-    //       if (parsedValue?.current?.blocks) {
-    //         const check = Object.entries(parsedValue.current.blocks).find(
-    //           ([item, value]) => {
-    //             return (
-    //               value.type.includes(EMBED_APP_ID) &&
-    //               value.type.includes(EMBED_APP_HANDLE) &&
-    //               !value.disabled
-    //             );
-    //           }
-    //         );
-    //         setActive(check);
-    //       }
-    //     }
-    //   } catch (err) {
-    //     console.log(err);
-    //   }
-    // }
-    // useMemo(async () => {
-    //   Promise.all([loadMarkets(), loadSettings(), loadEmbedData()])
-    //     .then((results) => {
-    //       setInitialLoading(false);
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error occurred while executing methods: ", error);
-    //     });
-    // }, [refetchSettings]);
+    var _j = react_1.useState(false), marketsSyncLoading = _j[0], setMarketsSyncLoading = _j[1];
+    var _k = react_1.useState(0), selectedTab = _k[0], setSelectedTab = _k[1];
+    var _l = react_1.useState(null), active = _l[0], setActive = _l[1];
+    var _m = react_1.useState(__assign(__assign({}, _helpers_1.default_markets_basic_configs), (_a = marketsConfigs === null || marketsConfigs === void 0 ? void 0 : marketsConfigs.data) === null || _a === void 0 ? void 0 : _a.basicConfigs)), localConfigs = _m[0], setLocalConfigs = _m[1];
+    var _o = react_1.useState(__assign(__assign({}, _helpers_1.default_advanced_configs), (_b = marketsConfigs === null || marketsConfigs === void 0 ? void 0 : marketsConfigs.data) === null || _b === void 0 ? void 0 : _b.advancedConfigs)), localAdvancedConfigs = _o[0], setLocalAdvancedConfigs = _o[1];
+    react_1.useMemo(function () {
+        var _a;
+        if ((_a = themeEmbedData === null || themeEmbedData === void 0 ? void 0 : themeEmbedData.current) === null || _a === void 0 ? void 0 : _a.blocks) {
+            var checkMarkets_1 = false;
+            Object.entries(themeEmbedData.current.blocks).forEach(function (_a) {
+                var item = _a[0], value = _a[1];
+                if (value.type.includes(EMBED_APP_ID) &&
+                    value.type.includes(EMBED_APP_HANDLE) &&
+                    !value.disabled) {
+                    checkMarkets_1 = true;
+                }
+            });
+            if (checkMarkets_1) {
+                setActive(checkMarkets_1);
+            }
+        }
+    }, [themeEmbedData]);
     react_1.useMemo(function () {
         var _a, _b, _c;
         if ((actionData === null || actionData === void 0 ? void 0 : actionData._action) === _actions_2.ACTIONS.get_MarketsSyncStatus && (actionData === null || actionData === void 0 ? void 0 : actionData.status)) {
@@ -302,7 +207,7 @@ function MarketsRedirects() {
     // console.log("marketsConfigs: ", marketsConfigs, localConfigs, localAdvancedConfigs);
     return (react_1["default"].createElement(polaris_1.Page, null,
         react_1["default"].createElement("div", { id: "main-screen" },
-            react_1["default"].createElement(PageTitle_1.PageTitle, { icon: polaris_icons_1.MarketsIcon, title: "Markets redirects", status: active, loading: false, embedPath: EMBED_APP_ID + "/" + EMBED_APP_HANDLE }),
+            react_1["default"].createElement(PageTitle_1.PageTitle, { icon: polaris_icons_1.MarketsIcon, title: "Markets redirects", status: active, loading: false, url: "shopify://admin/themes/current/editor?context=apps&activateAppId=" + EMBED_APP_ID + "/" + EMBED_APP_HANDLE }),
             react_1["default"].createElement("br", null),
             react_1["default"].createElement(polaris_1.Tabs, { tabs: mainTabs, selected: selectedTab, onSelect: function (value) {
                     setSelectedTab(value);
@@ -328,3 +233,102 @@ function MarketsRedirects() {
             react_1["default"].createElement("br", null))));
 }
 exports["default"] = MarketsRedirects;
+// useMemo(() => {
+//   const sLocales = shopData?.locales?.filter((item) => !item.primary) || null;
+//   setSecondaryLocales(sLocales);
+// }, [shopData]);
+// async function loadMarkets() {
+//   let error = true;
+//   let msg = tr.responses.error;
+//   // await getLocalShopData();
+//   try {
+//     const response = await fetch(GET_SYNCED_MARKETS);
+//     const responseJson = await response.json();
+//     if (responseJson?.status) {
+//       setMarketsData(responseJson?.data);
+//       error = false;
+//     }
+//   } catch (err) {
+//     console.log(err);
+//   }
+//   if (error) {
+//     setToastData({
+//       error,
+//       msg,
+//     });
+//   }
+// }
+// async function loadSettings() {
+//   let error = true;
+//   let msg = tr.responses.error_settings_load;
+//   try {
+//     const response = await fetch(GET_MARKET_CONFIGS);
+//     const responseJson = await response.json();
+//     if (responseJson?.data && responseJson?.data[0]) {
+//       const storeSavedConfigs = JSON.parse(
+//         responseJson.data[0].basic_configs
+//       );
+//       const storeSavedAdvancedConfigs = JSON.parse(
+//         responseJson.data[0].advanced_configs
+//       );
+//       const widgetStatus = responseJson?.data[0]?.widget;
+//       const autoRedirectStatus = responseJson?.data[0]?.auto_redirect;
+//       setMarketsPopup(widgetStatus);
+//       setMarketRedirect(autoRedirectStatus);
+//       setConfigs({ ...configs, ...storeSavedConfigs });
+//       setAdvancedConfigs({
+//         ...advancedConfigs,
+//         ...storeSavedAdvancedConfigs,
+//       });
+//       setLocalConfigs({ ...configs, ...storeSavedConfigs });
+//       setLocalAdvancedConfigs({
+//         ...advancedConfigs,
+//         ...storeSavedAdvancedConfigs,
+//       });
+//       error = false;
+//     } else {
+//       setNoConfigs(true);
+//     }
+//   } catch (err) {
+//     console.log(err);
+//   }
+//   if (error) {
+//     setToastData({
+//       error,
+//       msg,
+//     });
+//   }
+// }
+// async function loadEmbedData() {
+//   try {
+//     const response = await fetch(CHECK_EMBED);
+//     const responseJson = await response.json();
+//     if (responseJson?.data) {
+//       const parsedValue =
+//         isJson(responseJson.data) && JSON.parse(responseJson.data);
+//       if (parsedValue?.current?.blocks) {
+//         const check = Object.entries(parsedValue.current.blocks).find(
+//           ([item, value]) => {
+//             return (
+//               value.type.includes(EMBED_APP_ID) &&
+//               value.type.includes(EMBED_APP_HANDLE) &&
+//               !value.disabled
+//             );
+//           }
+//         );
+//         setActive(check);
+//       }
+//     }
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
+// useMemo(async () => {
+//   Promise.all([loadMarkets(), loadSettings(), loadEmbedData()])
+//     .then((results) => {
+//       setInitialLoading(false);
+//     })
+//     .catch((error) => {
+//       console.error("Error occurred while executing methods: ", error);
+//     });
+// }, [refetchSettings]);

@@ -105,10 +105,6 @@ function PopupRedirectForm(_a) {
     }, [editItem]);
     react_1.useMemo(function () {
         if ((actionData === null || actionData === void 0 ? void 0 : actionData._action) === _actions_1.ACTIONS.create_Redirect && (actionData === null || actionData === void 0 ? void 0 : actionData.status)) {
-            // if (redirects?.length >= 4 && isBasicPlan) {
-            //   msg = tr.responses.limit_error;
-            // }
-            // setToastData({ error: false, msg: tr.responses.rd_create_success });
             shopify.modal.hide("add-redirect");
             setRedirectItem(defaultRedirectItem);
             setSelectedCountry("--");
@@ -122,6 +118,9 @@ function PopupRedirectForm(_a) {
             shopify.modal.hide("edit-redirect");
             setRedirectItem(defaultRedirectItem);
             setSelectedCountry("--");
+        }
+        if ((actionData === null || actionData === void 0 ? void 0 : actionData.status) === false && (actionData === null || actionData === void 0 ? void 0 : actionData.error) !== "") {
+            shopify.toast.show(actionData === null || actionData === void 0 ? void 0 : actionData.error, { isError: true });
         }
     }, [actionData]);
     function handleCountrySelect(value) {

@@ -74,7 +74,7 @@ exports.action = function (params) { return __awaiter(void 0, void 0, void 0, fu
 }); }); };
 function CustomRedirects() {
     var _a = react_2.useOutletContext(), shopInfo = _a.shopInfo, shopdb = _a.shopdb, activePlan = _a.activePlan, devPlan = _a.devPlan, veteranPlan = _a.veteranPlan, appId = _a.appId, appData = _a.appData;
-    var _b = react_2.useLoaderData(), allRedirects = _b.allRedirects, configs = _b.configs, widgetEditorStatus = _b.widgetEditorStatus, widgetEditorCode = _b.widgetEditorCode, buttonEditorStatus = _b.buttonEditorStatus, buttonEditorCode = _b.buttonEditorCode, allAutoRedirects = _b.allAutoRedirects, autoRedirectsCustomCodeStatus = _b.autoRedirectsCustomCodeStatus, autoRedirectsCustomCode = _b.autoRedirectsCustomCode;
+    var _b = react_2.useLoaderData(), themeEmbedData = _b.themeEmbedData, allRedirects = _b.allRedirects, configs = _b.configs, widgetEditorStatus = _b.widgetEditorStatus, widgetEditorCode = _b.widgetEditorCode, buttonEditorStatus = _b.buttonEditorStatus, buttonEditorCode = _b.buttonEditorCode, allAutoRedirects = _b.allAutoRedirects, autoRedirectsCustomCodeStatus = _b.autoRedirectsCustomCodeStatus, autoRedirectsCustomCode = _b.autoRedirectsCustomCode;
     var actionData = react_2.useActionData();
     var _c = react_2.useSearchParams(), searchParams = _c[0], setSearchParams = _c[1];
     var _d = react_1.useState(null), active = _d[0], setActive = _d[1];
@@ -92,6 +92,24 @@ function CustomRedirects() {
         var orderedAutoRedirects = (_a = allAutoRedirects === null || allAutoRedirects === void 0 ? void 0 : allAutoRedirects.data) === null || _a === void 0 ? void 0 : _a.sort(function (a, b) { return JSON.parse(a.node.value).order_r - JSON.parse(b.node.value).order_r; });
         setAutoRedirects(orderedAutoRedirects || []);
     }, [allAutoRedirects]);
+    react_1.useMemo(function () {
+        var _a;
+        if ((_a = themeEmbedData === null || themeEmbedData === void 0 ? void 0 : themeEmbedData.current) === null || _a === void 0 ? void 0 : _a.blocks) {
+            var checkRedirects_1 = false;
+            Object.entries(themeEmbedData.current.blocks).forEach(function (_a) {
+                var item = _a[0], value = _a[1];
+                if (value.type.includes(EMBED_APP_ID) &&
+                    value.type.includes(EMBED_APP_HANDLE) &&
+                    !value.disabled) {
+                    console.log("value", value);
+                    checkRedirects_1 = true;
+                }
+            });
+            if (checkRedirects_1) {
+                setActive(checkRedirects_1);
+            }
+        }
+    }, [themeEmbedData]);
     react_1.useMemo(function () {
         // if (actionData && !actionData?.data?.status) {
         //   shopify.toast.show("Error, try again.", { isError: true });
@@ -124,7 +142,7 @@ function CustomRedirects() {
     }, [searchParams]);
     return (React.createElement(polaris_1.Page, null,
         React.createElement("div", { id: "main-screen" },
-            React.createElement(PageTitle_1.PageTitle, { icon: polaris_icons_1.DomainRedirectIcon, title: "Custom redirects", status: active, loading: false, embedPath: EMBED_APP_ID + "/" + EMBED_APP_HANDLE }),
+            React.createElement(PageTitle_1.PageTitle, { icon: polaris_icons_1.DomainRedirectIcon, title: "Custom redirects", status: active, loading: false, url: "shopify://admin/themes/current/editor?context=apps&activateAppId=" + EMBED_APP_ID + "/" + EMBED_APP_HANDLE }),
             React.createElement("br", null),
             React.createElement(polaris_1.Tabs, { tabs: mainTabs, selected: selectedTab, onSelect: function (value) {
                     setSelectedTab(value);

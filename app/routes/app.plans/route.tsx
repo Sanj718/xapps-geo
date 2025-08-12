@@ -204,8 +204,6 @@ export default function PlansPage() {
                 action={handleProSubscription}
               />
             </Grid>
-            {/* [TODO] add all plans features */}
-            {/* <Card></Card> */}
           </BlockStack>
         </Box>
 

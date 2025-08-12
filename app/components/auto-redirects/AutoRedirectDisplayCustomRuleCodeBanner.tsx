@@ -13,7 +13,7 @@ export default function AutoRedirectDisplayCustomRuleCodeBanner() {
         <Banner hideIcon >
             <BlockStack gap="200">
                 <Text as="p" variant="bodyMd">
-                    Auto redirection custom code is for adding/editing your custom logic for existing auto-redirects. This will not work on its own, you have to add at least one redirection rule.
+                    Auto redirection custom code is for adding/editing your custom logic for auto-redirects. This will not work on its own, you have to add at least one redirection rule (without block).
                 </Text>
                 <List type="bullet" gap="loose">
                     <List.Item><code>{`@property {string} `}<strong>redirectUrl</strong></code> - {`Redirect url added in app admin.`}</List.Item>

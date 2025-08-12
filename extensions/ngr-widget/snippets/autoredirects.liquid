@@ -147,6 +147,7 @@
             blockUser();
             return
           }
+          console.log("itemStringUrl", itemStringUrl, domainRedirectUrl)
           if(!item.block && item.domain_redirection && (!item.except_r && locationIncludes || item.except_r && !locationIncludes)){
             redirectUser(domainRedirectUrl, itemStringUrl)
             return

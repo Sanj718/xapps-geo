@@ -10,30 +10,19 @@ import {
   Text,
   Tooltip,
 } from "@shopify/polaris";
-import { useAppBridge } from "@shopify/app-bridge-react";
 import statusGreen from "../../assets/status-green.svg";
-import statusRed from "../../assets/status-green.svg";
-import statusGray from "../../assets/status-green.svg";
-// import { statusGreen, statusRed, statusGray } from "../../assets/index.js";
-
+import statusRed from "../../assets/status-red.svg";
+import statusGray from "../../assets/status-gray.svg";
 interface PageTitleProps {
   icon?: any
   title: string;
   status?: boolean | null;
   loading?: boolean;
-  embedPath?: string;
+  url?: string;
   hideStatus?: boolean;
 }
 
-export function PageTitle({ icon, title, status, loading, embedPath = "", hideStatus = false }: PageTitleProps) {
-  // const redirect = Redirect.create(useAppBridge());
-
-  // async function handleActivateEmbedRedirect() {
-  //   redirect?.dispatch(Redirect.Action.ADMIN_PATH, {
-  //     path: `/themes/current/editor?context=apps&activateAppId=${embedPath}`,
-  //     newContext: true,
-  //   });
-  // }
+export function PageTitle({ icon, title, status, loading, url = "", hideStatus = false }: PageTitleProps) {
 
   return (
     <Box padding="400">
@@ -77,7 +66,7 @@ export function PageTitle({ icon, title, status, loading, embedPath = "", hideSt
                 source={loading ? statusGray : status ? statusGreen : statusRed}
               />
               <Button
-                // onClick={handleActivateEmbedRedirect}
+                url={url}
                 size="micro"
                 icon={AdjustIcon}
               />

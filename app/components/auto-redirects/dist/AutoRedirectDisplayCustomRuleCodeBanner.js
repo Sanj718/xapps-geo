@@ -12,7 +12,7 @@ var polaris_1 = require("@shopify/polaris");
 function AutoRedirectDisplayCustomRuleCodeBanner() {
     return (React.createElement(polaris_1.Banner, { hideIcon: true },
         React.createElement(polaris_1.BlockStack, { gap: "200" },
-            React.createElement(polaris_1.Text, { as: "p", variant: "bodyMd" }, "Auto redirection custom code is for adding/editing your custom logic for existing auto-redirects. This will not work on its own, you have to add at least one redirection rule."),
+            React.createElement(polaris_1.Text, { as: "p", variant: "bodyMd" }, "Auto redirection custom code is for adding/editing your custom logic for auto-redirects. This will not work on its own, you have to add at least one redirection rule (without block)."),
             React.createElement(polaris_1.List, { type: "bullet", gap: "loose" },
                 React.createElement(polaris_1.List.Item, null,
                     React.createElement("code", null, "@property {string} ",

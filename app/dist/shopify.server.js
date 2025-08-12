@@ -55,13 +55,17 @@ var shopify_app_session_storage_prisma_1 = require("@shopify/shopify-app-session
 var db_server_1 = require("./db.server");
 var db_queries_server_1 = require("./db-queries.server");
 var _helpers_1 = require("./components/_helpers");
+var analytics_cleaner_cron_server_1 = require("./analytics-cleaner-cron.server");
 var shopify = server_1.shopifyApp(__assign({ apiKey: process.env.SHOPIFY_API_KEY, apiSecretKey: process.env.SHOPIFY_API_SECRET || "", apiVersion: server_1.RELEASE_CANDIDATE_API_VERSION, scopes: (_a = process.env.SCOPES) === null || _a === void 0 ? void 0 : _a.split(","), appUrl: process.env.SHOPIFY_APP_URL || "", authPathPrefix: "/auth", sessionStorage: new shopify_app_session_storage_prisma_1.PrismaSessionStorage(db_server_1["default"]), distribution: server_1.AppDistribution.AppStore, webhooks: {
-        //[TODO] Add all webhooks here
         APP_UNINSTALLED: {
             deliveryMethod: server_1.DeliveryMethod.Http,
             callbackUrl: "/api/webhooks"
         },
         BULK_OPERATIONS_FINISH: {
+            deliveryMethod: server_1.DeliveryMethod.Http,
+            callbackUrl: "/api/webhooks"
+        },
+        APP_SUBSCRIPTIONS_UPDATE: {
             deliveryMethod: server_1.DeliveryMethod.Http,
             callbackUrl: "/api/webhooks"
         }
@@ -92,8 +96,9 @@ var shopify = server_1.shopifyApp(__assign({ apiKey: process.env.SHOPIFY_API_KEY
     } }, (process.env.SHOP_CUSTOM_DOMAIN
     ? { customShopDomains: [process.env.SHOP_CUSTOM_DOMAIN] }
     : {})));
+analytics_cleaner_cron_server_1.cronJobs();
 exports["default"] = shopify;
-exports.apiVersion = server_1.ApiVersion.July25;
+exports.apiVersion = server_1.ApiVersion.October25;
 exports.addDocumentResponseHeaders = shopify.addDocumentResponseHeaders;
 exports.authenticate = shopify.authenticate;
 exports.unauthenticated = shopify.unauthenticated;

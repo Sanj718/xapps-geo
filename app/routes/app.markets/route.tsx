@@ -66,145 +66,36 @@ export default function MarketsRedirects() {
   const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
     useOutletContext<OutletContext>();
   const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
-  const { marketsConfigs, marketsData } = useLoaderData<typeof loader>();
+  const { themeEmbedData, marketsConfigs, marketsData } = useLoaderData<typeof loader>();
   const [searchParams, setSearchParams] = useSearchParams();
-  // const { basicConfigs, advancedConfigs, hideOnAllowedPages, allowedPages } = configs?.data[0] || {}
-  // const { activePlan, shopData, appId } = useContext(AppContext);
-  // const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
-  // const redirect = Redirect.create(useAppBridge());
-  // const fetch = useAuthenticatedFetch();
   const { smUp } = useBreakpoints();
   const submit = useSubmit();
   const actionData = useActionData<ActionReturn>();
-  const [initialLoading, setInitialLoading] = useState(true);
-  const [secondaryLocales, setSecondaryLocales] = useState(null);
-  const [toastData, setToastData] = useState(defaultState);
   const [marketsSyncLoading, setMarketsSyncLoading] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
-  // const [marketsPopup, setMarketsPopup] = useState(false);
-  // const [marketRedirect, setMarketRedirect] = useState(false);
-  // const [marketsData, setMarketsData] = useState(null);
-  const [noConfigs, setNoConfigs] = useState(false);
-  const [refetchSettings, setRefetchSettings] = useState(false);
   const [active, setActive] = useState(null);
 
   const [localConfigs, setLocalConfigs] = useState({ ...default_markets_basic_configs, ...marketsConfigs?.data?.basicConfigs });
   const [localAdvancedConfigs, setLocalAdvancedConfigs] = useState({ ...default_advanced_configs, ...marketsConfigs?.data?.advancedConfigs });
 
-  // useMemo(() => {
-  //   const sLocales = shopData?.locales?.filter((item) => !item.primary) || null;
-  //   setSecondaryLocales(sLocales);
-  // }, [shopData]);
+  useMemo(() => {
+    if (themeEmbedData?.current?.blocks) {
+      let checkMarkets = false;
 
-  // async function loadMarkets() {
-  //   let error = true;
-  //   let msg = tr.responses.error;
-  //   // await getLocalShopData();
-
-  //   try {
-  //     const response = await fetch(GET_SYNCED_MARKETS);
-  //     const responseJson = await response.json();
-
-  //     if (responseJson?.status) {
-  //       setMarketsData(responseJson?.data);
-  //       error = false;
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-
-  //   if (error) {
-  //     setToastData({
-  //       error,
-  //       msg,
-  //     });
-  //   }
-  // }
-
-  // async function loadSettings() {
-  //   let error = true;
-  //   let msg = tr.responses.error_settings_load;
-
-  //   try {
-  //     const response = await fetch(GET_MARKET_CONFIGS);
-  //     const responseJson = await response.json();
-
-  //     if (responseJson?.data && responseJson?.data[0]) {
-  //       const storeSavedConfigs = JSON.parse(
-  //         responseJson.data[0].basic_configs
-  //       );
-  //       const storeSavedAdvancedConfigs = JSON.parse(
-  //         responseJson.data[0].advanced_configs
-  //       );
-  //       const widgetStatus = responseJson?.data[0]?.widget;
-  //       const autoRedirectStatus = responseJson?.data[0]?.auto_redirect;
-
-  //       setMarketsPopup(widgetStatus);
-  //       setMarketRedirect(autoRedirectStatus);
-
-  //       setConfigs({ ...configs, ...storeSavedConfigs });
-  //       setAdvancedConfigs({
-  //         ...advancedConfigs,
-  //         ...storeSavedAdvancedConfigs,
-  //       });
-
-  //       setLocalConfigs({ ...configs, ...storeSavedConfigs });
-  //       setLocalAdvancedConfigs({
-  //         ...advancedConfigs,
-  //         ...storeSavedAdvancedConfigs,
-  //       });
-
-  //       error = false;
-  //     } else {
-  //       setNoConfigs(true);
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-
-  //   if (error) {
-  //     setToastData({
-  //       error,
-  //       msg,
-  //     });
-  //   }
-  // }
-
-  // async function loadEmbedData() {
-  //   try {
-  //     const response = await fetch(CHECK_EMBED);
-  //     const responseJson = await response.json();
-
-  //     if (responseJson?.data) {
-  //       const parsedValue =
-  //         isJson(responseJson.data) && JSON.parse(responseJson.data);
-  //       if (parsedValue?.current?.blocks) {
-  //         const check = Object.entries(parsedValue.current.blocks).find(
-  //           ([item, value]) => {
-  //             return (
-  //               value.type.includes(EMBED_APP_ID) &&
-  //               value.type.includes(EMBED_APP_HANDLE) &&
-  //               !value.disabled
-  //             );
-  //           }
-  //         );
-  //         setActive(check);
-  //       }
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }
-
-  // useMemo(async () => {
-  //   Promise.all([loadMarkets(), loadSettings(), loadEmbedData()])
-  //     .then((results) => {
-  //       setInitialLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error occurred while executing methods: ", error);
-  //     });
-  // }, [refetchSettings]);
+      Object.entries(themeEmbedData.current.blocks).forEach(([item, value]) => {
+        if (
+          value.type.includes(EMBED_APP_ID) &&
+          value.type.includes(EMBED_APP_HANDLE) &&
+          !value.disabled
+        ) {
+          checkMarkets = true;
+        }
+      });
+      if (checkMarkets) {
+        setActive(checkMarkets);
+      }
+    }
+  }, [themeEmbedData]);
 
   useMemo(() => {
     if (actionData?._action === ACTIONS.get_MarketsSyncStatus && actionData?.status) {
@@ -294,7 +185,7 @@ export default function MarketsRedirects() {
           title="Markets redirects"
           status={active}
           loading={false}
-          embedPath={`${EMBED_APP_ID}/${EMBED_APP_HANDLE}`}
+          url={`shopify://admin/themes/current/editor?context=apps&activateAppId=${EMBED_APP_ID}/${EMBED_APP_HANDLE}`}
         />
         <br />
         <Tabs
@@ -359,3 +250,118 @@ export default function MarketsRedirects() {
   );
 }
 
+
+// useMemo(() => {
+//   const sLocales = shopData?.locales?.filter((item) => !item.primary) || null;
+//   setSecondaryLocales(sLocales);
+// }, [shopData]);
+
+// async function loadMarkets() {
+//   let error = true;
+//   let msg = tr.responses.error;
+//   // await getLocalShopData();
+
+//   try {
+//     const response = await fetch(GET_SYNCED_MARKETS);
+//     const responseJson = await response.json();
+
+//     if (responseJson?.status) {
+//       setMarketsData(responseJson?.data);
+//       error = false;
+//     }
+//   } catch (err) {
+//     console.log(err);
+//   }
+
+//   if (error) {
+//     setToastData({
+//       error,
+//       msg,
+//     });
+//   }
+// }
+
+// async function loadSettings() {
+//   let error = true;
+//   let msg = tr.responses.error_settings_load;
+
+//   try {
+//     const response = await fetch(GET_MARKET_CONFIGS);
+//     const responseJson = await response.json();
+
+//     if (responseJson?.data && responseJson?.data[0]) {
+//       const storeSavedConfigs = JSON.parse(
+//         responseJson.data[0].basic_configs
+//       );
+//       const storeSavedAdvancedConfigs = JSON.parse(
+//         responseJson.data[0].advanced_configs
+//       );
+//       const widgetStatus = responseJson?.data[0]?.widget;
+//       const autoRedirectStatus = responseJson?.data[0]?.auto_redirect;
+
+//       setMarketsPopup(widgetStatus);
+//       setMarketRedirect(autoRedirectStatus);
+
+//       setConfigs({ ...configs, ...storeSavedConfigs });
+//       setAdvancedConfigs({
+//         ...advancedConfigs,
+//         ...storeSavedAdvancedConfigs,
+//       });
+
+//       setLocalConfigs({ ...configs, ...storeSavedConfigs });
+//       setLocalAdvancedConfigs({
+//         ...advancedConfigs,
+//         ...storeSavedAdvancedConfigs,
+//       });
+
+//       error = false;
+//     } else {
+//       setNoConfigs(true);
+//     }
+//   } catch (err) {
+//     console.log(err);
+//   }
+
+//   if (error) {
+//     setToastData({
+//       error,
+//       msg,
+//     });
+//   }
+// }
+
+// async function loadEmbedData() {
+//   try {
+//     const response = await fetch(CHECK_EMBED);
+//     const responseJson = await response.json();
+
+//     if (responseJson?.data) {
+//       const parsedValue =
+//         isJson(responseJson.data) && JSON.parse(responseJson.data);
+//       if (parsedValue?.current?.blocks) {
+//         const check = Object.entries(parsedValue.current.blocks).find(
+//           ([item, value]) => {
+//             return (
+//               value.type.includes(EMBED_APP_ID) &&
+//               value.type.includes(EMBED_APP_HANDLE) &&
+//               !value.disabled
+//             );
+//           }
+//         );
+//         setActive(check);
+//       }
+//     }
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
+
+// useMemo(async () => {
+//   Promise.all([loadMarkets(), loadSettings(), loadEmbedData()])
+//     .then((results) => {
+//       setInitialLoading(false);
+//     })
+//     .catch((error) => {
+//       console.error("Error occurred while executing methods: ", error);
+//     });
+// }, [refetchSettings]);

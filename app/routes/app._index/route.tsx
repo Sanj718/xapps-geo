@@ -154,7 +154,7 @@ export default function Index() {
   useEffect(() => {
     submit(
       {
-        _action: ACTIONS.AnalyticsData,
+        _action: ACTIONS.get_AnalyticsData,
       },
       requestHeaders,
     );
@@ -250,7 +250,7 @@ export default function Index() {
     }
   }
 
-  const loading = loadingStates(navigation, [ACTIONS.AnalyticsData]) as LoadingStates;
+  const loading = loadingStates(navigation, [ACTIONS.get_AnalyticsData]) as LoadingStates;
 
   return (
     <Page>
@@ -352,7 +352,7 @@ export default function Index() {
         <br />
         <InlineGrid columns={{ xs: 1, sm: 1, md: 2, lg: 2, xl: 2 }} gap="400">
           <Stats
-            loading={loading[ACTIONS.AnalyticsData + "Loading"]}
+            loading={loading[ACTIONS.get_AnalyticsData + "Loading"]}
             title="Custom redirects performance"
             totalPeriod={periodCustomRedirects}
             totamlNum={totalCustomPopup + totalCustomAuto}
@@ -362,7 +362,7 @@ export default function Index() {
             autoPeriod={periodCustomAutoRedirects}
           />
           <Stats
-            loading={loading[ACTIONS.AnalyticsData + "Loading"]}
+            loading={loading[ACTIONS.get_AnalyticsData + "Loading"]}
             title="Markets redirects performance"
             totalPeriod={periodMarketsRedirects}
             totamlNum={totalMarketsPopup + totalMarketsAuto}

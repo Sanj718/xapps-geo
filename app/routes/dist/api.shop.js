@@ -71,7 +71,7 @@ exports.loader = function (_a) {
                     _b.label = 1;
                 case 1:
                     _b.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, db_queries_server_1.getShopData({ shop: shop })];
+                    return [4 /*yield*/, db_queries_server_1.getPublicShopData({ shop: shop })];
                 case 2:
                     response = _b.sent();
                     if (!(response === null || response === void 0 ? void 0 : response.status)) {

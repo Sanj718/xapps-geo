@@ -105,10 +105,6 @@ export default function PopupRedirectForm({
 
   useMemo(() => {
     if (actionData?._action === ACTIONS.create_Redirect && actionData?.status) {
-      // if (redirects?.length >= 4 && isBasicPlan) {
-      //   msg = tr.responses.limit_error;
-      // }
-      // setToastData({ error: false, msg: tr.responses.rd_create_success });
       shopify.modal.hide("add-redirect");
       setRedirectItem(defaultRedirectItem);
       setSelectedCountry("--");
@@ -123,8 +119,11 @@ export default function PopupRedirectForm({
       setRedirectItem(defaultRedirectItem);
       setSelectedCountry("--");
     }
+    if (actionData?.status === false && actionData?.error !== "") {
+      shopify.toast.show(actionData?.error, { isError: true })
+    }
   }, [actionData]);
-
+  
   function handleCountrySelect(value: string) {
     setSelectedCountry(value);
     const selectedCountry: Country | undefined = countriesList.find(
@@ -190,7 +189,6 @@ export default function PopupRedirectForm({
     );
     setLabelTranslation(false)
   }
-
 
   async function handleDelete(id: number) {
     if (!id) return;

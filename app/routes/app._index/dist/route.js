@@ -88,7 +88,7 @@ function Index() {
     // }, [actionData]);
     react_1.useEffect(function () {
         submit({
-            _action: _actions_2.ACTIONS.AnalyticsData
+            _action: _actions_2.ACTIONS.get_AnalyticsData
         }, _helpers_1.requestHeaders);
     }, []);
     function setEmbedData(theme) {
@@ -161,7 +161,7 @@ function Index() {
             });
         });
     }
-    var loading = _helpers_1.loadingStates(navigation, [_actions_2.ACTIONS.AnalyticsData]);
+    var loading = _helpers_1.loadingStates(navigation, [_actions_2.ACTIONS.get_AnalyticsData]);
     return (React.createElement(polaris_1.Page, null,
         React.createElement("div", { id: "main-screen" },
             React.createElement(polaris_1.InlineStack, { align: "space-between", blockAlign: "center" },
@@ -212,8 +212,8 @@ function Index() {
             React.createElement(polaris_1.Divider, null),
             React.createElement("br", null),
             React.createElement(polaris_1.InlineGrid, { columns: { xs: 1, sm: 1, md: 2, lg: 2, xl: 2 }, gap: "400" },
-                React.createElement(Stats, { loading: loading[_actions_2.ACTIONS.AnalyticsData + "Loading"], title: "Custom redirects performance", totalPeriod: periodCustomRedirects, totamlNum: totalCustomPopup + totalCustomAuto, popupNum: totalCustomPopup, popupPeriod: periodCustomPopupRedirects, autoNum: totalCustomAuto, autoPeriod: periodCustomAutoRedirects }),
-                React.createElement(Stats, { loading: loading[_actions_2.ACTIONS.AnalyticsData + "Loading"], title: "Markets redirects performance", totalPeriod: periodMarketsRedirects, totamlNum: totalMarketsPopup + totalMarketsAuto, popupNum: totalMarketsPopup, popupPeriod: periodMarketsPopupRedirects, autoNum: totalMarketsAuto, autoPeriod: periodMarketsAutoRedirects })),
+                React.createElement(Stats, { loading: loading[_actions_2.ACTIONS.get_AnalyticsData + "Loading"], title: "Custom redirects performance", totalPeriod: periodCustomRedirects, totamlNum: totalCustomPopup + totalCustomAuto, popupNum: totalCustomPopup, popupPeriod: periodCustomPopupRedirects, autoNum: totalCustomAuto, autoPeriod: periodCustomAutoRedirects }),
+                React.createElement(Stats, { loading: loading[_actions_2.ACTIONS.get_AnalyticsData + "Loading"], title: "Markets redirects performance", totalPeriod: periodMarketsRedirects, totamlNum: totalMarketsPopup + totalMarketsAuto, popupNum: totalMarketsPopup, popupPeriod: periodMarketsPopupRedirects, autoNum: totalMarketsAuto, autoPeriod: periodMarketsAutoRedirects })),
             React.createElement("br", null),
             React.createElement(polaris_1.Divider, null),
             React.createElement("br", null),

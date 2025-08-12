@@ -142,7 +142,7 @@ function RedirectsList(_a) {
                                         react_1["default"].createElement(polaris_1.InlineStack, { gap: "200" },
                                             react_1["default"].createElement("div", { style: { cursor: "move" } },
                                                 react_1["default"].createElement(polaris_1.Icon, { source: polaris_icons_1.DragHandleIcon, tone: "subdued" })),
-                                            react_1["default"].createElement("div", { onClick: function () { return handleRedirectStatus(item); } },
+                                            react_1["default"].createElement("div", { className: "redirect-status", onClick: function () { return handleRedirectStatus(item); } },
                                                 react_1["default"].createElement(polaris_1.Tooltip, { content: react_1["default"].createElement("small", null,
                                                         "Status: ",
                                                         status ? "active" : "inactive") },

@@ -28,7 +28,7 @@ function CustomizeMarketsPopup(_a) {
     var _c = react_2.useOutletContext(), shopInfo = _c.shopInfo, shopdb = _c.shopdb, activePlan = _c.activePlan, devPlan = _c.devPlan, veteranPlan = _c.veteranPlan, appId = _c.appId, appData = _c.appData;
     var _d = _helpers_1.planParser(activePlan), isProPlan = _d.isProPlan, isBasicPlan = _d.isBasicPlan, isFreePlan = _d.isFreePlan;
     var secondaryLocales = (_b = shopInfo === null || shopInfo === void 0 ? void 0 : shopInfo.shopLocales) === null || _b === void 0 ? void 0 : _b.filter(function (item) { return !item.primary; });
-    return react_1["default"].createElement(polaris_1.InlineGrid, { columns: { xs: "1fr", md: "1.5fr 3fr" }, gap: "400" },
+    return react_1["default"].createElement(polaris_1.InlineGrid, { columns: { xs: "1fr", md: "420px 3fr" }, gap: "400" },
         react_1["default"].createElement(polaris_1.Card, null,
             react_1["default"].createElement(polaris_1.BlockStack, { gap: "200" },
                 react_1["default"].createElement(PromoBadge_1["default"], { type: "basic" }),
@@ -58,36 +58,52 @@ function CustomizeMarketsPopup(_a) {
                                 return setConfigs(function (current) { return (__assign(__assign({}, current), { showFlag: value })); });
                             } })),
                     react_1["default"].createElement(polaris_1.Divider, null),
-                    react_1["default"].createElement(polaris_1.Select, { disabled: isFreePlan, label: "Popup Fields: ", labelInline: true, options: [
-                            { label: "Country", value: "country" },
-                            {
-                                label: "Language",
-                                value: "language"
-                            },
-                            {
-                                label: "Country & language",
-                                value: "both"
-                            },
-                        ], onChange: !isFreePlan
-                            ? function (value) {
-                                var isCountry = false;
-                                var isLng = false;
-                                if (value === "both") {
-                                    isCountry = true;
-                                    isLng = true;
+                    react_1["default"].createElement(polaris_1.InlineGrid, { gap: "200", columns: "2" },
+                        react_1["default"].createElement(polaris_1.Select, { disabled: isFreePlan, label: "Popup Fields", 
+                            // labelInline
+                            options: [
+                                { label: "Country", value: "country" },
+                                {
+                                    label: "Language",
+                                    value: "language"
+                                },
+                                {
+                                    label: "Country & language",
+                                    value: "both"
+                                },
+                            ], onChange: !isFreePlan
+                                ? function (value) {
+                                    var isCountry = false;
+                                    var isLng = false;
+                                    if (value === "both") {
+                                        isCountry = true;
+                                        isLng = true;
+                                    }
+                                    else if (value === "country") {
+                                        isCountry = true;
+                                    }
+                                    else if (value === "language") {
+                                        isLng = true;
+                                    }
+                                    setConfigs(function (current) { return (__assign(__assign({}, current), { showCountrySelector: isCountry, showLngSelector: isLng })); });
                                 }
-                                else if (value === "country") {
-                                    isCountry = true;
-                                }
-                                else if (value === "language") {
-                                    isLng = true;
-                                }
-                                setConfigs(function (current) { return (__assign(__assign({}, current), { showCountrySelector: isCountry, showLngSelector: isLng })); });
+                                : undefined, value: (configs === null || configs === void 0 ? void 0 : configs.showCountrySelector) && (configs === null || configs === void 0 ? void 0 : configs.showLngSelector)
+                                ? "both"
+                                : (configs === null || configs === void 0 ? void 0 : configs.showLngSelector) ? "language"
+                                    : "country" }),
+                        react_1["default"].createElement(polaris_1.Select, { label: "Dropdown default values ", disabled: isFreePlan, options: [
+                                {
+                                    label: "Recommended country & language (GEO)",
+                                    value: "geo"
+                                },
+                                {
+                                    label: "Current market country & language",
+                                    value: "market"
+                                },
+                            ], onChange: !isFreePlan ? function (newValue) {
+                                return setConfigs(function (current) { return (__assign(__assign({}, current), { dropdownDefault: newValue })); });
                             }
-                            : undefined, value: (configs === null || configs === void 0 ? void 0 : configs.showCountrySelector) && (configs === null || configs === void 0 ? void 0 : configs.showLngSelector)
-                            ? "both"
-                            : (configs === null || configs === void 0 ? void 0 : configs.showLngSelector) ? "language"
-                                : "country" }),
+                                : undefined, value: configs === null || configs === void 0 ? void 0 : configs.dropdownDefault })),
                     react_1["default"].createElement(polaris_1.InlineGrid, { gap: "200" },
                         react_1["default"].createElement(polaris_1.Select, { disabled: isFreePlan, label: "Widget type: ", labelInline: true, options: [
                                 { label: "Popup", value: "popup" },

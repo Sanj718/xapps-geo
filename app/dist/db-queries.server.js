@@ -47,7 +47,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.getShopData = exports.changePlan = exports.updateMarketsRedirect = exports.updateMarketsWidget = exports.addMarketsData = exports.updateMarketSyncStatus = exports.getMarketConfigs = exports.getMarketsData = exports.getMarketSyncStatus = exports.createUpdateMarketConfigs = exports.createUpdateAllowedPages = exports.createUpdateConfigs = exports.getConfigs = exports.reorderRedirect = exports.deleteRedirect = exports.updateRedirectStatus = exports.updateRedirect = exports.getAllRedirects = exports.createRedirect = exports.getAnalyticsData = exports.removeShop = exports.disableShop = exports.getShopdb = exports.createInitialConfigs = exports.addActiveShop = void 0;
+exports.cancelPlan = exports.getPublicMarketsData = exports.getPublicShopData = exports.changePlan = exports.updateMarketsRedirect = exports.updateMarketsWidget = exports.addMarketsData = exports.updateMarketSyncStatus = exports.getMarketConfigs = exports.getMarketsData = exports.getMarketSyncStatus = exports.createUpdateMarketConfigs = exports.createUpdateAllowedPages = exports.createUpdateConfigs = exports.getConfigs = exports.reorderRedirect = exports.deleteRedirect = exports.updateRedirectStatus = exports.updateRedirect = exports.getAllRedirects = exports.createRedirect = exports.getAnalyticsData = exports.removeShop = exports.disableShop = exports.getShopdb = exports.createInitialConfigs = exports.addActiveShop = void 0;
 var _helpers_1 = require("./components/_helpers");
 var db_server_1 = require("./db.server");
 // App Plans
@@ -309,13 +309,19 @@ function createRedirect(_a) {
 }
 exports.createRedirect = createRedirect;
 exports.getAllRedirects = function (_a) {
-    var shop = _a.shop, localesAllowed = _a.localesAllowed;
+    var shop = _a.shop;
     return __awaiter(void 0, void 0, Promise, function () {
-        var selectFields, redirects, parsedRedirects, error_8;
+        var activeShop, selectFields, redirects, parsedRedirects, error_8;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    _b.trys.push([0, 2, , 3]);
+                    _b.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, db_server_1["default"].activeShops.findUnique({
+                            where: { shop: shop },
+                            select: { plan: true }
+                        })];
+                case 1:
+                    activeShop = _b.sent();
                     selectFields = {
                         id: true,
                         flag: true,
@@ -326,7 +332,7 @@ exports.getAllRedirects = function (_a) {
                         conditionalLocation: true,
                         domainRedirection: true,
                         status: true,
-                        locales: true
+                        locales: (activeShop === null || activeShop === void 0 ? void 0 : activeShop.plan) === 2 ? true : false
                     };
                     return [4 /*yield*/, db_server_1["default"].redirects.findMany({
                             where: {
@@ -336,17 +342,16 @@ exports.getAllRedirects = function (_a) {
                             },
                             select: selectFields
                         })];
-                case 1:
+                case 2:
                     redirects = _b.sent();
-                    parsedRedirects = redirects.map(function (redirect) { return (__assign(__assign({}, redirect), { locales: redirect.locales ? _helpers_1.jsonSafeParse(redirect.locales) : null, conditionalLocation: redirect.conditionalLocation
-                            ? _helpers_1.jsonSafeParse(redirect.conditionalLocation)
+                    parsedRedirects = redirects.map(function (redirect) { return (__assign(__assign({}, redirect), { locales: (redirect === null || redirect === void 0 ? void 0 : redirect.locales) ? _helpers_1.jsonSafeParse(redirect === null || redirect === void 0 ? void 0 : redirect.locales) : null, conditionalLocation: (redirect === null || redirect === void 0 ? void 0 : redirect.conditionalLocation) ? _helpers_1.jsonSafeParse(redirect.conditionalLocation)
                             : null })); });
                     return [2 /*return*/, { status: parsedRedirects.length > 0, data: parsedRedirects }];
-                case 2:
+                case 3:
                     error_8 = _b.sent();
                     console.error(error_8);
                     return [2 /*return*/, { status: false, error: error_8.toString() }];
-                case 3: return [2 /*return*/];
+                case 4: return [2 /*return*/];
             }
         });
     });
@@ -905,10 +910,10 @@ exports.changePlan = function (_a) {
         });
     });
 };
-exports.getShopData = function (_a) {
+exports.getPublicShopData = function (_a) {
     var shop = _a.shop;
     return __awaiter(void 0, void 0, Promise, function () {
-        var activeShop_1, isProPlan_1, isBasicPlan, redirects, configs, error_25;
+        var activeShop_1, isProPlan_1, isBasicPlan, redirects, configs, parsedBasicConfigs, error_25;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -967,7 +972,8 @@ exports.getShopData = function (_a) {
                     redirects = activeShop_1.redirects.map(function (redirect) { return (__assign(__assign({}, redirect), { locales: isProPlan_1 || activeShop_1.dev ? _helpers_1.jsonSafeParse(redirect.locales) : null, domainRedirection: isProPlan_1 || activeShop_1.dev ? redirect.domainRedirection : null, conditional: isProPlan_1 || activeShop_1.dev ? redirect.conditional : null, conditionalLocation: isProPlan_1 || activeShop_1.dev ? redirect.conditionalLocation : null, plan: activeShop_1.plan })); });
                     configs = activeShop_1.configs[0];
                     if (configs) {
-                        configs.basicConfigs = __assign(__assign({}, _helpers_1.default_basic_configs), _helpers_1.jsonSafeParse(configs.basicConfigs));
+                        parsedBasicConfigs = _helpers_1.jsonSafeParse(configs.basicConfigs);
+                        configs.basicConfigs = __assign(__assign({}, _helpers_1.default_basic_configs), parsedBasicConfigs);
                         configs.allowedPages = isProPlan_1 || activeShop_1.dev ? _helpers_1.jsonSafeParse(configs.allowedPages) : null;
                         configs.hideOnAllowedPages = isProPlan_1 || activeShop_1.dev ? configs.hideOnAllowedPages : false;
                         configs.advancedConfigs = isProPlan_1 || activeShop_1.dev ? _helpers_1.jsonSafeParse(configs.advancedConfigs) : null;
@@ -989,63 +995,120 @@ exports.getShopData = function (_a) {
         });
     });
 };
-// export const getMarketsData = async (shop: string) => {
-//   try {
-//     const activeShop = await prisma.activeShops.findFirst({
-//       where: {
-//         shop,
-//         status: true,
-//         plan: {
-//           gt: 0
-//         }
-//       },
-//       select: {
-//         id: true,
-//         plan: true,
-//         dev: true,
-//         markets: {
-//           select: {
-//             markets: true
-//           }
-//         },
-//         marketsConfigs: {
-//           select: {
-//             shop_id: true,
-//             basic_configs: true,
-//             widget: true,
-//             auto_redirect: true,
-//             advanced_configs: true
-//           }
-//         }
-//       }
-//     });
-//     if (!activeShop) {
-//       return {
-//         status: false,
-//         data: null
-//       };
-//     }
-//     const configs = activeShop.marketsConfigs[0];
-//     if (configs && (activeShop.plan === 2 || activeShop.dev)) {
-//       configs.advanced_configs = configs.advanced_configs;
-//     } else if (configs) {
-//       configs.advanced_configs = null;
-//     }
-//     return {
-//       status: true,
-//       data: {
-//         markets: activeShop.markets[0]?.markets,
-//         configs
-//       }
-//     };
-//   } catch (error) {
-//     console.error(error); 
-//     return {
-//       status: false,
-//       data: null
-//     };
-//   }
-// };
+exports.getPublicMarketsData = function (_a) {
+    var shop = _a.shop;
+    return __awaiter(void 0, void 0, Promise, function () {
+        var activeShop, isProPlan, markets, configs, parsedBasicConfigs, error_26;
+        var _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    _c.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, db_server_1["default"].activeShops.findFirst({
+                            where: {
+                                shop: shop,
+                                status: 1,
+                                OR: [
+                                    { plan: { gt: 0 } },
+                                    { veteran: true }
+                                ]
+                            },
+                            select: {
+                                id: true,
+                                plan: true,
+                                dev: true,
+                                markets: {
+                                    select: {
+                                        markets: true
+                                    }
+                                },
+                                marketsConfigs: {
+                                    select: {
+                                        basicConfigs: true,
+                                        widget: true,
+                                        autoRedirect: true,
+                                        advancedConfigs: true
+                                    }
+                                }
+                            }
+                        })];
+                case 1:
+                    activeShop = _c.sent();
+                    if (!activeShop) {
+                        return [2 /*return*/, {
+                                status: false,
+                                data: null
+                            }];
+                    }
+                    isProPlan = activeShop.plan === 2;
+                    markets = _helpers_1.jsonSafeParse((_b = activeShop.markets[0]) === null || _b === void 0 ? void 0 : _b.markets);
+                    configs = activeShop.marketsConfigs[0];
+                    if (configs) {
+                        parsedBasicConfigs = _helpers_1.jsonSafeParse(configs.basicConfigs);
+                        if (isProPlan || activeShop.dev) {
+                            configs.basicConfigs = __assign(__assign({}, _helpers_1.default_markets_basic_configs), parsedBasicConfigs);
+                            configs.advancedConfigs = _helpers_1.jsonSafeParse(configs.advancedConfigs);
+                        }
+                        else {
+                            if (parsedBasicConfigs) {
+                                configs.basicConfigs = __assign(__assign({}, _helpers_1.default_markets_basic_configs), { buttonText: parsedBasicConfigs.buttonText, icon: parsedBasicConfigs.icon, title: parsedBasicConfigs.title, showFlag: parsedBasicConfigs.showFlag });
+                            }
+                            else {
+                                configs.basicConfigs = _helpers_1.default_markets_basic_configs;
+                            }
+                        }
+                    }
+                    return [2 /*return*/, {
+                            status: true,
+                            data: {
+                                markets: markets,
+                                configs: configs
+                            }
+                        }];
+                case 2:
+                    error_26 = _c.sent();
+                    console.error(error_26);
+                    return [2 /*return*/, {
+                            status: false,
+                            data: null
+                        }];
+                case 3: return [2 /*return*/];
+            }
+        });
+    });
+};
+function cancelPlan(_a) {
+    var shop = _a.shop, cancelShopifyPlanId = _a.cancelShopifyPlanId;
+    return __awaiter(this, void 0, Promise, function () {
+        var result, error_27;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 2, , 3]);
+                    if (!shop)
+                        throw new Error("shop undefined");
+                    return [4 /*yield*/, db_server_1["default"].activeShops.update({
+                            where: {
+                                shop: shop,
+                                shopifyPlanId: cancelShopifyPlanId
+                            },
+                            data: {
+                                plan: 3
+                            }
+                        })];
+                case 1:
+                    result = _b.sent();
+                    return [2 /*return*/, { status: (result === null || result === void 0 ? void 0 : result.id) ? true : false, data: result }];
+                case 2:
+                    error_27 = _b.sent();
+                    console.error(error_27);
+                    return [2 /*return*/, { status: false, error: error_27.toString() }];
+                case 3: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.cancelPlan = cancelPlan;
 // export const runMarketsSync = async ({ shop }: Shop): Promise<DBResponse> => {
 //   try {
 //     const result = await prisma.activeShops.update({

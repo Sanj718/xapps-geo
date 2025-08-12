@@ -193,7 +193,7 @@ export default function AutoRedirects({
                           <div style={{ cursor: "move" }}>
                             <Icon source={DragHandleIcon} tone="subdued" />
                           </div>
-                          <div onClick={() => handleRedirectStatus(item)}><Tooltip content={<small>Status: {status ? "active" : "inactive"}</small>}><Icon source={status ? ToggleOnIcon : ToggleOffIcon} tone={status ? "success" : "subdued"} /></Tooltip></div>
+                          <div className="redirect-status" onClick={() => handleRedirectStatus(item)}><Tooltip content={<small>Status: {status ? "active" : "inactive"}</small>}><Icon source={status ? ToggleOnIcon : ToggleOffIcon} tone={status ? "success" : "subdued"} /></Tooltip></div>
                           {except_r ? (
                             <Tooltip
                               width="wide"

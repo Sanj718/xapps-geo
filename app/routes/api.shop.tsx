@@ -1,5 +1,5 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { getShopData } from "../db-queries.server";
+import { getPublicShopData } from "../db-queries.server";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -32,7 +32,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   let error: string | null = null;
   let data = null;
   try {
-    const response = await getShopData({ shop });
+    const response = await getPublicShopData({ shop });
     if (!response?.status) {
       throw new Error("Query Error");
     }

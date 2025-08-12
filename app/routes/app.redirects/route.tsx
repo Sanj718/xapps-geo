@@ -54,7 +54,7 @@ export const action = async (params: ActionFunctionArgs) => handleActions(params
 export default function CustomRedirects() {
   const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
     useOutletContext<OutletContext>();
-  const { allRedirects, configs, widgetEditorStatus, widgetEditorCode, buttonEditorStatus, buttonEditorCode, allAutoRedirects, autoRedirectsCustomCodeStatus, autoRedirectsCustomCode } = useLoaderData<typeof loader>();
+  const { themeEmbedData, allRedirects, configs, widgetEditorStatus, widgetEditorCode, buttonEditorStatus, buttonEditorCode, allAutoRedirects, autoRedirectsCustomCodeStatus, autoRedirectsCustomCode } = useLoaderData<typeof loader>();
   const actionData = useActionData();
   const [searchParams, setSearchParams] = useSearchParams();
   const [active, setActive] = useState(null);
@@ -71,6 +71,25 @@ export default function CustomRedirects() {
     const orderedAutoRedirects: AutoRedirectItem[] = allAutoRedirects?.data?.sort((a: AutoRedirectItem, b: AutoRedirectItem) => JSON.parse(a.node.value).order_r - JSON.parse(b.node.value).order_r);
     setAutoRedirects(orderedAutoRedirects || []);
   }, [allAutoRedirects]);
+
+  useMemo(() => {
+    if (themeEmbedData?.current?.blocks) {
+      let checkRedirects = false;
+      Object.entries(themeEmbedData.current.blocks).forEach(([item, value]) => {
+        if (
+          value.type.includes(EMBED_APP_ID) &&
+          value.type.includes(EMBED_APP_HANDLE) &&
+          !value.disabled
+        ) {
+          console.log("value", value);
+          checkRedirects = true;
+        }
+      });
+      if (checkRedirects) {
+        setActive(checkRedirects);
+      }
+    }
+  }, [themeEmbedData]);
 
   useMemo(() => {
     // if (actionData && !actionData?.data?.status) {
@@ -112,7 +131,7 @@ export default function CustomRedirects() {
           title="Custom redirects"
           status={active}
           loading={false}
-          embedPath={`${EMBED_APP_ID}/${EMBED_APP_HANDLE}`}
+          url={`shopify://admin/themes/current/editor?context=apps&activateAppId=${EMBED_APP_ID}/${EMBED_APP_HANDLE}`}
         />
         <br />
         <Tabs

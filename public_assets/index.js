@@ -13,13 +13,13 @@ class NGRAPP extends HTMLElement {
   SHOW_RULES = {
     load: "everyload",
     cookie: "cookie",
-    session: "session"
+    session: "session",
   };
   VARS = {
     KEY: "ngr-session",
     CLOSED_KEY: "ngr-closed",
     REDIRECTED_KEY: "ngr-popup-redirected",
-    DOMAIN_REDIRECT_KEY: "ngr-domain-redirect"
+    DOMAIN_REDIRECT_KEY: "ngr-domain-redirect",
   };
   OLD_ICON_PATH =
     "https://ngr-app.herokuapp.com/public/images/earth-americas-solid.svg";
@@ -66,7 +66,7 @@ class NGRAPP extends HTMLElement {
     const geoData = await this.getGeo();
     if (!geoData || !geoData?.country) {
       console.error(
-        "[NGR APP]: GEO Location not detected. Contact app support."
+        "[NGR APP]: GEO Location not detected. Contact app support.",
       );
       return;
     }
@@ -76,7 +76,7 @@ class NGRAPP extends HTMLElement {
     const { redirects, configs } = response.data;
     if (!configs || !redirects?.length) {
       console.warn(
-        "[NGR APP]: Store data issue or plan not picked yet or no widget redirects configured."
+        "[NGR APP]: Store data issue or plan not picked yet or no widget redirects configured.",
       );
       return;
     }
@@ -99,7 +99,7 @@ class NGRAPP extends HTMLElement {
     this.widgetEvents(
       shadowRoot,
       configs?.basicConfigs?.show,
-      configs?.basicConfigs?.plan
+      configs?.basicConfigs?.plan,
     );
     const widgetCustomCode = this.querySelector("[data-ngr-widget-code]");
     if (widgetCustomCode) {
@@ -150,18 +150,17 @@ class NGRAPP extends HTMLElement {
 
   async getGeo() {
     const savedUserData = this.getCookie(this.VARS.KEY);
-    // console.log("savedUserData!!", savedUserData);
     if (savedUserData && isJsonParsable(savedUserData) && !this.testMode) {
       return JSON.parse(savedUserData);
     }
     const countries = await this.getCountriesJSON();
     const userGeo = await fetch("/browsing_context_suggestions.json").then(
-      (resp) => resp.json()
+      (resp) => resp.json(),
     );
 
     if (!countries || !userGeo)
       return console.error(
-        "[NGR APP]: User GEO location or countries list not detected. Contact app support please."
+        "[NGR APP]: User GEO location or countries list not detected. Contact app support please.",
       );
     const userCountry = userGeo?.detected_values?.country.handle;
     const userLocation = {
@@ -169,7 +168,7 @@ class NGRAPP extends HTMLElement {
         userGeo?.detected_values?.country?.name ||
         userGeo?.detected_values?.country_name,
       country: userCountry,
-      continent: countries[userCountry]?.continent
+      continent: countries[userCountry]?.continent,
     };
 
     this.setCookie(this.VARS.KEY, JSON.stringify(userLocation), 7);
@@ -193,7 +192,7 @@ class NGRAPP extends HTMLElement {
         (!hideOnAllowedPages && !isWidgetAllowed)
       ) {
         console.info(
-          "[NGR-APP]: Widget is not allowed on this page. Check app configs."
+          "[NGR-APP]: Widget is not allowed on this page. Check app configs.",
         );
         return true;
       }
@@ -237,7 +236,7 @@ class NGRAPP extends HTMLElement {
         modalBorderColor,
         buttonsBgColor,
         buttonsColor,
-        font
+        font,
       } = basicConfigs;
 
       custom_css += `
@@ -313,7 +312,7 @@ class NGRAPP extends HTMLElement {
         if (element.textContent?.includes("[ngr-icon]")) {
           element.innerHTML = element.innerHTML.replace(
             /\[ngr\-icon]/g,
-            iconElement
+            iconElement,
           );
         }
       }
@@ -388,7 +387,7 @@ class NGRAPP extends HTMLElement {
   async widgetLogic(shadowRoot, basic_configs) {
     if (!basic_configs || !shadowRoot)
       return console.error(
-        "[NGR APP]: Configs or shadowRoot list not found. Contact app support please."
+        "[NGR APP]: Configs or shadowRoot list not found. Contact app support please.",
       );
     const { automaticShow, geo, show } = basic_configs;
 
@@ -414,12 +413,12 @@ class NGRAPP extends HTMLElement {
 
       const countries = await this.getCountriesJSON();
       const userGeo = await fetch("/browsing_context_suggestions.json").then(
-        (resp) => resp.json()
+        (resp) => resp.json(),
       );
 
       if (!countries || !userGeo)
         return console.error(
-          "[NGR APP]: User GEO location or countries list not detected. Contact app support please."
+          "[NGR APP]: User GEO location or countries list not detected. Contact app support please.",
         );
       const userCountry = userGeo?.detected_values?.country.handle;
       const userLocation = {
@@ -427,7 +426,7 @@ class NGRAPP extends HTMLElement {
           userGeo?.detected_values?.country?.name ||
           userGeo?.detected_values?.country_name,
         country: userCountry,
-        continent: countries[userCountry]?.continent
+        continent: countries[userCountry]?.continent,
       };
 
       this.setCookie(this.VARS.KEY, JSON.stringify(userLocation), 7);
@@ -452,7 +451,6 @@ class NGRAPP extends HTMLElement {
       if (showFrequency === this.SHOW_RULES.load) {
         this.openModal();
       } else {
-        
         const modalClosed =
           showFrequency === this.SHOW_RULES.cookie
             ? this.getCookie(this.VARS.CLOSED_KEY)
@@ -514,10 +512,8 @@ class NGRAPP extends HTMLElement {
       dropdownPlaceholder,
       dropdownPlaceholder_locales,
       custom_rell_attr,
-      forward_url_params
+      forward_url_params,
     } = configs;
-
-    console.log("configs", configs);
 
     const modalContent = html.querySelector("[data-ngr-modal-content]");
     if (modalContent) modalContent.classList.add(layout);
@@ -540,20 +536,23 @@ class NGRAPP extends HTMLElement {
       localeText = this.getTranslation(text, text_locales);
       localeDpPlaceholder = this.getTranslation(
         dropdownPlaceholder,
-        dropdownPlaceholder_locales
+        dropdownPlaceholder_locales,
       );
     }
     if (userGeoCountry) {
       localeText = localeText.replace(/\[\[country\]\]/g, userGeoCountry);
     }
     if (userGeoCountryEng) {
-      localeText = localeText.replace(/\[\[country_eng\]\]/g, userGeoCountryEng);
+      localeText = localeText.replace(
+        /\[\[country_eng\]\]/g,
+        userGeoCountryEng,
+      );
     }
     const closeButton = html.querySelector("[data-ngr-close]");
     const stickyIconElement = this.buildStickyIconElement(
       stickyToggleIcon,
       stickyOpener,
-      savedUserData?.country
+      savedUserData?.country,
     );
     const iconElement = this.buildIconElement(icon, iconWidth);
     const titleElement = this.buildTitleElement(localeTitle);
@@ -564,7 +563,7 @@ class NGRAPP extends HTMLElement {
       layout,
       localeDpPlaceholder,
       custom_rell_attr,
-      forward_url_params
+      forward_url_params,
     );
     // const marketsElement = this.buildMarketsElement(title, title_locales);
     const flagElement = this.buildFlagElement(showFlag, savedUserData?.country);
@@ -638,8 +637,8 @@ class NGRAPP extends HTMLElement {
   buildStickyIconElement(iconSrc, stickyOpener, geoCountryCode) {
     if (stickyOpener === "geo" && geoCountryCode) {
       iconSrc = this.flagSrc?.replace(
-        "ac.svg",
-        `${geoCountryCode.toLowerCase()}.svg`
+        /\b([a-z]+)\.svg/,
+        `${geoCountryCode.toLowerCase()}.svg`,
       );
     } else {
       iconSrc =
@@ -709,7 +708,7 @@ class NGRAPP extends HTMLElement {
     layout,
     placeholder,
     rel,
-    forward_url_params
+    forward_url_params,
   ) {
     if (!redirects || !redirects?.length) return;
 
@@ -721,7 +720,7 @@ class NGRAPP extends HTMLElement {
       "/checkout",
       "/account",
       "/blogs",
-      "/pages"
+      "/pages",
     ];
 
     function stripPrefix(url) {
@@ -778,7 +777,7 @@ class NGRAPP extends HTMLElement {
             // @ts-ignore
             (match, p1, p2) => {
               return p1 === "?" && p2 ? "?" : p1;
-            }
+            },
           );
         }
         const currentParams = removePreviewThemeId(window.location.search);
@@ -805,7 +804,7 @@ class NGRAPP extends HTMLElement {
       label,
       url,
       isClose,
-      rel
+      rel,
     ) {
       if (!label || !url) return;
 
@@ -844,7 +843,7 @@ class NGRAPP extends HTMLElement {
       layout,
       placeholder,
       redirectButtons,
-      redirectsSize
+      redirectsSize,
     ) {
       if (layout === "dropdown") {
         const elementWrap = document.createElement("ngr-select");
@@ -890,12 +889,12 @@ class NGRAPP extends HTMLElement {
             flag: redirectItem?.flag,
             label: redirectItem?.label,
             order_r: redirectItem?.order_r,
-            url: redirectItem?.url
+            url: redirectItem?.url,
           };
           // @ts-ignore
           const customCodeResult = showButtonsCustomCode(
             this.userGeoData,
-            redirectButton
+            redirectButton,
           );
           if (!customCodeResult) continue;
         } catch (e) {
@@ -911,7 +910,7 @@ class NGRAPP extends HTMLElement {
           userData
         ) {
           const parsedConditionalLocation = JSON.parse(
-            redirectItem.conditionalLocation
+            redirectItem.conditionalLocation,
           );
           const locationIncludes =
             parsedConditionalLocation?.includes(userData.country) ||
@@ -934,7 +933,7 @@ class NGRAPP extends HTMLElement {
         label,
         genUrl(redirectItem?.url, pagePath, forward_url_params),
         isClose,
-        rel
+        rel,
       );
 
       if (generatedButton) redirectButtons.appendChild(generatedButton);
@@ -944,7 +943,7 @@ class NGRAPP extends HTMLElement {
       layout,
       placeholder,
       redirectButtons,
-      redirects.length
+      redirects.length,
     );
   }
 
@@ -968,9 +967,10 @@ class NGRAPP extends HTMLElement {
     )
       return;
     const flagSrc = this.flagSrc.replace(
-      "ac.svg",
-      `${countryCode.toLowerCase()}.svg`
+      /\b([a-z]+)\.svg/,
+      `${countryCode.toLowerCase()}.svg`,
     );
+    console.log("flagSrc", flagSrc);
     const elementWrapper = document.createElement("div");
     elementWrapper.classList.add("ngr-modal__flag");
     const element = document.createElement("img");
@@ -1033,7 +1033,6 @@ class NGRAPP extends HTMLElement {
   }
 
   setClosedCookieOrSession(showFrequency) {
-    console.log("showFrequency", showFrequency);
     if (showFrequency && showFrequency === this.SHOW_RULES.session) {
       // @ts-ignore
       sessionStorage.setItem(this.VARS.CLOSED_KEY, 1);
@@ -1079,7 +1078,7 @@ class NGRAPP extends HTMLElement {
       var cookie = cookies[i].trim();
       if (cookie.indexOf(nameEQ) === 0) {
         return decodeURIComponent(
-          cookie.substring(nameEQ.length, cookie.length)
+          cookie.substring(nameEQ.length, cookie.length),
         );
       }
     }
@@ -1133,7 +1132,7 @@ class NGRSelect extends HTMLElement {
         custom_select_option_icon.setAttribute(
           "src",
           // @ts-ignore
-          option.getAttribute("data-icon")
+          option.getAttribute("data-icon"),
         );
         // @ts-ignore
         custom_select_option_icon.setAttribute("alt", option.textContent);
@@ -1179,7 +1178,7 @@ class NGRSelect extends HTMLElement {
     this.toggleAttribute(
       "data-custom-select-selected",
       // @ts-ignore
-      !this.select.value.includes("reset")
+      !this.select.value.includes("reset"),
     );
   }
 
@@ -1200,7 +1199,7 @@ class NGRSelect extends HTMLElement {
     this.toggleAttribute(
       "data-custom-select-selected",
       // @ts-ignore
-      !this.select.value.includes("reset")
+      !this.select.value.includes("reset"),
     );
 
     this.$selectedOption.querySelector("a").click();

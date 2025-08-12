@@ -95,10 +95,12 @@ function MarketsPopupControls(_a) {
                     react_1["default"].createElement(polaris_1.Divider, null),
                     react_1["default"].createElement(polaris_1.InlineGrid, { columns: "70% auto", gap: "200" },
                         react_1["default"].createElement(polaris_1.InlineGrid, { gap: "100" },
-                            react_1["default"].createElement(polaris_1.Text, { as: "h2", variant: "headingSm" }, "Markets popup"),
+                            react_1["default"].createElement(polaris_1.InlineStack, { gap: "200", blockAlign: "center" },
+                                react_1["default"].createElement(polaris_1.Text, { as: "h2", variant: "headingSm" }, "Markets popup"),
+                                react_1["default"].createElement(polaris_1.Badge, { tone: marketsPopup ? "success" : "enabled", size: "small" }, marketsPopup ? "Active" : "Draft")),
                             react_1["default"].createElement(polaris_1.Text, { as: "p", variant: "bodyXs" }, "Enable or disable the markets popup functionality.")),
                         react_1["default"].createElement(polaris_1.InlineStack, { align: "end", blockAlign: "center" },
                             react_1["default"].createElement("div", null,
-                                react_1["default"].createElement(polaris_1.Button, { disabled: !marketsData, tone: "success", size: "slim", onClick: handleMarketsPopup, loading: loading[_actions_1.ACTIONS.update_MarketsWidget + "Loading"], pressed: marketsPopup && !loading[_actions_1.ACTIONS.update_MarketsWidget + "Loading"] ? true : false }, marketsPopup ? "Active" : "Disabled")))))))));
+                                react_1["default"].createElement(polaris_1.Button, { disabled: !marketsData, tone: "success", size: "slim", onClick: handleMarketsPopup, loading: loading[_actions_1.ACTIONS.update_MarketsWidget + "Loading"], pressed: marketsPopup && !loading[_actions_1.ACTIONS.update_MarketsWidget + "Loading"] ? true : false }, marketsPopup ? "Disable" : "Enable")))))))));
 }
 exports["default"] = MarketsPopupControls;

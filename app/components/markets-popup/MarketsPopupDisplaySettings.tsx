@@ -226,7 +226,9 @@ export default function MarketsPopupDisplaySettings({
                         )
                       }
                     />
+
                   </InlineGrid>
+
                 </div>
               </InlineGrid>
               <InlineStack align="end">

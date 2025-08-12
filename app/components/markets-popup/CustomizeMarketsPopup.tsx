@@ -47,7 +47,7 @@ export default function CustomizeMarketsPopup({ marketsData, configs, setConfigs
         (item) => !item.primary,
     );
 
-    return <InlineGrid columns={{ xs: "1fr", md: "1.5fr 3fr" }} gap="400">
+    return <InlineGrid columns={{ xs: "1fr", md: "420px 3fr" }} gap="400">
         <Card>
             <BlockStack gap="200">
                 <PromoBadge type="basic" />
@@ -117,52 +117,75 @@ export default function CustomizeMarketsPopup({ marketsData, configs, setConfigs
                         />
                     </Tooltip>
                     <Divider />
-                    <Select
-                        disabled={isFreePlan}
-                        label="Popup Fields: "
-                        labelInline
-                        options={[
-                            { label: "Country", value: "country" },
-                            {
-                                label: "Language",
-                                value: "language",
-                            },
-                            {
-                                label: "Country & language",
-                                value: "both",
-                            },
-                        ]}
-                        onChange={
-                            !isFreePlan
-                                ? (value) => {
-                                    let isCountry = false;
-                                    let isLng = false;
+                    <InlineGrid gap="200" columns="2">
+                        <Select
+                            disabled={isFreePlan}
+                            label="Popup Fields"
+                            // labelInline
+                            options={[
+                                { label: "Country", value: "country" },
+                                {
+                                    label: "Language",
+                                    value: "language",
+                                },
+                                {
+                                    label: "Country & language",
+                                    value: "both",
+                                },
+                            ]}
+                            onChange={
+                                !isFreePlan
+                                    ? (value) => {
+                                        let isCountry = false;
+                                        let isLng = false;
 
-                                    if (value === "both") {
-                                        isCountry = true;
-                                        isLng = true;
-                                    } else if (value === "country") {
-                                        isCountry = true;
-                                    } else if (value === "language") {
-                                        isLng = true;
+                                        if (value === "both") {
+                                            isCountry = true;
+                                            isLng = true;
+                                        } else if (value === "country") {
+                                            isCountry = true;
+                                        } else if (value === "language") {
+                                            isLng = true;
+                                        }
+
+                                        setConfigs((current: typeof configs) => ({
+                                            ...current,
+                                            showCountrySelector: isCountry,
+                                            showLngSelector: isLng,
+                                        }));
                                     }
-
-                                    setConfigs((current: typeof configs) => ({
-                                        ...current,
-                                        showCountrySelector: isCountry,
-                                        showLngSelector: isLng,
-                                    }));
-                                }
-                                : undefined
-                        }
-                        value={
-                            configs?.showCountrySelector && configs?.showLngSelector
-                                ? "both"
-                                : configs?.showLngSelector
-                                    ? "language"
-                                    : "country"
-                        }
-                    />
+                                    : undefined
+                            }
+                            value={
+                                configs?.showCountrySelector && configs?.showLngSelector
+                                    ? "both"
+                                    : configs?.showLngSelector
+                                        ? "language"
+                                        : "country"
+                            }
+                        />
+                        <Select
+                            label="Dropdown default values "
+                            disabled={isFreePlan}
+                            options={[
+                                {
+                                    label: "Recommended country & language (GEO)",
+                                    value: "geo",
+                                },
+                                {
+                                    label: "Current market country & language",
+                                    value: "market",
+                                },
+                            ]}
+                            onChange={!isFreePlan ? (newValue) =>
+                                setConfigs((current: typeof configs) => ({
+                                    ...current,
+                                    dropdownDefault: newValue,
+                                }))
+                                : undefined}
+                            value={configs?.dropdownDefault}
+                        />
+                    </InlineGrid>
                     <InlineGrid gap="200">
                         <Select
                             disabled={isFreePlan}

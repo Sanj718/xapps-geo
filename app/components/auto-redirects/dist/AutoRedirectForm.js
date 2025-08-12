@@ -109,7 +109,7 @@ function AutoRedirectForm(_a) {
                     if (value === null ||
                         value === undefined ||
                         value === "" ||
-                        !value.length) {
+                        !(value === null || value === void 0 ? void 0 : value.length)) {
                         validator *= 0;
                     }
                     if (key === "url") {
@@ -147,7 +147,7 @@ function AutoRedirectForm(_a) {
                 if (!appId)
                     return [2 /*return*/];
                 submit({
-                    _action: _actions_1.ACTIONS.UpdateAutoRedirect,
+                    _action: _actions_1.ACTIONS.update_AutoRedirect,
                     data: {
                         appId: appId,
                         key: (_a = editItem === null || editItem === void 0 ? void 0 : editItem.node) === null || _a === void 0 ? void 0 : _a.key,
@@ -189,7 +189,7 @@ function AutoRedirectForm(_a) {
                 if (!appId)
                     return [2 /*return*/];
                 submit({
-                    _action: _actions_1.ACTIONS.CreateAutoRedirect,
+                    _action: _actions_1.ACTIONS.create_AutoRedirect,
                     data: {
                         appId: appId,
                         data: __assign(__assign({}, redirectItem), { order_r: nextOrderNumber })
