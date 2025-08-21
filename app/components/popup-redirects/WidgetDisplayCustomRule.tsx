@@ -136,7 +136,7 @@ export default function WidgetDisplayCustomRule({ status, code }: WidgetDisplayC
             <Suspense fallback={<Spinner size="small" />}>
               <Await resolve={code}>
                 {(code) => {
-                  return <CodeEditor code={code?.value || defaultWidgetCode} onChange={isProPlan ? setCustomCode : () => { }} language="javascript" />
+                  return code ? <CodeEditor code={code?.value || defaultWidgetCode} onChange={isProPlan ? setCustomCode : () => { }} language="javascript" /> : <div>Loading...</div>
                 }}
               </Await>
             </Suspense>
@@ -145,7 +145,11 @@ export default function WidgetDisplayCustomRule({ status, code }: WidgetDisplayC
             <Button
               variant="tertiary"
               icon={MaximizeIcon}
-              onClick={() => navigate("/app/redirects/widget-display-custom-rule")}
+              onClick={() => {
+                if (typeof shopify !== 'undefined' && shopify.modal) {
+                  navigate("/app/redirects/widget-display-custom-rule");
+                }
+              }}
             >
               Open Full-Screen Editor
             </Button>

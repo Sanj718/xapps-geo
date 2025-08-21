@@ -19,7 +19,7 @@
       height: auto;
     }
   }
-  &__icon-img-auto{
+  &__icon-img-auto {
     width: auto;
   }
   &__title {
@@ -97,13 +97,48 @@
     text-transform: uppercase;
     transition:
       background-color 350ms ease,
-      color 350ms ease;
+      color 350ms ease,
+      opacity 150ms ease,
+      transform 150ms ease;
+
+    // Mobile touch improvements
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    // Ensure proper touch handling on mobile
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+
+    // iOS Safari specific fixes for double-tap issue
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+
+    // Force iOS to treat this as a clickable element
+    @media screen and (max-width: 768px) {
+      // This CSS hack specifically helps iOS Safari recognize clickable elements
+      position: relative;
+      z-index: 1;
+    }
+
+    // Ensure proper touch target size on mobile
+    // @media screen and (max-width: 768px) {
+    //   min-height: 44px; // iOS recommended minimum touch target
+    //   min-width: 44px;
+    //   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    // }
     font-size: 14px;
     align-items: center;
     justify-content: center;
-    &:hover {
-      background-color: #000;
-      color: #fff;
+    @media screen and (min-width: 768px) {
+      &:hover {
+        background-color: #000;
+        color: #fff;
+      }
     }
     img {
       width: 28px;
@@ -281,7 +316,8 @@
   display: none;
   overflow: initial;
   box-shadow: 0 0 2px 0px #00000042;
-  ngr-select, .ngr-select {
+  ngr-select,
+  .ngr-select {
     &::before {
       height: 14px;
       width: 14px;
@@ -293,7 +329,7 @@
       min-width: 80px;
       line-height: 22px;
     }
-    .ngr-select__label{
+    .select-placeholder {
       font-size: 12px;
       padding: 4px 20px 4px 8px;
       min-width: 80px;
@@ -433,12 +469,13 @@
       right: calc($button-width * -1);
     }
   }
-  ngr-select, .ngr-select {
+  ngr-select,
+  .ngr-select {
     max-width: 100%;
     select ~ div {
       padding: 4px 20px 4px 8px;
     }
-    .ngr-select__label{
+    .select-placeholder {
       padding: 4px 20px 4px 8px;
     }
     ul {
@@ -527,7 +564,7 @@ ngr-select,
     transform: scaleY(0);
     transition: 0.3s ease;
   }
-  .ngr-select__label{
+  .select-placeholder {
     // width: 100%;
     max-width: 100%;
     padding: 8px 30px 8px 8px;

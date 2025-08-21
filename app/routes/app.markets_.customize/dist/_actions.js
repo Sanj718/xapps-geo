@@ -74,20 +74,7 @@ function handleActions(_a) {
                 case 5:
                     response = _d.sent();
                     return [2 /*return*/, __assign({ _action: _action }, response)];
-                case 6: 
-                // if (_action === ACTIONS.create_AllowedPages) {
-                //     const response = await createUpdateAllowedPages({ shop: session.shop, ...data });
-                //     return { _action, ...response };
-                // }
-                // if (_action === ACTIONS.update_WidgetDisplayCustomRuleStatus) {
-                //     const response = await updateWidgetEditorStatus({ admin, appId: data.appId, value: data.data });
-                //     return { _action, ...response };
-                // }
-                // if (_action === ACTIONS.update_WidgetDisplayCustomRuleCode) {
-                //     const response = await updateWidgetEditorCode({ admin, appId: data.appId, value: data.data });
-                //     return { _action, ...response };
-                // }
-                return [2 /*return*/, {}];
+                case 6: return [2 /*return*/, {}];
             }
         });
     });

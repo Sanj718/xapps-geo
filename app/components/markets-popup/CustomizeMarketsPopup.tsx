@@ -29,20 +29,12 @@ import ColorTextField from "../_common/ColorTextField";
 import { MarketsPopupPreview } from "./MarketsPopupPreview";
 import "../../assets/custom.scss"
 import CodeEditor from "../_common/CodeEditor.client";
-
-//[TODO] add correct types
-interface CustomizeMarketsPopupProps {
-    marketsData: any;
-    configs: any;
-    setConfigs: (configs: any) => void;
-    advancedConfigs: any;
-    setAdvancedConfigs: (advancedConfigs: any) => void;
-}
+import { CustomizeMarketsPopupProps, MarketsBasicConfigs, MarketsAdvancedConfigs, MarketsDataResponse } from "../_types";
 
 export default function CustomizeMarketsPopup({ marketsData, configs, setConfigs, advancedConfigs, setAdvancedConfigs }: CustomizeMarketsPopupProps) {
-    const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
+    const { shopInfo, activePlan } =
         useOutletContext<OutletContext>();
-    const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
+    const { isProPlan, isFreePlan } = planParser(activePlan);
     const secondaryLocales = shopInfo?.shopLocales?.filter(
         (item) => !item.primary,
     );
@@ -85,7 +77,7 @@ export default function CustomizeMarketsPopup({ marketsData, configs, setConfigs
                         titleValue={configs?.title}
                         titleOnChange={
                             (value) =>
-                                setConfigs((current: typeof configs) => ({
+                                setConfigs((current) => ({
                                     ...current,
                                     title: value,
                                 }))
@@ -225,11 +217,11 @@ export default function CustomizeMarketsPopup({ marketsData, configs, setConfigs
                                 <RangeSlider
                                     disabled={isFreePlan}
                                     label="Vertical position"
-                                    value={configs?.stickyVerticalPosition}
+                                    value={configs?.stickyVerticalPosition ?? 50}
                                     onChange={(value) =>
-                                        setConfigs((current: typeof configs) => ({
+                                        setConfigs((current) => ({
                                             ...current,
-                                            stickyVerticalPosition: value,
+                                            stickyVerticalPosition: typeof value === 'number' ? value : 50,
                                         }))
                                     }
                                     output
@@ -459,7 +451,7 @@ export default function CustomizeMarketsPopup({ marketsData, configs, setConfigs
                                 <div className="code-editor">
                                     <Suspense fallback={<div>Loading editor...</div>}>
                                         <CodeEditor
-                                            code={advancedConfigs?.css}
+                                            code={advancedConfigs?.css || ''}
                                             onChange={
                                                 isProPlan
                                                     ? (value) =>

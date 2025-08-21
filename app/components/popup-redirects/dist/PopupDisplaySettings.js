@@ -132,7 +132,6 @@ function PopupDisplaySettings(_a) {
             });
         });
     }
-    console.log(localConfigs);
     var loading = _helpers_1.loadingStates(navigation, [_actions_1.ACTIONS.update_RedirectsConfigs, _actions_1.ACTIONS.create_AllowedPages]);
     return (react_1["default"].createElement(polaris_1.InlineGrid, { columns: { xs: "1fr", md: "auto  70%" }, gap: "400" },
         react_1["default"].createElement(polaris_1.Box, { as: "section", paddingInlineStart: { xs: "400", sm: "0" }, paddingInlineEnd: { xs: "400", sm: "0" } },

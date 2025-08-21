@@ -40,34 +40,42 @@ exports.sendExportToEmail = void 0;
 var nodemailer_1 = require("nodemailer");
 function sendExportToEmail(subject, data) {
     return __awaiter(this, void 0, void 0, function () {
-        var transporter, mailOptions, info, e_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var _a, emailUser, emailPass, transporter, mailOptions, info, e_1;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
-                    _a.trys.push([0, 2, , 3]);
+                    _b.trys.push([0, 2, , 3]);
+                    // Validate required environment variable
+                    if (!process.env.EMAIL_CONFIG) {
+                        throw new Error("Email configuration missing: EMAIL_CONFIG must be set in format 'email:password'");
+                    }
+                    _a = process.env.EMAIL_CONFIG.split(':'), emailUser = _a[0], emailPass = _a[1];
+                    if (!emailUser || !emailPass) {
+                        throw new Error("Invalid EMAIL_CONFIG format. Expected 'email:password'");
+                    }
                     transporter = nodemailer_1["default"].createTransport({
                         host: "smtp.gmail.com",
                         port: 587,
                         secure: false,
                         auth: {
-                            user: "ssobirjonov@gmail.com",
-                            pass: "txsl adkt aqov gdjg"
+                            user: emailUser,
+                            pass: emailPass
                         }
                     });
                     mailOptions = {
-                        from: "ssobirjonov@gmail.com",
-                        to: "ssobirjonov@gmail.com",
+                        from: emailUser,
+                        to: emailUser,
                         subject: subject,
                         html: "<p><code>" + JSON.stringify(data) + "</code></p>"
                     };
                     return [4 /*yield*/, transporter.sendMail(mailOptions)];
                 case 1:
-                    info = _a.sent();
+                    info = _b.sent();
                     return [3 /*break*/, 3];
                 case 2:
-                    e_1 = _a.sent();
-                    console.log(e_1);
-                    return [3 /*break*/, 3];
+                    e_1 = _b.sent();
+                    console.error("Email sending failed:", e_1);
+                    throw e_1; // Re-throw to allow proper error handling upstream
                 case 3: return [2 /*return*/];
             }
         });

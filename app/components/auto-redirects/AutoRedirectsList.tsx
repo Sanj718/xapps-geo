@@ -29,8 +29,8 @@ import { charLimit, jsonSafeParse, loadingStates, parseLocations, requestHeaders
 import { TitleBar, Modal } from "@shopify/app-bridge-react";
 import { AppProvider } from "@shopify/shopify-app-remix/react";
 import { ACTIONS } from "../_actions";
-import { useNavigation, useOutletContext, useSubmit } from "@remix-run/react";
-import { LoadingStates, OutletContext } from "../_types";
+import { useActionData, useNavigation, useOutletContext, useSubmit } from "@remix-run/react";
+import { LoadingStates, OutletContext, RedirectItem, AutoRedirectItem, ActionReturn } from "../_types";
 
 const resourceName = {
   singular: "auto redirect",
@@ -41,42 +41,46 @@ const resourceName = {
 
 export default function AutoRedirects({
   redirects,
+}: {
+  redirects: AutoRedirectItem[];
 }) {
-  const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
+  const { appId } =
     useOutletContext<OutletContext>();
   const submit = useSubmit();
+  const actionData = useActionData<ActionReturn>();
   const navigation = useNavigation();
-  const [editRedirect, setEditRedirect] = useState(null);
-  const [dragId, setDragId] = useState("");
-
+  const [editRedirect, setEditRedirect] = useState<AutoRedirectItem | null>(null);
+  const [dragId, setDragId] = useState<string | null>(null);
+  
   async function handleDrop(ev: React.DragEvent<HTMLDivElement>) {
-    const dragBox = redirects.find((box: { node: { id: string } }) => box.node.id == dragId);
-    const dropBox = redirects.find((box: { node: { id: string } }) => box.node.id == ev.currentTarget.id);
-    const dragBoxOrder = JSON.parse(dragBox.node.value).order_r;
-    const dropBoxOrder = JSON.parse(dropBox.node.value).order_r;
-    const newBoxState = redirects.map((box: { node: { id: string, value: string } }) => {
-      const item = JSON.parse(box.node.value);
+    const dragBox = redirects.find((box: AutoRedirectItem) => box.id ==dragId);
+    const dropBox = redirects.find((box: AutoRedirectItem) => box.id == ev.currentTarget.id);
+    const dragBoxOrder = dragBox?.jsonValue?.order_r;
+    const dropBoxOrder = dropBox?.jsonValue?.order_r;
 
-      if (box.node.id == dragId) {
-        const new_order =
+    const newBoxState = redirects.map((box: AutoRedirectItem) => {
+      const item = box.jsonValue;
+
+      if (box.id == dragId) {
+        const newOrderNumber =
           dragBoxOrder === dropBoxOrder
             ? Math.max(
-              ...redirects.map((o) => JSON.parse(o.node.value).order_r)
+              ...redirects.map((o: AutoRedirectItem) => o.jsonValue.order_r)
             ) + 1
             : dropBoxOrder;
-        box.node.value = JSON.stringify({ ...item, order_r: new_order });
+        box.jsonValue = { ...item, order_r: newOrderNumber || 0 };
       }
-      if (box.node.id == ev.currentTarget.id) {
-        box.node.value = JSON.stringify({ ...item, order_r: dragBoxOrder });
+      if (box.id == ev.currentTarget.id) {
+        box.jsonValue = { ...item, order_r: dragBoxOrder || 0 };
       }
       return box;
     });
     const updatedOrder = newBoxState.sort(
-      (a: { node: { value: string } }, b: { node: { value: string } }) =>
-        JSON.parse(a.node.value).order_r - JSON.parse(b.node.value).order_r
+      (a: AutoRedirectItem, b: AutoRedirectItem) =>
+        a.jsonValue.order_r - b.jsonValue.order_r
     );
 
-    if (!appId) return;
+    if (!appId || !updatedOrder) return;
     submit(
       {
         _action: ACTIONS.reorder_AutoRedirects,
@@ -84,25 +88,28 @@ export default function AutoRedirects({
           appId,
           data: updatedOrder,
         },
-      },
+      } as any,
       requestHeaders,
     );
   }
 
-  function openEdit(item: any) {
+  function openEdit(item: AutoRedirectItem) {
     setEditRedirect(item);
-    console.log(item)
-    shopify.modal.show("edit-auto-redirect");
+    if (typeof shopify !== 'undefined' && shopify.modal) {
+      shopify.modal.show("edit-auto-redirect");
+    }
   }
 
-  function toggleStatus(data) {
-    const parsed = JSON.parse(data?.node?.value);
-    parsed.status = parsed.status === 1 ? 0 : 1;
-    delete data.node.id;
+  function toggleStatus(data: AutoRedirectItem) {
+    const parsed = data?.jsonValue || {};
+    parsed.status = parsed.status ? false : true;
+    if (data?.id) {
+      delete (data as any)?.id;
+    }
     return parsed;
   }
 
-  async function handleRedirectStatus(item) {
+  async function handleRedirectStatus(item: AutoRedirectItem) {
     if (!appId) return;
     const updatedItem = toggleStatus(item);
     submit(
@@ -110,14 +117,13 @@ export default function AutoRedirects({
         _action: ACTIONS.update_AutoRedirect,
         data: {
           appId,
-          key: item?.node?.key,
+          key: item?.key,
           value: updatedItem,
         },
-      },
+      } as any,
       requestHeaders,
     );
   }
-
   const loading = loadingStates(navigation, [ACTIONS.create_AutoRedirect, ACTIONS.update_AutoRedirect, ACTIONS.delete_AutoRedirect, ACTIONS.reorder_AutoRedirects]) as LoadingStates;
   return (
     <>
@@ -166,10 +172,9 @@ export default function AutoRedirects({
               items={redirects}
               loading={loading[ACTIONS.create_AutoRedirect + "Loading"] || loading[ACTIONS.update_AutoRedirect + "Loading"] || loading[ACTIONS.delete_AutoRedirect + "Loading"] || loading[ACTIONS.reorder_AutoRedirects + "Loading"]}
               renderItem={(item, index) => {
-                const { id, value } = item?.node;
-                const { url, location, except_r, status, block } =
-                  jsonSafeParse(value);
-                const locations = parseLocations(location, countries_list);
+                const { id, jsonValue } = item;
+                const { url, location, except_r, status, block } = jsonValue
+                const locations = parseLocations(location as string[], countries_list);
 
                 return (
                   <div
@@ -268,7 +273,11 @@ export default function AutoRedirects({
             <InlineStack align="end">
               <Button
                 variant="primary"
-                onClick={() => shopify.modal.show("add-auto-redirect")}
+                onClick={() => {
+                  if (typeof shopify !== 'undefined' && shopify.modal) {
+                    shopify.modal.show("add-auto-redirect");
+                  }
+                }}
                 icon={PlusCircleIcon}
               >
                 Add
@@ -291,7 +300,7 @@ export default function AutoRedirects({
       </Modal >
 
       {/* Edit auto redirect */}
-      < Modal id="edit-auto-redirect" variant="base" >
+      <Modal id="edit-auto-redirect" variant="base" >
         <TitleBar title="Edit auto redirect" />
         <Box padding="400">
           <AppProvider i18n={{}} apiKey={""}>

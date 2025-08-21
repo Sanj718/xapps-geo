@@ -41,7 +41,6 @@ export default function MarketsPopupControls({
   const navigation = useNavigation()
 
   async function handleMarketsPopup() {
-    console.log("handleMarketsPopup");
     submit(
       {
         _action: ACTIONS.update_MarketsWidget,

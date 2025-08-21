@@ -1,16 +1,14 @@
 import { AppProvider, Box, InlineGrid, Page } from "@shopify/polaris";
-import { areObjectsEqual, default_advanced_configs, default_basic_configs, default_markets_basic_configs, getEmbedConst, handleSideNavClick, loadingStates, planParser, requestHeaders } from "../../components/_helpers";
-import { Suspense, useEffect, useMemo, useState } from "react";
-import { Await, useActionData, useLoaderData, useNavigate, useNavigation, useOutletContext, useSubmit } from "@remix-run/react";
-import { Asset, LoadingStates, OutletContext, RedirectItem } from "app/components/_types";
+import { areObjectsEqual, default_advanced_configs, default_markets_basic_configs, getEmbedConst, loadingStates, planParser, requestHeaders } from "../../components/_helpers";
+import { useEffect, useState } from "react";
+import { useActionData, useLoaderData, useNavigate, useNavigation, useOutletContext, useSubmit } from "@remix-run/react";
+import { Asset, LoadingStates, OutletContext } from "app/components/_types";
 import { handleActions } from "./_actions";
 import { handleLoaders } from "./_loaders";
 import { ActionFunctionArgs } from "@remix-run/node";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { Modal, SaveBar, TitleBar } from "@shopify/app-bridge-react";
-import CustomizePopup from "app/components/popup-redirects/CustomizePopup";
 import { ACTIONS } from "app/components/_actions";
-import tr from "../../components/locales.json";
 import {
   DEV_EMBED_APP_ID,
   PROD_EMBED_APP_ID,
@@ -30,9 +28,9 @@ export const action = async (params: ActionFunctionArgs) => handleActions(params
 
 
 export default function CustomizePopupPage() {
-  const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
+  const { shopInfo, activePlan } =
     useOutletContext<OutletContext>();
-  const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
+  const { isProPlan, isFreePlan } = planParser(activePlan);
   const { marketsConfigs, marketsData } = useLoaderData<typeof loader>();
   const actionData = useActionData();
   const submit = useSubmit()
@@ -59,31 +57,6 @@ export default function CustomizePopupPage() {
       requestHeaders,
     );
   }
-
-  useMemo(() => {
-    // if (actionData && !actionData?.data?.status) {
-    //   shopify.toast.show("Error, try again.", { isError: true });
-    //   if (actionData?.data?.errors?.length) {
-    //     setErrors(actionData.data.errors);
-    //   }
-    // } else {
-    //   setErrors([]);
-    // }
-    // if (
-    //   (actionData?._action === "new" || actionData?._action === "edit") &&
-    //   actionData?._status
-    // ) {
-    //   const { discountId, discountClass } =
-    //     actionData?.data?.discountCreate?.codeAppDiscount ||
-    //     actionData?.data?.discountCreate?.automaticAppDiscount ||
-    //     {};
-    //   const url = getDiscountUrl(discountId, discountClass, true);
-    //   if (url) navigate(url);
-    // }
-    // if (actionData?._action === "discountDelete" && actionData?._status) {
-    //   navigate("/app");
-    // }
-  }, [actionData]);
 
   useEffect(() => {
     const definedConfigs = { ...default_markets_basic_configs, ...marketsConfigs?.data?.basicConfigs };
@@ -143,7 +116,7 @@ export default function CustomizePopupPage() {
       <Modal id="popup-content-translation-popup">
         <TitleBar title="Popup content translation" />
         <Box padding="400">
-          <AppProvider i18n={{}} apiKey={""}>
+          <AppProvider i18n={{}}>
             <InlineGrid gap="300">
               <Box>
                 <PromoBadge type="pro" />
@@ -199,7 +172,7 @@ export default function CustomizePopupPage() {
       <Modal id="icon-upload-popup">
         <TitleBar title="Select custom icon" />
         <Box padding="400">
-          <AppProvider i18n={{}} apiKey={""}>
+          <AppProvider i18n={{}}>
             <ImageManager callBack={handleCustomIconUpload} />
           </AppProvider></Box>
       </Modal>
@@ -207,7 +180,7 @@ export default function CustomizePopupPage() {
       <Modal id="icon-settings-popup">
         <TitleBar title="Icon settings" />
         <Box padding="400">
-          <AppProvider i18n={{}} apiKey={""}>
+          <AppProvider i18n={{}}>
             <IconSettings configs={localConfigs} setConfigs={setLocalConfigs} isFreePlan={isFreePlan} />
           </AppProvider></Box>
       </Modal>
@@ -215,7 +188,7 @@ export default function CustomizePopupPage() {
       <Modal id="dropdown-label-translation-popup">
         <TitleBar title="Dropdown label translation" />
         <Box padding="400">
-          <AppProvider i18n={{}} apiKey={""}>
+          <AppProvider i18n={{}}>
             <InlineGrid gap="300">
               <Box>
                 <PromoBadge type="pro" />

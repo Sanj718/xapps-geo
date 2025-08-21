@@ -46,10 +46,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         case "BULK_OPERATIONS_FINISH":
             if (session && shop) {
                 const initMarketsProcess = new MarketsProcess();
-                await initMarketsProcess.initSync({ admin, session, bulkId: payload?.admin_graphql_api_id });
+                await initMarketsProcess.initSync({ admin: admin as any, session, bulkId: payload?.admin_graphql_api_id });
             }
             break;
-        case 'APP_SCOPES_UPDATE':
+        case "APP_SCOPES_UPDATE":
             const current = payload.current as string[];
             if (session) {
                 await db.session.update({

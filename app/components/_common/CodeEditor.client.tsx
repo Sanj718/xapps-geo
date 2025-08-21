@@ -1,5 +1,4 @@
-import { lazy, useEffect, useState } from 'react';
-
+import { lazy } from 'react';
 const Editor = lazy(() => import('@monaco-editor/react'));
 
 interface CodeEditorProps {

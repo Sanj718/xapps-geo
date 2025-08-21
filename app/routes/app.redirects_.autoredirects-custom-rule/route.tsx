@@ -9,8 +9,6 @@ import { ActionFunctionArgs } from "@remix-run/node";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { ACTIONS } from "app/components/_actions";
 import CodeEditor from "app/components/_common/CodeEditor.client";
-import WidgetDisplayCustomRuleBanner from "../../components/popup-redirects/WidgetDisplayCustomRuleBanner";
-import WidgetDisplayCustomRuleCodeBanner from "app/components/popup-redirects/WidgetDisplayCustomRuleCodeBanner";
 import AutoRedirectDisplayCustomRuleCodeBanner from "app/components/auto-redirects/AutoRedirectDisplayCustomRuleCodeBanner";
 import AutoRedirectDisplayCustomRuleBanner from "app/components/auto-redirects/AutoRedirectDisplayCustomRuleBanner";
 export const loader = async (params: LoaderFunctionArgs) => handleLoaders(params);
@@ -109,8 +107,8 @@ export default function AutoRedirectsCustomRulePage() {
           >
             <Suspense fallback={<Spinner size="small" />}>
               <Await resolve={autoRedirectsCustomCode}>
-                {(code) => {
-                  return <CodeEditor code={code?.value || defaultAutoRedirectsCode} onChange={isProPlan ? setCustomCode : () => { }} language="javascript" />
+                {(code: Record<string, string> | null) => {
+                  return <CodeEditor code={code?.value || defaultAutoRedirectsCode} onChange={isProPlan ? setCustomCode : () => { }} language="javascript" />;
                 }}
               </Await>
             </Suspense>

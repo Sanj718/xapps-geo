@@ -75,7 +75,7 @@ export default function WidgetDisplayCustomRulePage() {
         <div style={{ position: "relative" }}>
           <Suspense fallback={<Spinner size="small" />}>
             <Await resolve={buttonEditorStatus}>
-              {(status) => {
+              {(status: Record<string, string> | null) => {
                 return <Select
                   label="Status: "
                   labelInline
@@ -105,8 +105,8 @@ export default function WidgetDisplayCustomRulePage() {
           <ButtonDisplayCustomRuleCodeBanner /><br />
           <Suspense fallback={<Spinner size="small" />}>
             <Await resolve={buttonEditorCode}>
-              {(code) => {
-                return <CodeEditor code={code?.value || defaultButtonCode} onChange={isProPlan ? setCustomCode : () => { }} language="javascript" />
+              {(code: Record<string, string> | null) => {
+                return <CodeEditor code={code?.value || defaultButtonCode} onChange={isProPlan ? setCustomCode : () => { }} language="javascript" />;
               }}
             </Await>
           </Suspense>

@@ -170,17 +170,17 @@ function PlansPage() {
         react_1["default"].createElement(app_bridge_react_1.Modal, { id: "pro-plan-request", variant: "small" },
             react_1["default"].createElement(app_bridge_react_1.TitleBar, { title: "Subscribe to Pro Plan" }),
             react_1["default"].createElement(polaris_1.Box, { padding: "400" },
-                react_1["default"].createElement(polaris_1.AppProvider, { i18n: {}, apiKey: "" },
+                react_1["default"].createElement(polaris_1.AppProvider, { i18n: {} },
                     react_1["default"].createElement(RequestPlanModal, { loading: loading[_actions_2.ACTIONS.subscribe_ProPlan + "Loading"], planName: "Pro", url: proPlanUrl })))),
         react_1["default"].createElement(app_bridge_react_1.Modal, { id: "basic-plan-request", variant: "small" },
             react_1["default"].createElement(app_bridge_react_1.TitleBar, { title: "Subscribe to Basic Plan" }),
             react_1["default"].createElement(polaris_1.Box, { padding: "400" },
-                react_1["default"].createElement(polaris_1.AppProvider, { i18n: {}, apiKey: "" },
+                react_1["default"].createElement(polaris_1.AppProvider, { i18n: {} },
                     react_1["default"].createElement(RequestPlanModal, { loading: loading[_actions_2.ACTIONS.subscribe_BasicPlan + "Loading"], planName: "Basic", url: basicPlanUrl })))),
         react_1["default"].createElement(app_bridge_react_1.Modal, { id: "pro-plan-help", variant: "small" },
             react_1["default"].createElement(app_bridge_react_1.TitleBar, { title: "How can we help instead?" }),
             react_1["default"].createElement(polaris_1.Box, { padding: "400" },
-                react_1["default"].createElement(polaris_1.AppProvider, { i18n: {}, apiKey: "" },
+                react_1["default"].createElement(polaris_1.AppProvider, { i18n: {} },
                     react_1["default"].createElement(ModalContent, { cancelAction: function () {
                             shopify.modal.hide("pro-plan-help");
                             handleBasicSubscription();
@@ -188,14 +188,14 @@ function PlansPage() {
         react_1["default"].createElement(app_bridge_react_1.Modal, { id: "free-plan-help", variant: "small" },
             react_1["default"].createElement(app_bridge_react_1.TitleBar, { title: "How can we help instead?" }),
             react_1["default"].createElement(polaris_1.Box, { padding: "400" },
-                react_1["default"].createElement(polaris_1.AppProvider, { i18n: {}, apiKey: "" },
+                react_1["default"].createElement(polaris_1.AppProvider, { i18n: {} },
                     react_1["default"].createElement(ModalContent, { cancelAction: function () {
                             handleSubscriptionCancel();
                         }, loading: loading[_actions_2.ACTIONS.cancel_Subscription + "Loading"] })))),
         react_1["default"].createElement(app_bridge_react_1.Modal, { id: "cancel-thank-you", variant: "small" },
             react_1["default"].createElement(app_bridge_react_1.TitleBar, { title: "Subscription cancelled" }),
             react_1["default"].createElement(polaris_1.Box, { padding: "400" },
-                react_1["default"].createElement(polaris_1.AppProvider, { i18n: {}, apiKey: "" },
+                react_1["default"].createElement(polaris_1.AppProvider, { i18n: {} },
                     react_1["default"].createElement(polaris_1.InlineGrid, { gap: "200" },
                         react_1["default"].createElement(polaris_1.Text, { as: "p", variant: "bodyMd" }, "Your subscription has been cancelled. You can still use the app for free. Please refresh the page to see the changes."),
                         react_1["default"].createElement(polaris_1.Divider, null),

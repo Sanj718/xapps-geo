@@ -147,7 +147,7 @@ export default function AutoRedirectsCustomRule({ status, code }: AutoRedirectsC
               <Suspense fallback={<Spinner size="small" />}>
                 <Await resolve={code}>
                   {(code) => {
-                    return <CodeEditor code={code?.value || defaultAutoRedirectsCode} onChange={isProPlan ? setCustomCode : () => { }} language="javascript" />
+                    return <CodeEditor code={code?.value || defaultAutoRedirectsCode} onChange={isProPlan ? setCustomCode : () => { }} language="javascript" />;
                   }}
                 </Await>
               </Suspense>

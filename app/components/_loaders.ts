@@ -1,7 +1,7 @@
 import { resp } from "./_helpers";
 import type { AdminApiContext } from "@shopify/shopify-app-remix/server";
 
-export async function getApp(admin: AdminApiContext) {
+export async function getApp({ admin }: { admin: AdminApiContext }) {
   if (!admin) return resp(false, null, "admin || id not defined");
   const response = await admin.graphql(
     `#graphql
@@ -30,7 +30,7 @@ export async function getApp(admin: AdminApiContext) {
   return responseJson?.data?.app;
 }
 
-export async function getShop(admin: AdminApiContext) {
+export async function getShop({ admin }: { admin: AdminApiContext }) {
   if (!admin) return resp(false, null, "admin || id not defined");
   const response = await admin.graphql(
     `#graphql
@@ -70,7 +70,7 @@ export async function getShop(admin: AdminApiContext) {
   return responseJson?.data;
 }
 
-export async function getThemeEmbed(admin: AdminApiContext) {
+export async function getThemeEmbed({ admin }: { admin: AdminApiContext }) {
   if (!admin) return resp(false, null, "admin not defined");
   const response = await admin.graphql(
     `#graphql

@@ -389,18 +389,18 @@ function getButtonEditorCode(_a) {
 }
 exports.getButtonEditorCode = getButtonEditorCode;
 function createAutoRedirect(_a) {
-    var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
+    var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
     var admin = _a.admin, appId = _a.appId, value = _a.value;
     return __awaiter(this, void 0, void 0, function () {
         var response, responseJson, error_10;
-        return __generator(this, function (_q) {
-            switch (_q.label) {
+        return __generator(this, function (_o) {
+            switch (_o.label) {
                 case 0:
                     if (!admin)
                         throw Error("admin not defined");
-                    _q.label = 1;
+                    _o.label = 1;
                 case 1:
-                    _q.trys.push([1, 4, , 5]);
+                    _o.trys.push([1, 4, , 5]);
                     return [4 /*yield*/, admin.graphql("#graphql\n            mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {\n                metafieldsSet(metafields: $metafields) {\n                    metafields {\n                        key\n                        namespace\n                        value\n                        createdAt\n                        updatedAt\n                    }\n                    userErrors {\n                        field\n                        message\n                        code\n                    }\n                }\n            }\n            ", {
                             variables: {
                                 metafields: [{
@@ -413,17 +413,17 @@ function createAutoRedirect(_a) {
                             }
                         })];
                 case 2:
-                    response = _q.sent();
+                    response = _o.sent();
                     return [4 /*yield*/, response.json()];
                 case 3:
-                    responseJson = _q.sent();
+                    responseJson = _o.sent();
                     if (((_d = (_c = (_b = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _b === void 0 ? void 0 : _b.metafieldsSet) === null || _c === void 0 ? void 0 : _c.userErrors) === null || _d === void 0 ? void 0 : _d.length) > 0) {
                         throw Error((_g = (_f = (_e = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _e === void 0 ? void 0 : _e.metafieldsSet) === null || _f === void 0 ? void 0 : _f.userErrors[0]) === null || _g === void 0 ? void 0 : _g.message);
                     }
                     return [2 /*return*/, { status: ((_k = (_j = (_h = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _h === void 0 ? void 0 : _h.metafieldsSet) === null || _j === void 0 ? void 0 : _j.metafields[0]) === null || _k === void 0 ? void 0 : _k.key) !== "", data: (_m = (_l = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _l === void 0 ? void 0 : _l.metafieldsSet) === null || _m === void 0 ? void 0 : _m.metafields[0] }];
                 case 4:
-                    error_10 = _q.sent();
-                    console.error((_p = (_o = error_10 === null || error_10 === void 0 ? void 0 : error_10.body) === null || _o === void 0 ? void 0 : _o.errors) === null || _p === void 0 ? void 0 : _p.graphQLErrors);
+                    error_10 = _o.sent();
+                    console.error(error_10);
                     return [2 /*return*/, { status: false, error: error_10.toString() }];
                 case 5: return [2 /*return*/];
             }
@@ -444,7 +444,7 @@ function getAllAutoRedirects(_a) {
                     _j.label = 1;
                 case 1:
                     _j.trys.push([1, 4, , 5]);
-                    return [4 /*yield*/, admin.graphql("#graphql\n            query getMetafields($namespace: String!) {\n                appInstallation {\n                    id\n                    metafields(namespace: $namespace, first: 100) {\n                        edges {\n                            node {\n                                id\n                                namespace\n                                key\n                                value\n                            }\n                        }\n                    }\n                }\n            }\n            ", {
+                    return [4 /*yield*/, admin.graphql("#graphql\n            query getMetafields($namespace: String!) {\n                appInstallation {\n                    id\n                    metafields(namespace: $namespace, first: 100) {\n                        edges {\n                            node {\n                                id\n                                namespace\n                                key\n                                value\n                                jsonValue\n                            }\n                        }\n                    }\n                }\n            }\n            ", {
                             variables: {
                                 namespace: "redirects"
                             }
@@ -458,7 +458,7 @@ function getAllAutoRedirects(_a) {
                 case 4:
                     error_11 = _j.sent();
                     console.error(error_11);
-                    return [2 /*return*/, { status: false, error: error_11.toString() }];
+                    return [2 /*return*/, { status: false, error: error_11.toString(), data: [] }];
                 case 5: return [2 /*return*/];
             }
         });
@@ -516,17 +516,16 @@ function reOrderAutoRedirects(_a) {
                 case 1:
                     _o.trys.push([1, 4, , 5]);
                     metafields = data.map(function (_a) {
-                        var node = _a.node;
-                        var key = node.key, value = node.value;
+                        var key = _a.key, jsonValue = _a.jsonValue;
                         return {
                             namespace: "redirects",
                             key: key,
-                            value: value,
+                            value: JSON.stringify(jsonValue),
                             ownerId: appId,
                             type: "json"
                         };
                     });
-                    return [4 /*yield*/, admin.graphql("#graphql\n            mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {\n                metafieldsSet(metafields: $metafields) {\n                    metafields {\n                        key\n                        namespace\n                        value       \n                    }\n                    userErrors {\n                        field\n                        message\n                        code\n                    }\n                }\n            }\n            ", {
+                    return [4 /*yield*/, admin.graphql("#graphql\n            mutation metafieldsSet($metafields: [MetafieldsSetInput!]!) {\n                metafieldsSet(metafields: $metafields) {\n                    metafields {\n                        key\n                        namespace\n                        value\n                        jsonValue\n                    }\n                    userErrors {\n                        field\n                        message\n                        code\n                    }\n                }\n            }\n            ", {
                             variables: {
                                 metafields: metafields
                             }
@@ -542,7 +541,6 @@ function reOrderAutoRedirects(_a) {
                     return [2 /*return*/, { status: ((_k = (_j = (_h = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _h === void 0 ? void 0 : _h.metafieldsSet) === null || _j === void 0 ? void 0 : _j.metafields) === null || _k === void 0 ? void 0 : _k.length) > 0, data: (_m = (_l = responseJson === null || responseJson === void 0 ? void 0 : responseJson.data) === null || _l === void 0 ? void 0 : _l.metafieldsSet) === null || _m === void 0 ? void 0 : _m.metafields }];
                 case 4:
                     error_13 = _o.sent();
-                    console.error(error_13);
                     return [2 /*return*/, { status: false, error: error_13.toString() }];
                 case 5: return [2 /*return*/];
             }
@@ -860,7 +858,7 @@ function getAllRegisteredWebhooks(_a) {
                     _d.label = 1;
                 case 1:
                     _d.trys.push([1, 4, , 5]);
-                    return [4 /*yield*/, admin.graphql("#graphql\n                query {\n                webhookSubscriptions(first: 10) {\n                    edges {\n                        node {\n                            id\n                            topic\n                            endpoint {\n                                __typename\n                                ... on WebhookHttpEndpoint {\n                                callbackUrl\n                                }\n                                ... on WebhookEventBridgeEndpoint {\n                                arn\n                                }\n                                ... on WebhookPubSubEndpoint {\n                                pubSubProject\n                                pubSubTopic\n                                }\n                            }\n                        }\n                    }\n                }\n            }")];
+                    return [4 /*yield*/, admin.graphql("#graphql\n                query {\n                webhookSubscriptions(first: 10) {\n                    edges {\n                        node {\n                            id\n                            topic\n                            uri\n                        }\n                    }\n                }\n            }")];
                 case 2:
                     response = _d.sent();
                     return [4 /*yield*/, response.json()];
@@ -928,7 +926,7 @@ function registerBulkWebhookIfNotExists(_a) {
                     _b.label = 2;
                 case 2:
                     _b.trys.push([2, 5, , 6]);
-                    mutation = "#graphql\n                mutation webhookSubscriptionCreate($topic: WebhookSubscriptionTopic!, $webhookSubscription: WebhookSubscriptionInput!) {\n                  webhookSubscriptionCreate(\n                    topic: $topic,\n                    webhookSubscription: $webhookSubscription\n                  ) {\n                    userErrors {\n                      field\n                      message\n                    }\n                    webhookSubscription {\n                      id\n                      topic\n                      endpoint {\n                        __typename\n                        ... on WebhookHttpEndpoint {\n                          callbackUrl\n                        }\n                      }\n                    }\n                  }\n                }\n            ";
+                    mutation = "#graphql\n                mutation webhookSubscriptionCreate($topic: WebhookSubscriptionTopic!, $webhookSubscription: WebhookSubscriptionInput!) {\n                  webhookSubscriptionCreate(\n                    topic: $topic,\n                    webhookSubscription: $webhookSubscription\n                  ) {\n                    userErrors {\n                      field\n                      message\n                    }\n                    webhookSubscription {\n                      id\n                      topic\n                      uri\n                    }\n                  }\n                }\n            ";
                     variables = {
                         topic: "BULK_OPERATIONS_FINISH",
                         webhookSubscription: {

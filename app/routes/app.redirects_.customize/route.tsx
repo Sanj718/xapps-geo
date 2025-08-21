@@ -147,7 +147,7 @@ export default function CustomizePopupPage() {
       <Modal id="popup-content-translation-popup">
         <TitleBar title="Popup content translation" />
         <Box padding="400">
-          <AppProvider i18n={{}} apiKey={""}>
+          <AppProvider i18n={{}}>
             <InlineGrid gap="300">
               <Box>
                 <PromoBadge type="pro" />
@@ -204,7 +204,7 @@ export default function CustomizePopupPage() {
       <Modal id="icon-upload-popup">
         <TitleBar title="Select custom icon" />
         <Box padding="400">
-          <AppProvider i18n={{}} apiKey={""}>
+          <AppProvider i18n={{}}>
             <ImageManager callBack={handleCustomIconUpload} />
           </AppProvider></Box>
       </Modal>
@@ -212,7 +212,7 @@ export default function CustomizePopupPage() {
       <Modal id="icon-settings-popup">
         <TitleBar title="Icon settings" />
         <Box padding="400">
-          <AppProvider i18n={{}} apiKey={""}>
+          <AppProvider i18n={{}}>
             <IconSettings configs={localConfigs} setConfigs={setLocalConfigs} isFreePlan={isFreePlan} />
           </AppProvider></Box>
       </Modal>
@@ -220,7 +220,7 @@ export default function CustomizePopupPage() {
       <Modal id="dropdown-label-translation-popup">
         <TitleBar title="Dropdown label translation" />
         <Box padding="400">
-          <AppProvider i18n={{}} apiKey={""}>
+          <AppProvider i18n={{}}>
             <InlineGrid gap="300">
               <Box>
                 <PromoBadge type="pro" />

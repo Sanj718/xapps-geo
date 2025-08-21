@@ -1,5 +1,6 @@
 import { defer, LoaderFunctionArgs } from "@remix-run/node";
 import { getAllAutoRedirects, getAutoRedirectsCustomCode, getAutoRedirectsCustomCodeStatus, getButtonEditorCode, getButtonEditorStatus, getThemeEmbed, getWidgetEditorCode, getWidgetEditorStatus } from "app/admin-queries.server";
+import { jsonSafeParse } from "app/components/_helpers";
 import { getAllRedirects, getConfigs } from "app/db-queries.server";
 import { authenticate } from "app/shopify.server";
 import { AdminApiContextWithRest } from "node_modules/@shopify/shopify-app-remix/dist/ts/server/clients";
@@ -7,9 +8,9 @@ import stripJsonComments from "strip-json-comments";
 
 export async function handleLoaders({ request }: LoaderFunctionArgs) {
     const { admin, session } = await authenticate.admin(request);
-    const themeCode = await getThemeEmbed({ admin });
+    const themeCode = await getThemeEmbed({ admin: admin as AdminApiContextWithRest });
     const themeEmbedData =
-        themeCode && JSON.parse(stripJsonComments(themeCode) || "{}");
+        themeCode && jsonSafeParse(stripJsonComments(themeCode) || "{}");
     // Defered data
     const widgetEditorStatus = getWidgetEditorStatus({ admin: admin as AdminApiContextWithRest });
     const widgetEditorCode = getWidgetEditorCode({ admin: admin as AdminApiContextWithRest });

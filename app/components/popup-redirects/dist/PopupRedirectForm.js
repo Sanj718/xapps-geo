@@ -105,22 +105,30 @@ function PopupRedirectForm(_a) {
     }, [editItem]);
     react_1.useMemo(function () {
         if ((actionData === null || actionData === void 0 ? void 0 : actionData._action) === _actions_1.ACTIONS.create_Redirect && (actionData === null || actionData === void 0 ? void 0 : actionData.status)) {
-            shopify.modal.hide("add-redirect");
+            if (typeof shopify !== 'undefined' && shopify.modal) {
+                shopify.modal.hide("add-redirect");
+            }
             setRedirectItem(defaultRedirectItem);
             setSelectedCountry("--");
         }
         if ((actionData === null || actionData === void 0 ? void 0 : actionData._action) === _actions_1.ACTIONS.delete_Redirect && (actionData === null || actionData === void 0 ? void 0 : actionData.status)) {
-            shopify.modal.hide("edit-redirect");
+            if (typeof shopify !== 'undefined' && shopify.modal) {
+                shopify.modal.hide("edit-redirect");
+            }
             setRedirectItem(defaultRedirectItem);
             setSelectedCountry("--");
         }
         if ((actionData === null || actionData === void 0 ? void 0 : actionData._action) === _actions_1.ACTIONS.update_Redirect && (actionData === null || actionData === void 0 ? void 0 : actionData.status)) {
-            shopify.modal.hide("edit-redirect");
+            if (typeof shopify !== 'undefined' && shopify.modal) {
+                shopify.modal.hide("edit-redirect");
+            }
             setRedirectItem(defaultRedirectItem);
             setSelectedCountry("--");
         }
         if ((actionData === null || actionData === void 0 ? void 0 : actionData.status) === false && (actionData === null || actionData === void 0 ? void 0 : actionData.error) !== "") {
-            shopify.toast.show(actionData === null || actionData === void 0 ? void 0 : actionData.error, { isError: true });
+            if (typeof shopify !== 'undefined' && shopify.toast) {
+                shopify.toast.show((actionData === null || actionData === void 0 ? void 0 : actionData.error) || "Something wrong", { isError: true });
+            }
         }
     }, [actionData]);
     function handleCountrySelect(value) {
@@ -257,7 +265,7 @@ function PopupRedirectForm(_a) {
                                 react_1["default"].createElement(polaris_1.Divider, null),
                                 react_1["default"].createElement(polaris_1.InlineStack, { align: "end" },
                                     react_1["default"].createElement(polaris_1.Button, { size: "micro", onClick: function () { return setLabelTranslation(false); } }, "Close"))))))),
-                react_1["default"].createElement(polaris_1.TextField, { type: "url", autoComplete: "off", placeholder: "https://", inputMode: "url", label: "Url", value: redirectItem.url ? redirectItem.url : "https://", error: fieldValidation.url && "Please enter valid url", onBlur: function (e) { return validateUrlField(e.target.value, "url"); }, onChange: function (value) {
+                react_1["default"].createElement(polaris_1.TextField, { type: "url", autoComplete: "off", placeholder: "https://", inputMode: "url", label: "Url", value: redirectItem.url || "https://", error: fieldValidation.url && "Please enter valid url", onBlur: function (e) { return validateUrlField(e.target.value, "url"); }, onChange: function (value) {
                         setRedirectItem(__assign(__assign({}, redirectItem), { url: value }));
                         // validateUrlField(value, "url")
                     } })),

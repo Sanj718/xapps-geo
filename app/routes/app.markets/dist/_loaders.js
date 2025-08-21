@@ -38,6 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.handleLoaders = void 0;
 var admin_queries_server_1 = require("app/admin-queries.server");
+var _helpers_1 = require("app/components/_helpers");
 var db_queries_server_1 = require("app/db-queries.server");
 var shopify_server_1 = require("app/shopify.server");
 var strip_json_comments_1 = require("strip-json-comments");
@@ -53,7 +54,7 @@ function handleLoaders(_a) {
                     return [4 /*yield*/, admin_queries_server_1.getThemeEmbed({ admin: admin })];
                 case 2:
                     themeCode = _c.sent();
-                    themeEmbedData = themeCode && JSON.parse(strip_json_comments_1["default"](themeCode) || "{}");
+                    themeEmbedData = themeCode && _helpers_1.jsonSafeParse(strip_json_comments_1["default"](themeCode) || "{}");
                     return [4 /*yield*/, db_queries_server_1.getMarketsData({ shop: session.shop })];
                 case 3:
                     marketsData = _c.sent();

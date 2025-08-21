@@ -18,7 +18,7 @@ function getApplicationUrl(): string {
 }
 
 // Related: https://github.com/remix-run/remix/issues/2835#issuecomment-1144102176
-// Replace the HOST env var with SHOPIFY_APP_URL so that it doesn't break the remix server. The CLI will eventually
+// Replace the HOST env var with SHOPIFY_APP_URL so that it doesn't break the remix server. The CLI will automatically
 // stop passing in HOST, so we can remove this workaround after the next major release.
 if (
   process.env.HOST &&
@@ -35,53 +35,181 @@ console.log("  SHOPIFY_APP_URL:", process.env.SHOPIFY_APP_URL);
 console.log("  NODE_ENV:", process.env.NODE_ENV);
 console.log("  HOST:", process.env.HOST);
 
-// Custom plugin to handle SCSS compilation and string replacement
-const publicAssetsPlugin = () => {
-  const HOST_PROD = "https://ngr-app2.herokuapp.com";
-  const isProduction = process.env.NODE_ENV === "production";
-  const HOST = isProduction ? HOST_PROD : (process.env.SHOPIFY_APP_URL || getApplicationUrl());
+const HOST_PROD = "https://ngr-app2.herokuapp.com";
+const isProduction = process.env.NODE_ENV === "production";
+const HOST = isProduction ? HOST_PROD : (process.env.SHOPIFY_APP_URL || getApplicationUrl());
 
-  console.log("🎯 Plugin Debug (Markets):");
-  console.log("  isProduction:", isProduction);
-  console.log("  HOST_PROD:", HOST_PROD);
-  console.log("  Final HOST:", HOST);
+console.log("🎯 Plugin Debug (Markets):");
+console.log("  isProduction:", isProduction);
+console.log("  HOST_PROD:", HOST_PROD);
+console.log("  Final HOST:", HOST);
+
+// Safe custom plugin to handle SCSS compilation and string replacement
+const publicAssetsPlugin = () => {
+  // Configuration and validation
+  const CONFIG = {
+    MAX_FILE_SIZE: 1024 * 1024 * 5, // 5MB limit for SCSS files
+    MAX_OUTPUT_SIZE: 1024 * 1024 * 2, // 2MB limit for CSS output
+    ALLOWED_SCSS_FILES: ['index.scss', 'index-markets.scss'],
+    OUTPUT_DIR: 'extensions/ngr-widget/assets',
+    SOURCE_DIR: 'public_assets'
+  };
+
+  // Secure path validation
+  const validatePath = (filePath: string, allowedDir: string): boolean => {
+    const resolvedPath = resolve(__dirname, filePath);
+    const allowedPath = resolve(__dirname, allowedDir);
+    return resolvedPath.startsWith(allowedPath);
+  };
+
+  // File size validation
+  const validateFileSize = (content: string, maxSize: number): boolean => {
+    const sizeInBytes = Buffer.byteLength(content, 'utf8');
+    return sizeInBytes <= maxSize;
+  };
+
+  // Safe CSS minification function with input validation
+  const minifyCSS = (css: string): string => {
+    if (!css || typeof css !== 'string') {
+      throw new Error('Invalid CSS input for minification');
+    }
+
+    if (!validateFileSize(css, CONFIG.MAX_OUTPUT_SIZE)) {
+      throw new Error(`CSS output too large (>${CONFIG.MAX_OUTPUT_SIZE} bytes)`);
+    }
+
+    if (!isProduction) return css;
+    
+    try {
+      return css
+        .replace(/\/\*[\s\S]*?\*\//g, '') // Remove comments
+        .replace(/\s+/g, ' ') // Collapse whitespace
+        .replace(/\s*{\s*/g, '{') // Remove spaces around braces
+        .replace(/\s*}\s*/g, '}') // Remove spaces around braces
+        .replace(/\s*:\s*/g, ':') // Remove spaces around colons
+        .replace(/\s*;\s*/g, ';') // Remove spaces around semicolons
+        .replace(/\s*,\s*/g, ',') // Remove spaces around commas
+        .replace(/\s*>\s*/g, '>') // Remove spaces around >
+        .replace(/\s*\+\s*/g, '+') // Remove spaces around +
+        .replace(/\s*~\s*/g, '~') // Remove spaces around ~
+        .trim();
+    } catch (error) {
+      console.error('CSS minification failed:', error);
+      return css; // Return original CSS if minification fails
+    }
+  };
+
+  // Safe file reading with validation
+  const safeReadFile = (fileName: string): string => {
+    if (!CONFIG.ALLOWED_SCSS_FILES.includes(fileName)) {
+      throw new Error(`File ${fileName} not in allowed list`);
+    }
+
+    const filePath = `${CONFIG.SOURCE_DIR}/${fileName}`;
+    if (!validatePath(filePath, CONFIG.SOURCE_DIR)) {
+      throw new Error(`Path traversal attempt detected: ${filePath}`);
+    }
+
+    const resolvedPath = resolve(__dirname, filePath);
+    const content = readFileSync(resolvedPath, 'utf-8');
+    
+    if (!validateFileSize(content, CONFIG.MAX_FILE_SIZE)) {
+      throw new Error(`File ${fileName} too large (>${CONFIG.MAX_FILE_SIZE} bytes)`);
+    }
+
+    return content;
+  };
+
+  // Safe file writing with validation
+  const safeWriteFile = (fileName: string, content: string): void => {
+    const outputPath = `${CONFIG.OUTPUT_DIR}/${fileName}`;
+    if (!validatePath(outputPath, CONFIG.OUTPUT_DIR)) {
+      throw new Error(`Invalid output path: ${outputPath}`);
+    }
+
+    if (!validateFileSize(content, CONFIG.MAX_OUTPUT_SIZE)) {
+      throw new Error(`Output file ${fileName} too large`);
+    }
+
+    const resolvedPath = resolve(__dirname, outputPath);
+    writeFileSync(resolvedPath, content, 'utf-8');
+  };
 
   return {
     name: 'public-assets-compiler',
-    buildStart() {
+    async buildStart() {
       try {
         console.log('🔄 Building public assets for extensions...');
         
-        // Compile SCSS files
-        const indexScss = readFileSync(resolve(__dirname, 'public_assets/index.scss'), 'utf-8');
-        const indexMarketsScss = readFileSync(resolve(__dirname, 'public_assets/index-markets.scss'), 'utf-8');
+        // Read SCSS files with safety checks
+        const indexScss = safeReadFile('index.scss');
+        const indexMarketsScss = safeReadFile('index-markets.scss');
         
-        const indexCss = sass.compileString(indexScss, {
-          loadPaths: [resolve(__dirname, 'public_assets')],
-          style: isProduction ? 'compressed' : 'expanded',
-        });
+        // Compile SCSS files with error handling
+        const sassOptions = {
+          loadPaths: [resolve(__dirname, CONFIG.SOURCE_DIR)],
+          style: 'compressed' as const,
+          sourceMap: false, // Disable source maps for security
+          quietDeps: true,  // Suppress deprecation warnings
+          verbose: false    // Reduce log verbosity
+        };
+
+        let indexCss, indexMarketsCss;
+        try {
+          indexCss = sass.compileString(indexScss, sassOptions);
+          indexMarketsCss = sass.compileString(indexMarketsScss, sassOptions);
+        } catch (sassError) {
+          console.error('❌ SCSS compilation failed:', sassError);
+          throw new Error(`SCSS compilation failed: ${sassError.message}`);
+        }
+
+        // Validate Sass output
+        if (!indexCss?.css || !indexMarketsCss?.css) {
+          throw new Error('SCSS compilation produced empty output');
+        }
         
-        const indexMarketsCss = sass.compileString(indexMarketsScss, {
-          loadPaths: [resolve(__dirname, 'public_assets')],
-          style: isProduction ? 'compressed' : 'expanded',
-        });
+        // Apply additional CSS minification with safety checks
+        const minifiedIndexCss = minifyCSS(indexCss.css);
+        const minifiedIndexMarketsCss = minifyCSS(indexMarketsCss.css);
         
-        // Write compiled CSS to extensions folder
-        writeFileSync(resolve(__dirname, 'extensions/ngr-widget/assets/native-geo-redirects.min.css'), indexCss.css);
-        writeFileSync(resolve(__dirname, 'extensions/ngr-widget/assets/native-geo-markets.min.css'), indexMarketsCss.css);
+        // Write compiled CSS files with safety checks
+        safeWriteFile('native-geo-redirects.min.css', minifiedIndexCss);
+        safeWriteFile('native-geo-markets.min.css', minifiedIndexMarketsCss);
         
-        console.log('✅ Compiled SCSS files for extensions');
+        console.log('✅ Compiled and minified SCSS files for extensions');
+        console.log(`   - Redirects CSS: ${minifiedIndexCss.length} chars`);
+        console.log(`   - Markets CSS: ${minifiedIndexMarketsCss.length} chars`);
+        
       } catch (error) {
         console.error('❌ Error compiling SCSS files:', error);
+        // Don't throw to prevent build failure - log and continue
+        console.warn('⚠️ Continuing build without SCSS compilation');
       }
     },
     transform(code: string, id: string) {
-      // Replace __HOST__ placeholder with actual host
-      if (id.includes('public_assets') && code.includes('__HOST__')) {
+      try {
+        // Validate inputs
+        if (!code || typeof code !== 'string' || !id || typeof id !== 'string') {
+          return code;
+        }
+
+        // Security: Only transform files in the allowed directory
+        if (!id.includes(CONFIG.SOURCE_DIR) || !code.includes('__HOST__')) {
+          return code;
+        }
+
+        // Validate HOST value before replacement
+        if (!HOST || typeof HOST !== 'string' || HOST.length > 100) {
+          console.warn('⚠️ Invalid HOST value, skipping replacement');
+          return code;
+        }
+
         console.log(`🔄 Replacing __HOST__ with "${HOST}" in ${id}`);
         return code.replace(/__HOST__/g, JSON.stringify(HOST));
+      } catch (error) {
+        console.error('❌ Error in transform:', error);
+        return code; // Return original code if transformation fails
       }
-      return code;
     },
   };
 };
@@ -97,12 +225,10 @@ export default defineConfig({
     outDir: resolve(__dirname, 'extensions/ngr-widget/assets'),
     emptyOutDir: false,
     minify: 'terser',
-    cssMinify: true,
     rollupOptions: {
       output: {
         entryFileNames: 'native-geo-markets.min.js',
         chunkFileNames: '[name]-[hash].js',
-        assetFileNames: '[name].min.css',
       },
     },
   },

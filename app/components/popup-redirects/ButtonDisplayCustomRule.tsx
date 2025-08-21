@@ -12,7 +12,7 @@ import {
 import {
   MaximizeIcon
 } from '@shopify/polaris-icons';
-import React, { Suspense, useContext, useEffect, useMemo, useState } from "react";
+import React, { Suspense, useContext, useEffect, useMemo, useState} from "react";
 import { Await, useActionData, useNavigate, useNavigation, useOutletContext, useSubmit } from "@remix-run/react";
 import { LoadingStates, OutletContext } from "../_types";
 import { defaultButtonCode, loadingStates, planParser, requestHeaders } from "../_helpers";
@@ -131,7 +131,7 @@ export default function ButtonDisplayCustomRule({ status, code }: ButtonDisplayC
             <Suspense fallback={<Spinner size="small" />}>
               <Await resolve={code}>
                 {(code) => {
-                  return <CodeEditor code={code?.value || defaultButtonCode} onChange={isProPlan ? setCustomCode : () => { }} language="javascript" />
+                  return <CodeEditor code={code?.value || defaultButtonCode} onChange={isProPlan ? setCustomCode : () => { }} language="javascript" />;
                 }}
               </Await>
             </Suspense>
@@ -140,7 +140,11 @@ export default function ButtonDisplayCustomRule({ status, code }: ButtonDisplayC
             <Button
               variant="tertiary"
               icon={MaximizeIcon}
-              onClick={() => navigate("/app/redirects/button-display-custom-rule")}
+              onClick={() => {
+                if (typeof shopify !== 'undefined' && shopify.modal) {
+                  navigate("/app/redirects/button-display-custom-rule");
+                }
+              }}
             >
               Open Full-Screen Editor
             </Button>

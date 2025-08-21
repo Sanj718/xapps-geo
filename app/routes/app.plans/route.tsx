@@ -211,7 +211,7 @@ export default function PlansPage() {
       <Modal id="pro-plan-request" variant="small">
         <TitleBar title="Subscribe to Pro Plan" />
         <Box padding="400">
-          <AppProvider i18n={{}} apiKey={""}>
+          <AppProvider i18n={{}}>
             <RequestPlanModal loading={loading[ACTIONS.subscribe_ProPlan + "Loading"]} planName="Pro" url={proPlanUrl} />
           </AppProvider>
         </Box>
@@ -219,7 +219,7 @@ export default function PlansPage() {
       <Modal id="basic-plan-request" variant="small">
         <TitleBar title="Subscribe to Basic Plan" />
         <Box padding="400">
-          <AppProvider i18n={{}} apiKey={""}>
+          <AppProvider i18n={{}}>
             <RequestPlanModal loading={loading[ACTIONS.subscribe_BasicPlan + "Loading"]} planName="Basic" url={basicPlanUrl} />
           </AppProvider>
         </Box>
@@ -227,7 +227,7 @@ export default function PlansPage() {
       <Modal id="pro-plan-help" variant="small">
         <TitleBar title="How can we help instead?" />
         <Box padding="400">
-          <AppProvider i18n={{}} apiKey={""}>
+          <AppProvider i18n={{}}>
             <ModalContent
               cancelAction={() => {
                 shopify.modal.hide("pro-plan-help");
@@ -241,7 +241,7 @@ export default function PlansPage() {
       <Modal id="free-plan-help" variant="small">
         <TitleBar title="How can we help instead?" />
         <Box padding="400">
-          <AppProvider i18n={{}} apiKey={""}>
+          <AppProvider i18n={{}}>
             <ModalContent
               cancelAction={() => {
                 handleSubscriptionCancel()
@@ -254,7 +254,7 @@ export default function PlansPage() {
       <Modal id="cancel-thank-you" variant="small">
         <TitleBar title="Subscription cancelled" />
         <Box padding="400">
-          <AppProvider i18n={{}} apiKey={""}>
+          <AppProvider i18n={{}}>
             <InlineGrid gap="200">
               <Text as="p" variant="bodyMd">Your subscription has been cancelled. You can still use the app for free. Please refresh the page to see the changes.</Text>
               <Divider />

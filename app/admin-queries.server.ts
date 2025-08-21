@@ -432,7 +432,7 @@ export async function createAutoRedirect({ admin, appId, value }: { admin: Admin
         }
         return { status: responseJson?.data?.metafieldsSet?.metafields[0]?.key !== "", data: responseJson?.data?.metafieldsSet?.metafields[0] };
     } catch (error) {
-        console.error(error?.body?.errors?.graphQLErrors);
+        console.error(error);
         return { status: false, error: (error as Error).toString() };
     }
 }
@@ -452,6 +452,7 @@ export async function getAllAutoRedirects({ admin }: { admin: AdminApiContext })
                                 namespace
                                 key
                                 value
+                                jsonValue
                             }
                         }
                     }
@@ -468,7 +469,7 @@ export async function getAllAutoRedirects({ admin }: { admin: AdminApiContext })
         return { status: responseJson?.data?.appInstallation?.metafields?.edges?.length > 0, data: responseJson?.data?.appInstallation?.metafields?.edges };
     } catch (error) {
         console.error(error);
-        return { status: false, error: (error as Error).toString() };
+        return { status: false, error: (error as Error).toString(), data: [] };
     }
 }
 
@@ -513,12 +514,11 @@ export async function updateAutoRedirect({ admin, appId, key, value }: { admin: 
 export async function reOrderAutoRedirects({ admin, appId, data }: { admin: AdminApiContext, appId: string, data: any }) {
     if (!admin) throw Error("admin not defined");
     try {
-        const metafields = data.map(({ node }: { node: any }) => {
-            const { key, value } = node;
+        const metafields = data.map(({ key, jsonValue }: { key: string, jsonValue: any }) => {
             return {
                 namespace: "redirects",
                 key,
-                value,
+                value: JSON.stringify(jsonValue),
                 ownerId: appId,
                 type: "json",
             };
@@ -530,7 +530,8 @@ export async function reOrderAutoRedirects({ admin, appId, data }: { admin: Admi
                     metafields {
                         key
                         namespace
-                        value       
+                        value
+                        jsonValue
                     }
                     userErrors {
                         field
@@ -552,7 +553,6 @@ export async function reOrderAutoRedirects({ admin, appId, data }: { admin: Admi
         }
         return { status: responseJson?.data?.metafieldsSet?.metafields?.length > 0, data: responseJson?.data?.metafieldsSet?.metafields };
     } catch (error) {
-        console.error(error);
         return { status: false, error: (error as Error).toString() };
     }
 }
@@ -986,19 +986,7 @@ export async function getAllRegisteredWebhooks({ admin }: { admin: AdminApiConte
                         node {
                             id
                             topic
-                            endpoint {
-                                __typename
-                                ... on WebhookHttpEndpoint {
-                                callbackUrl
-                                }
-                                ... on WebhookEventBridgeEndpoint {
-                                arn
-                                }
-                                ... on WebhookPubSubEndpoint {
-                                pubSubProject
-                                pubSubTopic
-                                }
-                            }
+                            uri
                         }
                     }
                 }
@@ -1059,12 +1047,7 @@ export async function registerBulkWebhookIfNotExists({ admin }: { admin: AdminAp
                     webhookSubscription {
                       id
                       topic
-                      endpoint {
-                        __typename
-                        ... on WebhookHttpEndpoint {
-                          callbackUrl
-                        }
-                      }
+                      uri
                     }
                   }
                 }

@@ -191,7 +191,7 @@
       }
       function track() {
         try{
-          const dataEndpoint = `${HOST}/api/shop/auto?shop=${window?.Shopify?.shop}`;
+          const dataEndpoint = `${HOST}/api/analytics/auto?shop=${window?.Shopify?.shop}`;
           fetch(dataEndpoint)
           return;
         }catch(e){

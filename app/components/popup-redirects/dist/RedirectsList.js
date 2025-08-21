@@ -58,7 +58,9 @@ function RedirectsList(_a) {
     var _c = react_1.useState(""), dragId = _c[0], setDragId = _c[1];
     function openEdit(item) {
         setEditRedirect(item);
-        shopify.modal.show("edit-redirect");
+        if (typeof shopify !== 'undefined' && shopify.modal) {
+            shopify.modal.show("edit-redirect");
+        }
     }
     function handleDrop(ev) {
         return __awaiter(this, void 0, void 0, function () {
@@ -162,7 +164,11 @@ function RedirectsList(_a) {
                                 redirects.length - 1 !== index && react_1["default"].createElement(polaris_1.Divider, null)));
                         } }),
                     react_1["default"].createElement(polaris_1.InlineStack, { align: "end" },
-                        react_1["default"].createElement(polaris_1.Button, { variant: "primary", onClick: function () { return shopify.modal.show("add-redirect"); }, icon: polaris_icons_1.PlusCircleIcon }, "Add"))))),
+                        react_1["default"].createElement(polaris_1.Button, { variant: "primary", onClick: function () {
+                                if (typeof shopify !== 'undefined' && shopify.modal) {
+                                    shopify.modal.show("add-redirect");
+                                }
+                            }, icon: polaris_icons_1.PlusCircleIcon }, "Add"))))),
         react_1["default"].createElement(app_bridge_react_1.Modal, { id: "add-redirect", variant: "base" },
             react_1["default"].createElement(app_bridge_react_1.TitleBar, { title: "Add redirect" }),
             react_1["default"].createElement(polaris_1.Box, { padding: "400" },

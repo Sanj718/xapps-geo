@@ -6,7 +6,7 @@ import {
   useBreakpoints,
 } from "@shopify/polaris";
 import { PageTitle } from "../../components/_common/PageTitle";
-import { getEmbedConst } from "../../components/_helpers";
+import { getEmbedConst, jsonSafeParse } from "../../components/_helpers";
 import {
   DEV_EMBED_APP_ID,
   PROD_EMBED_APP_ID,
@@ -15,7 +15,7 @@ import {
 import { Suspense, useMemo, useState } from "react";
 import RedirectsList from "../../components/popup-redirects/RedirectsList";
 import { useActionData, useLoaderData, useOutletContext, useSearchParams } from "@remix-run/react";
-import { AutoRedirectItem, OutletContext, RedirectItem } from "app/components/_types";
+import { AutoRedirectItem, RedirectItem, AutoRedirectNodeItem } from "app/components/_types";
 import ContentStyle from "app/components/popup-redirects/ContentStyle";
 import { handleActions } from "./_actions";
 import { handleLoaders } from "./_loaders";
@@ -52,8 +52,8 @@ export const action = async (params: ActionFunctionArgs) => handleActions(params
 
 
 export default function CustomRedirects() {
-  const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
-    useOutletContext<OutletContext>();
+  // const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
+  //   useOutletContext<OutletContext>();
   const { themeEmbedData, allRedirects, configs, widgetEditorStatus, widgetEditorCode, buttonEditorStatus, buttonEditorCode, allAutoRedirects, autoRedirectsCustomCodeStatus, autoRedirectsCustomCode } = useLoaderData<typeof loader>();
   const actionData = useActionData();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -68,20 +68,23 @@ export default function CustomRedirects() {
   }, [allRedirects]);
 
   useMemo(() => {
-    const orderedAutoRedirects: AutoRedirectItem[] = allAutoRedirects?.data?.sort((a: AutoRedirectItem, b: AutoRedirectItem) => JSON.parse(a.node.value).order_r - JSON.parse(b.node.value).order_r);
-    setAutoRedirects(orderedAutoRedirects || []);
+    // [TODO] parse json here
+    if (allAutoRedirects?.status) {
+      const parsedAutoRedirects = allAutoRedirects?.data?.map((item: AutoRedirectNodeItem) => ({ ...item.node }));
+      const orderedAutoRedirects = parsedAutoRedirects?.sort((a: AutoRedirectItem, b: AutoRedirectItem) => a.jsonValue.order_r - b.jsonValue.order_r);
+      setAutoRedirects(orderedAutoRedirects || []);
+    }
   }, [allAutoRedirects]);
 
   useMemo(() => {
     if (themeEmbedData?.current?.blocks) {
       let checkRedirects = false;
-      Object.entries(themeEmbedData.current.blocks).forEach(([item, value]) => {
+      Object.entries(themeEmbedData.current.blocks).forEach(([item, value]: [string, any]) => {
         if (
           value.type.includes(EMBED_APP_ID) &&
           value.type.includes(EMBED_APP_HANDLE) &&
           !value.disabled
         ) {
-          console.log("value", value);
           checkRedirects = true;
         }
       });
@@ -91,30 +94,30 @@ export default function CustomRedirects() {
     }
   }, [themeEmbedData]);
 
-  useMemo(() => {
-    // if (actionData && !actionData?.data?.status) {
-    //   shopify.toast.show("Error, try again.", { isError: true });
-    //   if (actionData?.data?.errors?.length) {
-    //     setErrors(actionData.data.errors);
-    //   }
-    // } else {
-    //   setErrors([]);
-    // }
-    // if (
-    //   (actionData?._action === "new" || actionData?._action === "edit") &&
-    //   actionData?._status
-    // ) {
-    //   const { discountId, discountClass } =
-    //     actionData?.data?.discountCreate?.codeAppDiscount ||
-    //     actionData?.data?.discountCreate?.automaticAppDiscount ||
-    //     {};
-    //   const url = getDiscountUrl(discountId, discountClass, true);
-    //   if (url) navigate(url);
-    // }
-    // if (actionData?._action === "discountDelete" && actionData?._status) {
-    //   navigate("/app");
-    // }
-  }, [actionData]);
+  // useMemo(() => {
+  // if (actionData && !actionData?.data?.status) {
+  //   shopify.toast.show("Error, try again.", { isError: true });
+  //   if (actionData?.data?.errors?.length) {
+  //     setErrors(actionData.data.errors);
+  //   }
+  // } else {
+  //   setErrors([]);
+  // }
+  // if (
+  //   (actionData?._action === "new" || actionData?._action === "edit") &&
+  //   actionData?._status
+  // ) {
+  //   const { discountId, discountClass } =
+  //     actionData?.data?.discountCreate?.codeAppDiscount ||
+  //     actionData?.data?.discountCreate?.automaticAppDiscount ||
+  //     {};
+  //   const url = getDiscountUrl(discountId, discountClass, true);
+  //   if (url) navigate(url);
+  // }
+  // if (actionData?._action === "discountDelete" && actionData?._status) {
+  //   navigate("/app");
+  // }
+  // }, [actionData]);
 
   useMemo(() => {
     const tab = searchParams.get("tab");

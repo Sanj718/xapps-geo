@@ -118,7 +118,7 @@ class NGRMarkets extends HTMLElement {
     if (savedUserData && !this.testMode) {
       return JSON.parse(savedUserData);
     }
-    const countries = await this.getCountriesJSON();
+    const countries = window?.ngr_countries_window;
     const userGeo = await fetch("/browsing_context_suggestions.json").then(
       (resp) => resp.json(),
     );
@@ -905,7 +905,7 @@ class NGRMarkets extends HTMLElement {
     try {
       // @ts-ignore
       const store_url = window?.Shopify?.shop;
-      const dataEndpoint = `${this.HOST}/api/shop/markets-button?shop=${store_url}`;
+      const dataEndpoint = `${this.HOST}/api/analytics/markets-button?shop=${store_url}`;
       fetch(dataEndpoint);
       return;
     } catch (e) {
@@ -960,7 +960,7 @@ class NGRMarkets extends HTMLElement {
     if (ngr_countries) {
       return JSON.parse(ngr_countries);
     }
-    const dataEndpoint = `${this.HOST}/api/countries.json`;
+    const dataEndpoint = `${this.HOST}/api/countries`;
 
     try {
       const response = await fetch(dataEndpoint).then((resp) => resp.json());

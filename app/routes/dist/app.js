@@ -73,10 +73,10 @@ exports.loader = function (_a) {
                     return [4 /*yield*/, shopify_server_1.authenticate.admin(request)];
                 case 2:
                     _b = _c.sent(), admin = _b.admin, session = _b.session;
-                    return [4 /*yield*/, _loaders_1.getApp(admin)];
+                    return [4 /*yield*/, _loaders_1.getApp({ admin: admin })];
                 case 3:
                     appData = _c.sent();
-                    return [4 /*yield*/, _loaders_1.getShop(admin)];
+                    return [4 /*yield*/, _loaders_1.getShop({ admin: admin })];
                 case 4:
                     shopInfo = _c.sent();
                     return [4 /*yield*/, getShopdb({ shop: session.shop })];

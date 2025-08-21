@@ -10,8 +10,6 @@ node_modules
 /prisma/dev.sqlite-journal
 database.sqlite
 
-.env
-.env.*
 
 
 
@@ -21,4 +19,6 @@ database.sqlite
 
 # Ignore shopify files created during app dev
 .shopify/*
-.shopify.lock
+.env
+.shopify.lock.env
+!.env.example

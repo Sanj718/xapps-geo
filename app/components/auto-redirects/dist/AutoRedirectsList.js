@@ -64,36 +64,38 @@ var resourceName = {
 };
 function AutoRedirects(_a) {
     var redirects = _a.redirects;
-    var _b = react_3.useOutletContext(), shopInfo = _b.shopInfo, shopdb = _b.shopdb, activePlan = _b.activePlan, devPlan = _b.devPlan, veteranPlan = _b.veteranPlan, appId = _b.appId, appData = _b.appData;
+    var appId = react_3.useOutletContext().appId;
     var submit = react_3.useSubmit();
+    var actionData = react_3.useActionData();
     var navigation = react_3.useNavigation();
-    var _c = react_1.useState(null), editRedirect = _c[0], setEditRedirect = _c[1];
-    var _d = react_1.useState(""), dragId = _d[0], setDragId = _d[1];
+    var _b = react_1.useState(null), editRedirect = _b[0], setEditRedirect = _b[1];
+    var _c = react_1.useState(null), dragId = _c[0], setDragId = _c[1];
     function handleDrop(ev) {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function () {
             var dragBox, dropBox, dragBoxOrder, dropBoxOrder, newBoxState, updatedOrder;
-            return __generator(this, function (_a) {
-                dragBox = redirects.find(function (box) { return box.node.id == dragId; });
-                dropBox = redirects.find(function (box) { return box.node.id == ev.currentTarget.id; });
-                dragBoxOrder = JSON.parse(dragBox.node.value).order_r;
-                dropBoxOrder = JSON.parse(dropBox.node.value).order_r;
+            return __generator(this, function (_c) {
+                dragBox = redirects.find(function (box) { return box.id == dragId; });
+                dropBox = redirects.find(function (box) { return box.id == ev.currentTarget.id; });
+                dragBoxOrder = (_a = dragBox === null || dragBox === void 0 ? void 0 : dragBox.jsonValue) === null || _a === void 0 ? void 0 : _a.order_r;
+                dropBoxOrder = (_b = dropBox === null || dropBox === void 0 ? void 0 : dropBox.jsonValue) === null || _b === void 0 ? void 0 : _b.order_r;
                 newBoxState = redirects.map(function (box) {
-                    var item = JSON.parse(box.node.value);
-                    if (box.node.id == dragId) {
-                        var new_order = dragBoxOrder === dropBoxOrder
-                            ? Math.max.apply(Math, redirects.map(function (o) { return JSON.parse(o.node.value).order_r; })) + 1
+                    var item = box.jsonValue;
+                    if (box.id == dragId) {
+                        var newOrderNumber = dragBoxOrder === dropBoxOrder
+                            ? Math.max.apply(Math, redirects.map(function (o) { return o.jsonValue.order_r; })) + 1
                             : dropBoxOrder;
-                        box.node.value = JSON.stringify(__assign(__assign({}, item), { order_r: new_order }));
+                        box.jsonValue = __assign(__assign({}, item), { order_r: newOrderNumber || 0 });
                     }
-                    if (box.node.id == ev.currentTarget.id) {
-                        box.node.value = JSON.stringify(__assign(__assign({}, item), { order_r: dragBoxOrder }));
+                    if (box.id == ev.currentTarget.id) {
+                        box.jsonValue = __assign(__assign({}, item), { order_r: dragBoxOrder || 0 });
                     }
                     return box;
                 });
                 updatedOrder = newBoxState.sort(function (a, b) {
-                    return JSON.parse(a.node.value).order_r - JSON.parse(b.node.value).order_r;
+                    return a.jsonValue.order_r - b.jsonValue.order_r;
                 });
-                if (!appId)
+                if (!appId || !updatedOrder)
                     return [2 /*return*/];
                 submit({
                     _action: _actions_1.ACTIONS.reorder_AutoRedirects,
@@ -108,21 +110,23 @@ function AutoRedirects(_a) {
     }
     function openEdit(item) {
         setEditRedirect(item);
-        console.log(item);
-        shopify.modal.show("edit-auto-redirect");
+        if (typeof shopify !== 'undefined' && shopify.modal) {
+            shopify.modal.show("edit-auto-redirect");
+        }
     }
     function toggleStatus(data) {
         var _a;
-        var parsed = JSON.parse((_a = data === null || data === void 0 ? void 0 : data.node) === null || _a === void 0 ? void 0 : _a.value);
-        parsed.status = parsed.status === 1 ? 0 : 1;
-        delete data.node.id;
+        var parsed = (data === null || data === void 0 ? void 0 : data.jsonValue) || {};
+        parsed.status = parsed.status ? false : true;
+        if (data === null || data === void 0 ? void 0 : data.id) {
+            (_a = data) === null || _a === void 0 ? true : delete _a.id;
+        }
         return parsed;
     }
     function handleRedirectStatus(item) {
-        var _a;
         return __awaiter(this, void 0, void 0, function () {
             var updatedItem;
-            return __generator(this, function (_b) {
+            return __generator(this, function (_a) {
                 if (!appId)
                     return [2 /*return*/];
                 updatedItem = toggleStatus(item);
@@ -130,7 +134,7 @@ function AutoRedirects(_a) {
                     _action: _actions_1.ACTIONS.update_AutoRedirect,
                     data: {
                         appId: appId,
-                        key: (_a = item === null || item === void 0 ? void 0 : item.node) === null || _a === void 0 ? void 0 : _a.key,
+                        key: item === null || item === void 0 ? void 0 : item.key,
                         value: updatedItem
                     }
                 }, _helpers_1.requestHeaders);
@@ -158,8 +162,8 @@ function AutoRedirects(_a) {
                             } },
                             react_1["default"].createElement(polaris_1.Image, { source: empty2_svg_1["default"], width: "200", height: "150", alt: "empty" }),
                             react_1["default"].createElement(polaris_1.Text, { as: "p", variant: "headingSm" }, "Simplify the customer experience \u2014 set up your first auto redirect now!")), resourceName: resourceName, items: redirects, loading: loading[_actions_1.ACTIONS.create_AutoRedirect + "Loading"] || loading[_actions_1.ACTIONS.update_AutoRedirect + "Loading"] || loading[_actions_1.ACTIONS.delete_AutoRedirect + "Loading"] || loading[_actions_1.ACTIONS.reorder_AutoRedirects + "Loading"], renderItem: function (item, index) {
-                            var _a = item === null || item === void 0 ? void 0 : item.node, id = _a.id, value = _a.value;
-                            var _b = _helpers_1.jsonSafeParse(value), url = _b.url, location = _b.location, except_r = _b.except_r, status = _b.status, block = _b.block;
+                            var id = item.id, jsonValue = item.jsonValue;
+                            var url = jsonValue.url, location = jsonValue.location, except_r = jsonValue.except_r, status = jsonValue.status, block = jsonValue.block;
                             var locations = _helpers_1.parseLocations(location, countries_json_1["default"]);
                             return (react_1["default"].createElement("div", { className: "auto-redirect-item", id: id, draggable: true, onDragStart: function (ev) {
                                     setDragId(id);
@@ -192,7 +196,11 @@ function AutoRedirects(_a) {
                                             react_1["default"].createElement(polaris_1.Button, { icon: polaris_icons_1.EditIcon, onClick: function () { return openEdit(item); }, size: "slim" }, "Edit"))))));
                         } }),
                     react_1["default"].createElement(polaris_1.InlineStack, { align: "end" },
-                        react_1["default"].createElement(polaris_1.Button, { variant: "primary", onClick: function () { return shopify.modal.show("add-auto-redirect"); }, icon: polaris_icons_1.PlusCircleIcon }, "Add"))))),
+                        react_1["default"].createElement(polaris_1.Button, { variant: "primary", onClick: function () {
+                                if (typeof shopify !== 'undefined' && shopify.modal) {
+                                    shopify.modal.show("add-auto-redirect");
+                                }
+                            }, icon: polaris_icons_1.PlusCircleIcon }, "Add"))))),
         react_1["default"].createElement(app_bridge_react_1.Modal, { id: "add-auto-redirect", variant: "base" },
             react_1["default"].createElement(app_bridge_react_1.TitleBar, { title: "Add auto redirect" }),
             react_1["default"].createElement(polaris_1.Box, { padding: "400" },

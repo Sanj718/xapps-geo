@@ -17,13 +17,13 @@ import { handleSideNavClick } from "app/components/_helpers";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { getShopdb } = await import("../db-queries.server");
   const { admin, session } = await authenticate.admin(request);
-  const appData = await getApp(admin);
-  const shopInfo = await getShop(admin);
+  const appData = await getApp({ admin: admin as any  });
+  const shopInfo = await getShop({ admin: admin as any });
   const shopdb = await getShopdb({ shop: session.shop });
-  registerBulkWebhookIfNotExists({ admin });
+  registerBulkWebhookIfNotExists({ admin: admin as any });
 
   // removeWebhook({ admin, webhookId: "gid://shopify/WebhookSubscription/1366407479484" });
-  const webhooks = await getAllRegisteredWebhooks({ admin });
+  const webhooks = await getAllRegisteredWebhooks({ admin: admin as any });
   console.log("webhooks: ", JSON.stringify(webhooks, null, 2));
 
   return {

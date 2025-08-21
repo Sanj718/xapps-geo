@@ -40,6 +40,7 @@ exports.handleLoaders = void 0;
 var strip_json_comments_1 = require("strip-json-comments");
 var shopify_server_1 = require("app/shopify.server");
 var admin_queries_server_1 = require("app/admin-queries.server");
+var _helpers_1 = require("app/components/_helpers");
 function handleLoaders(_a) {
     var request = _a.request;
     return __awaiter(this, void 0, void 0, function () {
@@ -52,7 +53,7 @@ function handleLoaders(_a) {
                     return [4 /*yield*/, admin_queries_server_1.getThemeEmbed({ admin: admin })];
                 case 2:
                     themeCode = _c.sent();
-                    themeEmbedData = themeCode && JSON.parse(strip_json_comments_1["default"](themeCode) || "{}");
+                    themeEmbedData = themeCode && _helpers_1.jsonSafeParse(strip_json_comments_1["default"](themeCode) || "{}");
                     return [2 /*return*/, {
                             themeCode: themeCode,
                             themeEmbedData: themeEmbedData

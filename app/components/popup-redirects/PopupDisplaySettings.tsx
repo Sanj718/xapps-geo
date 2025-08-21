@@ -112,7 +112,7 @@ export default function PopupDisplaySettings({
       requestHeaders,
     );
   }
-console.log(localConfigs)
+
   const loading = loadingStates(navigation, [ACTIONS.update_RedirectsConfigs, ACTIONS.create_AllowedPages]) as LoadingStates;
   return (
     <InlineGrid columns={{ xs: "1fr", md: "auto  70%" }} gap="400">

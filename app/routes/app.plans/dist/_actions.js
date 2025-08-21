@@ -67,7 +67,7 @@ function handleActions(_a) {
                 case 3:
                     hasActivePayment = (_d.sent()).hasActivePayment;
                     if (!(_action === _actions_1.ACTIONS.cancel_Subscription)) return [3 /*break*/, 5];
-                    return [4 /*yield*/, admin_queries_server_1.cancelSubscription({ admin: admin, shop: session.shop, id: data === null || data === void 0 ? void 0 : data.id })];
+                    return [4 /*yield*/, admin_queries_server_1.cancelSubscription({ admin: admin, id: data === null || data === void 0 ? void 0 : data.id })];
                 case 4:
                     response = _d.sent();
                     return [2 /*return*/, __assign({ _action: _action }, response)];

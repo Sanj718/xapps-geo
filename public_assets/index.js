@@ -153,7 +153,7 @@ class NGRAPP extends HTMLElement {
     if (savedUserData && isJsonParsable(savedUserData) && !this.testMode) {
       return JSON.parse(savedUserData);
     }
-    const countries = await this.getCountriesJSON();
+    const countries = window?.ngr_countries_window;
     const userGeo = await fetch("/browsing_context_suggestions.json").then(
       (resp) => resp.json(),
     );
@@ -271,10 +271,12 @@ class NGRAPP extends HTMLElement {
           ${buttonsColor != "" ? "border-color:" + buttonsColor + ";" : ""}
           ${buttonsColor != "" ? "color:" + buttonsColor + ";" : ""}
       }
-      .ngr-redirects__link:hover{
-          ${buttonsColor != "" ? "background-color:" + buttonsColor + ";" : ""}
-          ${buttonsBgColor != "" ? "border-color:" + buttonsBgColor + ";" : ""}
-          ${buttonsBgColor != "" ? "color:" + buttonsBgColor + ";" : ""}
+     @media screen and (min-width: 768px) {
+        .ngr-redirects__link:hover{
+            ${buttonsColor != "" ? "background-color:" + buttonsColor + ";" : ""}
+            ${buttonsBgColor != "" ? "border-color:" + buttonsBgColor + ";" : ""}
+            ${buttonsBgColor != "" ? "color:" + buttonsBgColor + ";" : ""}
+        }
       }
        .ngr-modal__content .ngr-select{
         ${buttonsBgColor != "" ? "background-color:" + buttonsBgColor + ";" : ""}
@@ -361,13 +363,85 @@ class NGRAPP extends HTMLElement {
       }
     }
 
-    shadowRoot.addEventListener("click", (event) => {
-      if (event) {
-        toggleAction(event);
-        trackClicks(event);
-        internalRedirectLogic(event);
+    // Use event delegation for better iOS Safari compatibility
+    shadowRoot.addEventListener(
+      "click",
+      (event) => {
+        if (event) {
+          // Check if the click is on a button element
+          const button = event.target.closest("[data-ngr-button]");
+          if (button) {
+            trackClicks(event);
+            internalRedirectLogic(event);
+            if (isSafari()) {
+              event.preventDefault();
+              setTimeout(() => {
+                if (button.href) {
+                  window.location.href = button.href;
+                }
+              }, 50);
+            }
+          }
+          toggleAction(event);
+        }
+      },
+      { passive: true },
+    );
+
+    // Safari-specific touch events for better responsiveness
+    if (isSafari()) {
+      shadowRoot.addEventListener(
+        "touchstart",
+        (event) => {
+          const button = event.target.closest("[data-ngr-button]");
+          if (button) {
+            button.style.opacity = "0.8";
+            button.style.transform = "scale(0.98)";
+          }
+        },
+        { passive: true },
+      );
+
+      shadowRoot.addEventListener(
+        "touchend",
+        (event) => {
+          const button = event.target.closest("[data-ngr-button]");
+          if (button) {
+            button.style.opacity = "";
+            button.style.transform = "";
+
+            if (event.touches.length === 0) {
+              event.preventDefault();
+              trackClicks(event);
+              internalRedirectLogic(event);
+
+              setTimeout(() => {
+                if (button.href) {
+                  window.location.href = button.href;
+                }
+              }, 10);
+            }
+          }
+        },
+        { passive: false },
+      );
+    }
+
+    // Safari detection function - specifically targets iOS Safari
+    function isSafari() {
+      const userAgent = navigator.userAgent;
+      if (
+        /iPad|iPhone|iPod/.test(userAgent) &&
+        /Safari/.test(userAgent) &&
+        !/Chrome/.test(userAgent)
+      ) {
+        return true;
       }
-    });
+      if (/Safari/.test(userAgent) && !/Chrome/.test(userAgent)) {
+        return true;
+      }
+      return false;
+    }
 
     document.addEventListener("click", (event) => {
       if (event) {
@@ -624,7 +698,7 @@ class NGRAPP extends HTMLElement {
   buttonAnalytics() {
     // @ts-ignore
     const store_url = window?.Shopify?.shop;
-    const dataEndpoint = `${this.HOST}/api/shop/buttons/?shop=${store_url}`;
+    const dataEndpoint = `${this.HOST}/api/analytics/buttons/?shop=${store_url}`;
     fetch(dataEndpoint);
     return;
   }
@@ -991,7 +1065,7 @@ class NGRAPP extends HTMLElement {
     if (ngrCountries) {
       return JSON.parse(ngrCountries);
     }
-    const dataEndpoint = `${this.HOST}/api/countries.json`;
+    const dataEndpoint = `${this.HOST}/api/countries`;
 
     try {
       const response = await fetch(dataEndpoint).then((resp) => resp.json());

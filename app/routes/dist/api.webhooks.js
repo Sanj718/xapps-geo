@@ -60,7 +60,7 @@ exports.action = function (_a) {
                         case 'SHOP_REDACT': return [3 /*break*/, 5];
                         case 'APP_SUBSCRIPTIONS_UPDATE': return [3 /*break*/, 5];
                         case "BULK_OPERATIONS_FINISH": return [3 /*break*/, 11];
-                        case 'APP_SCOPES_UPDATE': return [3 /*break*/, 14];
+                        case "APP_SCOPES_UPDATE": return [3 /*break*/, 14];
                     }
                     return [3 /*break*/, 17];
                 case 2:

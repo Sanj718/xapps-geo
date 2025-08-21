@@ -1,69 +1,22 @@
 import { default_basic_configs, default_markets_basic_configs, jsonSafeParse } from "./components/_helpers";
 import { EditRedirectItem, RedirectItem } from "./components/_types";
 import prisma from "./db.server";
-
-interface DBResponse {
-  status: boolean;
-  data?: any;
-  error?: string;
-}
-
-interface Shop {
-  shop: string;
-}
-
-interface InitialConfigs extends Shop {
-  basicConfigs: any;
-  advancedConfigs?: any;
-}
-
-interface MarketsConfigs extends Shop {
-  basicConfigs: any;
-  advancedConfigs?: any;
-}
-
-interface AllRedirects extends Shop {
-  localesAllowed?: boolean;
-}
-
-interface DeleteRedirect extends Shop {
-  id: number;
-}
-
-interface ReorderRedirects extends Shop {
-  ids: number[]
-}
-
-interface AllowedPagesProps extends Shop {
-  allowedPages: any;
-  hideOnAllowedPages?: boolean;
-}
-
-interface MarketSyncStatus extends Shop {
-  syncStatus: string;
-}
-
-interface MarketsData extends Shop {
-  markets: any;
-  backupRegion: any;
-}
-
-interface MarketsWidgetProps extends Shop {
-  widget: boolean;
-}
-
-interface MarketsRedirectProps extends Shop {
-  autoRedirect: boolean;
-}
-
-interface ChangePlanProps extends Shop {
-  plan: number;
-  shopifyPlanId: string;
-}
-
-interface CancelPlanProps extends Shop {
-  cancelShopifyPlanId: string;
-}
+import { 
+  DBResponse, 
+  Shop, 
+  InitialConfigs, 
+  MarketsConfigs, 
+  AllRedirects, 
+  DeleteRedirect, 
+  ReorderRedirects, 
+  AllowedPagesProps, 
+  MarketSyncStatus, 
+  MarketsData, 
+  MarketsWidgetProps, 
+  MarketsRedirectProps, 
+  ChangePlanProps, 
+  CancelPlanProps 
+} from "./components/_types";
 
 // App Plans
 // Free  - 3
@@ -897,78 +850,3 @@ export async function cancelPlan({ shop, cancelShopifyPlanId }: CancelPlanProps)
     return { status: false, error: (error as Error).toString() };
   }
 }
-
-// export const runMarketsSync = async ({ shop }: Shop): Promise<DBResponse> => {
-//   try {
-//     const result = await prisma.activeShops.update({
-//       where: { shop },
-//       data: {
-//         marketsSync: true,
-//       },
-//     });
-
-//     return { status: result ? true : false, data: result };
-//   } catch (error: any) {
-//     console.error(error);
-//     return { status: false, error: (error as Error).toString() };
-//   }
-// };
-//   shop_id,
-//   flag,
-//   label,
-//   url,
-//   order_r = 1,
-//   conditional = false,
-//   conditional_location,
-//   domain_redirection = false,
-//   locales = null,
-// }) {
-//   try {
-//     const redirectLocales = locales ? JSON.stringify(locales) : null;
-//     const conditionalLocation = conditional_location
-//       ? JSON.stringify(conditional_location)
-//       : null;
-//     const planQuery = "SELECT plan FROM active_shops WHERE id = $1";
-//     const redirectCountQuery =
-//       "SELECT COUNT(*) FROM redirects WHERE shop_id = $1";
-//     const planResult = await pool.query(planQuery, [shop_id]);
-//     const redirectCountResult = await pool.query(redirectCountQuery, [shop_id]);
-//     const plan = planResult.rows[0].plan;
-//     const redirectCount = parseInt(redirectCountResult.rows[0].count, 10);
-
-//     let redirectLimit = FREE_PLAN_LIMIT; // Default redirect limit
-//     if (plan === 2) {
-//       redirectLimit = 999;
-//     } else if (plan === 1) {
-//       redirectLimit = BASIC_PLAN_LIMIT;
-//     }
-
-//     if (redirectCount >= redirectLimit) {
-//       return 0; // Return early if redirect limit is reached
-//     }
-
-//     const insertQuery = `
-//     INSERT INTO redirects (shop_id, flag, label, url, order_r, conditional, conditional_location, domain_redirection, locales)
-//     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);;
-//     `;
-//     const insertParams = [
-//       shop_id,
-//       flag,
-//       label,
-//       url,
-//       order_r,
-//       conditional,
-//       conditionalLocation,
-//       domain_redirection,
-//       redirectLocales,
-//     ];
-//     const dbResponse = await pool.query(insertQuery, insertParams);
-
-//     const { rowCount } = dbResponse;
-
-//     return rowCount;
-//   } catch (error) {
-//     console.error(error);
-//     return false;
-//   }
-// };

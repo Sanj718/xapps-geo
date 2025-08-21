@@ -91,7 +91,7 @@
       } {% endcomment %}
       function track() {
         try{
-          const dataEndpoint = `${HOST}/api/shop/markets-auto?shop=${window?.Shopify?.shop}`;
+          const dataEndpoint = `${HOST}/api/analytics/markets-auto?shop=${window?.Shopify?.shop}`;
           fetch(dataEndpoint)
           return;
         }catch(e){

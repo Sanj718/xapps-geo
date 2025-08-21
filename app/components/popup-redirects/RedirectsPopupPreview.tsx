@@ -9,44 +9,7 @@ import "../../assets/preview.scss";
 import { OLD_DEFAULT_ICON } from "../_helpers";
 
 
-interface BasicConfigs {
-  icon?: string;
-  title?: string;
-  text?: string;
-  showFlag?: boolean;
-  showLngSelector?: boolean;
-  showCountrySelector?: boolean;
-  buttonText?: string;
-  buttonsBgColor?: string;
-  buttonsColor?: string;
-  font?: string;
-  iconWidth?: number;
-  modalBgColor?: string;
-  modalBorderColor?: string;
-  modalTextColor?: string;
-  stickyHorizontalPosition?: string;
-  stickyVerticalPosition?: string;
-  topbarSticky?: boolean;
-  stickyOpener?: string;
-  stickyToggleIcon?: string;
-  type?: string;
-  layout?: string;
-  dropdownDefault?: string;
-  dropdownPlaceholder?: string;
-}
-
-interface AdvancedConfigs {
-  html_id?: string;
-  css?: string;
-  disable_basic_css?: boolean;
-}
-
-interface RedirectsPopupPreviewProps {
-  redirects: any[];
-  basicConfigs: BasicConfigs;
-  advancedConfigs: AdvancedConfigs;
-  customCSSClass ?: string;
-}
+import { RedirectsPopupPreviewProps, BasicConfigs, AdvancedConfigs } from "../_types";
 
 export default function RedirectsPopupPreview({
   redirects,

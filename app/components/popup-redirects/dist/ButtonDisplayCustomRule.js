@@ -126,7 +126,11 @@ function ButtonDisplayCustomRule(_a) {
                                 return react_1["default"].createElement(CodeEditor_client_1["default"], { code: (code === null || code === void 0 ? void 0 : code.value) || _helpers_1.defaultButtonCode, onChange: isProPlan ? setCustomCode : function () { }, language: "javascript" });
                             }))),
                     react_1["default"].createElement(polaris_1.InlineStack, { align: "space-between", gap: "200" },
-                        react_1["default"].createElement(polaris_1.Button, { variant: "tertiary", icon: polaris_icons_1.MaximizeIcon, onClick: function () { return navigate("/app/redirects/button-display-custom-rule"); } }, "Open Full-Screen Editor"),
+                        react_1["default"].createElement(polaris_1.Button, { variant: "tertiary", icon: polaris_icons_1.MaximizeIcon, onClick: function () {
+                                if (typeof shopify !== 'undefined' && shopify.modal) {
+                                    navigate("/app/redirects/button-display-custom-rule");
+                                }
+                            } }, "Open Full-Screen Editor"),
                         react_1["default"].createElement(polaris_1.Button, { variant: "primary", onClick: function () { return handleCustomCodeSave(); }, loading: loading[_actions_1.ACTIONS.update_ButtonDisplayCustomRuleCode + "Loading"] }, "Save"))))));
 }
 exports["default"] = ButtonDisplayCustomRule;

@@ -82,7 +82,7 @@ export default function MarketsRedirects() {
     if (themeEmbedData?.current?.blocks) {
       let checkMarkets = false;
 
-      Object.entries(themeEmbedData.current.blocks).forEach(([item, value]) => {
+      Object.entries(themeEmbedData.current.blocks).forEach(([item, value]: [string, any]) => {
         if (
           value.type.includes(EMBED_APP_ID) &&
           value.type.includes(EMBED_APP_HANDLE) &&
@@ -116,7 +116,6 @@ export default function MarketsRedirects() {
   async function handleMarketsSync() {
     if (!shopdb?.id) return;
     setMarketsSyncLoading(true);
-    console.log('handleMarketsSync', shopdb?.id);
     submit(
       {
         _action: ACTIONS.run_MarketsSync,

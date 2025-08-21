@@ -8,9 +8,9 @@ import { OutletContext } from "../_types";
 export default function PromoBadge({ type }: { type: "basic" | "pro" }) {
   const { activePlan } = useOutletContext<OutletContext>();
   const { isFreePlan, isBasicPlan, isProPlan } = planParser(activePlan);
-  // [TODO] - remove this once we have a proper plan parser
-  // if ((isProPlan || isBasicPlan) && type === "basic") return;
-  // if (isProPlan && type === "pro") return;
+
+  if ((isProPlan || isBasicPlan) && type === "basic") return;
+  if (isProPlan && type === "pro") return;
 
   return (
     <div>

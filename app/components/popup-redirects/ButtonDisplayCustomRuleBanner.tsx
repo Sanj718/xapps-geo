@@ -1,6 +1,6 @@
 import { Banner } from "@shopify/polaris";
 
-export default function WidgetDisplayCustomRuleBanner() {
+export default function ButtonDisplayCustomRuleBanner() {
     return (
         <Banner tone="warning">
            Activating this feature will disable redirect item{" "}

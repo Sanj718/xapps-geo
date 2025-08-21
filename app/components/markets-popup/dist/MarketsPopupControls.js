@@ -51,7 +51,6 @@ function MarketsPopupControls(_a) {
     function handleMarketsPopup() {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                console.log("handleMarketsPopup");
                 submit({
                     _action: _actions_1.ACTIONS.update_MarketsWidget,
                     data: {

@@ -9,9 +9,10 @@ function PromoBadge(_a) {
     var type = _a.type;
     var activePlan = react_2.useOutletContext().activePlan;
     var _b = _helpers_1.planParser(activePlan), isFreePlan = _b.isFreePlan, isBasicPlan = _b.isBasicPlan, isProPlan = _b.isProPlan;
-    // [TODO] - remove this once we have a proper plan parser
-    // if ((isProPlan || isBasicPlan) && type === "basic") return;
-    // if (isProPlan && type === "pro") return;
+    if ((isProPlan || isBasicPlan) && type === "basic")
+        return;
+    if (isProPlan && type === "pro")
+        return;
     return (react_1["default"].createElement("div", null,
         react_1["default"].createElement(polaris_1.InlineStack, { blockAlign: "center", wrap: false },
             react_1["default"].createElement(polaris_1.Badge, { progress: type === "pro" ? "complete" : "partiallyComplete", tone: type === "pro" ? "success-strong" : "success" }, type === "pro" ? "Pro plan feature" : "Basic plan feature"),

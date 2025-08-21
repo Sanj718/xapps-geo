@@ -23,10 +23,10 @@ var MarketsPopupPreview_1 = require("./MarketsPopupPreview");
 require("../../assets/custom.scss");
 var CodeEditor_client_1 = require("../_common/CodeEditor.client");
 function CustomizeMarketsPopup(_a) {
-    var _b;
+    var _b, _c;
     var marketsData = _a.marketsData, configs = _a.configs, setConfigs = _a.setConfigs, advancedConfigs = _a.advancedConfigs, setAdvancedConfigs = _a.setAdvancedConfigs;
-    var _c = react_2.useOutletContext(), shopInfo = _c.shopInfo, shopdb = _c.shopdb, activePlan = _c.activePlan, devPlan = _c.devPlan, veteranPlan = _c.veteranPlan, appId = _c.appId, appData = _c.appData;
-    var _d = _helpers_1.planParser(activePlan), isProPlan = _d.isProPlan, isBasicPlan = _d.isBasicPlan, isFreePlan = _d.isFreePlan;
+    var _d = react_2.useOutletContext(), shopInfo = _d.shopInfo, activePlan = _d.activePlan;
+    var _e = _helpers_1.planParser(activePlan), isProPlan = _e.isProPlan, isFreePlan = _e.isFreePlan;
     var secondaryLocales = (_b = shopInfo === null || shopInfo === void 0 ? void 0 : shopInfo.shopLocales) === null || _b === void 0 ? void 0 : _b.filter(function (item) { return !item.primary; });
     return react_1["default"].createElement(polaris_1.InlineGrid, { columns: { xs: "1fr", md: "420px 3fr" }, gap: "400" },
         react_1["default"].createElement(polaris_1.Card, null,
@@ -118,8 +118,8 @@ function CustomizeMarketsPopup(_a) {
                                 return setConfigs(function (current) { return (__assign(__assign({}, current), { topbarSticky: value })); });
                             } })),
                         (configs === null || configs === void 0 ? void 0 : configs.type) === "sticky" && (react_1["default"].createElement(polaris_1.InlineGrid, { gap: "300" },
-                            react_1["default"].createElement(polaris_1.RangeSlider, { disabled: isFreePlan, label: "Vertical position", value: configs === null || configs === void 0 ? void 0 : configs.stickyVerticalPosition, onChange: function (value) {
-                                    return setConfigs(function (current) { return (__assign(__assign({}, current), { stickyVerticalPosition: value })); });
+                            react_1["default"].createElement(polaris_1.RangeSlider, { disabled: isFreePlan, label: "Vertical position", value: (_c = configs === null || configs === void 0 ? void 0 : configs.stickyVerticalPosition) !== null && _c !== void 0 ? _c : 50, onChange: function (value) {
+                                    return setConfigs(function (current) { return (__assign(__assign({}, current), { stickyVerticalPosition: typeof value === 'number' ? value : 50 })); });
                                 }, output: true }),
                             react_1["default"].createElement(polaris_1.InlineGrid, { columns: "2", gap: "200" },
                                 react_1["default"].createElement(polaris_1.Select, { disabled: isFreePlan, label: "Sticky opener icon", options: [
@@ -184,7 +184,7 @@ function CustomizeMarketsPopup(_a) {
                             react_1["default"].createElement("div", { className: isProPlan ? "" : "visually-disabled" },
                                 react_1["default"].createElement("div", { className: "code-editor" },
                                     react_1["default"].createElement(react_1.Suspense, { fallback: react_1["default"].createElement("div", null, "Loading editor...") },
-                                        react_1["default"].createElement(CodeEditor_client_1["default"], { code: advancedConfigs === null || advancedConfigs === void 0 ? void 0 : advancedConfigs.css, onChange: isProPlan
+                                        react_1["default"].createElement(CodeEditor_client_1["default"], { code: (advancedConfigs === null || advancedConfigs === void 0 ? void 0 : advancedConfigs.css) || '', onChange: isProPlan
                                                 ? function (value) {
                                                     return setAdvancedConfigs(function (current) { return (__assign(__assign({}, current), { css: value })); });
                                                 }

@@ -57,7 +57,9 @@ export default function RedirectsList({
 
   function openEdit(item: any) {
     setEditRedirect(item);
-    shopify.modal.show("edit-redirect")
+    if (typeof shopify !== 'undefined' && shopify.modal) {
+      shopify.modal.show("edit-redirect");
+    }
   }
 
   async function handleDrop(ev: DragEvent) {
@@ -230,7 +232,11 @@ export default function RedirectsList({
             <InlineStack align="end">
               <Button
                 variant="primary"
-                onClick={() => shopify.modal.show("add-redirect")}
+                onClick={() => {
+                  if (typeof shopify !== 'undefined' && shopify.modal) {
+                    shopify.modal.show("add-redirect");
+                  }
+                }}
                 icon={PlusCircleIcon}
               >
                 Add

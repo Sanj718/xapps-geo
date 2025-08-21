@@ -806,7 +806,7 @@ class NGRMarkets extends HTMLElement {
       return JSON.parse(ngr_countries);
     }
     
-    const dataEndpoint = `${this.HOST}/api/countries.json`;
+    const dataEndpoint = `${this.HOST}/api/countries`;
     try {
       const response = await fetch(dataEndpoint).then((resp) => resp.json());
       localStorage.setItem("ngr_countries", JSON.stringify({ ...response }));

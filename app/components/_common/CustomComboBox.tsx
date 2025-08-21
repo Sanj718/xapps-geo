@@ -55,7 +55,6 @@ export function CustomComboBox({
                 nextSelectedTags.add(selected);
             }
             setSelectedTags([...nextSelectedTags]);
-            console.log(setSelectedItems);
             setSelectedItems([...nextSelectedTags]);
             setValue("");
             setSuggestion("");

@@ -71,8 +71,8 @@ exports.action = function (params) { return __awaiter(void 0, void 0, void 0, fu
 }); }); };
 function CustomizePopupPage() {
     var _a, _b, _c;
-    var _d = react_2.useOutletContext(), shopInfo = _d.shopInfo, shopdb = _d.shopdb, activePlan = _d.activePlan, devPlan = _d.devPlan, veteranPlan = _d.veteranPlan, appId = _d.appId, appData = _d.appData;
-    var _e = _helpers_1.planParser(activePlan), isProPlan = _e.isProPlan, isBasicPlan = _e.isBasicPlan, isFreePlan = _e.isFreePlan;
+    var _d = react_2.useOutletContext(), shopInfo = _d.shopInfo, activePlan = _d.activePlan;
+    var _e = _helpers_1.planParser(activePlan), isProPlan = _e.isProPlan, isFreePlan = _e.isFreePlan;
     var _f = react_2.useLoaderData(), marketsConfigs = _f.marketsConfigs, marketsData = _f.marketsData;
     var actionData = react_2.useActionData();
     var submit = react_2.useSubmit();
@@ -96,30 +96,6 @@ function CustomizePopupPage() {
             });
         });
     }
-    react_1.useMemo(function () {
-        // if (actionData && !actionData?.data?.status) {
-        //   shopify.toast.show("Error, try again.", { isError: true });
-        //   if (actionData?.data?.errors?.length) {
-        //     setErrors(actionData.data.errors);
-        //   }
-        // } else {
-        //   setErrors([]);
-        // }
-        // if (
-        //   (actionData?._action === "new" || actionData?._action === "edit") &&
-        //   actionData?._status
-        // ) {
-        //   const { discountId, discountClass } =
-        //     actionData?.data?.discountCreate?.codeAppDiscount ||
-        //     actionData?.data?.discountCreate?.automaticAppDiscount ||
-        //     {};
-        //   const url = getDiscountUrl(discountId, discountClass, true);
-        //   if (url) navigate(url);
-        // }
-        // if (actionData?._action === "discountDelete" && actionData?._status) {
-        //   navigate("/app");
-        // }
-    }, [actionData]);
     react_1.useEffect(function () {
         var _a, _b;
         var definedConfigs = __assign(__assign({}, _helpers_1.default_markets_basic_configs), (_a = marketsConfigs === null || marketsConfigs === void 0 ? void 0 : marketsConfigs.data) === null || _a === void 0 ? void 0 : _a.basicConfigs);
@@ -160,7 +136,7 @@ function CustomizePopupPage() {
         React.createElement(app_bridge_react_1.Modal, { id: "popup-content-translation-popup" },
             React.createElement(app_bridge_react_1.TitleBar, { title: "Popup content translation" }),
             React.createElement(polaris_1.Box, { padding: "400" },
-                React.createElement(polaris_1.AppProvider, { i18n: {}, apiKey: "" },
+                React.createElement(polaris_1.AppProvider, { i18n: {} },
                     React.createElement(polaris_1.InlineGrid, { gap: "300" },
                         React.createElement(polaris_1.Box, null,
                             React.createElement(PromoBadge_1["default"], { type: "pro" })),
@@ -192,17 +168,17 @@ function CustomizePopupPage() {
         React.createElement(app_bridge_react_1.Modal, { id: "icon-upload-popup" },
             React.createElement(app_bridge_react_1.TitleBar, { title: "Select custom icon" }),
             React.createElement(polaris_1.Box, { padding: "400" },
-                React.createElement(polaris_1.AppProvider, { i18n: {}, apiKey: "" },
+                React.createElement(polaris_1.AppProvider, { i18n: {} },
                     React.createElement(ImageManager_1["default"], { callBack: handleCustomIconUpload })))),
         React.createElement(app_bridge_react_1.Modal, { id: "icon-settings-popup" },
             React.createElement(app_bridge_react_1.TitleBar, { title: "Icon settings" }),
             React.createElement(polaris_1.Box, { padding: "400" },
-                React.createElement(polaris_1.AppProvider, { i18n: {}, apiKey: "" },
+                React.createElement(polaris_1.AppProvider, { i18n: {} },
                     React.createElement(IconSettings_1["default"], { configs: localConfigs, setConfigs: setLocalConfigs, isFreePlan: isFreePlan })))),
         React.createElement(app_bridge_react_1.Modal, { id: "dropdown-label-translation-popup" },
             React.createElement(app_bridge_react_1.TitleBar, { title: "Dropdown label translation" }),
             React.createElement(polaris_1.Box, { padding: "400" },
-                React.createElement(polaris_1.AppProvider, { i18n: {}, apiKey: "" },
+                React.createElement(polaris_1.AppProvider, { i18n: {} },
                     React.createElement(polaris_1.InlineGrid, { gap: "300" },
                         React.createElement(polaris_1.Box, null,
                             React.createElement(PromoBadge_1["default"], { type: "pro" })),

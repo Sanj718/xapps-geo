@@ -8,7 +8,7 @@ export async function handleActions({ request }: ActionFunctionArgs) {
     const { admin, session } = await authenticate.admin(request);
     const { _action, data } = (await request?.json()) || {};
 
-    if (_action === ACTIONS.AnalyticsData) {
+    if (_action === ACTIONS.get_AnalyticsData) {
         const response = await getAnalyticsData({ shop: session.shop });
         return { _action, ...response };
     }

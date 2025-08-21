@@ -23,26 +23,29 @@ import {
 import countriesList from "../../assets/countries.json";
 import { isWebUri } from "valid-url";
 import { useActionData, useNavigation, useOutletContext, useSubmit } from "@remix-run/react";
-import { ActionReturn, LoadingStates, OutletContext } from "../_types";
-import ListWithTags from "../_common/ListWithTags";
+import { ActionReturn, AutoRedirectItem, AutoRedirectItemValue, LoadingStates, OutletContext } from "../_types";
+import ListWithTags from "../_common/ListWithTags"; 
 import { ACTIONS } from "../_actions";
 
 
-const defaultRedirectItem = {
+const defaultRedirectItem: AutoRedirectItemValue = {
+  id: "",
+  key: "",
   location: [],
   except_r: false,
   block: false,
   url: "",
   domain_redirection: false,
-  status: true
+  status: true,
+  order_r: 0
 }
 export default function AutoRedirectForm({
-  editItem = null,
-  redirects = [],
+  editItem = null as AutoRedirectItem | null,
+  redirects = [] as AutoRedirectItem[],
 }) {
-  const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
+  const { activePlan, appId } =
     useOutletContext<OutletContext>();
-  const { isProPlan, isBasicPlan, isFreePlan } = planParser(activePlan);
+  const { isFreePlan } = planParser(activePlan);
   const navigation = useNavigation();
   const submit = useSubmit()
   const actionData = useActionData<ActionReturn>();
@@ -51,15 +54,15 @@ export default function AutoRedirectForm({
     url: false,
     location: false,
   });
-  const [redirectItem, setRedirectItem] = useState(
+  const [redirectItem, setRedirectItem] = useState<AutoRedirectItemValue>(
     editItem
-      ? { id: editItem?.node?.id, ...jsonSafeParse(editItem.node.value) }
+      ? { ...editItem?.jsonValue, id: editItem?.id, }
       : defaultRedirectItem
   );
-
+  
   useMemo(() => {
     if (editItem) {
-      setRedirectItem({ id: editItem?.node?.id, key: editItem?.node?.key, ...jsonSafeParse(editItem.node.value) });
+      setRedirectItem({ ...editItem?.jsonValue, id: editItem?.id, key: editItem?.key });
     }
   }, [editItem]);
 
@@ -100,15 +103,21 @@ export default function AutoRedirectForm({
 
   useMemo(() => {
     if (actionData?._action === ACTIONS.create_AutoRedirect && actionData?.status) {
-      shopify.modal.hide("add-auto-redirect");
+      if (typeof shopify !== 'undefined' && shopify.modal) {
+        shopify.modal.hide("add-auto-redirect");
+      }
       setRedirectItem(defaultRedirectItem);
     }
     if (actionData?._action === ACTIONS.delete_AutoRedirect && actionData?.status) {
-      shopify.modal.hide("edit-auto-redirect");
+      if (typeof shopify !== 'undefined' && shopify.modal) {
+        shopify.modal.hide("edit-auto-redirect");
+      }
       setRedirectItem(defaultRedirectItem);
     }
     if (actionData?._action === ACTIONS.update_AutoRedirect && actionData?.status) {
-      shopify.modal.hide("edit-auto-redirect");
+      if (typeof shopify !== 'undefined' && shopify.modal) {
+        shopify.modal.hide("edit-auto-redirect");
+      }
       setRedirectItem(defaultRedirectItem);
     }
   }, [actionData]);
@@ -121,14 +130,14 @@ export default function AutoRedirectForm({
   }
 
   async function handleEdit() {
-    if (!appId) return;
+    if (!appId || !editItem?.key) return;
     submit(
       {
         _action: ACTIONS.update_AutoRedirect,
         data: {
           appId,
-          key: editItem?.node?.key,
-          value: redirectItem,
+          key: editItem?.key,
+          value: redirectItem as any,
         },
       },
       requestHeaders,
@@ -157,7 +166,7 @@ export default function AutoRedirectForm({
       return;
     }
     const nextOrderNumber = redirects?.length
-      ? Math.max(...redirects.map((o) => JSON.parse(o.node.value).order_r)) + 1
+      ? Math.max(...redirects.map((o) => o.jsonValue.order_r)) + 1
       : 1;
 
     if (!appId) return;
@@ -211,7 +220,7 @@ export default function AutoRedirectForm({
               },
             ]}
             onChange={(value) =>
-              setRedirectItem((current) => ({
+              setRedirectItem((current: any) => ({
                 ...current,
                 except_r: value === "except" ? true : false,
               }))
@@ -245,7 +254,7 @@ export default function AutoRedirectForm({
               label="Redirect url"
               value={redirectItem?.url ? redirectItem.url : "https://"}
               error={fieldValidation.url && "Please enter valid url"}
-              onBlur={(e) => validateUrlField(e.target.value, "url")}
+              onBlur={(e: any) => validateUrlField(e?.target?.value || "", "url")}
               onChange={(value) =>
                 setRedirectItem({
                   ...redirectItem,
@@ -299,7 +308,7 @@ export default function AutoRedirectForm({
               label="Block"
               checked={redirectItem?.block}
               onChange={(value) =>
-                setRedirectItem((current) => ({ ...current, block: value }))
+                setRedirectItem((current: AutoRedirectItemValue) => ({ ...current, block: value }))
               }
             />
           </div>
@@ -322,8 +331,12 @@ export default function AutoRedirectForm({
           <InlineStack gap="200">
             <Button
               onClick={() => {
-                shopify.modal.hide("add-auto-redirect");
-                shopify.modal.hide("edit-auto-redirect");
+                if (typeof shopify !== 'undefined' && shopify.modal) {
+                  shopify.modal.hide("add-auto-redirect");
+                }
+                if (typeof shopify !== 'undefined' && shopify.modal) {
+                  shopify.modal.hide("edit-auto-redirect");
+                }
               }}
             >
               Cancel

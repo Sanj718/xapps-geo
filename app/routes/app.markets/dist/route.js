@@ -145,7 +145,6 @@ function MarketsRedirects() {
                 if (!(shopdb === null || shopdb === void 0 ? void 0 : shopdb.id))
                     return [2 /*return*/];
                 setMarketsSyncLoading(true);
-                console.log('handleMarketsSync', shopdb === null || shopdb === void 0 ? void 0 : shopdb.id);
                 submit({
                     _action: _actions_2.ACTIONS.run_MarketsSync,
                     data: {

@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -73,14 +84,15 @@ exports.action = function (params) { return __awaiter(void 0, void 0, void 0, fu
     return [2 /*return*/, _actions_1.handleActions(params)];
 }); }); };
 function CustomRedirects() {
-    var _a = react_2.useOutletContext(), shopInfo = _a.shopInfo, shopdb = _a.shopdb, activePlan = _a.activePlan, devPlan = _a.devPlan, veteranPlan = _a.veteranPlan, appId = _a.appId, appData = _a.appData;
-    var _b = react_2.useLoaderData(), themeEmbedData = _b.themeEmbedData, allRedirects = _b.allRedirects, configs = _b.configs, widgetEditorStatus = _b.widgetEditorStatus, widgetEditorCode = _b.widgetEditorCode, buttonEditorStatus = _b.buttonEditorStatus, buttonEditorCode = _b.buttonEditorCode, allAutoRedirects = _b.allAutoRedirects, autoRedirectsCustomCodeStatus = _b.autoRedirectsCustomCodeStatus, autoRedirectsCustomCode = _b.autoRedirectsCustomCode;
+    // const { shopInfo, shopdb, activePlan, devPlan, veteranPlan, appId, appData } =
+    //   useOutletContext<OutletContext>();
+    var _a = react_2.useLoaderData(), themeEmbedData = _a.themeEmbedData, allRedirects = _a.allRedirects, configs = _a.configs, widgetEditorStatus = _a.widgetEditorStatus, widgetEditorCode = _a.widgetEditorCode, buttonEditorStatus = _a.buttonEditorStatus, buttonEditorCode = _a.buttonEditorCode, allAutoRedirects = _a.allAutoRedirects, autoRedirectsCustomCodeStatus = _a.autoRedirectsCustomCodeStatus, autoRedirectsCustomCode = _a.autoRedirectsCustomCode;
     var actionData = react_2.useActionData();
-    var _c = react_2.useSearchParams(), searchParams = _c[0], setSearchParams = _c[1];
-    var _d = react_1.useState(null), active = _d[0], setActive = _d[1];
-    var _e = react_1.useState([]), redirects = _e[0], setRedirects = _e[1];
-    var _f = react_1.useState([]), autoRedirects = _f[0], setAutoRedirects = _f[1];
-    var _g = react_1.useState(0), selectedTab = _g[0], setSelectedTab = _g[1];
+    var _b = react_2.useSearchParams(), searchParams = _b[0], setSearchParams = _b[1];
+    var _c = react_1.useState(null), active = _c[0], setActive = _c[1];
+    var _d = react_1.useState([]), redirects = _d[0], setRedirects = _d[1];
+    var _e = react_1.useState([]), autoRedirects = _e[0], setAutoRedirects = _e[1];
+    var _f = react_1.useState(0), selectedTab = _f[0], setSelectedTab = _f[1];
     var smUp = polaris_1.useBreakpoints().smUp;
     react_1.useMemo(function () {
         var _a;
@@ -89,8 +101,12 @@ function CustomRedirects() {
     }, [allRedirects]);
     react_1.useMemo(function () {
         var _a;
-        var orderedAutoRedirects = (_a = allAutoRedirects === null || allAutoRedirects === void 0 ? void 0 : allAutoRedirects.data) === null || _a === void 0 ? void 0 : _a.sort(function (a, b) { return JSON.parse(a.node.value).order_r - JSON.parse(b.node.value).order_r; });
-        setAutoRedirects(orderedAutoRedirects || []);
+        // [TODO] parse json here
+        if (allAutoRedirects === null || allAutoRedirects === void 0 ? void 0 : allAutoRedirects.status) {
+            var parsedAutoRedirects = (_a = allAutoRedirects === null || allAutoRedirects === void 0 ? void 0 : allAutoRedirects.data) === null || _a === void 0 ? void 0 : _a.map(function (item) { return (__assign({}, item.node)); });
+            var orderedAutoRedirects = parsedAutoRedirects === null || parsedAutoRedirects === void 0 ? void 0 : parsedAutoRedirects.sort(function (a, b) { return a.jsonValue.order_r - b.jsonValue.order_r; });
+            setAutoRedirects(orderedAutoRedirects || []);
+        }
     }, [allAutoRedirects]);
     react_1.useMemo(function () {
         var _a;
@@ -101,7 +117,6 @@ function CustomRedirects() {
                 if (value.type.includes(EMBED_APP_ID) &&
                     value.type.includes(EMBED_APP_HANDLE) &&
                     !value.disabled) {
-                    console.log("value", value);
                     checkRedirects_1 = true;
                 }
             });
@@ -110,30 +125,30 @@ function CustomRedirects() {
             }
         }
     }, [themeEmbedData]);
-    react_1.useMemo(function () {
-        // if (actionData && !actionData?.data?.status) {
-        //   shopify.toast.show("Error, try again.", { isError: true });
-        //   if (actionData?.data?.errors?.length) {
-        //     setErrors(actionData.data.errors);
-        //   }
-        // } else {
-        //   setErrors([]);
-        // }
-        // if (
-        //   (actionData?._action === "new" || actionData?._action === "edit") &&
-        //   actionData?._status
-        // ) {
-        //   const { discountId, discountClass } =
-        //     actionData?.data?.discountCreate?.codeAppDiscount ||
-        //     actionData?.data?.discountCreate?.automaticAppDiscount ||
-        //     {};
-        //   const url = getDiscountUrl(discountId, discountClass, true);
-        //   if (url) navigate(url);
-        // }
-        // if (actionData?._action === "discountDelete" && actionData?._status) {
-        //   navigate("/app");
-        // }
-    }, [actionData]);
+    // useMemo(() => {
+    // if (actionData && !actionData?.data?.status) {
+    //   shopify.toast.show("Error, try again.", { isError: true });
+    //   if (actionData?.data?.errors?.length) {
+    //     setErrors(actionData.data.errors);
+    //   }
+    // } else {
+    //   setErrors([]);
+    // }
+    // if (
+    //   (actionData?._action === "new" || actionData?._action === "edit") &&
+    //   actionData?._status
+    // ) {
+    //   const { discountId, discountClass } =
+    //     actionData?.data?.discountCreate?.codeAppDiscount ||
+    //     actionData?.data?.discountCreate?.automaticAppDiscount ||
+    //     {};
+    //   const url = getDiscountUrl(discountId, discountClass, true);
+    //   if (url) navigate(url);
+    // }
+    // if (actionData?._action === "discountDelete" && actionData?._status) {
+    //   navigate("/app");
+    // }
+    // }, [actionData]);
     react_1.useMemo(function () {
         var tab = searchParams.get("tab");
         if (tab) {

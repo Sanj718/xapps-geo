@@ -101,14 +101,33 @@
   text-decoration: none;
   padding: 10px;
   text-transform: uppercase;
-  transition: background-color 350ms ease, color 350ms ease;
+  transition: background-color 350ms ease, color 350ms ease, opacity 150ms ease, transform 150ms ease;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
   font-size: 14px;
   align-items: center;
   justify-content: center;
 }
-.ngr-redirects__link:hover {
-  background-color: #000;
-  color: #fff;
+@media screen and (max-width: 768px) {
+  .ngr-redirects__link {
+    position: relative;
+    z-index: 1;
+  }
+}
+@media screen and (min-width: 768px) {
+  .ngr-redirects__link:hover {
+    background-color: #000;
+    color: #fff;
+  }
 }
 .ngr-redirects__link img {
   width: 28px;
@@ -275,39 +294,46 @@
   overflow: initial;
   box-shadow: 0 0 2px 0px #00000042;
 }
-.ngr-modal.top-bar ngr-select::before, .ngr-modal.top-bar .ngr-select::before {
+.ngr-modal.top-bar ngr-select::before,
+.ngr-modal.top-bar .ngr-select::before {
   height: 14px;
   width: 14px;
   right: 4px;
 }
-.ngr-modal.top-bar ngr-select select ~ div, .ngr-modal.top-bar .ngr-select select ~ div {
+.ngr-modal.top-bar ngr-select select ~ div,
+.ngr-modal.top-bar .ngr-select select ~ div {
   font-size: 12px;
   padding: 4px 20px 4px 8px;
   min-width: 80px;
   line-height: 22px;
 }
-.ngr-modal.top-bar ngr-select .ngr-select__label, .ngr-modal.top-bar .ngr-select .ngr-select__label {
+.ngr-modal.top-bar ngr-select .select-placeholder,
+.ngr-modal.top-bar .ngr-select .select-placeholder {
   font-size: 12px;
   padding: 4px 20px 4px 8px;
   min-width: 80px;
   line-height: 22px;
 }
-.ngr-modal.top-bar ngr-select ul, .ngr-modal.top-bar .ngr-select ul {
+.ngr-modal.top-bar ngr-select ul,
+.ngr-modal.top-bar .ngr-select ul {
   left: auto;
   right: 0;
   width: max-content;
   max-width: 200px;
   min-width: 100%;
 }
-.ngr-modal.top-bar ngr-select ul li, .ngr-modal.top-bar .ngr-select ul li {
+.ngr-modal.top-bar ngr-select ul li,
+.ngr-modal.top-bar .ngr-select ul li {
   font-size: 12px;
   padding: 2px 4px;
 }
-.ngr-modal.top-bar ngr-select ul li img, .ngr-modal.top-bar .ngr-select ul li img {
+.ngr-modal.top-bar ngr-select ul li img,
+.ngr-modal.top-bar .ngr-select ul li img {
   width: 30px;
   height: 30px;
 }
-.ngr-modal.top-bar ngr-select ul li[data-index="1"], .ngr-modal.top-bar .ngr-select ul li[data-index="1"] {
+.ngr-modal.top-bar ngr-select ul li[data-index="1"],
+.ngr-modal.top-bar .ngr-select ul li[data-index="1"] {
   margin: 0;
 }
 .ngr-modal.top-bar .ngr-modal__title {
@@ -426,22 +452,28 @@
     right: calc($button-width * -1);
   }
 }
-.ngr-modal.sticky-bar ngr-select, .ngr-modal.sticky-bar .ngr-select {
+.ngr-modal.sticky-bar ngr-select,
+.ngr-modal.sticky-bar .ngr-select {
   max-width: 100%;
 }
-.ngr-modal.sticky-bar ngr-select select ~ div, .ngr-modal.sticky-bar .ngr-select select ~ div {
+.ngr-modal.sticky-bar ngr-select select ~ div,
+.ngr-modal.sticky-bar .ngr-select select ~ div {
   padding: 4px 20px 4px 8px;
 }
-.ngr-modal.sticky-bar ngr-select .ngr-select__label, .ngr-modal.sticky-bar .ngr-select .ngr-select__label {
+.ngr-modal.sticky-bar ngr-select .select-placeholder,
+.ngr-modal.sticky-bar .ngr-select .select-placeholder {
   padding: 4px 20px 4px 8px;
 }
-.ngr-modal.sticky-bar ngr-select ul li, .ngr-modal.sticky-bar .ngr-select ul li {
+.ngr-modal.sticky-bar ngr-select ul li,
+.ngr-modal.sticky-bar .ngr-select ul li {
   padding: 8px;
 }
-.ngr-modal.sticky-bar ngr-select ul li a, .ngr-modal.sticky-bar .ngr-select ul li a {
+.ngr-modal.sticky-bar ngr-select ul li a,
+.ngr-modal.sticky-bar .ngr-select ul li a {
   font-size: 14px;
 }
-.ngr-modal.sticky-bar ngr-select ul li a img, .ngr-modal.sticky-bar .ngr-select ul li a img {
+.ngr-modal.sticky-bar ngr-select ul li a img,
+.ngr-modal.sticky-bar .ngr-select ul li a img {
   max-width: 30px;
   height: auto;
 }
@@ -515,8 +547,8 @@ ngr-select label,
   transform: scaleY(0);
   transition: 0.3s ease;
 }
-ngr-select .ngr-select__label,
-.ngr-select .ngr-select__label {
+ngr-select .select-placeholder,
+.ngr-select .select-placeholder {
   max-width: 100%;
   padding: 8px 30px 8px 8px;
   border: 1px solid #000;

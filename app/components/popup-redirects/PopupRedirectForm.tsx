@@ -90,7 +90,7 @@ export default function PopupRedirectForm({
   const [addButtonStatus, setAddButtonStatus] = useState(false);
   const [labelTranslation, setLabelTranslation] = useState(false);
   const [assetsModalStatus, setAssetsModalStatus] = useState(false);
-  const [redirectItem, setRedirectItem] = useState<RedirectItem>(defaultRedirectItem);
+  const [redirectItem, setRedirectItem] = useState<RedirectItem>(defaultRedirectItem as RedirectItem);
   const [fieldValidation, setFieldValidation] = useState({
     url: false,
     flag: false,
@@ -105,22 +105,30 @@ export default function PopupRedirectForm({
 
   useMemo(() => {
     if (actionData?._action === ACTIONS.create_Redirect && actionData?.status) {
-      shopify.modal.hide("add-redirect");
-      setRedirectItem(defaultRedirectItem);
+      if (typeof shopify !== 'undefined' && shopify.modal) {
+        shopify.modal.hide("add-redirect");
+      }
+      setRedirectItem(defaultRedirectItem as RedirectItem);
       setSelectedCountry("--");
     }
     if (actionData?._action === ACTIONS.delete_Redirect && actionData?.status) {
-      shopify.modal.hide("edit-redirect");
-      setRedirectItem(defaultRedirectItem);
+      if (typeof shopify !== 'undefined' && shopify.modal) {
+        shopify.modal.hide("edit-redirect");
+      }
+      setRedirectItem(defaultRedirectItem as RedirectItem);
       setSelectedCountry("--");
     }
     if (actionData?._action === ACTIONS.update_Redirect && actionData?.status) {
-      shopify.modal.hide("edit-redirect");
-      setRedirectItem(defaultRedirectItem);
+      if (typeof shopify !== 'undefined' && shopify.modal) {
+        shopify.modal.hide("edit-redirect");
+      }
+      setRedirectItem(defaultRedirectItem as RedirectItem);
       setSelectedCountry("--");
     }
     if (actionData?.status === false && actionData?.error !== "") {
-      shopify.toast.show(actionData?.error, { isError: true })
+      if (typeof shopify !== 'undefined' && shopify.toast) {
+        shopify.toast.show(actionData?.error || "Something wrong", { isError: true })
+      }
     }
   }, [actionData]);
   
@@ -389,9 +397,9 @@ export default function PopupRedirectForm({
             placeholder="https://"
             inputMode="url"
             label="Url"
-            value={redirectItem.url ? redirectItem.url : "https://"}
+            value={redirectItem.url || "https://"}
             error={fieldValidation.url && "Please enter valid url"}
-            onBlur={(e) => validateUrlField(e.target.value, "url")}
+            onBlur={(e: React.FocusEvent<HTMLInputElement>) => validateUrlField(e.target.value, "url")}
             onChange={(value) => {
               setRedirectItem({
                 ...redirectItem,

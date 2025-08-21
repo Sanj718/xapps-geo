@@ -65,7 +65,7 @@ function handleActions(_a) {
                     return [4 /*yield*/, (request === null || request === void 0 ? void 0 : request.json())];
                 case 3:
                     _c = (_d.sent()) || {}, _action = _c._action, data = _c.data;
-                    if (!(_action === _actions_1.ACTIONS.AnalyticsData)) return [3 /*break*/, 5];
+                    if (!(_action === _actions_1.ACTIONS.get_AnalyticsData)) return [3 /*break*/, 5];
                     return [4 /*yield*/, getAnalyticsData({ shop: session.shop })];
                 case 4:
                     response = _d.sent();
