@@ -75,8 +75,11 @@ class NGRMarkets extends HTMLElement {
       if (customStyles) shadowRoot.appendChild(customStyles);
       shadowRoot.appendChild(widget);
       this.customOpenerIcon();
+      console.log("customOpenerIcon");
       this.widgetEvents(shadowRoot, configs?.basicConfigs?.showFrequency);
+      console.log("widgetEvents");
       await this.widgetLogic(shadowRoot, configs?.basicConfigs, markets);
+      console.log("widgetLogic");
       this.displayWidget();
     }
   }
