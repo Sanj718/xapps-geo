@@ -64,6 +64,10 @@ function MarketsPopupPreview(_a) {
             var MarketRegionCountry = parsedMarketsData.MarketRegionCountry, Market = parsedMarketsData.Market, MarketWebPresence = parsedMarketsData.MarketWebPresence, BackupRegion_1 = parsedMarketsData.BackupRegion;
             if (!Market || !MarketRegionCountry)
                 return;
+            console.log("MarketRegionCountry", MarketRegionCountry);
+            console.log("Market", Market);
+            if (MarketRegionCountry.length === 0 || Market.length === 0)
+                return;
             setMarketCountries(MarketRegionCountry);
             setMarkets(Market);
             setMarketsWebPresences(MarketWebPresence);

@@ -87,6 +87,9 @@ export function MarketsPopupPreview({
 
       const { MarketRegionCountry, Market, MarketWebPresence, BackupRegion } = parsedMarketsData;
       if (!Market || !MarketRegionCountry) return;
+      console.log("MarketRegionCountry", MarketRegionCountry);
+      console.log("Market", Market);
+      if (MarketRegionCountry.length === 0 || Market.length === 0) return;
       setMarketCountries(MarketRegionCountry);
       setMarkets(Market);
       setMarketsWebPresences(MarketWebPresence);
