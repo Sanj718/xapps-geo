@@ -80,7 +80,6 @@ function MarketsPopupPreview(_a) {
             });
             var primaryMarketId_1 = (MarketWebPresence === null || MarketWebPresence === void 0 ? void 0 : MarketWebPresence.length) ? (_c = MarketRegionCountry === null || MarketRegionCountry === void 0 ? void 0 : MarketRegionCountry.find(function (item) { return (item === null || item === void 0 ? void 0 : item.id) === (BackupRegion_1 === null || BackupRegion_1 === void 0 ? void 0 : BackupRegion_1.id); })) === null || _c === void 0 ? void 0 : _c.__parentId : (_d = filteredMarketCountries === null || filteredMarketCountries === void 0 ? void 0 : filteredMarketCountries.find(function (item) { return item === null || item === void 0 ? void 0 : item.primary; })) === null || _d === void 0 ? void 0 : _d.__parentId;
             setPrimaryMarketId(primaryMarketId_1);
-            console.log("filteredMarketCountries", filteredMarketCountries);
             var marketCountriesList = filteredMarketCountries.map(function (item) {
                 var _a, _b, _c, _d;
                 var nativeCountryName = ((_a = countries_data_json_1["default"][item === null || item === void 0 ? void 0 : item.code]) === null || _a === void 0 ? void 0 : _a.native) || "";

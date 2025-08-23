@@ -6,7 +6,7 @@ import { NavMenu } from "@shopify/app-bridge-react";
 // import polarisStyles from "@shopify/polaris/build/esm/styles.css?url";
 
 import { authenticate } from "../shopify.server";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getApp, getShop } from "../components/_loaders";
 import { getAllRegisteredWebhooks, registerBulkWebhookIfNotExists, removeWebhook } from "app/admin-queries.server";
 import "@shopify/polaris/build/esm/styles.css";
@@ -58,6 +58,16 @@ export default function App() {
   const [activePlan, setActivePlan] = useState<Plan>();
   const [devPlan, setDevPlan] = useState(false);
   const [veteranPlan, setVeteranPlan] = useState(false);
+
+  useEffect(() => {
+    var s1 = document.createElement("script");
+    var s0 = document.getElementsByTagName("script")[0];
+    s1.async = true;
+    s1.src = "https://embed.tawk.to/625b746eb0d10b6f3e6dec27/1g0qjtjql";
+    s1.charset = "UTF-8";
+    s1.setAttribute("crossorigin", "*");
+    s0?.parentNode?.insertBefore(s1, s0);
+  }, []);
 
   useMemo(() => {
     const activePlan = appData?.installation?.activeSubscriptions?.find(

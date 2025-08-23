@@ -75,11 +75,8 @@ class NGRMarkets extends HTMLElement {
       if (customStyles) shadowRoot.appendChild(customStyles);
       shadowRoot.appendChild(widget);
       this.customOpenerIcon();
-      console.log("customOpenerIcon");
       this.widgetEvents(shadowRoot, configs?.basicConfigs?.showFrequency);
-      console.log("widgetEvents");
       await this.widgetLogic(shadowRoot, configs?.basicConfigs, markets);
-      console.log("widgetLogic");
       this.displayWidget();
     }
   }
@@ -167,7 +164,6 @@ class NGRMarkets extends HTMLElement {
     if (plan === 2 && advancedConfigs && advancedConfigs?.html_id !== "") {
       modal.setAttribute("id", advancedConfigs?.html_id);
     }
-    console.log("widget", configs);
     return this.builder(html, basicConfigs, markets, plan);
   }
 
@@ -397,7 +393,6 @@ class NGRMarkets extends HTMLElement {
   ) {
     if (!userLocation?.country && showFrequency === this.SHOW_RULES.load)
       return this.openModal();
-    console.log("userLocation", userLocation);
     const showModal = (showFrequency) => {
       if (
         userLocation?.country !== "CH" &&
@@ -445,7 +440,6 @@ class NGRMarkets extends HTMLElement {
             : marketWebPresence?.alternateLocales) || []),
         ];
       }
-      // console.log("availableLanguages", availableLanguages);
       const incorrectCountry =
         storeCountry && userCountry && storeCountry !== userCountry;
       const incorrectLng =
@@ -752,9 +746,7 @@ class NGRMarkets extends HTMLElement {
       selectElementMarket?.options[selectElementMarket?.selectedIndex];
     const selectedMarketId =
       selectedOption?.getAttribute("data-market") || primaryMarketId;
-    // console.log("MarketWebPresence", MarketWebPresence);
     if (MarketWebPresence?.length) {
-      console.log("New Market", MarketWebPresence);
       const findWebPresence = MarketWebPresence.find(
         (item) => item.__parentId === selectedMarketId,
       );
@@ -772,12 +764,11 @@ class NGRMarkets extends HTMLElement {
 
         return item?.primary;
       });
-      console.log("Old Market", Market, primaryMarket, selectedMarketId);
+     
       primaryMarket?.webPresence?.rootUrls.forEach((rootUrl) =>
         allWebPresences.push({ ...rootUrl, marketId: primaryMarket.id }),
       );
-    }
-    console.log("allWebPresences", allWebPresences);
+    }  
     if (showLngSelector) {
       let preferedLngs = [];
       const selectElementMarket = mainElement.querySelector(

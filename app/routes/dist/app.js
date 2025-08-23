@@ -103,6 +103,16 @@ function App() {
     var _c = react_3.useState(), activePlan = _c[0], setActivePlan = _c[1];
     var _d = react_3.useState(false), devPlan = _d[0], setDevPlan = _d[1];
     var _e = react_3.useState(false), veteranPlan = _e[0], setVeteranPlan = _e[1];
+    react_3.useEffect(function () {
+        var _a;
+        var s1 = document.createElement("script");
+        var s0 = document.getElementsByTagName("script")[0];
+        s1.async = true;
+        s1.src = "https://embed.tawk.to/625b746eb0d10b6f3e6dec27/1g0qjtjql";
+        s1.charset = "UTF-8";
+        s1.setAttribute("crossorigin", "*");
+        (_a = s0 === null || s0 === void 0 ? void 0 : s0.parentNode) === null || _a === void 0 ? void 0 : _a.insertBefore(s1, s0);
+    }, []);
     react_3.useMemo(function () {
         var _a, _b, _c;
         var activePlan = (_b = (_a = appData === null || appData === void 0 ? void 0 : appData.installation) === null || _a === void 0 ? void 0 : _a.activeSubscriptions) === null || _b === void 0 ? void 0 : _b.find(function (item) { return item.status === "ACTIVE"; });

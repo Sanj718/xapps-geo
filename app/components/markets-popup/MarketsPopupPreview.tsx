@@ -106,7 +106,6 @@ export function MarketsPopupPreview({
       
       const primaryMarketId = MarketWebPresence?.length ? MarketRegionCountry?.find((item: any) => item?.id === BackupRegion?.id)?.__parentId : filteredMarketCountries?.find((item: any) => item?.primary)?.__parentId;
       setPrimaryMarketId(primaryMarketId);
-      console.log("filteredMarketCountries", filteredMarketCountries);
 
       const marketCountriesList = filteredMarketCountries.map((item: any) => {
         const nativeCountryName = countriesJson[item?.code as keyof typeof countriesJson]?.native || "";

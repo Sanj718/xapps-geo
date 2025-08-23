@@ -147,7 +147,6 @@
             blockUser();
             return
           }
-          console.log("itemStringUrl", itemStringUrl, domainRedirectUrl)
           if(!item.block && item.domain_redirection && (!item.except_r && locationIncludes || item.except_r && !locationIncludes)){
             redirectUser(domainRedirectUrl, itemStringUrl)
             return
@@ -249,7 +248,6 @@
             country: userCountry,
             continent: countries[userCountry]?.continent,
           };
-          console.log("userLocation", userLocation)
           ngrSetCookie(NGR_SESSION_NAME, JSON.stringify(userLocation), 7);
           window[NGR_SESSION_NAME] = userLocation
           return userLocation;
