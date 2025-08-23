@@ -437,17 +437,15 @@ function cronJobs() {
         });
     }); });
     // Analytics processor - every 30 minutes
-    var analyticsProcessor = node_cron_1["default"].schedule("*/3 * * * *", function () { return __awaiter(_this, void 0, void 0, function () {
+    var analyticsProcessor = node_cron_1["default"].schedule("*/30 * * * *", function () { return __awaiter(_this, void 0, void 0, function () {
         var error_9;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    console.log("\uD83D\uDD50 Running analytics processor (PID: " + process.pid + ")...");
                     return [4 /*yield*/, saveAnalyticsToDatabase()];
                 case 1:
                     _a.sent();
-                    console.log("\u2705 Analytics processor completed (PID: " + process.pid + ")");
                     return [3 /*break*/, 3];
                 case 2:
                     error_9 = _a.sent();

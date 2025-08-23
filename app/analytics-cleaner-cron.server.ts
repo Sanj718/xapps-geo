@@ -370,11 +370,9 @@ export function cronJobs() {
   });
 
   // Analytics processor - every 30 minutes
-  const analyticsProcessor = cron.schedule("*/3 * * * *", async () => {
+  const analyticsProcessor = cron.schedule("*/30 * * * *", async () => {
     try {
-      console.log(`🕐 Running analytics processor (PID: ${process.pid})...`);
       await saveAnalyticsToDatabase();
-      console.log(`✅ Analytics processor completed (PID: ${process.pid})`);
     } catch (error) {
       console.error(`❌ Analytics processor failed (PID: ${process.pid}):`, error);
     }
