@@ -1182,7 +1182,7 @@ export async function subscribeBasicPlan({ admin, shop }: { admin: AdminApiConte
             }
         );
         const responseJson = await response.json();
-        return responseJson?.data?.appSubscriptionCreate;
+        return {...responseJson?.data?.appSubscriptionCreate, returnUrl: process.env.SHOPIFY_APP_URL + `?shop=${shop}&host=${Buffer.from(`${shop}/admin`).toString("base64")}`};
     } catch (error) {
         console.error(error);
         return { status: false, error: (error as Error).toString() };
