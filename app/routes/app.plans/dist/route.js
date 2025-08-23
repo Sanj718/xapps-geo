@@ -78,6 +78,7 @@ function PlansPage() {
             shopify.modal.show("cancel-thank-you");
         }
     }, [actionData]);
+    console.log("actionData", actionData);
     function handleBasicSubscription() {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {

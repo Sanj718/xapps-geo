@@ -92,7 +92,7 @@ export default function PlansPage() {
       shopify.modal.show("cancel-thank-you");
     }
   }, [actionData]);
-
+  console.log("actionData", actionData);
   async function handleBasicSubscription() {
     shopify.modal.show("basic-plan-request");
     submit(
