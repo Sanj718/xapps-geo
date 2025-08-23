@@ -105,7 +105,7 @@ export function MarketsPopupPreview({
       console.log("sortedMarketCountries", sortedMarketCountries);
 
       const marketCountriesList = sortedMarketCountries.map((item: any) => {
-        if (!availableMarketIds.includes(item.__parentId)) return;
+        if (!availableMarketIds.includes(item?.__parentId)) return;
         const nativeCountryName = countriesJson[item?.code as keyof typeof countriesJson]?.native || "";
         const currencySymbol =
           currenciesJson[item?.currency?.currencyCode as keyof typeof currenciesJson]?.symbol_native;
@@ -144,7 +144,7 @@ export function MarketsPopupPreview({
   function processLanguages(marketsWebPresences: any[], markets: any[], selectedMarketId: string) {
     const allWebPresences: any[] = [];
     if (marketsWebPresences?.length) {
-      const findWebPresence = marketsWebPresences.find((item: any) => item.__parentId === selectedMarketId || item.__parentId === primaryMarketId);
+      const findWebPresence = marketsWebPresences.find((item: any) => item?.__parentId === selectedMarketId || item?.__parentId === primaryMarketId);
       findWebPresence?.rootUrls?.forEach((rootUrl: any) =>
         allWebPresences.push({ ...rootUrl, marketId: selectedMarketId })
       );
@@ -349,7 +349,7 @@ export function MarketsPopupPreview({
                             <option
                               key={item?.code}
                               value={item?.code}
-                              data-market={item.__parentId}
+                              data-market={item?.__parentId}
                             >
                               {item?.nativeName !== item?.name
                                 ? item.name +

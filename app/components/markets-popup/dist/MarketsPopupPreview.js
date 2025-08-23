@@ -81,7 +81,7 @@ function MarketsPopupPreview(_a) {
             console.log("sortedMarketCountries", sortedMarketCountries);
             var marketCountriesList = sortedMarketCountries.map(function (item) {
                 var _a, _b, _c;
-                if (!availableMarketIds_1.includes(item.__parentId))
+                if (!availableMarketIds_1.includes(item === null || item === void 0 ? void 0 : item.__parentId))
                     return;
                 var nativeCountryName = ((_a = countries_data_json_1["default"][item === null || item === void 0 ? void 0 : item.code]) === null || _a === void 0 ? void 0 : _a.native) || "";
                 var currencySymbol = (_c = currencies_json_1["default"][(_b = item === null || item === void 0 ? void 0 : item.currency) === null || _b === void 0 ? void 0 : _b.currencyCode]) === null || _c === void 0 ? void 0 : _c.symbol_native;
@@ -109,7 +109,7 @@ function MarketsPopupPreview(_a) {
         var _a, _b, _c;
         var allWebPresences = [];
         if (marketsWebPresences === null || marketsWebPresences === void 0 ? void 0 : marketsWebPresences.length) {
-            var findWebPresence = marketsWebPresences.find(function (item) { return item.__parentId === selectedMarketId || item.__parentId === primaryMarketId; });
+            var findWebPresence = marketsWebPresences.find(function (item) { return (item === null || item === void 0 ? void 0 : item.__parentId) === selectedMarketId || (item === null || item === void 0 ? void 0 : item.__parentId) === primaryMarketId; });
             (_a = findWebPresence === null || findWebPresence === void 0 ? void 0 : findWebPresence.rootUrls) === null || _a === void 0 ? void 0 : _a.forEach(function (rootUrl) {
                 return allWebPresences.push(__assign(__assign({}, rootUrl), { marketId: selectedMarketId }));
             });
@@ -194,7 +194,7 @@ function MarketsPopupPreview(_a) {
                                     react_1["default"].createElement("img", { loading: "lazy", alt: "CA", width: "100", height: "50", src: ca_svg_1["default"] }))),
                                 react_1["default"].createElement("div", { className: "ngr-markets-modal__form-content" },
                                     showCountrySelector && (dropdownCountries === null || dropdownCountries === void 0 ? void 0 : dropdownCountries.length) > 0 && (react_1["default"].createElement("div", { className: "select" },
-                                        react_1["default"].createElement("select", { name: "country_code", ref: countrySelect, onChange: handleCountryChange }, dropdownCountries === null || dropdownCountries === void 0 ? void 0 : dropdownCountries.map(function (item) { return (react_1["default"].createElement("option", { key: item === null || item === void 0 ? void 0 : item.code, value: item === null || item === void 0 ? void 0 : item.code, "data-market": item.__parentId }, (item === null || item === void 0 ? void 0 : item.nativeName) !== (item === null || item === void 0 ? void 0 : item.name)
+                                        react_1["default"].createElement("select", { name: "country_code", ref: countrySelect, onChange: handleCountryChange }, dropdownCountries === null || dropdownCountries === void 0 ? void 0 : dropdownCountries.map(function (item) { return (react_1["default"].createElement("option", { key: item === null || item === void 0 ? void 0 : item.code, value: item === null || item === void 0 ? void 0 : item.code, "data-market": item === null || item === void 0 ? void 0 : item.__parentId }, (item === null || item === void 0 ? void 0 : item.nativeName) !== (item === null || item === void 0 ? void 0 : item.name)
                                             ? item.name +
                                                 " / " + (item === null || item === void 0 ? void 0 : item.nativeName) +
                                                 (" (" + item.currency.currencyCode + " " + item.currency.symbolNative + ")")
