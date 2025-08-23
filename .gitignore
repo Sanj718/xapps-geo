@@ -22,4 +22,5 @@ database.sqlite
 .env
 .shopify.lock.env
 !.env.example
+.env.backup
 latest.dump
