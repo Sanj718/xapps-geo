@@ -98,9 +98,9 @@ export function MarketsPopupPreview({
       const sortedMarketCountries = MarketRegionCountry.sort((a: any, b: any) => (a.name > b.name ? 1 : -1));
       const sortedMarkets = Market
 
-      const availableMarkets = sortedMarkets?.filter((item: any) => item.enabled || item.status === "ACTIVE");
-      const availableMarketIds = availableMarkets?.map((item: any) => item.id);
-      const primaryMarketId = MarketWebPresence?.length ? MarketRegionCountry?.find((item: any) => item.id === BackupRegion?.id)?.__parentId : sortedMarketCountries?.find((item: any) => item.primary)?.__parentId;
+      const availableMarkets = sortedMarkets?.filter((item: any) => item?.enabled || item?.status === "ACTIVE");
+      const availableMarketIds = availableMarkets?.map((item: any) => item?.id);
+      const primaryMarketId = MarketWebPresence?.length ? MarketRegionCountry?.find((item: any) => item?.id === BackupRegion?.id)?.__parentId : sortedMarketCountries?.find((item: any) => item?.primary)?.__parentId;
       setPrimaryMarketId(primaryMarketId);
       console.log("sortedMarketCountries", sortedMarketCountries);
 
@@ -113,8 +113,8 @@ export function MarketsPopupPreview({
           ...item,
           nativeName: nativeCountryName,
           currency: {
-            ...item.currency,
-            currencyCode: item?.currency.currencyCode,
+            ...item?.currency,
+            currencyCode: item?.currency?.currencyCode,
             symbolNative: currencySymbol
           }
         }
@@ -150,20 +150,20 @@ export function MarketsPopupPreview({
       );
     } else {
       // This is old API  
-      const selectedMarket = markets.find((item: any) => item.id === selectedMarketId);
+      const selectedMarket = markets.find((item: any) => item?.id === selectedMarketId);
       if (selectedMarket?.webPresence) {
         selectedMarket?.webPresence?.rootUrls.forEach((rootUrl: any) =>
-          allWebPresences.push({ ...rootUrl, marketId: selectedMarket.id })
+          allWebPresences.push({ ...rootUrl, marketId: selectedMarket?.id })
         );
       } else {
-        const primaryMarket = markets.find((item: any) => item.primary);
+        const primaryMarket = markets.find((item: any) => item?.primary);
         primaryMarket?.webPresence?.rootUrls.forEach((rootUrl: any) =>
-          allWebPresences.push({ ...rootUrl, marketId: primaryMarket.id })
+          allWebPresences.push({ ...rootUrl, marketId: primaryMarket?.id })
         );
       }
     }
     const allLanguages = allWebPresences.map((item: any) => {
-      const lngObj = languagesJson[item.locale as keyof typeof languagesJson];
+      const lngObj = languagesJson[item?.locale as keyof typeof languagesJson];
       const lngName =
         lngObj?.name !== lngObj?.native
           ? lngObj?.name + " / " + lngObj?.native
@@ -352,12 +352,12 @@ export function MarketsPopupPreview({
                               data-market={item?.__parentId}
                             >
                               {item?.nativeName !== item?.name
-                                ? item.name +
+                                ? item?.name +
                                 " / " +
                                 item?.nativeName +
-                                ` (${item.currency.currencyCode} ${item.currency.symbolNative})`
-                                : item.name +
-                                ` (${item.currency.currencyCode} ${item.currency.symbolNative})`}
+                                ` (${item?.currency?.currencyCode} ${item?.currency?.symbolNative})`
+                                : item?.name +
+                                ` (${item?.currency?.currencyCode} ${item?.currency?.symbolNative})`}
                             </option>
                           ))}
                         </select>
