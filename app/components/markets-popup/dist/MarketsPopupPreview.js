@@ -64,8 +64,6 @@ function MarketsPopupPreview(_a) {
             var MarketRegionCountry = parsedMarketsData.MarketRegionCountry, Market = parsedMarketsData.Market, MarketWebPresence = parsedMarketsData.MarketWebPresence, BackupRegion_1 = parsedMarketsData.BackupRegion;
             if (!Market || !MarketRegionCountry)
                 return;
-            console.log("MarketRegionCountry", MarketRegionCountry);
-            console.log("Market", Market);
             if (!(MarketRegionCountry === null || MarketRegionCountry === void 0 ? void 0 : MarketRegionCountry.length) || !(Market === null || Market === void 0 ? void 0 : Market.length) || Object.keys(MarketRegionCountry[0]).length === 0 || Object.keys(Market[0]).length === 0)
                 return;
             setMarketCountries(MarketRegionCountry);
@@ -76,20 +74,22 @@ function MarketsPopupPreview(_a) {
             var sortedMarkets = Market;
             var availableMarkets = sortedMarkets === null || sortedMarkets === void 0 ? void 0 : sortedMarkets.filter(function (item) { return (item === null || item === void 0 ? void 0 : item.enabled) || (item === null || item === void 0 ? void 0 : item.status) === "ACTIVE"; });
             var availableMarketIds_1 = availableMarkets === null || availableMarkets === void 0 ? void 0 : availableMarkets.map(function (item) { return item === null || item === void 0 ? void 0 : item.id; });
-            var primaryMarketId_1 = (MarketWebPresence === null || MarketWebPresence === void 0 ? void 0 : MarketWebPresence.length) ? (_c = MarketRegionCountry === null || MarketRegionCountry === void 0 ? void 0 : MarketRegionCountry.find(function (item) { return (item === null || item === void 0 ? void 0 : item.id) === (BackupRegion_1 === null || BackupRegion_1 === void 0 ? void 0 : BackupRegion_1.id); })) === null || _c === void 0 ? void 0 : _c.__parentId : (_d = sortedMarketCountries === null || sortedMarketCountries === void 0 ? void 0 : sortedMarketCountries.find(function (item) { return item === null || item === void 0 ? void 0 : item.primary; })) === null || _d === void 0 ? void 0 : _d.__parentId;
+            // Filter sortedMarketCountries earlier to only include available markets
+            var filteredMarketCountries = sortedMarketCountries.filter(function (item) {
+                return availableMarketIds_1.includes(item === null || item === void 0 ? void 0 : item.__parentId);
+            });
+            var primaryMarketId_1 = (MarketWebPresence === null || MarketWebPresence === void 0 ? void 0 : MarketWebPresence.length) ? (_c = MarketRegionCountry === null || MarketRegionCountry === void 0 ? void 0 : MarketRegionCountry.find(function (item) { return (item === null || item === void 0 ? void 0 : item.id) === (BackupRegion_1 === null || BackupRegion_1 === void 0 ? void 0 : BackupRegion_1.id); })) === null || _c === void 0 ? void 0 : _c.__parentId : (_d = filteredMarketCountries === null || filteredMarketCountries === void 0 ? void 0 : filteredMarketCountries.find(function (item) { return item === null || item === void 0 ? void 0 : item.primary; })) === null || _d === void 0 ? void 0 : _d.__parentId;
             setPrimaryMarketId(primaryMarketId_1);
-            console.log("sortedMarketCountries", sortedMarketCountries);
-            var marketCountriesList = sortedMarketCountries.map(function (item) {
+            console.log("filteredMarketCountries", filteredMarketCountries);
+            var marketCountriesList = filteredMarketCountries.map(function (item) {
                 var _a, _b, _c, _d;
-                if (!availableMarketIds_1.includes(item === null || item === void 0 ? void 0 : item.__parentId))
-                    return;
                 var nativeCountryName = ((_a = countries_data_json_1["default"][item === null || item === void 0 ? void 0 : item.code]) === null || _a === void 0 ? void 0 : _a.native) || "";
                 var currencySymbol = (_c = currencies_json_1["default"][(_b = item === null || item === void 0 ? void 0 : item.currency) === null || _b === void 0 ? void 0 : _b.currencyCode]) === null || _c === void 0 ? void 0 : _c.symbol_native;
                 return __assign(__assign({}, item), { nativeName: nativeCountryName, currency: __assign(__assign({}, item === null || item === void 0 ? void 0 : item.currency), { currencyCode: (_d = item === null || item === void 0 ? void 0 : item.currency) === null || _d === void 0 ? void 0 : _d.currencyCode, symbolNative: currencySymbol }) });
             });
             setDropdownCountries(marketCountriesList);
-            setSelectedCountryId((_e = sortedMarketCountries[0]) === null || _e === void 0 ? void 0 : _e.id);
-            setSelectedMarketId((_f = sortedMarketCountries[0]) === null || _f === void 0 ? void 0 : _f.__parentId);
+            setSelectedCountryId((_e = filteredMarketCountries[0]) === null || _e === void 0 ? void 0 : _e.id);
+            setSelectedMarketId((_f = filteredMarketCountries[0]) === null || _f === void 0 ? void 0 : _f.__parentId);
             var allLanguages = processLanguages(MarketWebPresence, Market, primaryMarketId_1);
             setDropdownLanguages(allLanguages);
             setSelectedLanguageId((_g = allLanguages[0]) === null || _g === void 0 ? void 0 : _g.locale);

@@ -87,8 +87,6 @@ export function MarketsPopupPreview({
 
       const { MarketRegionCountry, Market, MarketWebPresence, BackupRegion } = parsedMarketsData;
       if (!Market || !MarketRegionCountry) return;
-      console.log("MarketRegionCountry", MarketRegionCountry);
-      console.log("Market", Market);
       if (!MarketRegionCountry?.length || !Market?.length || Object.keys(MarketRegionCountry[0]).length === 0 || Object.keys(Market[0]).length === 0) return;
       setMarketCountries(MarketRegionCountry);
       setMarkets(Market);
@@ -100,12 +98,17 @@ export function MarketsPopupPreview({
 
       const availableMarkets = sortedMarkets?.filter((item: any) => item?.enabled || item?.status === "ACTIVE");
       const availableMarketIds = availableMarkets?.map((item: any) => item?.id);
-      const primaryMarketId = MarketWebPresence?.length ? MarketRegionCountry?.find((item: any) => item?.id === BackupRegion?.id)?.__parentId : sortedMarketCountries?.find((item: any) => item?.primary)?.__parentId;
+      
+      // Filter sortedMarketCountries earlier to only include available markets
+      const filteredMarketCountries = sortedMarketCountries.filter((item: any) => 
+        availableMarketIds.includes(item?.__parentId)
+      );
+      
+      const primaryMarketId = MarketWebPresence?.length ? MarketRegionCountry?.find((item: any) => item?.id === BackupRegion?.id)?.__parentId : filteredMarketCountries?.find((item: any) => item?.primary)?.__parentId;
       setPrimaryMarketId(primaryMarketId);
-      console.log("sortedMarketCountries", sortedMarketCountries);
+      console.log("filteredMarketCountries", filteredMarketCountries);
 
-      const marketCountriesList = sortedMarketCountries.map((item: any) => {
-        if (!availableMarketIds.includes(item?.__parentId)) return;
+      const marketCountriesList = filteredMarketCountries.map((item: any) => {
         const nativeCountryName = countriesJson[item?.code as keyof typeof countriesJson]?.native || "";
         const currencySymbol =
           currenciesJson[item?.currency?.currencyCode as keyof typeof currenciesJson]?.symbol_native;
@@ -120,8 +123,8 @@ export function MarketsPopupPreview({
         }
       });
       setDropdownCountries(marketCountriesList);
-      setSelectedCountryId(sortedMarketCountries[0]?.id);
-      setSelectedMarketId(sortedMarketCountries[0]?.__parentId);
+      setSelectedCountryId(filteredMarketCountries[0]?.id);
+      setSelectedMarketId(filteredMarketCountries[0]?.__parentId);
 
       const allLanguages = processLanguages(MarketWebPresence, Market, primaryMarketId);
 

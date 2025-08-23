@@ -666,14 +666,20 @@ class NGRMarkets extends HTMLElement {
     const sortedMarkets = Market;
 
     const availableMarkets = sortedMarkets?.filter(
-      (item) => item.enabled || item.status === "ACTIVE",
+      (item) => item?.enabled || item?.status === "ACTIVE",
     );
     const availableMarketIds = availableMarkets?.map((item) => item.id);
+    
+    // Filter sortedMarketCountries earlier to only include available markets
+    const filteredMarketCountries = sortedMarketCountries.filter((region) => 
+      availableMarketIds.includes(region.__parentId)
+    );
+    
     // @ts-ignore
     const primaryMarketId = MarketWebPresence?.length
       ? MarketRegionCountry?.find((item) => item.id === BackupRegion?.id)
           ?.__parentId
-      : sortedMarketCountries?.find((item) => item.primary)?.__parentId;
+      : filteredMarketCountries?.find((item) => item.primary)?.__parentId;
 
     const mainElement = document.createElement("div");
     mainElement.classList.add("ngr-markets-modal__form-content");
@@ -685,10 +691,9 @@ class NGRMarkets extends HTMLElement {
       const selectElementMarket = document.createElement("select");
       selectElementMarket.name = "country_code";
 
-      const regions = sortedMarketCountries;
+      const regions = filteredMarketCountries;
 
       regions?.forEach((region) => {
-        if (!availableMarketIds.includes(region.__parentId)) return;
         const optionElement = document.createElement("option");
         const currencySymbol =
           // @ts-ignore
