@@ -163,6 +163,7 @@ function Index() {
     }
     var loading = _helpers_1.loadingStates(navigation, [_actions_2.ACTIONS.get_AnalyticsData]);
     return (React.createElement(polaris_1.Page, null,
+        React.createElement(polaris_1.Banner, { tone: "info" }, "We apologize for any inconvenience. Our team is currently working on improving the analytics functionality to provide you with more accurate data. Thank you for your patience and understanding."),
         React.createElement("div", { id: "main-screen" },
             React.createElement(polaris_1.InlineStack, { align: "space-between", blockAlign: "center" },
                 React.createElement(polaris_1.Text, { as: "h1", variant: "headingLg" },
