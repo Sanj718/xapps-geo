@@ -66,7 +66,7 @@ function MarketsPopupPreview(_a) {
                 return;
             console.log("MarketRegionCountry", MarketRegionCountry);
             console.log("Market", Market);
-            if (MarketRegionCountry.length === 0 || Market.length === 0)
+            if (!(MarketRegionCountry === null || MarketRegionCountry === void 0 ? void 0 : MarketRegionCountry.length) || !(Market === null || Market === void 0 ? void 0 : Market.length) || Object.keys(MarketRegionCountry[0]).length === 0 || Object.keys(Market[0]).length === 0)
                 return;
             setMarketCountries(MarketRegionCountry);
             setMarkets(Market);

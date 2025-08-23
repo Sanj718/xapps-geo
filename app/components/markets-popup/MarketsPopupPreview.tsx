@@ -89,7 +89,7 @@ export function MarketsPopupPreview({
       if (!Market || !MarketRegionCountry) return;
       console.log("MarketRegionCountry", MarketRegionCountry);
       console.log("Market", Market);
-      if (MarketRegionCountry.length === 0 || Market.length === 0) return;
+      if (!MarketRegionCountry?.length || !Market?.length || Object.keys(MarketRegionCountry[0]).length === 0 || Object.keys(Market[0]).length === 0) return;
       setMarketCountries(MarketRegionCountry);
       setMarkets(Market);
       setMarketsWebPresences(MarketWebPresence);
