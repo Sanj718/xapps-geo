@@ -74,13 +74,14 @@ function MarketsPopupPreview(_a) {
             var availableMarketIds_1 = availableMarkets === null || availableMarkets === void 0 ? void 0 : availableMarkets.map(function (item) { return item.id; });
             var primaryMarketId_1 = (MarketWebPresence === null || MarketWebPresence === void 0 ? void 0 : MarketWebPresence.length) ? (_c = MarketRegionCountry === null || MarketRegionCountry === void 0 ? void 0 : MarketRegionCountry.find(function (item) { return item.id === (BackupRegion_1 === null || BackupRegion_1 === void 0 ? void 0 : BackupRegion_1.id); })) === null || _c === void 0 ? void 0 : _c.__parentId : (_d = sortedMarketCountries === null || sortedMarketCountries === void 0 ? void 0 : sortedMarketCountries.find(function (item) { return item.primary; })) === null || _d === void 0 ? void 0 : _d.__parentId;
             setPrimaryMarketId(primaryMarketId_1);
+            console.log("sortedMarketCountries", sortedMarketCountries);
             var marketCountriesList = sortedMarketCountries.map(function (item) {
-                var _a, _b;
+                var _a, _b, _c;
                 if (!availableMarketIds_1.includes(item.__parentId))
                     return;
-                var nativeCountryName = ((_a = countries_data_json_1["default"][item.code]) === null || _a === void 0 ? void 0 : _a.native) || "";
-                var currencySymbol = (_b = currencies_json_1["default"][item.currency.currencyCode]) === null || _b === void 0 ? void 0 : _b.symbol_native;
-                return __assign(__assign({}, item), { nativeName: nativeCountryName, currency: __assign(__assign({}, item.currency), { currencyCode: item.currency.currencyCode, symbolNative: currencySymbol }) });
+                var nativeCountryName = ((_a = countries_data_json_1["default"][item === null || item === void 0 ? void 0 : item.code]) === null || _a === void 0 ? void 0 : _a.native) || "";
+                var currencySymbol = (_c = currencies_json_1["default"][(_b = item === null || item === void 0 ? void 0 : item.currency) === null || _b === void 0 ? void 0 : _b.currencyCode]) === null || _c === void 0 ? void 0 : _c.symbol_native;
+                return __assign(__assign({}, item), { nativeName: nativeCountryName, currency: __assign(__assign({}, item.currency), { currencyCode: item === null || item === void 0 ? void 0 : item.currency.currencyCode, symbolNative: currencySymbol }) });
             });
             setDropdownCountries(marketCountriesList);
             setSelectedCountryId((_e = sortedMarketCountries[0]) === null || _e === void 0 ? void 0 : _e.id);
@@ -189,7 +190,7 @@ function MarketsPopupPreview(_a) {
                                     react_1["default"].createElement("img", { loading: "lazy", alt: "CA", width: "100", height: "50", src: ca_svg_1["default"] }))),
                                 react_1["default"].createElement("div", { className: "ngr-markets-modal__form-content" },
                                     showCountrySelector && (dropdownCountries === null || dropdownCountries === void 0 ? void 0 : dropdownCountries.length) > 0 && (react_1["default"].createElement("div", { className: "select" },
-                                        react_1["default"].createElement("select", { name: "country_code", ref: countrySelect, onChange: handleCountryChange }, dropdownCountries === null || dropdownCountries === void 0 ? void 0 : dropdownCountries.map(function (item) { return (react_1["default"].createElement("option", { key: item.code, value: item.code, "data-market": item.__parentId }, (item === null || item === void 0 ? void 0 : item.nativeName) !== (item === null || item === void 0 ? void 0 : item.name)
+                                        react_1["default"].createElement("select", { name: "country_code", ref: countrySelect, onChange: handleCountryChange }, dropdownCountries === null || dropdownCountries === void 0 ? void 0 : dropdownCountries.map(function (item) { return (react_1["default"].createElement("option", { key: item === null || item === void 0 ? void 0 : item.code, value: item === null || item === void 0 ? void 0 : item.code, "data-market": item.__parentId }, (item === null || item === void 0 ? void 0 : item.nativeName) !== (item === null || item === void 0 ? void 0 : item.name)
                                             ? item.name +
                                                 " / " + (item === null || item === void 0 ? void 0 : item.nativeName) +
                                                 (" (" + item.currency.currencyCode + " " + item.currency.symbolNative + ")")

@@ -99,18 +99,19 @@ export function MarketsPopupPreview({
       const availableMarketIds = availableMarkets?.map((item: any) => item.id);
       const primaryMarketId = MarketWebPresence?.length ? MarketRegionCountry?.find((item: any) => item.id === BackupRegion?.id)?.__parentId : sortedMarketCountries?.find((item: any) => item.primary)?.__parentId;
       setPrimaryMarketId(primaryMarketId);
+      console.log("sortedMarketCountries", sortedMarketCountries);
 
       const marketCountriesList = sortedMarketCountries.map((item: any) => {
         if (!availableMarketIds.includes(item.__parentId)) return;
-        const nativeCountryName = countriesJson[item.code as keyof typeof countriesJson]?.native || "";
+        const nativeCountryName = countriesJson[item?.code as keyof typeof countriesJson]?.native || "";
         const currencySymbol =
-          currenciesJson[item.currency.currencyCode as keyof typeof currenciesJson]?.symbol_native;
+          currenciesJson[item?.currency?.currencyCode as keyof typeof currenciesJson]?.symbol_native;
         return {
           ...item,
           nativeName: nativeCountryName,
           currency: {
             ...item.currency,
-            currencyCode: item.currency.currencyCode,
+            currencyCode: item?.currency.currencyCode,
             symbolNative: currencySymbol
           }
         }
@@ -343,8 +344,8 @@ export function MarketsPopupPreview({
                         >
                           {dropdownCountries?.map((item: any) => (
                             <option
-                              key={item.code}
-                              value={item.code}
+                              key={item?.code}
+                              value={item?.code}
                               data-market={item.__parentId}
                             >
                               {item?.nativeName !== item?.name

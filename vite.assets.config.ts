@@ -22,7 +22,7 @@ console.log("🔍 Environment Debug:");
 console.log("  SHOPIFY_APP_URL:", process.env.SHOPIFY_APP_URL);
 console.log("  NODE_ENV:", process.env.NODE_ENV);
 
-const HOST_PROD = "https://ngr-app2.herokuapp.com";
+const HOST_PROD = "https://xapps-geo-ca956fdeab0c.herokuapp.com";
 const isProduction = process.env.NODE_ENV === "production";
 const HOST = isProduction ? HOST_PROD : (process.env.SHOPIFY_APP_URL || getApplicationUrl());
 
