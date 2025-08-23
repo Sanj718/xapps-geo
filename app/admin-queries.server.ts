@@ -1177,7 +1177,7 @@ export async function subscribeBasicPlan({ admin, shop }: { admin: AdminApiConte
                         }
                     }],
                     returnUrl: process.env.APP_URL + `?shop=${shop}&host=${Buffer.from(`${shop}/admin`).toString("base64")}`,
-                    test: true // [TODO] remove this
+                    // test: true // [TODO] remove this
                 }
             }
         );
@@ -1222,7 +1222,7 @@ export async function subscribeProPlan({ admin, shop }: { admin: AdminApiContext
                         }
                     }],
                     returnUrl: process.env.APP_URL + `?shop=${shop}&host=${Buffer.from(`${shop}/admin`).toString("base64")}`,
-                    test: true // [TODO] remove this
+                    // test: true // [TODO] remove this
                 }
             }
         );

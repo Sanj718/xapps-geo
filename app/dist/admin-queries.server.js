@@ -1060,8 +1060,7 @@ function subscribeBasicPlan(_a) {
                                             }
                                         }
                                     }],
-                                returnUrl: process.env.APP_URL + ("?shop=" + shop + "&host=" + Buffer.from(shop + "/admin").toString("base64")),
-                                test: true // [TODO] remove this
+                                returnUrl: process.env.APP_URL + ("?shop=" + shop + "&host=" + Buffer.from(shop + "/admin").toString("base64"))
                             }
                         })];
                 case 2:
@@ -1107,8 +1106,7 @@ function subscribeProPlan(_a) {
                                             }
                                         }
                                     }],
-                                returnUrl: process.env.APP_URL + ("?shop=" + shop + "&host=" + Buffer.from(shop + "/admin").toString("base64")),
-                                test: true // [TODO] remove this
+                                returnUrl: process.env.APP_URL + ("?shop=" + shop + "&host=" + Buffer.from(shop + "/admin").toString("base64"))
                             }
                         })];
                 case 2:
