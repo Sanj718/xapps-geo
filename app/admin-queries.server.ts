@@ -1176,8 +1176,8 @@ export async function subscribeBasicPlan({ admin, shop }: { admin: AdminApiConte
                             }
                         }
                     }],
-                    returnUrl: process.env.SHOPIFY_APP_URL + `?shop=${shop}&host=${Buffer.from(`${shop}/admin`).toString("base64")}`
-                    // test: true // [TODO] remove this
+                    returnUrl: process.env.SHOPIFY_APP_URL + `?shop=${shop}&host=${Buffer.from(`${shop}/admin`).toString("base64")}`,
+                    test: false // [TODO] remove this
                 }
             }
         );
@@ -1222,7 +1222,7 @@ export async function subscribeProPlan({ admin, shop }: { admin: AdminApiContext
                         }
                     }],
                     returnUrl: process.env.SHOPIFY_APP_URL + `?shop=${shop}&host=${Buffer.from(`${shop}/admin`).toString("base64")}`,
-                    // test: true // [TODO] remove this
+                    test: false // [TODO] remove this
                 }
             }
         );
