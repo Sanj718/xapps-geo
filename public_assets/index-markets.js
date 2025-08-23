@@ -158,6 +158,7 @@ class NGRMarkets extends HTMLElement {
   widget(markets, configs) {
     if (!this.template || !markets || !configs) return;
     const { basicConfigs, advancedConfigs, plan } = configs;
+ 
     // @ts-ignore
     const html = this.template?.content?.cloneNode(true);
     const modal = html.querySelector("[data-ngr-markets-modal]");
@@ -166,9 +167,10 @@ class NGRMarkets extends HTMLElement {
     if (plan === 2 && advancedConfigs && advancedConfigs?.html_id !== "") {
       modal.setAttribute("id", advancedConfigs?.html_id);
     }
-
+    console.log("widget", configs);
     return this.builder(html, basicConfigs, markets, plan);
   }
+
 
   genCustomStyles(configs) {
     if (!configs) return;
@@ -395,10 +397,10 @@ class NGRMarkets extends HTMLElement {
   ) {
     if (!userLocation?.country && showFrequency === this.SHOW_RULES.load)
       return this.openModal();
-
+    console.log("userLocation", userLocation);
     const showModal = (showFrequency) => {
       if (
-        userLocation.country !== "CH" &&
+        userLocation?.country !== "CH" &&
         window.location.host.includes("got-bag.com")
       )
         return;
@@ -672,12 +674,12 @@ class NGRMarkets extends HTMLElement {
       (item) => item?.enabled || item?.status === "ACTIVE",
     );
     const availableMarketIds = availableMarkets?.map((item) => item.id);
-    
+
     // Filter sortedMarketCountries earlier to only include available markets
-    const filteredMarketCountries = sortedMarketCountries.filter((region) => 
-      availableMarketIds.includes(region.__parentId)
+    const filteredMarketCountries = sortedMarketCountries.filter((region) =>
+      availableMarketIds.includes(region.__parentId),
     );
-    
+
     // @ts-ignore
     const primaryMarketId = MarketWebPresence?.length
       ? MarketRegionCountry?.find((item) => item.id === BackupRegion?.id)
@@ -750,8 +752,9 @@ class NGRMarkets extends HTMLElement {
       selectElementMarket?.options[selectElementMarket?.selectedIndex];
     const selectedMarketId =
       selectedOption?.getAttribute("data-market") || primaryMarketId;
-
+    // console.log("MarketWebPresence", MarketWebPresence);
     if (MarketWebPresence?.length) {
+      console.log("New Market", MarketWebPresence);
       const findWebPresence = MarketWebPresence.find(
         (item) => item.__parentId === selectedMarketId,
       );
@@ -762,14 +765,19 @@ class NGRMarkets extends HTMLElement {
         }),
       );
     } else {
-      const primaryMarket = Market.find(
-        (item) => item.id === selectedMarketId || item.primary,
-      );
+      const primaryMarket = Market.find((item) => {
+        if (item?.id === selectedMarketId && item?.webPresence) {
+          return true;
+        }
+
+        return item?.primary;
+      });
+      console.log("Old Market", Market, primaryMarket, selectedMarketId);
       primaryMarket?.webPresence?.rootUrls.forEach((rootUrl) =>
         allWebPresences.push({ ...rootUrl, marketId: primaryMarket.id }),
       );
     }
-
+    console.log("allWebPresences", allWebPresences);
     if (showLngSelector) {
       let preferedLngs = [];
       const selectElementMarket = mainElement.querySelector(

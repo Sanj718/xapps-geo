@@ -1062,7 +1062,7 @@ exports.getPublicMarketsData = function (_a) {
                             status: true,
                             data: {
                                 markets: markets,
-                                configs: configs
+                                configs: __assign(__assign({}, configs), { plan: activeShop.plan })
                             }
                         }];
                 case 2:

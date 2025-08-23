@@ -818,7 +818,10 @@ export const getPublicMarketsData = async ({ shop }: Shop): Promise<DBResponse> 
       status: true,
       data: {
         markets,
-        configs
+        configs: {
+          ...configs,
+          plan: activeShop.plan
+        }
       }
     };
 
