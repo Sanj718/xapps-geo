@@ -37,58 +37,54 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.loader = void 0;
+var node_1 = require("@remix-run/node");
 var db_queries_server_1 = require("../db-queries.server");
-var CORS_HEADERS = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET,OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Content-Type": "application/json"
-};
-exports.loader = function (_a) {
+function loader(_a) {
     var request = _a.request;
-    return __awaiter(void 0, void 0, void 0, function () {
-        var url, shop, status, error, data, response, err_1;
+    return __awaiter(this, void 0, void 0, function () {
+        var url, shop, timeoutPromise, shopPromise, result, error_1;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    if (request.method === "OPTIONS") {
-                        return [2 /*return*/, new Response(null, {
-                                status: 204,
-                                headers: CORS_HEADERS
-                            })];
-                    }
+                    _b.trys.push([0, 2, , 3]);
                     url = new URL(request.url);
                     shop = url.searchParams.get("shop");
-                    if (!shop || shop === "") {
-                        return [2 /*return*/, new Response(JSON.stringify({ status: false, error: "SHOP_NOT_FOUND", data: null }), {
-                                status: 405,
-                                headers: CORS_HEADERS
-                            })];
+                    if (!shop) {
+                        return [2 /*return*/, node_1.json({ error: "Shop parameter is required" }, { status: 400 })];
                     }
-                    status = 200;
-                    error = null;
-                    data = null;
-                    _b.label = 1;
+                    timeoutPromise = new Promise(function (_, reject) {
+                        setTimeout(function () { return reject(new Error("Request timeout")); }, 8000); // 8 second timeout
+                    });
+                    shopPromise = db_queries_server_1.getShopdb({ shop: shop });
+                    return [4 /*yield*/, Promise.race([shopPromise, timeoutPromise])];
                 case 1:
-                    _b.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, db_queries_server_1.getPublicShopData({ shop: shop })];
-                case 2:
-                    response = _b.sent();
-                    if (!(response === null || response === void 0 ? void 0 : response.status)) {
-                        throw new Error("Query Error");
+                    result = _b.sent();
+                    if (!result.status) {
+                        return [2 /*return*/, node_1.json({ error: result.error || "Failed to fetch shop data" }, { status: 500 })];
                     }
-                    data = response.data;
-                    return [3 /*break*/, 4];
-                case 3:
-                    err_1 = _b.sent();
-                    status = 500;
-                    error = err_1.message || String(err_1);
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/, new Response(JSON.stringify({ status: status === 200, error: error, data: data }), {
-                        status: status,
-                        headers: CORS_HEADERS
-                    })];
+                    return [2 /*return*/, node_1.json({
+                            status: "success",
+                            data: result.data,
+                            timestamp: new Date().toISOString()
+                        }, {
+                            headers: {
+                                "Cache-Control": "public, max-age=600",
+                                "Content-Type": "application/json"
+                            }
+                        })];
+                case 2:
+                    error_1 = _b.sent();
+                    console.error("Shop API error:", error_1);
+                    if (error_1 instanceof Error && error_1.message === "Request timeout") {
+                        return [2 /*return*/, node_1.json({ error: "Request timeout - please try again" }, { status: 408 })];
+                    }
+                    return [2 /*return*/, node_1.json({
+                            error: "Internal server error",
+                            timestamp: new Date().toISOString()
+                        }, { status: 500 })];
+                case 3: return [2 /*return*/];
             }
         });
     });
-};
+}
+exports.loader = loader;

@@ -37,95 +37,55 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.loader = void 0;
-var analytics_tracker_1 = require("app/components/analytics-tracker");
-var CORS_HEADERS = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET,OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Content-Type": "application/json"
-};
-// Allowed analytics types
-var ALLOWED_ANALYTICS_TYPES = [
-    "markets-auto",
-    "markets-button",
-    "buttons",
-    "auto"
-];
-exports.loader = function (_a) {
+var node_1 = require("@remix-run/node");
+var db_queries_server_1 = require("../db-queries.server");
+function loader(_a) {
     var request = _a.request, params = _a.params;
-    return __awaiter(void 0, void 0, void 0, function () {
-        var postmanToken, url, shop, type, status, error, data, analyticsType;
+    return __awaiter(this, void 0, void 0, function () {
+        var url, shop, timeoutPromise, analyticsPromise, result, responseData, error_1;
         return __generator(this, function (_b) {
-            // Handle CORS preflight request
-            if (request.method === "OPTIONS") {
-                return [2 /*return*/, new Response(null, {
-                        status: 204,
-                        headers: CORS_HEADERS
-                    })];
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 2, , 3]);
+                    url = new URL(request.url);
+                    shop = url.searchParams.get("shop");
+                    if (!shop) {
+                        return [2 /*return*/, node_1.json({ error: "Shop parameter is required" }, { status: 400 })];
+                    }
+                    timeoutPromise = new Promise(function (_, reject) {
+                        setTimeout(function () { return reject(new Error("Request timeout")); }, 10000); // 10 second timeout
+                    });
+                    analyticsPromise = db_queries_server_1.getAnalyticsData({ shop: shop });
+                    return [4 /*yield*/, Promise.race([analyticsPromise, timeoutPromise])];
+                case 1:
+                    result = _b.sent();
+                    if (!result.status) {
+                        return [2 /*return*/, node_1.json({ error: result.error || "Failed to fetch analytics" }, { status: 500 })];
+                    }
+                    responseData = {
+                        status: "success",
+                        data: result.data,
+                        timestamp: new Date().toISOString()
+                    };
+                    return [2 /*return*/, node_1.json(responseData, {
+                            headers: {
+                                "Cache-Control": "public, max-age=300",
+                                "Content-Type": "application/json"
+                            }
+                        })];
+                case 2:
+                    error_1 = _b.sent();
+                    console.error("Analytics API error:", error_1);
+                    if (error_1 instanceof Error && error_1.message === "Request timeout") {
+                        return [2 /*return*/, node_1.json({ error: "Request timeout - please try again" }, { status: 408 })];
+                    }
+                    return [2 /*return*/, node_1.json({
+                            error: "Internal server error",
+                            timestamp: new Date().toISOString()
+                        }, { status: 500 })];
+                case 3: return [2 /*return*/];
             }
-            postmanToken = request.headers.get("postman-token");
-            if (postmanToken) {
-                return [2 /*return*/, new Response("NOT ALLOWED", {
-                        status: 400,
-                        headers: CORS_HEADERS
-                    })];
-            }
-            url = new URL(request.url);
-            shop = url.searchParams.get("shop");
-            type = params.type;
-            if (!shop || shop === "") {
-                console.log("SHOP NOT FOUND", shop);
-                return [2 /*return*/, new Response(JSON.stringify({
-                        status: false,
-                        error: "SHOP_NOT_FOUND",
-                        data: null
-                    }), {
-                        status: 405,
-                        headers: CORS_HEADERS
-                    })];
-            }
-            if (!type) {
-                return [2 /*return*/, new Response(JSON.stringify({
-                        status: false,
-                        error: "TYPE_NOT_FOUND",
-                        data: null
-                    }), {
-                        status: 400,
-                        headers: CORS_HEADERS
-                    })];
-            }
-            // Validate that the type is allowed
-            if (!ALLOWED_ANALYTICS_TYPES.includes(type)) {
-                return [2 /*return*/, new Response(JSON.stringify({
-                        status: false,
-                        error: "INVALID_TYPE",
-                        message: "Analytics type '" + type + "' is not allowed. Allowed types: " + ALLOWED_ANALYTICS_TYPES.join(", "),
-                        data: null
-                    }), {
-                        status: 400,
-                        headers: CORS_HEADERS
-                    })];
-            }
-            status = 200;
-            error = null;
-            data = null;
-            try {
-                analyticsType = type.replace(/-/g, '_');
-                analytics_tracker_1.createFolderAndSaveDate(shop, analyticsType);
-            }
-            catch (err) {
-                console.error("ANALYTICS_" + type.toUpperCase() + ": ", err.message);
-                status = 500;
-                error = err.message || String(err);
-            }
-            return [2 /*return*/, new Response(JSON.stringify({
-                    status: status === 200,
-                    error: error,
-                    data: data
-                }), {
-                    status: status,
-                    headers: CORS_HEADERS
-                })];
         });
     });
-};
+}
+exports.loader = loader;

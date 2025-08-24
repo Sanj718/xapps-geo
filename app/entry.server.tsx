@@ -11,6 +11,9 @@ import { addDocumentResponseHeaders } from "./shopify.server";
 // Reduced timeout for faster response
 export const streamTimeout = 3000;
 
+// Maximum response size to prevent H27 errors
+const MAX_RESPONSE_SIZE = 1024 * 1024; // 1MB
+
 export default async function handleRequest(
   request: Request,
   responseStatusCode: number,
@@ -18,6 +21,11 @@ export default async function handleRequest(
   remixContext: EntryContext
 ) {
   addDocumentResponseHeaders(request, responseHeaders);
+  
+  // Add response size and timeout headers
+  responseHeaders.set("X-Response-Timeout", `${streamTimeout}ms`);
+  responseHeaders.set("X-Max-Response-Size", `${MAX_RESPONSE_SIZE} bytes`);
+  
   const userAgent = request.headers.get("user-agent");
   const callbackName = isbot(userAgent ?? '')
     ? "onAllReady"
@@ -35,6 +43,10 @@ export default async function handleRequest(
           const stream = createReadableStreamFromReadable(body);
 
           responseHeaders.set("Content-Type", "text/html");
+          
+          // Add compression headers
+          responseHeaders.set("Content-Encoding", "gzip");
+          
           resolve(
             new Response(stream, {
               headers: responseHeaders,

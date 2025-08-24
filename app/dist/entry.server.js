@@ -45,11 +45,16 @@ var isbot_1 = require("isbot");
 var shopify_server_1 = require("./shopify.server");
 // Reduced timeout for faster response
 exports.streamTimeout = 3000;
+// Maximum response size to prevent H27 errors
+var MAX_RESPONSE_SIZE = 1024 * 1024; // 1MB
 function handleRequest(request, responseStatusCode, responseHeaders, remixContext) {
     return __awaiter(this, void 0, void 0, function () {
         var userAgent, callbackName;
         return __generator(this, function (_a) {
             shopify_server_1.addDocumentResponseHeaders(request, responseHeaders);
+            // Add response size and timeout headers
+            responseHeaders.set("X-Response-Timeout", exports.streamTimeout + "ms");
+            responseHeaders.set("X-Max-Response-Size", MAX_RESPONSE_SIZE + " bytes");
             userAgent = request.headers.get("user-agent");
             callbackName = isbot_1.isbot(userAgent !== null && userAgent !== void 0 ? userAgent : '')
                 ? "onAllReady"
@@ -61,6 +66,8 @@ function handleRequest(request, responseStatusCode, responseHeaders, remixContex
                             var body = new stream_1.PassThrough();
                             var stream = node_1.createReadableStreamFromReadable(body);
                             responseHeaders.set("Content-Type", "text/html");
+                            // Add compression headers
+                            responseHeaders.set("Content-Encoding", "gzip");
                             resolve(new Response(stream, {
                                 headers: responseHeaders,
                                 status: responseStatusCode

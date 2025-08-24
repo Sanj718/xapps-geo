@@ -1,113 +1,52 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
-import { createFolderAndSaveDate } from "app/components/analytics-tracker";
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
+import { getAnalyticsData } from "../db-queries.server";
 
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET,OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
-  "Content-Type": "application/json",
-};
-
-// Allowed analytics types
-const ALLOWED_ANALYTICS_TYPES = [
-  "markets-auto",
-  "markets-button", 
-  "buttons",
-  "auto"
-] as const;
-
-type AnalyticsType = typeof ALLOWED_ANALYTICS_TYPES[number];
-
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  // Handle CORS preflight request
-  if (request.method === "OPTIONS") {
-    return new Response(null, {
-      status: 204,
-      headers: CORS_HEADERS,
-    });
-  }
-
-  // Check for Postman token (security measure)
-  const postmanToken = request.headers.get("postman-token");
-  if (postmanToken) {
-    return new Response("NOT ALLOWED", {
-      status: 400,
-      headers: CORS_HEADERS,
-    });
-  }
-
-  const url = new URL(request.url);
-  const shop = url.searchParams.get("shop");
-  const type = params.type; // This will be "markets-button", "markets-auto", "buttons", or "auto"
-  
-  if (!shop || shop === "") {
-    console.log("SHOP NOT FOUND", shop);
-    return new Response(
-      JSON.stringify({ 
-        status: false, 
-        error: "SHOP_NOT_FOUND", 
-        data: null 
-      }),
-      {
-        status: 405,
-        headers: CORS_HEADERS,
-      }
-    );
-  }
-
-  if (!type) {
-    return new Response(
-      JSON.stringify({ 
-        status: false, 
-        error: "TYPE_NOT_FOUND", 
-        data: null 
-      }),
-      {
-        status: 400,
-        headers: CORS_HEADERS,
-      }
-    );
-  }
-
-  // Validate that the type is allowed
-  if (!ALLOWED_ANALYTICS_TYPES.includes(type as AnalyticsType)) {
-    return new Response(
-      JSON.stringify({ 
-        status: false, 
-        error: "INVALID_TYPE", 
-        message: `Analytics type '${type}' is not allowed. Allowed types: ${ALLOWED_ANALYTICS_TYPES.join(", ")}`,
-        data: null 
-      }),
-      {
-        status: 400,
-        headers: CORS_HEADERS,
-      }
-    );
-  }
-
-  let status = 200;
-  let error: string | null = null;
-  let data = null;
-
+export async function loader({ request, params }: LoaderFunctionArgs) {
   try {
-    // Convert URL-friendly names to analytics types
-    const analyticsType = type.replace(/-/g, '_');
-    createFolderAndSaveDate(shop, analyticsType);
-  } catch (err: any) {
-    console.error(`ANALYTICS_${type.toUpperCase()}: `, err.message);
-    status = 500;
-    error = err.message || String(err);
-  }
-
-  return new Response(
-    JSON.stringify({ 
-      status: status === 200, 
-      error, 
-      data 
-    }),
-    {
-      status,
-      headers: CORS_HEADERS,
+    const url = new URL(request.url);
+    const shop = url.searchParams.get("shop");
+    
+    if (!shop) {
+      return json({ error: "Shop parameter is required" }, { status: 400 });
     }
-  );
-};
+
+    // Add timeout for analytics requests
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error("Request timeout")), 10000); // 10 second timeout
+    });
+
+    const analyticsPromise = getAnalyticsData({ shop });
+    
+    const result = await Promise.race([analyticsPromise, timeoutPromise]);
+    
+    if (!result.status) {
+      return json({ error: result.error || "Failed to fetch analytics" }, { status: 500 });
+    }
+
+    // Limit response size
+    const responseData = {
+      status: "success",
+      data: result.data,
+      timestamp: new Date().toISOString()
+    };
+
+    return json(responseData, {
+      headers: {
+        "Cache-Control": "public, max-age=300", // 5 minute cache
+        "Content-Type": "application/json"
+      }
+    });
+    
+  } catch (error) {
+    console.error("Analytics API error:", error);
+    
+    if (error instanceof Error && error.message === "Request timeout") {
+      return json({ error: "Request timeout - please try again" }, { status: 408 });
+    }
+    
+    return json({ 
+      error: "Internal server error",
+      timestamp: new Date().toISOString()
+    }, { status: 500 });
+  }
+}
