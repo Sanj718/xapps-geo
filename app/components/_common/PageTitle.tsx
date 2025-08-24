@@ -27,7 +27,8 @@ export function PageTitle({ icon, title, status, loading, url = "", hideStatus =
 
   return (
     <Box padding="400">
-      <Banner tone="info">We recently made some platform updates to improve performance and reliability. If you notice any issues, please don't hesitate to contact our support team - we're here to help!</Banner>
+      <Banner tone="info">We recently made some platform updates to improve performance and reliability. If you notice any issues, please don't hesitate to contact (contact@xapps.shop) our support team - we're here to help!</Banner>
+      <br />
       <InlineStack gap="200" align="space-between">
         <InlineStack gap="200" blockAlign="center">
           {icon && <Icon source={icon} />}
