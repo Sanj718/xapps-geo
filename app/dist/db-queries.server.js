@@ -241,7 +241,7 @@ function getAnalyticsData(_a) {
                         })];
                 case 1:
                     analyticsData = _b.sent();
-                    return [2 /*return*/, { status: (analyticsData === null || analyticsData === void 0 ? void 0 : analyticsData.length) > 0, data: analyticsData || [], shop: shop }];
+                    return [2 /*return*/, { status: (analyticsData === null || analyticsData === void 0 ? void 0 : analyticsData.length) > 0, data: (analyticsData === null || analyticsData === void 0 ? void 0 : analyticsData.length) > 0 ? analyticsData[0] : null }];
                 case 2:
                     error_6 = _b.sent();
                     console.error(error_6);

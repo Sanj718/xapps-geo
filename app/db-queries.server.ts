@@ -145,7 +145,7 @@ export async function getAnalyticsData({ shop }: Shop): Promise<DBResponse> {
       },
     });
 
-    return { status: analyticsData?.length > 0, data: analyticsData || [], shop: shop };
+    return { status: analyticsData?.length > 0, data: analyticsData?.length > 0 ? analyticsData[0] : null };
   } catch (error: any) {
     console.error(error);
     return { status: false, error: (error as Error).toString() };
