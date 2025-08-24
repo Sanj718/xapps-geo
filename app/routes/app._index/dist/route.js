@@ -211,7 +211,7 @@ function Index() {
                 React.createElement(StartCard, { title: "Markets redirects", status: marketsEmbedStatus, image: card2_svg_1["default"], label: "Customize markets redirects", url: "/app/markets" })),
             React.createElement("br", null),
             React.createElement(polaris_1.Divider, null),
-            React.createElement(polaris_1.Banner, { tone: "info" }, "We apologize for any inconvenience. Our team is currently working on improving the analytics functionality to provide you with more accurate data. Thank you for your patience and understanding."),
+            React.createElement(polaris_1.Banner, { tone: "info" }, "We recently made some platform updates to improve performance and reliability. If you notice any issues, please don't hesitate to contact our support team - we're here to help!"),
             React.createElement("br", null),
             React.createElement(polaris_1.InlineGrid, { columns: { xs: 1, sm: 1, md: 2, lg: 2, xl: 2 }, gap: "400" },
                 React.createElement(Stats, { loading: loading[_actions_2.ACTIONS.get_AnalyticsData + "Loading"], title: "Custom redirects performance", totalPeriod: periodCustomRedirects, totamlNum: totalCustomPopup + totalCustomAuto, popupNum: totalCustomPopup, popupPeriod: periodCustomPopupRedirects, autoNum: totalCustomAuto, autoPeriod: periodCustomAutoRedirects }),

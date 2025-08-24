@@ -348,7 +348,7 @@ export default function Index() {
         </InlineGrid>
         <br />
         <Divider />
-        <Banner tone="info">We apologize for any inconvenience. Our team is currently working on improving the analytics functionality to provide you with more accurate data. Thank you for your patience and understanding.</Banner>
+        <Banner tone="info">We recently made some platform updates to improve performance and reliability. If you notice any issues, please don't hesitate to contact our support team - we're here to help!</Banner>
         <br />
         <InlineGrid columns={{ xs: 1, sm: 1, md: 2, lg: 2, xl: 2 }} gap="400">
           <Stats

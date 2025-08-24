@@ -10,6 +10,7 @@ var status_gray_svg_1 = require("../../assets/status-gray.svg");
 function PageTitle(_a) {
     var icon = _a.icon, title = _a.title, status = _a.status, loading = _a.loading, _b = _a.url, url = _b === void 0 ? "" : _b, _c = _a.hideStatus, hideStatus = _c === void 0 ? false : _c;
     return (react_1["default"].createElement(polaris_1.Box, { padding: "400" },
+        react_1["default"].createElement(polaris_1.Banner, { tone: "info" }, "We recently made some platform updates to improve performance and reliability. If you notice any issues, please don't hesitate to contact our support team - we're here to help!"),
         react_1["default"].createElement(polaris_1.InlineStack, { gap: "200", align: "space-between" },
             react_1["default"].createElement(polaris_1.InlineStack, { gap: "200", blockAlign: "center" },
                 icon && react_1["default"].createElement(polaris_1.Icon, { source: icon }),

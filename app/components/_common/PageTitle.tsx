@@ -9,6 +9,7 @@ import {
   InlineStack,
   Text,
   Tooltip,
+  Banner,
 } from "@shopify/polaris";
 import statusGreen from "../../assets/status-green.svg";
 import statusRed from "../../assets/status-red.svg";
@@ -26,6 +27,7 @@ export function PageTitle({ icon, title, status, loading, url = "", hideStatus =
 
   return (
     <Box padding="400">
+      <Banner tone="info">We recently made some platform updates to improve performance and reliability. If you notice any issues, please don't hesitate to contact our support team - we're here to help!</Banner>
       <InlineStack gap="200" align="space-between">
         <InlineStack gap="200" blockAlign="center">
           {icon && <Icon source={icon} />}
