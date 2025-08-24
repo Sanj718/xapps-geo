@@ -161,6 +161,7 @@ function Index() {
             });
         });
     }
+    console.log("actionData", actionData);
     var loading = _helpers_1.loadingStates(navigation, [_actions_2.ACTIONS.get_AnalyticsData]);
     return (React.createElement(polaris_1.Page, null,
         React.createElement("div", { id: "main-screen" },

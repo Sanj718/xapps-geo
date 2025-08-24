@@ -249,9 +249,8 @@ export default function Index() {
 
     }
   }
-
+  console.log("actionData", actionData);
   const loading = loadingStates(navigation, [ACTIONS.get_AnalyticsData]) as LoadingStates;
-
   return (
     <Page>
       <div id="main-screen">
@@ -350,7 +349,6 @@ export default function Index() {
         <br />
         <Divider />
         <Banner tone="info">We apologize for any inconvenience. Our team is currently working on improving the analytics functionality to provide you with more accurate data. Thank you for your patience and understanding.</Banner>
-      
         <br />
         <InlineGrid columns={{ xs: 1, sm: 1, md: 2, lg: 2, xl: 2 }} gap="400">
           <Stats
