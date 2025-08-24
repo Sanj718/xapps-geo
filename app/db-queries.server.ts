@@ -135,6 +135,14 @@ export async function getAnalyticsData({ shop }: Shop): Promise<DBResponse> {
       where: {
         shop: shop, // Match the shop field
       },
+      select: {
+        id: true,
+        shop: true,
+        dataAuto: true,
+        dataButton: true,
+        dataMarketsAuto: true,
+        dataMarketsButton: true,
+      },
     });
 
     return { status: analyticsData?.length > 0, data: analyticsData || [] };

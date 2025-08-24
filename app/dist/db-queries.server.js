@@ -229,6 +229,14 @@ function getAnalyticsData(_a) {
                     return [4 /*yield*/, db_server_1["default"].analytics.findMany({
                             where: {
                                 shop: shop
+                            },
+                            select: {
+                                id: true,
+                                shop: true,
+                                dataAuto: true,
+                                dataButton: true,
+                                dataMarketsAuto: true,
+                                dataMarketsButton: true
                             }
                         })];
                 case 1:
