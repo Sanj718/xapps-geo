@@ -1,0 +1,71 @@
+# 🗄️ DATABASE DEVELOPMENT STANDARDS
+
+## ⚠️ **QUERY OPTIMIZATION (REQUIRED):**
+
+### **Performance Standards:**
+- ALL database queries MUST complete within timeout limits
+- Use Prisma's built-in query optimization features
+- Add `take` limits to prevent large result sets
+- Use `select` to fetch only needed fields
+- Implement proper indexing strategies
+
+### **Timeout Protection:**
+- Database operations should have timeout handling
+- Use middleware for query performance monitoring
+- Log slow queries (>1000ms) for optimization
+- Implement circuit breakers for failing queries
+
+### **Data Validation:**
+- Validate all input parameters before queries
+- Use Prisma's type-safe query builders
+- Handle database connection errors gracefully
+- Implement retry logic for transient failures
+
+### **Security Standards:**
+- NEVER use raw SQL queries
+- Use Prisma's parameterized queries
+- Validate user permissions before data access
+- Sanitize all user inputs
+
+## 📝 **DATABASE TEMPLATE STRUCTURE:**
+```typescript
+// 1. Add performance monitoring
+prisma.$use(async (params, next) => {
+  const start = Date.now();
+  
+  try {
+    const result = await next(params);
+    const duration = Date.now() - start;
+    
+    if (duration > 1000) {
+      console.warn(`Slow query: ${params.model}.${params.action} took ${duration}ms`);
+    }
+    
+    return result;
+  } catch (error) {
+    console.error(`Query failed after ${Date.now() - start}ms:`, error);
+    throw error;
+  }
+});
+
+// 2. Optimize queries with limits
+const result = await prisma.table.findMany({
+  where: { shop },
+  select: { id: true, name: true }, // Only needed fields
+  take: 100, // Prevent large results
+  orderBy: { id: 'desc' } // Efficient ordering
+});
+```
+
+## 🚨 **VALIDATION CHECKLIST:**
+- [ ] Query timeouts implemented
+- [ ] Performance monitoring added
+- [ ] Result limits applied
+- [ ] Only needed fields selected
+- [ ] Error handling comprehensive
+- [ ] No raw SQL queries
+- [ ] Input validation implemented
+description:
+globs:
+alwaysApply: false
+---

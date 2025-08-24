@@ -1,0 +1,109 @@
+# 🚀 PRE-DEPLOYMENT VALIDATION CHECKLIST
+
+## ⚠️ **MANDATORY: Complete ALL Items Before Deployment**
+
+### **🔒 Code Validation (REQUIRED):**
+- [ ] **NO LINTER ERRORS** - Run `npm run lint` and fix ALL issues
+- [ ] **TypeScript Compilation** - Run `npm run build` successfully
+- [ ] **Import Paths** - All imports use correct relative paths
+- [ ] **Type Safety** - No `any` types without justification
+- [ ] **Error Handling** - All async operations have proper error handling
+
+### **🧪 Testing Validation (REQUIRED):**
+- [ ] **Local Development** - `npm run dev` runs without errors
+- [ ] **API Endpoints** - Test all modified endpoints with real data
+- [ ] **Database Operations** - Verify all database queries work correctly
+- [ ] **Error Scenarios** - Test error handling and edge cases
+- [ ] **Console Clean** - No errors in browser console or terminal
+
+### **⚡ Performance Validation (REQUIRED):**
+- [ ] **Response Times** - All APIs respond within timeout limits
+- [ ] **Database Performance** - No slow queries (>1000ms)
+- [ ] **Memory Usage** - No memory leaks or excessive resource usage
+- [ ] **Bundle Size** - No unnecessary large dependencies added
+- [ ] **Caching Strategy** - Appropriate cache headers for each endpoint
+
+### **🔐 Security Validation (REQUIRED):**
+- [ ] **Input Validation** - All user inputs properly sanitized
+- [ ] **Database Security** - No raw SQL, use Prisma safely
+- [ ] **CORS Configuration** - Public APIs have proper CORS headers
+- [ ] **Authentication** - Protected routes require proper auth
+- [ ] **Environment Variables** - No sensitive data in code
+
+### **🌐 Environment Validation (REQUIRED):**
+- [ ] **Environment Variables** - All required vars are set
+- [ ] **Database Connection** - Production database accessible
+- [ ] **External APIs** - All API keys and endpoints valid
+- [ ] **Build Process** - Production build succeeds
+- [ ] **Dependencies** - All packages are compatible
+
+## 🚨 **EMERGENCY ROLLBACK PLAN:**
+
+### **If Issues Occur:**
+1. **Immediate**: Revert to last working commit
+2. **Investigate**: Check logs and error messages
+3. **Fix Locally**: Apply corrections and test thoroughly
+4. **Validate**: Complete full validation checklist again
+5. **Redeploy**: Only after ALL items pass
+
+## 📊 **COMMIT MESSAGE FORMAT:**
+```
+type(scope): brief description
+
+Examples:
+fix(api): add timeout protection to prevent H27 errors
+feat(analytics): implement new tracking system
+refactor(db): optimize database queries for better performance
+```
+
+## ⚡ **QUICK VALIDATION COMMANDS:**
+```bash
+# Check for TypeScript errors
+npm run build
+
+# Check for linting issues  
+npm run lint
+
+# Test local development
+npm run dev
+
+# Check database connection
+npm run prisma:studio
+
+# Validate API endpoints
+curl -X GET "http://localhost:3000/api/health"
+```
+
+## 🎯 **PRIORITY LEVELS:**
+
+### **🔴 CRITICAL (Must Fix Before Deployment):**
+- Linter errors
+- TypeScript compilation errors
+- Database connection failures
+- Security vulnerabilities
+
+### **🟡 HIGH (Fix Before Production):**
+- Performance issues
+- Error handling gaps
+- Missing validation
+- API response timeouts
+
+### **🟢 MEDIUM (Fix in Next Iteration):**
+- Code style improvements
+- Documentation updates
+- Minor optimizations
+- UI/UX enhancements
+
+---
+
+## ⚠️ **FINAL REMINDER:**
+
+**NEVER SKIP VALIDATION STEPS**
+**"It works on my machine" is NOT acceptable for production**
+**Always validate, test, and confirm before deploying**
+
+**This checklist is MANDATORY for every deployment.**
+description:
+globs:
+alwaysApply: false
+---

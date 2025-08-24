@@ -106,7 +106,7 @@ exports.loader = function (_a) {
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/, new Response(JSON.stringify({ status: status === 200, error: error, data: data }), {
                         status: status,
-                        headers: __assign(__assign({}, CORS_HEADERS), { "Cache-Control": "public, max-age=900", "X-Response-Time": new Date().toISOString() })
+                        headers: __assign(__assign({}, CORS_HEADERS), { "Cache-Control": "public, max-age=120", "X-Response-Time": new Date().toISOString() })
                     })];
             }
         });

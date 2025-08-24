@@ -1,0 +1,71 @@
+# 🚀 API DEVELOPMENT STANDARDS
+
+## ⚠️ **H27 ERROR PREVENTION (REQUIRED):**
+
+### **Timeout Protection:**
+- ALL API endpoints MUST have timeout protection
+- Use `Promise.race()` with appropriate timeout values
+- Shop APIs: 8 seconds max
+- Markets APIs: 10 seconds max  
+- Analytics APIs: 5 seconds max
+- Static data APIs: 3 seconds max
+
+### **Response Optimization:**
+- Add appropriate caching headers based on data type
+- Shop data: 1 minute cache (dynamic)
+- Markets data: 2 minutes cache (moderate changes)
+- Analytics: 1 minute cache (real-time)
+- Static data: 1 hour cache (rarely changes)
+
+### **Error Handling:**
+- Return proper HTTP status codes (408 for timeouts)
+- Include meaningful error messages
+- Add response timestamps for debugging
+- Handle both timeout and general errors
+
+### **CORS Configuration:**
+- Public APIs must have proper CORS headers
+- Include `Access-Control-Allow-Origin: *`
+- Support OPTIONS preflight requests
+- Set appropriate content types
+
+## 📝 **API TEMPLATE STRUCTURE:**
+```typescript
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  // 1. Handle CORS preflight
+  if (request.method === "OPTIONS") { /* ... */ }
+  
+  // 2. Validate input parameters
+  const shop = url.searchParams.get("shop");
+  if (!shop) { /* return error */ }
+  
+  // 3. Add timeout protection
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeout(() => reject(new Error("Request timeout")), TIMEOUT_MS);
+  });
+  
+  // 4. Execute with timeout
+  const result = await Promise.race([dataPromise, timeoutPromise]);
+  
+  // 5. Return with caching headers
+  return new Response(JSON.stringify(data), {
+    headers: {
+      ...CORS_HEADERS,
+      "Cache-Control": "public, max-age=CACHE_TIME",
+      "X-Response-Time": new Date().toISOString(),
+    }
+  });
+};
+```
+
+## 🚨 **VALIDATION CHECKLIST:**
+- [ ] Timeout protection implemented
+- [ ] Appropriate cache headers set
+- [ ] CORS headers configured
+- [ ] Error handling comprehensive
+- [ ] Response times within limits
+- [ ] No linter errors
+description:
+globs:
+alwaysApply: false
+---

@@ -1,5 +1,6 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { getPublicShopData } from "../db-queries.server";
+import type { DBResponse } from "../components/_types";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -40,7 +41,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
     const dataPromise = getPublicShopData({ shop });
     
-    const response = await Promise.race([dataPromise, timeoutPromise]);
+    const response = await Promise.race([dataPromise, timeoutPromise]) as DBResponse;
     
     if (!response?.status) {
       throw new Error("Query Error");
@@ -63,7 +64,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       status,
       headers: {
         ...CORS_HEADERS,
-        "Cache-Control": "public, max-age=600", // 10 minute cache
+        "Cache-Control": "public, max-age=60", // 1 minute cache for shop data
         "X-Response-Time": new Date().toISOString(),
       },
     }

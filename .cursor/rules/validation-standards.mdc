@@ -1,0 +1,51 @@
+# 🚨 MANDATORY VALIDATION STANDARDS
+
+## ⚠️ **BEFORE ANY CODE CHANGES - ALWAYS VALIDATE:**
+
+### **🔒 Code Quality (REQUIRED)**
+- NO linter errors - fix ALL TypeScript/ESLint issues
+- All imports use correct relative paths (`../` not `~/`)
+- All variables properly typed, minimize `any` types
+- Proper error handling for all async operations
+- No commented-out code or debug statements
+
+### **🔒 Testing (REQUIRED)**
+- Test locally with `npm run dev` before saving
+- Verify no console errors in browser/terminal
+- Test all modified API endpoints with real data
+- Validate database operations work correctly
+- Test error scenarios and edge cases
+
+### **🔒 Performance (REQUIRED)**
+- API endpoints respond within timeout limits
+- Database queries don't hang or take too long
+- No memory leaks or excessive resource usage
+- Response caching is appropriate for data type
+
+### **🔒 Security (REQUIRED)**
+- All user inputs properly validated
+- Use Prisma safely, no raw SQL queries
+- Public APIs have proper CORS configuration
+- Protected routes require authentication
+
+## 📝 **PRE-SAVE CHECKLIST:**
+- [ ] No syntax errors
+- [ ] All imports resolve correctly
+- [ ] Logic is complete and correct
+- [ ] Error handling is comprehensive
+- [ ] Performance considerations applied
+
+## 🚀 **PRE-COMMIT CHECKLIST:**
+- [ ] All validation rules passed
+- [ ] Local dev server runs without errors
+- [ ] Modified functionality works as expected
+- [ ] No breaking changes to existing features
+
+## 🚨 **NEVER SKIP VALIDATION STEPS**
+
+**"It works on my machine" is NOT acceptable for production.**
+**Always validate, test, and confirm before deploying.**
+description:
+globs:
+alwaysApply: false
+---
