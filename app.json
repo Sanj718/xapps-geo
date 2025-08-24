@@ -1,0 +1,27 @@
+{
+  "name": "xapps-geo",
+  "description": "Shopify Geo Redirects App",
+  "repository": "https://github.com/Sanj718/xapps-geo",
+  "logo": "https://node-js-sample.herokuapp.com/node.png",
+  "keywords": ["node", "express", "static", "shopify", "geo", "redirects"],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "env": {
+    "NODE_ENV": {
+      "description": "Environment setting for the application",
+      "value": "production"
+    }
+  },
+  "addons": [
+    "heroku-postgresql"
+  ]
+}

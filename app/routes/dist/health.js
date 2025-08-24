@@ -1,4 +1,8 @@
 "use strict";
+var __makeTemplateObject = (this && this.__makeTemplateObject) || function (cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -36,50 +40,51 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.streamTimeout = void 0;
-var stream_1 = require("stream");
-var server_1 = require("react-dom/server");
-var react_1 = require("@remix-run/react");
-var node_1 = require("@remix-run/node");
-var isbot_1 = require("isbot");
-var shopify_server_1 = require("./shopify.server");
-// Reduced timeout for faster response
-exports.streamTimeout = 3000;
-function handleRequest(request, responseStatusCode, responseHeaders, remixContext) {
+exports.loader = void 0;
+var db_server_1 = require("../db.server");
+function loader(_a) {
+    var request = _a.request;
     return __awaiter(this, void 0, void 0, function () {
-        var userAgent, callbackName;
-        return __generator(this, function (_a) {
-            shopify_server_1.addDocumentResponseHeaders(request, responseHeaders);
-            userAgent = request.headers.get("user-agent");
-            callbackName = isbot_1.isbot(userAgent !== null && userAgent !== void 0 ? userAgent : '')
-                ? "onAllReady"
-                : "onShellReady";
-            return [2 /*return*/, new Promise(function (resolve, reject) {
-                    var _a;
-                    var _b = server_1.renderToPipeableStream(React.createElement(react_1.RemixServer, { context: remixContext, url: request.url }), (_a = {},
-                        _a[callbackName] = function () {
-                            var body = new stream_1.PassThrough();
-                            var stream = node_1.createReadableStreamFromReadable(body);
-                            responseHeaders.set("Content-Type", "text/html");
-                            resolve(new Response(stream, {
-                                headers: responseHeaders,
-                                status: responseStatusCode
-                            }));
-                            pipe(body);
-                        },
-                        _a.onShellError = function (error) {
-                            console.error("Shell error:", error);
-                            reject(error);
-                        },
-                        _a.onError = function (error) {
-                            console.error("Render error:", error);
-                            responseStatusCode = 500;
-                        },
-                        _a)), pipe = _b.pipe, abort = _b.abort;
-                    // Reduced timeout for faster startup
-                    setTimeout(abort, exports.streamTimeout);
-                })];
+        var error_1;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 2, , 3]);
+                    // Quick database connectivity check
+                    return [4 /*yield*/, db_server_1["default"].$queryRaw(templateObject_1 || (templateObject_1 = __makeTemplateObject(["SELECT 1"], ["SELECT 1"])))];
+                case 1:
+                    // Quick database connectivity check
+                    _b.sent();
+                    return [2 /*return*/, new Response(JSON.stringify({
+                            status: "healthy",
+                            timestamp: new Date().toISOString(),
+                            database: "connected",
+                            uptime: process.uptime()
+                        }), {
+                            status: 200,
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Cache-Control": "no-cache, no-store, must-revalidate"
+                            }
+                        })];
+                case 2:
+                    error_1 = _b.sent();
+                    return [2 /*return*/, new Response(JSON.stringify({
+                            status: "unhealthy",
+                            timestamp: new Date().toISOString(),
+                            database: "disconnected",
+                            error: error_1 instanceof Error ? error_1.message : "Unknown error"
+                        }), {
+                            status: 503,
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Cache-Control": "no-cache, no-store, must-revalidate"
+                            }
+                        })];
+                case 3: return [2 /*return*/];
+            }
         });
     });
 }
-exports["default"] = handleRequest;
+exports.loader = loader;
+var templateObject_1;

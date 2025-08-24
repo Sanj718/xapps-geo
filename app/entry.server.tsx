@@ -8,7 +8,8 @@ import {
 import { isbot } from "isbot";
 import { addDocumentResponseHeaders } from "./shopify.server";
 
-export const streamTimeout = 5000;
+// Reduced timeout for faster response
+export const streamTimeout = 3000;
 
 export default async function handleRequest(
   request: Request,
@@ -43,17 +44,17 @@ export default async function handleRequest(
           pipe(body);
         },
         onShellError(error) {
+          console.error("Shell error:", error);
           reject(error);
         },
         onError(error) {
+          console.error("Render error:", error);
           responseStatusCode = 500;
-          console.error(error);
         },
       }
     );
 
-    // Automatically timeout the React renderer after 6 seconds, which ensures
-    // React has enough time to flush down the rejected boundary contents
-    setTimeout(abort, streamTimeout + 1000);
+    // Reduced timeout for faster startup
+    setTimeout(abort, streamTimeout);
   });
 }
