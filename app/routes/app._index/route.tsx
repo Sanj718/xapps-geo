@@ -145,11 +145,11 @@ export default function Index() {
     setEmbedData(themeEmbedData);
   }, [themeEmbedData]);
 
-  // useMemo(() => {
-  //   if (actionData?._action === "analyticsData" && actionData?.status) {
-  //     setStoreAnalytics(actionData?.data);
-  //   }
-  // }, [actionData]);
+  useMemo(() => {
+    if (actionData?._action === "getAnalyticsData" && actionData?.status) {
+      setStoreAnalytics(actionData?.data);
+    }
+  }, [actionData]);
 
   useEffect(() => {
     submit(

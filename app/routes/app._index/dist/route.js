@@ -81,11 +81,11 @@ function Index() {
     react_1.useMemo(function () {
         setEmbedData(themeEmbedData);
     }, [themeEmbedData]);
-    // useMemo(() => {
-    //   if (actionData?._action === "analyticsData" && actionData?.status) {
-    //     setStoreAnalytics(actionData?.data);
-    //   }
-    // }, [actionData]);
+    react_1.useMemo(function () {
+        if ((actionData === null || actionData === void 0 ? void 0 : actionData._action) === "getAnalyticsData" && (actionData === null || actionData === void 0 ? void 0 : actionData.status)) {
+            setStoreAnalytics(actionData === null || actionData === void 0 ? void 0 : actionData.data);
+        }
+    }, [actionData]);
     react_1.useEffect(function () {
         submit({
             _action: _actions_2.ACTIONS.get_AnalyticsData
@@ -163,7 +163,6 @@ function Index() {
     }
     var loading = _helpers_1.loadingStates(navigation, [_actions_2.ACTIONS.get_AnalyticsData]);
     return (React.createElement(polaris_1.Page, null,
-        React.createElement(polaris_1.Banner, { tone: "info" }, "We apologize for any inconvenience. Our team is currently working on improving the analytics functionality to provide you with more accurate data. Thank you for your patience and understanding."),
         React.createElement("div", { id: "main-screen" },
             React.createElement(polaris_1.InlineStack, { align: "space-between", blockAlign: "center" },
                 React.createElement(polaris_1.Text, { as: "h1", variant: "headingLg" },
@@ -211,6 +210,7 @@ function Index() {
                 React.createElement(StartCard, { title: "Markets redirects", status: marketsEmbedStatus, image: card2_svg_1["default"], label: "Customize markets redirects", url: "/app/markets" })),
             React.createElement("br", null),
             React.createElement(polaris_1.Divider, null),
+            React.createElement(polaris_1.Banner, { tone: "info" }, "We apologize for any inconvenience. Our team is currently working on improving the analytics functionality to provide you with more accurate data. Thank you for your patience and understanding."),
             React.createElement("br", null),
             React.createElement(polaris_1.InlineGrid, { columns: { xs: 1, sm: 1, md: 2, lg: 2, xl: 2 }, gap: "400" },
                 React.createElement(Stats, { loading: loading[_actions_2.ACTIONS.get_AnalyticsData + "Loading"], title: "Custom redirects performance", totalPeriod: periodCustomRedirects, totamlNum: totalCustomPopup + totalCustomAuto, popupNum: totalCustomPopup, popupPeriod: periodCustomPopupRedirects, autoNum: totalCustomAuto, autoPeriod: periodCustomAutoRedirects }),
