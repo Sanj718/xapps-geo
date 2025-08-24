@@ -31,8 +31,17 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   let status = 200;
   let error: string | null = null;
   let data = null;
+  
   try {
-    const response = await getPublicMarketsData({ shop });
+    // Add timeout protection to prevent H27 errors
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error("Request timeout")), 10000); // 10 second timeout for markets data
+    });
+
+    const dataPromise = getPublicMarketsData({ shop });
+    
+    const response = await Promise.race([dataPromise, timeoutPromise]);
+    
     if (!response?.status) {
       throw new Error("Query Error");
     }
@@ -40,13 +49,23 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   } catch (err: any) {
     status = 500;
     error = err.message || String(err);
+    
+    // Handle timeout specifically
+    if (err.message === "Request timeout") {
+      status = 408; // Request Timeout
+      error = "Request timeout - please try again";
+    }
   }
 
   return new Response(
     JSON.stringify({ status: status === 200, error, data }),
     {
       status,
-      headers: CORS_HEADERS,
+      headers: {
+        ...CORS_HEADERS,
+        "Cache-Control": "public, max-age=900", // 15 minute cache for markets data
+        "X-Response-Time": new Date().toISOString(),
+      },
     }
   );
 };

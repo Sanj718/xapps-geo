@@ -48,7 +48,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.loader = void 0;
-var db_queries_server_1 = require("../db-queries.server");
+var fs_1 = require("fs");
+var path_1 = require("path");
 var CORS_HEADERS = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET,OPTIONS",
@@ -58,7 +59,7 @@ var CORS_HEADERS = {
 exports.loader = function (_a) {
     var request = _a.request;
     return __awaiter(void 0, void 0, void 0, function () {
-        var url, shop, status, error, data, timeoutPromise, dataPromise, response, err_1;
+        var timeoutPromise, fileReadPromise, countriesData, error_1, status, errorMessage;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -68,46 +69,49 @@ exports.loader = function (_a) {
                                 headers: CORS_HEADERS
                             })];
                     }
-                    url = new URL(request.url);
-                    shop = url.searchParams.get("shop");
-                    if (!shop || shop === "") {
-                        return [2 /*return*/, new Response(JSON.stringify({ status: false, error: "SHOP_NOT_FOUND", data: null }), {
-                                status: 405,
-                                headers: CORS_HEADERS
-                            })];
-                    }
-                    status = 200;
-                    error = null;
-                    data = null;
                     _b.label = 1;
                 case 1:
                     _b.trys.push([1, 3, , 4]);
                     timeoutPromise = new Promise(function (_, reject) {
-                        setTimeout(function () { return reject(new Error("Request timeout")); }, 10000); // 10 second timeout for markets data
+                        setTimeout(function () { return reject(new Error("Request timeout")); }, 3000); // 3 second timeout for file read
                     });
-                    dataPromise = db_queries_server_1.getPublicMarketsData({ shop: shop });
-                    return [4 /*yield*/, Promise.race([dataPromise, timeoutPromise])];
+                    fileReadPromise = (function () { return __awaiter(void 0, void 0, Promise, function () {
+                        var filePath, countriesData;
+                        return __generator(this, function (_a) {
+                            filePath = path_1.resolve() + "/public_assets/countries.json";
+                            countriesData = fs_1.readFileSync(filePath, "utf8");
+                            // Parse the JSON to validate it's valid (optional validation)
+                            // JSON.parse(countriesData);
+                            return [2 /*return*/, countriesData];
+                        });
+                    }); })();
+                    return [4 /*yield*/, Promise.race([fileReadPromise, timeoutPromise])];
                 case 2:
-                    response = _b.sent();
-                    if (!(response === null || response === void 0 ? void 0 : response.status)) {
-                        throw new Error("Query Error");
-                    }
-                    data = response.data;
-                    return [3 /*break*/, 4];
+                    countriesData = _b.sent();
+                    // Return the countries data as a JSON response
+                    return [2 /*return*/, new Response(countriesData, {
+                            status: 200,
+                            headers: __assign(__assign({}, CORS_HEADERS), { "Cache-Control": "public, max-age=3600", "X-Response-Time": new Date().toISOString() })
+                        })];
                 case 3:
-                    err_1 = _b.sent();
+                    error_1 = _b.sent();
+                    console.error("Error reading countries.json:", error_1);
                     status = 500;
-                    error = err_1.message || String(err_1);
+                    errorMessage = "Failed to load countries data";
                     // Handle timeout specifically
-                    if (err_1.message === "Request timeout") {
+                    if (error_1 instanceof Error && error_1.message === "Request timeout") {
                         status = 408; // Request Timeout
-                        error = "Request timeout - please try again";
+                        errorMessage = "Request timeout - please try again";
                     }
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/, new Response(JSON.stringify({ status: status === 200, error: error, data: data }), {
-                        status: status,
-                        headers: __assign(__assign({}, CORS_HEADERS), { "Cache-Control": "public, max-age=900", "X-Response-Time": new Date().toISOString() })
-                    })];
+                    return [2 /*return*/, new Response(JSON.stringify({
+                            status: false,
+                            error: errorMessage,
+                            message: error_1 instanceof Error ? error_1.message : "Unknown error"
+                        }), {
+                            status: status,
+                            headers: CORS_HEADERS
+                        })];
+                case 4: return [2 /*return*/];
             }
         });
     });
