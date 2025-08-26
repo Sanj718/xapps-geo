@@ -81,6 +81,7 @@ function PageTitle(_a) {
                                     result = _a.sent();
                                     if (!result.success) {
                                         console.log("Review modal not displayed. Reason: " + result.code + ": " + result.message);
+                                        window.open("https://apps.shopify.com/native-geo-redirects-popup?#modal-show=WriteReviewModal", "_blank");
                                     }
                                     return [3 /*break*/, 3];
                                 case 2:

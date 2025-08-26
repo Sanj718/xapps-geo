@@ -92,6 +92,7 @@ export function PageTitle({ icon, title, status, loading, url = "", hideStatus =
                 const result = await shopify.reviews.request();
                 if (!result.success) {
                   console.log(`Review modal not displayed. Reason: ${result.code}: ${result.message}`);
+                  window.open("https://apps.shopify.com/native-geo-redirects-popup?#modal-show=WriteReviewModal", "_blank");
                 }
               } catch (error) {
                 console.error('Error requesting review:', error);
