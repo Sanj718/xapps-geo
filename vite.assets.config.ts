@@ -1,7 +1,8 @@
 import { defineConfig } from "vite";
 import { resolve } from "path";
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync, writeFileSync, rmdirSync, existsSync } from "fs";
 import * as sass from "sass";
+import * as esbuild from "esbuild";
 
 // Function to read application_url from shopify.app.toml
 function getApplicationUrl(): string {
@@ -147,7 +148,8 @@ const publicAssetsPlugin = () => {
           indexMarketsCss = sass.compileString(indexMarketsScss, sassOptions);
         } catch (sassError) {
           console.error('❌ SCSS compilation failed:', sassError);
-          throw new Error(`SCSS compilation failed: ${sassError.message}`);
+          const errorMessage = sassError instanceof Error ? sassError.message : String(sassError);
+          throw new Error(`SCSS compilation failed: ${errorMessage}`);
         }
 
         // Validate Sass output
@@ -163,6 +165,29 @@ const publicAssetsPlugin = () => {
         safeWriteFile('native-geo-redirects.min.css', minifiedIndexCss);
         safeWriteFile('native-geo-markets.min.css', minifiedIndexMarketsCss);
         
+        // Build JavaScript files using esbuild
+        try {
+          const jsResult = await esbuild.build({
+            entryPoints: [resolve(__dirname, 'public_assets/index.js')],
+            bundle: true,
+            format: 'iife',
+            globalName: 'PublicAssets',
+            minify: true,
+            write: false,
+            target: 'es2015',
+          });
+          
+          if (jsResult.outputFiles && jsResult.outputFiles[0]) {
+            const jsContent = jsResult.outputFiles[0].text;
+            // Replace __HOST__ placeholder
+            const processedJs = jsContent.replace(/__HOST__/g, JSON.stringify(HOST));
+            safeWriteFile('native-geo-redirects.min.js', processedJs);
+            console.log('✅ Built JavaScript file for redirects');
+          }
+        } catch (jsError) {
+          console.error('❌ JavaScript build failed:', jsError);
+        }
+        
         console.log('✅ Compiled and minified SCSS files for extensions');
         console.log(`   - Redirects CSS: ${minifiedIndexCss.length} chars`);
         console.log(`   - Markets CSS: ${minifiedIndexMarketsCss.length} chars`);
@@ -172,6 +197,10 @@ const publicAssetsPlugin = () => {
         // Don't throw to prevent build failure - log and continue
         console.warn('⚠️ Continuing build without SCSS compilation');
       }
+    },
+    generateBundle(options: any, bundle: any) {
+      // Prevent the build folder creation by intercepting the bundle generation
+      console.log('🔄 Intercepting bundle generation to prevent build folder creation');
     },
     transform(code: string, id: string) {
       try {
@@ -198,24 +227,36 @@ const publicAssetsPlugin = () => {
         return code; // Return original code if transformation fails
       }
     },
+    closeBundle() {
+      // Clean up the build folder after the build completes
+      const buildDir = resolve(__dirname, 'extensions/ngr-widget/assets/build');
+      if (existsSync(buildDir)) {
+        try {
+          console.log('🧹 Cleaning up build folder...');
+          rmdirSync(buildDir, { recursive: true });
+          console.log('✅ Build folder cleaned up');
+        } catch (error) {
+          console.warn('⚠️ Could not clean up build folder:', error);
+        }
+      }
+    }
   };
 };
 
 export default defineConfig({
   plugins: [publicAssetsPlugin()],
   build: {
-    lib: {
-      entry: resolve(__dirname, 'public_assets/index.js'),
-      formats: ['iife'],
-      name: 'PublicAssets',
-    },
     outDir: resolve(__dirname, 'extensions/ngr-widget/assets'),
     emptyOutDir: false,
     minify: 'terser',
     rollupOptions: {
+      input: resolve(__dirname, 'public_assets/index.js'),
       output: {
         entryFileNames: 'native-geo-redirects.min.js',
         chunkFileNames: '[name]-[hash].js',
+        format: 'iife',
+        name: 'PublicAssets',
+        dir: resolve(__dirname, 'extensions/ngr-widget/assets'),
       },
     },
   },

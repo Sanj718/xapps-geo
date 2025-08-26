@@ -59,6 +59,7 @@ exports.action = function (params) { return __awaiter(void 0, void 0, void 0, fu
     return [2 /*return*/, _actions_1.handleActions(params)];
 }); }); };
 function Index() {
+    var _this = this;
     var _a;
     var _b = react_2.useOutletContext(), shopInfo = _b.shopInfo, shopdb = _b.shopdb, activePlan = _b.activePlan, devPlan = _b.devPlan, veteranPlan = _b.veteranPlan, appId = _b.appId, appData = _b.appData;
     var themeEmbedData = react_2.useLoaderData().themeEmbedData;
@@ -161,7 +162,6 @@ function Index() {
             });
         });
     }
-    console.log("actionData", actionData);
     var loading = _helpers_1.loadingStates(navigation, [_actions_2.ACTIONS.get_AnalyticsData]);
     return (React.createElement(polaris_1.Page, null,
         React.createElement("div", { id: "main-screen" },
@@ -211,7 +211,7 @@ function Index() {
                 React.createElement(StartCard, { title: "Markets redirects", status: marketsEmbedStatus, image: card2_svg_1["default"], label: "Customize markets redirects", url: "/app/markets" })),
             React.createElement("br", null),
             React.createElement(polaris_1.Divider, null),
-            React.createElement(polaris_1.Banner, { tone: "info" }, "We recently made some platform updates to improve performance and reliability. If you notice any issues, please don't hesitate to contact our support team - we're here to help!"),
+            React.createElement(polaris_1.Banner, { tone: "info" }, "We recently made some platform updates to improve performance and reliability. If you notice any issues, please don't hesitate to contact (contact@xapps.shop) our support team - we're here to help!"),
             React.createElement("br", null),
             React.createElement(polaris_1.InlineGrid, { columns: { xs: 1, sm: 1, md: 2, lg: 2, xl: 2 }, gap: "400" },
                 React.createElement(Stats, { loading: loading[_actions_2.ACTIONS.get_AnalyticsData + "Loading"], title: "Custom redirects performance", totalPeriod: periodCustomRedirects, totamlNum: totalCustomPopup + totalCustomAuto, popupNum: totalCustomPopup, popupPeriod: periodCustomPopupRedirects, autoNum: totalCustomAuto, autoPeriod: periodCustomAutoRedirects }),
@@ -221,16 +221,38 @@ function Index() {
             React.createElement("br", null),
             React.createElement(polaris_1.CalloutCard, { illustration: rateCard_svg_1["default"], title: "Please share your thoughts", primaryAction: {
                     content: "Good",
-                    target: "_blank",
-                    url: "https://apps.shopify.com/native-geo-redirects-popup?#modal-show=WriteReviewModal",
+                    onAction: function () { return __awaiter(_this, void 0, void 0, function () {
+                        var result, error_1;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    _a.trys.push([0, 2, , 3]);
+                                    return [4 /*yield*/, shopify.reviews.request()];
+                                case 1:
+                                    result = _a.sent();
+                                    if (!result.success) {
+                                        console.log("Review modal not displayed. Reason: " + result.code + ": " + result.message);
+                                    }
+                                    return [3 /*break*/, 3];
+                                case 2:
+                                    error_1 = _a.sent();
+                                    console.error('Error requesting review:', error_1);
+                                    window.open("https://apps.shopify.com/native-geo-redirects-popup?#modal-show=WriteReviewModal", "_blank");
+                                    return [3 /*break*/, 3];
+                                case 3: return [2 /*return*/];
+                            }
+                        });
+                    }); },
+                    // target: "_blank",
+                    // url: "https://apps.shopify.com/native-geo-redirects-popup?#modal-show=WriteReviewModal",
                     icon: polaris_icons_1.ThumbsUpIcon
                 }, secondaryAction: {
                     content: "Bad",
-                    url: "#",
                     icon: polaris_icons_1.ThumbsDownIcon,
                     onAction: function () { return Tawk_API === null || Tawk_API === void 0 ? void 0 : Tawk_API.toggle(); }
                 } },
-                React.createElement("p", null, "How's your experience been with the Geolocation Redirects app?")))));
+                React.createElement("p", null, "How's your experience been with the Geolocation Redirects app?")),
+            React.createElement("br", null))));
 }
 exports["default"] = Index;
 function Stats(_a) {

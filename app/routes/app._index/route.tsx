@@ -249,7 +249,7 @@ export default function Index() {
 
     }
   }
-  console.log("actionData", actionData);
+  
   const loading = loadingStates(navigation, [ACTIONS.get_AnalyticsData]) as LoadingStates;
   return (
     <Page>
@@ -380,19 +380,30 @@ export default function Index() {
           title="Please share your thoughts"
           primaryAction={{
             content: "Good",
-            target: "_blank",
-            url: "https://apps.shopify.com/native-geo-redirects-popup?#modal-show=WriteReviewModal",
+            onAction: async () => {
+              try {
+                const result = await shopify.reviews.request();
+                if (!result.success) {
+                  console.log(`Review modal not displayed. Reason: ${result.code}: ${result.message}`);
+                }
+              } catch (error) {
+                console.error('Error requesting review:', error);
+                window.open("https://apps.shopify.com/native-geo-redirects-popup?#modal-show=WriteReviewModal", "_blank");
+              }
+            },
+            // target: "_blank",
+            // url: "https://apps.shopify.com/native-geo-redirects-popup?#modal-show=WriteReviewModal",
             icon: ThumbsUpIcon,
           }}
           secondaryAction={{
             content: "Bad",
-            url: "#",
             icon: ThumbsDownIcon,
             onAction: () => Tawk_API?.toggle(),
           }}
         >
           <p>How's your experience been with the Geolocation Redirects app?</p>
         </CalloutCard>
+        <br />
       </div>
     </Page>
   );

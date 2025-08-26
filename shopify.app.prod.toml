@@ -1,0 +1,38 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "23da7d841ff537c9ae920e0cc4e0619f"
+name = "Geolocation Redirects | xapps"
+handle = "xapps-geo"
+application_url = "https://xapps-geo-ca956fdeab0c.herokuapp.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "appstorefortests.myshopify.com"
+include_config_on_deploy = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_files,read_locales,read_markets,read_themes,write_files"
+
+[auth]
+redirect_urls = [
+  "https://xapps-geo-ca956fdeab0c.herokuapp.com/auth/callback",
+  "https://xapps-geo-ca956fdeab0c.herokuapp.com/auth/shopify/callback",
+  "https://xapps-geo-ca956fdeab0c.herokuapp.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2025-10"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/scopes_update", "app/uninstalled" ]
+  uri = "/api/webhooks"
+
+  [webhooks.privacy_compliance]
+  customer_deletion_url = "https://xapps-geo-ca956fdeab0c.herokuapp.com/gdpr-customers-redact"
+  customer_data_request_url = "https://xapps-geo-ca956fdeab0c.herokuapp.com/gdpr-customers-data-request"
+  shop_deletion_url = "https://xapps-geo-ca956fdeab0c.herokuapp.com/gdpr-shop-redact"
+
+[pos]
+embedded = false

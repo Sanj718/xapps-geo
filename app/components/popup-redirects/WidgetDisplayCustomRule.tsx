@@ -136,7 +136,7 @@ export default function WidgetDisplayCustomRule({ status, code }: WidgetDisplayC
             <Suspense fallback={<Spinner size="small" />}>
               <Await resolve={code}>
                 {(code) => {
-                  return code ? <CodeEditor code={code?.value || defaultWidgetCode} onChange={isProPlan ? setCustomCode : () => { }} language="javascript" /> : <div>Loading...</div>
+                  return <CodeEditor code={code?.value || defaultWidgetCode} onChange={isProPlan ? setCustomCode : () => { }} language="javascript" />;
                 }}
               </Await>
             </Suspense>

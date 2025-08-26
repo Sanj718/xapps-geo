@@ -1,9 +1,9 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "23da7d841ff537c9ae920e0cc4e0619f"
-name = "Geolocation Redirects | xapps"
-handle = "xapps-geo"
-application_url = "https://xapps-geo-ca956fdeab0c.herokuapp.com"
+client_id = "9966dc648683377b495dc8e5b5a704b1"
+name = "xapps-geo-ts"
+handle = "xapps-geo-ts"
+application_url = "https://employed-travis-elite-chaos.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,13 +17,18 @@ scopes = "read_files,read_locales,read_markets,read_themes,write_files"
 
 [auth]
 redirect_urls = [
-  "https://xapps-geo-ca956fdeab0c.herokuapp.com/auth/callback",
-  "https://xapps-geo-ca956fdeab0c.herokuapp.com/auth/shopify/callback",
-  "https://xapps-geo-ca956fdeab0c.herokuapp.com/api/auth/callback"
+  "https://employed-travis-elite-chaos.trycloudflare.com/auth/callback",
+  "https://employed-travis-elite-chaos.trycloudflare.com/auth/shopify/callback",
+  "https://employed-travis-elite-chaos.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
 api_version = "2025-10"
+
+  [webhooks.privacy_compliance]
+  customer_deletion_url = "https://flip-symphony-happiness-actress.trycloudflare.com/gdpr-customers-redact"
+  customer_data_request_url = "https://flip-symphony-happiness-actress.trycloudflare.com/gdpr-customers-data-request"
+  shop_deletion_url = "https://flip-symphony-happiness-actress.trycloudflare.com/gdpr-shop-redact"
 
   [[webhooks.subscriptions]]
   topics = [ "app/scopes_update", "app/uninstalled" ]

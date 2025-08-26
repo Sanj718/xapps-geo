@@ -1,6 +1,6 @@
 import { defineConfig } from "vite";
 import { resolve } from "path";
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync, writeFileSync, rmdirSync, existsSync } from "fs";
 import * as sass from "sass";
 
 // Function to read application_url from shopify.app.toml
@@ -147,7 +147,8 @@ const publicAssetsPlugin = () => {
           indexMarketsCss = sass.compileString(indexMarketsScss, sassOptions);
         } catch (sassError) {
           console.error('❌ SCSS compilation failed:', sassError);
-          throw new Error(`SCSS compilation failed: ${sassError.message}`);
+          const errorMessage = sassError instanceof Error ? sassError.message : String(sassError);
+          throw new Error(`SCSS compilation failed: ${errorMessage}`);
         }
 
         // Validate Sass output
@@ -198,24 +199,36 @@ const publicAssetsPlugin = () => {
         return code; // Return original code if transformation fails
       }
     },
+    closeBundle() {
+      // Clean up the build folder after the build completes
+      const buildDir = resolve(__dirname, 'extensions/ngr-widget/assets/build');
+      if (existsSync(buildDir)) {
+        try {
+          console.log('🧹 Cleaning up build folder...');
+          rmdirSync(buildDir, { recursive: true });
+          console.log('✅ Build folder cleaned up');
+        } catch (error) {
+          console.warn('⚠️ Could not clean up build folder:', error);
+        }
+      }
+    }
   };
 };
 
 export default defineConfig({
   plugins: [publicAssetsPlugin()],
   build: {
-    lib: {
-      entry: resolve(__dirname, 'public_assets/index-markets.js'),
-      formats: ['iife'],
-      name: 'PublicAssetsMarkets',
-    },
     outDir: resolve(__dirname, 'extensions/ngr-widget/assets'),
     emptyOutDir: false,
     minify: 'terser',
     rollupOptions: {
+      input: resolve(__dirname, 'public_assets/index-markets.js'),
       output: {
         entryFileNames: 'native-geo-markets.min.js',
         chunkFileNames: '[name]-[hash].js',
+        format: 'iife',
+        name: 'PublicAssetsMarkets',
+        dir: resolve(__dirname, 'extensions/ngr-widget/assets'),
       },
     },
   },
