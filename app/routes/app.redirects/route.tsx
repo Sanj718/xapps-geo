@@ -4,6 +4,9 @@ import {
   Tabs,
   Divider,
   useBreakpoints,
+  Button,
+  ButtonGroup,
+  Box,
 } from "@shopify/polaris";
 import { PageTitle } from "../../components/_common/PageTitle";
 import { getEmbedConst, jsonSafeParse } from "../../components/_helpers";
@@ -27,7 +30,7 @@ import ButtonDisplayCustomRule from "app/components/popup-redirects/ButtonDispla
 import { ActionFunctionArgs } from "@remix-run/node";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import AutoRedirects from "app/components/auto-redirects/AutoRedirectsList";
-import { DomainRedirectIcon } from "@shopify/polaris-icons";
+import { DomainRedirectIcon, CursorOptionIcon, ArrowsOutHorizontalIcon } from "@shopify/polaris-icons";
 import AutoRedirectsSettings from "app/components/auto-redirects/AutoRedirectsSettings";
 import AutoRedirectsCustomRule from "app/components/auto-redirects/AutoRedirectsCustomRule";
 
@@ -35,16 +38,6 @@ import AutoRedirectsCustomRule from "app/components/auto-redirects/AutoRedirects
 const { EMBED_APP_ID, EMBED_APP_HANDLE } =
   getEmbedConst(PROD_EMBED_APP_ID, DEV_EMBED_APP_ID, RD_EMBED_APP_HANDLE) || {};
 
-const mainTabs = [
-  {
-    id: "popup",
-    content: "Popup redirects",
-  },
-  {
-    id: "auto",
-    content: "Auto redirects",
-  },
-];
 
 export const loader = async (params: LoaderFunctionArgs) => handleLoaders(params);
 
@@ -136,52 +129,47 @@ export default function CustomRedirects() {
           loading={false}
           url={`shopify://admin/themes/current/editor?context=apps&activateAppId=${EMBED_APP_ID}/${EMBED_APP_HANDLE}`}
         />
+        <Box padding="300">
+          <ButtonGroup variant="segmented" fullWidth noWrap>
+            <Button size="large" pressed={selectedTab === 0} onClick={() => setSelectedTab(0)} icon={CursorOptionIcon}>
+              Popup redirects
+            </Button>
+            <Button size="large" pressed={selectedTab === 1} onClick={() => setSelectedTab(1)} icon={ArrowsOutHorizontalIcon}>
+              Auto redirects
+            </Button>
+          </ButtonGroup>
+        </Box>
         <br />
-        <Tabs
-          tabs={mainTabs}
-          selected={selectedTab}
-          onSelect={(value) => {
-            setSelectedTab(value);
-            const params = new URLSearchParams();
-            params.set("tab", value.toString());
-            setSearchParams(params, {
-              preventScrollReset: true,
-            });
-          }}
-          fitted
-        >
-          <br />
-          {selectedTab === 0 ? (
-            <BlockStack gap={{ xs: "800", sm: "400" }}>
-              <RedirectsList redirects={redirects} />
-              {smUp ? <Divider /> : null}
-              <ContentStyle redirects={redirects} configs={configs} />
-              {smUp ? <Divider /> : null}
-              <PopupDisplaySettings configs={configs} />
-              {smUp ? <Divider /> : null}
-              <OtherSettings configs={configs} />
-              {smUp ? <Divider /> : null}
-              <WidgetDisplayCustomRule status={widgetEditorStatus} code={widgetEditorCode} />
-              {smUp ? <Divider /> : null}
-              <ButtonDisplayCustomRule status={buttonEditorStatus} code={buttonEditorCode} />
-            </BlockStack>
-          ) : (
-            ""
-          )}
-          {selectedTab === 1 ? (
-            <BlockStack gap={{ xs: "800", sm: "400" }}>
-              <AutoRedirects
-                redirects={autoRedirects}
-              />
-              {smUp ? <Divider /> : null}
-              <AutoRedirectsSettings />
-              {smUp ? <Divider /> : null}
-              <AutoRedirectsCustomRule status={autoRedirectsCustomCodeStatus} code={autoRedirectsCustomCode} />
-            </BlockStack>
-          ) : (
-            ""
-          )}
-        </Tabs>
+        {selectedTab === 0 ? (
+          <BlockStack gap={{ xs: "800", sm: "400" }}>
+            <RedirectsList redirects={redirects} />
+            {smUp ? <Divider /> : null}
+            <ContentStyle redirects={redirects} configs={configs} />
+            {smUp ? <Divider /> : null}
+            <PopupDisplaySettings configs={configs} />
+            {smUp ? <Divider /> : null}
+            <OtherSettings configs={configs} />
+            {smUp ? <Divider /> : null}
+            <WidgetDisplayCustomRule status={widgetEditorStatus} code={widgetEditorCode} />
+            {smUp ? <Divider /> : null}
+            <ButtonDisplayCustomRule status={buttonEditorStatus} code={buttonEditorCode} />
+          </BlockStack>
+        ) : (
+          ""
+        )}
+        {selectedTab === 1 ? (
+          <BlockStack gap={{ xs: "800", sm: "400" }}>
+            <AutoRedirects
+              redirects={autoRedirects}
+            />
+            {smUp ? <Divider /> : null}
+            <AutoRedirectsSettings />
+            {smUp ? <Divider /> : null}
+            <AutoRedirectsCustomRule status={autoRedirectsCustomCodeStatus} code={autoRedirectsCustomCode} />
+          </BlockStack>
+        ) : (
+          ""
+        )}
         <br />
       </div>
     </Page>

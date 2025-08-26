@@ -392,8 +392,6 @@ export default function Index() {
                 window.open("https://apps.shopify.com/native-geo-redirects-popup?#modal-show=WriteReviewModal", "_blank");
               }
             },
-            // target: "_blank",
-            // url: "https://apps.shopify.com/native-geo-redirects-popup?#modal-show=WriteReviewModal",
             icon: ThumbsUpIcon,
           }}
           secondaryAction={{

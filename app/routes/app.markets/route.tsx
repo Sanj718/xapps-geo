@@ -6,17 +6,12 @@ import {
   BlockStack,
   Divider,
   useBreakpoints,
+  Box,
+  Button,
+  ButtonGroup,
 } from "@shopify/polaris";
 import React, { useState, useContext, useMemo } from "react";
 import { getEmbedConst, isJson, defaultState, default_markets_basic_configs, default_advanced_configs, planParser, requestHeaders } from "../../components/_helpers";
-// import { getEmbedConst, isJson, defaultState } from "app/components/_helpers";
-// import { MarketsSettings } from "../../components/MarketsSettings";
-// import MarketsPopupControls from "../components/markets-popup/MarketsPopupControls";
-// import MarketsAutoControls from "../components/markets-auto-redirects/MarketsAutoControls";
-// import MarketsAutoSettings from "../components/markets-auto-redirects/MarketsAutoSettings";
-// import MarketsContentStyle from "../components/markets-popup/MarketsContentStyle";
-// import MarketsPopupDisplaySettings from "../components/markets-popup/MarketsPopupDisplaySettings";
-// import MarketsOtherSettings from "../components/markets-popup/MarketsOtherSettings";
 import { handleActions } from "./_actions";
 import { handleLoaders } from "./_loaders";
 import {
@@ -27,7 +22,9 @@ import {
 } from "../../components/env";
 import { PageTitle } from "app/components/_common/PageTitle";
 import {
-  MarketsIcon
+  MarketsIcon,
+  CursorOptionIcon,
+  ArrowsOutHorizontalIcon,
 } from '@shopify/polaris-icons';
 import MarketsOtherSettings from "app/components/markets-popup/MarketsOtherSettings";
 import MarketsAutoSettings from "app/components/markets-auto-redirects/MarketsAutoSettings";
@@ -48,18 +45,6 @@ export const loader = async (params: LoaderFunctionArgs) => handleLoaders(params
 
 export const action = async (params: ActionFunctionArgs) => handleActions(params);
 
-
-
-const mainTabs = [
-  {
-    id: "markets-popup",
-    content: "Markets popup",
-  },
-  {
-    id: "markets-auto",
-    content: "Markets auto redirect",
-  },
-];
 let timesRun = 0;
 let interval: NodeJS.Timeout;
 export default function MarketsRedirects() {
@@ -181,186 +166,65 @@ export default function MarketsRedirects() {
       <div id="main-screen">
         <PageTitle
           icon={MarketsIcon}
-          title="Markets redirects"
+          title="Market redirects"
           status={active}
           loading={false}
           url={`shopify://admin/themes/current/editor?context=apps&activateAppId=${EMBED_APP_ID}/${EMBED_APP_HANDLE}`}
         />
+        <Box padding="300">
+          <ButtonGroup variant="segmented" fullWidth noWrap>
+            <Button size="large" pressed={selectedTab === 0} onClick={() => setSelectedTab(0)} icon={CursorOptionIcon}>
+              Markets popup
+            </Button>
+            <Button size="large" pressed={selectedTab === 1} onClick={() => setSelectedTab(1)} icon={ArrowsOutHorizontalIcon}>
+              Markets auto redirect
+            </Button>
+          </ButtonGroup>
+        </Box>
         <br />
-        <Tabs
-          tabs={mainTabs}
-          selected={selectedTab}
-          onSelect={(value) => {
-            setSelectedTab(value);
-            const params = new URLSearchParams();
-            params.set("tab", value.toString());
-            setSearchParams(params, {
-              preventScrollReset: true,
-            });
-          }}
-          fitted
-        >
-          <br />
-          {selectedTab === 0 ? (
-            <BlockStack gap={{ xs: "800", sm: "400" }}>
-              <MarketsPopupControls
-                marketsData={marketsData?.data}
-                marketsSync={handleMarketsSync}
-                marketsSyncLoading={marketsSyncLoading}
-                marketsPopup={marketsConfigs?.data?.widget}
-              />
-              {smUp ? <Divider /> : null}
-              <MarketsContentStyle
-                marketsData={marketsData}
-                configs={localConfigs}
-                advancedConfigs={localAdvancedConfigs}
-              />
-              {smUp ? <Divider /> : null}
-              <MarketsPopupDisplaySettings
-                configs={localConfigs}
-                setConfigs={setLocalConfigs}
-                advancedConfigs={localAdvancedConfigs}
-              />
-              {smUp ? <Divider /> : null}
-              <MarketsOtherSettings />
-            </BlockStack>
-          ) : (
-            ""
-          )}
+        {selectedTab === 0 ? (
+          <BlockStack gap={{ xs: "800", sm: "400" }}>
+            <MarketsPopupControls
+              marketsData={marketsData?.data}
+              marketsSync={handleMarketsSync}
+              marketsSyncLoading={marketsSyncLoading}
+              marketsPopup={marketsConfigs?.data?.widget}
+            />
+            {smUp ? <Divider /> : null}
+            <MarketsContentStyle
+              marketsData={marketsData}
+              configs={localConfigs}
+              advancedConfigs={localAdvancedConfigs}
+            />
+            {smUp ? <Divider /> : null}
+            <MarketsPopupDisplaySettings
+              configs={localConfigs}
+              setConfigs={setLocalConfigs}
+              advancedConfigs={localAdvancedConfigs}
+            />
+            {smUp ? <Divider /> : null}
+            <MarketsOtherSettings />
+          </BlockStack>
+        ) : (
+          ""
+        )}
 
-          {selectedTab === 1 ? (
-            <BlockStack gap={{ xs: "800", sm: "400" }}>
-              <MarketsAutoControls
-                marketsData={marketsData?.data}
-                marketsSync={handleMarketsSync}
-                marketsSyncLoading={marketsSyncLoading}
-                marketRedirect={marketsConfigs?.data?.autoRedirect}
-              />
-              {smUp ? <Divider /> : null}
-              <MarketsAutoSettings />
-            </BlockStack>
-          ) : (
-            ""
-          )}
-        </Tabs>
+        {selectedTab === 1 ? (
+          <BlockStack gap={{ xs: "800", sm: "400" }}>
+            <MarketsAutoControls
+              marketsData={marketsData?.data}
+              marketsSync={handleMarketsSync}
+              marketsSyncLoading={marketsSyncLoading}
+              marketRedirect={marketsConfigs?.data?.autoRedirect}
+            />
+            {smUp ? <Divider /> : null}
+            <MarketsAutoSettings />
+          </BlockStack>
+        ) : (
+          ""
+        )}
         <br />
       </div>
     </Page>
   );
 }
-
-
-// useMemo(() => {
-//   const sLocales = shopData?.locales?.filter((item) => !item.primary) || null;
-//   setSecondaryLocales(sLocales);
-// }, [shopData]);
-
-// async function loadMarkets() {
-//   let error = true;
-//   let msg = tr.responses.error;
-//   // await getLocalShopData();
-
-//   try {
-//     const response = await fetch(GET_SYNCED_MARKETS);
-//     const responseJson = await response.json();
-
-//     if (responseJson?.status) {
-//       setMarketsData(responseJson?.data);
-//       error = false;
-//     }
-//   } catch (err) {
-//     console.log(err);
-//   }
-
-//   if (error) {
-//     setToastData({
-//       error,
-//       msg,
-//     });
-//   }
-// }
-
-// async function loadSettings() {
-//   let error = true;
-//   let msg = tr.responses.error_settings_load;
-
-//   try {
-//     const response = await fetch(GET_MARKET_CONFIGS);
-//     const responseJson = await response.json();
-
-//     if (responseJson?.data && responseJson?.data[0]) {
-//       const storeSavedConfigs = JSON.parse(
-//         responseJson.data[0].basic_configs
-//       );
-//       const storeSavedAdvancedConfigs = JSON.parse(
-//         responseJson.data[0].advanced_configs
-//       );
-//       const widgetStatus = responseJson?.data[0]?.widget;
-//       const autoRedirectStatus = responseJson?.data[0]?.auto_redirect;
-
-//       setMarketsPopup(widgetStatus);
-//       setMarketRedirect(autoRedirectStatus);
-
-//       setConfigs({ ...configs, ...storeSavedConfigs });
-//       setAdvancedConfigs({
-//         ...advancedConfigs,
-//         ...storeSavedAdvancedConfigs,
-//       });
-
-//       setLocalConfigs({ ...configs, ...storeSavedConfigs });
-//       setLocalAdvancedConfigs({
-//         ...advancedConfigs,
-//         ...storeSavedAdvancedConfigs,
-//       });
-
-//       error = false;
-//     } else {
-//       setNoConfigs(true);
-//     }
-//   } catch (err) {
-//     console.log(err);
-//   }
-
-//   if (error) {
-//     setToastData({
-//       error,
-//       msg,
-//     });
-//   }
-// }
-
-// async function loadEmbedData() {
-//   try {
-//     const response = await fetch(CHECK_EMBED);
-//     const responseJson = await response.json();
-
-//     if (responseJson?.data) {
-//       const parsedValue =
-//         isJson(responseJson.data) && JSON.parse(responseJson.data);
-//       if (parsedValue?.current?.blocks) {
-//         const check = Object.entries(parsedValue.current.blocks).find(
-//           ([item, value]) => {
-//             return (
-//               value.type.includes(EMBED_APP_ID) &&
-//               value.type.includes(EMBED_APP_HANDLE) &&
-//               !value.disabled
-//             );
-//           }
-//         );
-//         setActive(check);
-//       }
-//     }
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
-
-// useMemo(async () => {
-//   Promise.all([loadMarkets(), loadSettings(), loadEmbedData()])
-//     .then((results) => {
-//       setInitialLoading(false);
-//     })
-//     .catch((error) => {
-//       console.error("Error occurred while executing methods: ", error);
-//     });
-// }, [refetchSettings]);

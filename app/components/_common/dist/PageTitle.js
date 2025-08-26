@@ -52,7 +52,7 @@ function PageTitle(_a) {
         react_1["default"].createElement(polaris_1.InlineStack, { gap: "200", align: "space-between" },
             react_1["default"].createElement(polaris_1.InlineStack, { gap: "200", blockAlign: "center" },
                 icon && react_1["default"].createElement(polaris_1.Icon, { source: icon }),
-                react_1["default"].createElement(polaris_1.Text, { as: "h1", variant: "headingXl" }, title)),
+                react_1["default"].createElement(polaris_1.Text, { as: "h1", variant: "headingLg" }, title)),
             react_1["default"].createElement(polaris_1.InlineStack, { gap: "300", blockAlign: "center" },
                 !hideStatus && (react_1["default"].createElement(polaris_1.Tooltip, { width: "wide", content: react_1["default"].createElement(polaris_1.Box, { padding: "200" },
                         react_1["default"].createElement(polaris_1.InlineGrid, { gap: "100" },

@@ -32,7 +32,7 @@ export function PageTitle({ icon, title, status, loading, url = "", hideStatus =
       <InlineStack gap="200" align="space-between">
         <InlineStack gap="200" blockAlign="center">
           {icon && <Icon source={icon} />}
-          <Text as="h1" variant="headingXl">
+          <Text as="h1" variant="headingLg">
             {title}
           </Text>
         </InlineStack>

@@ -51,14 +51,6 @@ exports.action = exports.loader = void 0;
 var polaris_1 = require("@shopify/polaris");
 var react_1 = require("react");
 var _helpers_1 = require("../../components/_helpers");
-// import { getEmbedConst, isJson, defaultState } from "app/components/_helpers";
-// import { MarketsSettings } from "../../components/MarketsSettings";
-// import MarketsPopupControls from "../components/markets-popup/MarketsPopupControls";
-// import MarketsAutoControls from "../components/markets-auto-redirects/MarketsAutoControls";
-// import MarketsAutoSettings from "../components/markets-auto-redirects/MarketsAutoSettings";
-// import MarketsContentStyle from "../components/markets-popup/MarketsContentStyle";
-// import MarketsPopupDisplaySettings from "../components/markets-popup/MarketsPopupDisplaySettings";
-// import MarketsOtherSettings from "../components/markets-popup/MarketsOtherSettings";
 var _actions_1 = require("./_actions");
 var _loaders_1 = require("./_loaders");
 var env_1 = require("../../components/env");
@@ -80,16 +72,6 @@ exports.loader = function (params) { return __awaiter(void 0, void 0, void 0, fu
 exports.action = function (params) { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
     return [2 /*return*/, _actions_1.handleActions(params)];
 }); }); };
-var mainTabs = [
-    {
-        id: "markets-popup",
-        content: "Markets popup"
-    },
-    {
-        id: "markets-auto",
-        content: "Markets auto redirect"
-    },
-];
 var timesRun = 0;
 var interval;
 function MarketsRedirects() {
@@ -206,128 +188,24 @@ function MarketsRedirects() {
     // console.log("marketsConfigs: ", marketsConfigs, localConfigs, localAdvancedConfigs);
     return (react_1["default"].createElement(polaris_1.Page, null,
         react_1["default"].createElement("div", { id: "main-screen" },
-            react_1["default"].createElement(PageTitle_1.PageTitle, { icon: polaris_icons_1.MarketsIcon, title: "Markets redirects", status: active, loading: false, url: "shopify://admin/themes/current/editor?context=apps&activateAppId=" + EMBED_APP_ID + "/" + EMBED_APP_HANDLE }),
+            react_1["default"].createElement(PageTitle_1.PageTitle, { icon: polaris_icons_1.MarketsIcon, title: "Market redirects", status: active, loading: false, url: "shopify://admin/themes/current/editor?context=apps&activateAppId=" + EMBED_APP_ID + "/" + EMBED_APP_HANDLE }),
+            react_1["default"].createElement(polaris_1.Box, { padding: "300" },
+                react_1["default"].createElement(polaris_1.ButtonGroup, { variant: "segmented", fullWidth: true, noWrap: true },
+                    react_1["default"].createElement(polaris_1.Button, { size: "large", pressed: selectedTab === 0, onClick: function () { return setSelectedTab(0); }, icon: polaris_icons_1.CursorOptionIcon }, "Markets popup"),
+                    react_1["default"].createElement(polaris_1.Button, { size: "large", pressed: selectedTab === 1, onClick: function () { return setSelectedTab(1); }, icon: polaris_icons_1.ArrowsOutHorizontalIcon }, "Markets auto redirect"))),
             react_1["default"].createElement("br", null),
-            react_1["default"].createElement(polaris_1.Tabs, { tabs: mainTabs, selected: selectedTab, onSelect: function (value) {
-                    setSelectedTab(value);
-                    var params = new URLSearchParams();
-                    params.set("tab", value.toString());
-                    setSearchParams(params, {
-                        preventScrollReset: true
-                    });
-                }, fitted: true },
-                react_1["default"].createElement("br", null),
-                selectedTab === 0 ? (react_1["default"].createElement(polaris_1.BlockStack, { gap: { xs: "800", sm: "400" } },
-                    react_1["default"].createElement(MarketsPopupControls_1["default"], { marketsData: marketsData === null || marketsData === void 0 ? void 0 : marketsData.data, marketsSync: handleMarketsSync, marketsSyncLoading: marketsSyncLoading, marketsPopup: (_c = marketsConfigs === null || marketsConfigs === void 0 ? void 0 : marketsConfigs.data) === null || _c === void 0 ? void 0 : _c.widget }),
-                    smUp ? react_1["default"].createElement(polaris_1.Divider, null) : null,
-                    react_1["default"].createElement(MarketsContentStyle_1["default"], { marketsData: marketsData, configs: localConfigs, advancedConfigs: localAdvancedConfigs }),
-                    smUp ? react_1["default"].createElement(polaris_1.Divider, null) : null,
-                    react_1["default"].createElement(MarketsPopupDisplaySettings_1["default"], { configs: localConfigs, setConfigs: setLocalConfigs, advancedConfigs: localAdvancedConfigs }),
-                    smUp ? react_1["default"].createElement(polaris_1.Divider, null) : null,
-                    react_1["default"].createElement(MarketsOtherSettings_1["default"], null))) : (""),
-                selectedTab === 1 ? (react_1["default"].createElement(polaris_1.BlockStack, { gap: { xs: "800", sm: "400" } },
-                    react_1["default"].createElement(MarketsAutoControls_1["default"], { marketsData: marketsData === null || marketsData === void 0 ? void 0 : marketsData.data, marketsSync: handleMarketsSync, marketsSyncLoading: marketsSyncLoading, marketRedirect: (_d = marketsConfigs === null || marketsConfigs === void 0 ? void 0 : marketsConfigs.data) === null || _d === void 0 ? void 0 : _d.autoRedirect }),
-                    smUp ? react_1["default"].createElement(polaris_1.Divider, null) : null,
-                    react_1["default"].createElement(MarketsAutoSettings_1["default"], null))) : ("")),
+            selectedTab === 0 ? (react_1["default"].createElement(polaris_1.BlockStack, { gap: { xs: "800", sm: "400" } },
+                react_1["default"].createElement(MarketsPopupControls_1["default"], { marketsData: marketsData === null || marketsData === void 0 ? void 0 : marketsData.data, marketsSync: handleMarketsSync, marketsSyncLoading: marketsSyncLoading, marketsPopup: (_c = marketsConfigs === null || marketsConfigs === void 0 ? void 0 : marketsConfigs.data) === null || _c === void 0 ? void 0 : _c.widget }),
+                smUp ? react_1["default"].createElement(polaris_1.Divider, null) : null,
+                react_1["default"].createElement(MarketsContentStyle_1["default"], { marketsData: marketsData, configs: localConfigs, advancedConfigs: localAdvancedConfigs }),
+                smUp ? react_1["default"].createElement(polaris_1.Divider, null) : null,
+                react_1["default"].createElement(MarketsPopupDisplaySettings_1["default"], { configs: localConfigs, setConfigs: setLocalConfigs, advancedConfigs: localAdvancedConfigs }),
+                smUp ? react_1["default"].createElement(polaris_1.Divider, null) : null,
+                react_1["default"].createElement(MarketsOtherSettings_1["default"], null))) : (""),
+            selectedTab === 1 ? (react_1["default"].createElement(polaris_1.BlockStack, { gap: { xs: "800", sm: "400" } },
+                react_1["default"].createElement(MarketsAutoControls_1["default"], { marketsData: marketsData === null || marketsData === void 0 ? void 0 : marketsData.data, marketsSync: handleMarketsSync, marketsSyncLoading: marketsSyncLoading, marketRedirect: (_d = marketsConfigs === null || marketsConfigs === void 0 ? void 0 : marketsConfigs.data) === null || _d === void 0 ? void 0 : _d.autoRedirect }),
+                smUp ? react_1["default"].createElement(polaris_1.Divider, null) : null,
+                react_1["default"].createElement(MarketsAutoSettings_1["default"], null))) : (""),
             react_1["default"].createElement("br", null))));
 }
 exports["default"] = MarketsRedirects;
-// useMemo(() => {
-//   const sLocales = shopData?.locales?.filter((item) => !item.primary) || null;
-//   setSecondaryLocales(sLocales);
-// }, [shopData]);
-// async function loadMarkets() {
-//   let error = true;
-//   let msg = tr.responses.error;
-//   // await getLocalShopData();
-//   try {
-//     const response = await fetch(GET_SYNCED_MARKETS);
-//     const responseJson = await response.json();
-//     if (responseJson?.status) {
-//       setMarketsData(responseJson?.data);
-//       error = false;
-//     }
-//   } catch (err) {
-//     console.log(err);
-//   }
-//   if (error) {
-//     setToastData({
-//       error,
-//       msg,
-//     });
-//   }
-// }
-// async function loadSettings() {
-//   let error = true;
-//   let msg = tr.responses.error_settings_load;
-//   try {
-//     const response = await fetch(GET_MARKET_CONFIGS);
-//     const responseJson = await response.json();
-//     if (responseJson?.data && responseJson?.data[0]) {
-//       const storeSavedConfigs = JSON.parse(
-//         responseJson.data[0].basic_configs
-//       );
-//       const storeSavedAdvancedConfigs = JSON.parse(
-//         responseJson.data[0].advanced_configs
-//       );
-//       const widgetStatus = responseJson?.data[0]?.widget;
-//       const autoRedirectStatus = responseJson?.data[0]?.auto_redirect;
-//       setMarketsPopup(widgetStatus);
-//       setMarketRedirect(autoRedirectStatus);
-//       setConfigs({ ...configs, ...storeSavedConfigs });
-//       setAdvancedConfigs({
-//         ...advancedConfigs,
-//         ...storeSavedAdvancedConfigs,
-//       });
-//       setLocalConfigs({ ...configs, ...storeSavedConfigs });
-//       setLocalAdvancedConfigs({
-//         ...advancedConfigs,
-//         ...storeSavedAdvancedConfigs,
-//       });
-//       error = false;
-//     } else {
-//       setNoConfigs(true);
-//     }
-//   } catch (err) {
-//     console.log(err);
-//   }
-//   if (error) {
-//     setToastData({
-//       error,
-//       msg,
-//     });
-//   }
-// }
-// async function loadEmbedData() {
-//   try {
-//     const response = await fetch(CHECK_EMBED);
-//     const responseJson = await response.json();
-//     if (responseJson?.data) {
-//       const parsedValue =
-//         isJson(responseJson.data) && JSON.parse(responseJson.data);
-//       if (parsedValue?.current?.blocks) {
-//         const check = Object.entries(parsedValue.current.blocks).find(
-//           ([item, value]) => {
-//             return (
-//               value.type.includes(EMBED_APP_ID) &&
-//               value.type.includes(EMBED_APP_HANDLE) &&
-//               !value.disabled
-//             );
-//           }
-//         );
-//         setActive(check);
-//       }
-//     }
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
-// useMemo(async () => {
-//   Promise.all([loadMarkets(), loadSettings(), loadEmbedData()])
-//     .then((results) => {
-//       setInitialLoading(false);
-//     })
-//     .catch((error) => {
-//       console.error("Error occurred while executing methods: ", error);
-//     });
-// }, [refetchSettings]);

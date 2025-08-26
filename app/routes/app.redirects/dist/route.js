@@ -67,16 +67,6 @@ var polaris_icons_1 = require("@shopify/polaris-icons");
 var AutoRedirectsSettings_1 = require("app/components/auto-redirects/AutoRedirectsSettings");
 var AutoRedirectsCustomRule_1 = require("app/components/auto-redirects/AutoRedirectsCustomRule");
 var _a = _helpers_1.getEmbedConst(env_1.PROD_EMBED_APP_ID, env_1.DEV_EMBED_APP_ID, env_1.RD_EMBED_APP_HANDLE) || {}, EMBED_APP_ID = _a.EMBED_APP_ID, EMBED_APP_HANDLE = _a.EMBED_APP_HANDLE;
-var mainTabs = [
-    {
-        id: "popup",
-        content: "Popup redirects"
-    },
-    {
-        id: "auto",
-        content: "Auto redirects"
-    },
-];
 exports.loader = function (params) { return __awaiter(void 0, void 0, void 0, function () { return __generator(this, function (_a) {
     return [2 /*return*/, _loaders_1.handleLoaders(params)];
 }); }); };
@@ -158,34 +148,29 @@ function CustomRedirects() {
     return (React.createElement(polaris_1.Page, null,
         React.createElement("div", { id: "main-screen" },
             React.createElement(PageTitle_1.PageTitle, { icon: polaris_icons_1.DomainRedirectIcon, title: "Custom redirects", status: active, loading: false, url: "shopify://admin/themes/current/editor?context=apps&activateAppId=" + EMBED_APP_ID + "/" + EMBED_APP_HANDLE }),
+            React.createElement(polaris_1.Box, { padding: "300" },
+                React.createElement(polaris_1.ButtonGroup, { variant: "segmented", fullWidth: true, noWrap: true },
+                    React.createElement(polaris_1.Button, { size: "large", pressed: selectedTab === 0, onClick: function () { return setSelectedTab(0); }, icon: polaris_icons_1.CursorOptionIcon }, "Popup redirects"),
+                    React.createElement(polaris_1.Button, { size: "large", pressed: selectedTab === 1, onClick: function () { return setSelectedTab(1); }, icon: polaris_icons_1.ArrowsOutHorizontalIcon }, "Auto redirects"))),
             React.createElement("br", null),
-            React.createElement(polaris_1.Tabs, { tabs: mainTabs, selected: selectedTab, onSelect: function (value) {
-                    setSelectedTab(value);
-                    var params = new URLSearchParams();
-                    params.set("tab", value.toString());
-                    setSearchParams(params, {
-                        preventScrollReset: true
-                    });
-                }, fitted: true },
-                React.createElement("br", null),
-                selectedTab === 0 ? (React.createElement(polaris_1.BlockStack, { gap: { xs: "800", sm: "400" } },
-                    React.createElement(RedirectsList_1["default"], { redirects: redirects }),
-                    smUp ? React.createElement(polaris_1.Divider, null) : null,
-                    React.createElement(ContentStyle_1["default"], { redirects: redirects, configs: configs }),
-                    smUp ? React.createElement(polaris_1.Divider, null) : null,
-                    React.createElement(PopupDisplaySettings_1["default"], { configs: configs }),
-                    smUp ? React.createElement(polaris_1.Divider, null) : null,
-                    React.createElement(OtherSettings_1["default"], { configs: configs }),
-                    smUp ? React.createElement(polaris_1.Divider, null) : null,
-                    React.createElement(WidgetDisplayCustomRule_1["default"], { status: widgetEditorStatus, code: widgetEditorCode }),
-                    smUp ? React.createElement(polaris_1.Divider, null) : null,
-                    React.createElement(ButtonDisplayCustomRule_1["default"], { status: buttonEditorStatus, code: buttonEditorCode }))) : (""),
-                selectedTab === 1 ? (React.createElement(polaris_1.BlockStack, { gap: { xs: "800", sm: "400" } },
-                    React.createElement(AutoRedirectsList_1["default"], { redirects: autoRedirects }),
-                    smUp ? React.createElement(polaris_1.Divider, null) : null,
-                    React.createElement(AutoRedirectsSettings_1["default"], null),
-                    smUp ? React.createElement(polaris_1.Divider, null) : null,
-                    React.createElement(AutoRedirectsCustomRule_1["default"], { status: autoRedirectsCustomCodeStatus, code: autoRedirectsCustomCode }))) : ("")),
+            selectedTab === 0 ? (React.createElement(polaris_1.BlockStack, { gap: { xs: "800", sm: "400" } },
+                React.createElement(RedirectsList_1["default"], { redirects: redirects }),
+                smUp ? React.createElement(polaris_1.Divider, null) : null,
+                React.createElement(ContentStyle_1["default"], { redirects: redirects, configs: configs }),
+                smUp ? React.createElement(polaris_1.Divider, null) : null,
+                React.createElement(PopupDisplaySettings_1["default"], { configs: configs }),
+                smUp ? React.createElement(polaris_1.Divider, null) : null,
+                React.createElement(OtherSettings_1["default"], { configs: configs }),
+                smUp ? React.createElement(polaris_1.Divider, null) : null,
+                React.createElement(WidgetDisplayCustomRule_1["default"], { status: widgetEditorStatus, code: widgetEditorCode }),
+                smUp ? React.createElement(polaris_1.Divider, null) : null,
+                React.createElement(ButtonDisplayCustomRule_1["default"], { status: buttonEditorStatus, code: buttonEditorCode }))) : (""),
+            selectedTab === 1 ? (React.createElement(polaris_1.BlockStack, { gap: { xs: "800", sm: "400" } },
+                React.createElement(AutoRedirectsList_1["default"], { redirects: autoRedirects }),
+                smUp ? React.createElement(polaris_1.Divider, null) : null,
+                React.createElement(AutoRedirectsSettings_1["default"], null),
+                smUp ? React.createElement(polaris_1.Divider, null) : null,
+                React.createElement(AutoRedirectsCustomRule_1["default"], { status: autoRedirectsCustomCodeStatus, code: autoRedirectsCustomCode }))) : (""),
             React.createElement("br", null))));
 }
 exports["default"] = CustomRedirects;

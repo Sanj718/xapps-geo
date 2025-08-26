@@ -3,7 +3,7 @@
 client_id = "9966dc648683377b495dc8e5b5a704b1"
 name = "xapps-geo-ts"
 handle = "xapps-geo-ts"
-application_url = "https://employed-travis-elite-chaos.trycloudflare.com"
+application_url = "https://compounds-gps-conducting-savage.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_files,read_locales,read_markets,read_themes,write_files"
 
 [auth]
 redirect_urls = [
-  "https://employed-travis-elite-chaos.trycloudflare.com/auth/callback",
-  "https://employed-travis-elite-chaos.trycloudflare.com/auth/shopify/callback",
-  "https://employed-travis-elite-chaos.trycloudflare.com/api/auth/callback"
+  "https://compounds-gps-conducting-savage.trycloudflare.com/auth/callback",
+  "https://compounds-gps-conducting-savage.trycloudflare.com/auth/shopify/callback",
+  "https://compounds-gps-conducting-savage.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
