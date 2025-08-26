@@ -160,7 +160,7 @@ export default function AutoRedirectForm({
 
   async function handleAdd() {
     if (isFreePlan && redirects?.length >= 1) {
-      shopify.toast.show("You have reached the limit of auto redirects on Free plan", {
+      shopify.toast.show("You’ve hit the Free plan redirect limit.", {
         isError: true,
       });
       return;

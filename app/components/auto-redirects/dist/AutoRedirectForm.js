@@ -185,7 +185,7 @@ function AutoRedirectForm(_a) {
             var nextOrderNumber;
             return __generator(this, function (_a) {
                 if (isFreePlan && (redirects === null || redirects === void 0 ? void 0 : redirects.length) >= 1) {
-                    shopify.toast.show("You have reached the limit of auto redirects on Free plan", {
+                    shopify.toast.show("You’ve hit the Free plan redirect limit.", {
                         isError: true
                     });
                     return [2 /*return*/];

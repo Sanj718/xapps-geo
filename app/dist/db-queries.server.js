@@ -287,7 +287,7 @@ function createRedirect(_a) {
                         redirectLimit = BASIC_PLAN_LIMIT;
                     }
                     if (redirectCount >= redirectLimit) {
-                        throw new Error("Plan limit");
+                        throw new Error("You’ve hit the Free plan redirect limit.");
                     }
                     return [4 /*yield*/, db_server_1["default"].redirects.create({
                             data: {

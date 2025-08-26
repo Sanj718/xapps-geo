@@ -192,7 +192,7 @@ export async function createRedirect({
     }
 
     if (redirectCount >= redirectLimit) {
-      throw new Error("Plan limit");
+      throw new Error("You’ve hit the Free plan redirect limit.");
     }
 
     const dbResponse = await prisma.redirects.create({
